@@ -1,0 +1,61 @@
+div(ng-init='courses= #{JSON.stringify(courses)}', style='padding:0px', class='well well-lg')
+    if (user)
+      .course-framepane
+        .course-sidepane(class='well well-lg')
+          br
+          p. Total Courses Found: {{courses.length}}
+          br
+          input.form-control(type='text', ng-model='searchName', placeholder='Course Name')
+          br
+          if(role != 'Teacher')
+            input.form-control(type='text', ng-model='searchInstructor', placeholder='Teacher Last Name')
+          br
+          input.form-control(type='text', ng-model='searchCountry', placeholder='Country Name')
+          br
+        .course-mainpane
+         if(role == 'Student')
+          .divSearchCourse(ng-show='courses.length==0', style='padding: 20px; height:100px;')
+            | You are not enrolled in any course. Go to Search Courses to find interesting courses.
+          .divSearchCourse(ng-repeat='course in courses | filter : {courseid.coursename:searchName, courseid.timecountry:searchCountry} | orderBy : "courseid.coursename"', ng-show='courses.length>0')
+            table(width='100%', cellpadding='3')
+              tr
+                td(width='60%', colspan='2')
+                  h4
+                    a(href = '#displaycourse/{{course.courseid._id}}')
+                      b {{course.courseid.coursename | uppercase}}
+                td(width='40%')
+                  b Days:
+                  | &nbsp; {{course.courseid.days}}
+              tr
+                td(width='20%')
+                  a(href = '#dropcourse/{{course.courseid._id}}')
+                    | Drop Course
+                td(width='20%')
+                  b Grade : 
+                  | {{course.grade}}
+                td(width='60%')
+                  b Time:
+                  | &nbsp; {{course.courseid.time}} ({{course.courseid.timecountry}} Time)
+         if(role == 'Teacher')
+          .divSearchCourse(ng-show='courses.length==0', style='padding: 20px; height:100px;')
+            | You have not created any course. Go to Create Course to create new course.
+          .divSearchCourse(ng-repeat='course in courses | filter : {coursename:searchName, timecountry:searchCountry} | orderBy : "coursename"', ng-show='courses.length>0')
+            table(width='100%', cellpadding='3')
+              tr
+                td(width='60%', colspan='2')
+                  h4
+                    a(href = '#displaycourse/{{course._id}}')
+                      b {{course.coursename | uppercase}}
+                td(width='40%')
+                  b Days:
+                  | &nbsp; {{course.days}}
+              tr
+                td(width='5%')
+                  a(href = '#editcourse/{{course._id}}')
+                    | Edit
+                td(width='35%')
+                  a(href='', ng-click='removeCourse(course._id)')
+                    | Remove
+                td(width='60%')
+                  b Time:
+                  | &nbsp; {{course.time}} ({{course.timecountry}} Time)

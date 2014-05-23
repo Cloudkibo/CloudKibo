@@ -1,0 +1,507 @@
+extends menu
+
+block append head
+  //script(src='/javascripts/cloudKiboApp.js')
+
+block bodyaftermenu
+ .mainBodyPane
+    if (user)
+      .container
+        br
+        h1 My Profile
+        br
+        if(user.picture)
+          img(src='/userimage'+user.picture, width='200px', height='230px')
+        else
+          img(src='/images/displaypic.png', width='200px', height='230px')
+        if(teacherProfile)
+         div(ng-controller='editTeacherController', ng-init='teacherProfile= #{JSON.stringify(teacherProfile)}')
+          div(ng-show='!isSelected()')
+            h3 Username : #{user.username}
+            table(width="750px", border='0', bordercolor='#000000', cellspacing='0', cellpadding='18')
+             tr
+               td(width='25%')
+                 b First Name
+               td
+                 | {{teacherProfile.teachername.firstname}}
+             tr
+               td(width='25%')
+                 b Last Name
+               td
+                 | {{teacherProfile.teachername.lastname}}
+             tr
+               td(colspan='2')
+                 b
+                  u
+                   | Undergrad Education
+             tr
+               td(width='25%')
+                 b Subject Area
+               td
+                 | {{teacherProfile.undergradarea}}
+             tr
+               td(width='25%')
+                 b Academic Institution
+               td
+                 | {{teacherProfile.undergradschool}}
+             tr
+               td(width='25%')
+                 b Year
+               td
+                 | {{teacherProfile.undergradyear}}
+             tr
+               td(colspan='2')
+                 b
+                  u
+                   | Graduate Education
+             tr
+               td(width='25%')
+                 b Subject Area
+               td
+                 | {{teacherProfile.gradarea}}
+             tr
+               td(width='25%')
+                 b Academic Institution
+               td
+                 | {{teacherProfile.gradschool}}
+             tr
+               td(width='25%')
+                 b Year
+               td
+                 | {{teacherProfile.gradyear}}
+             tr
+               td(colspan='2')
+                 b
+                  u
+                   | PhD Education
+             tr
+               td(width='25%')
+                 b Subject Area
+               td
+                 | {{teacherProfile.phdarea}}
+             tr
+               td(width='25%')
+                 b Academic Institution
+               td
+                 | {{teacherProfile.phdschool}}
+             tr
+               td(width='25%')
+                 b Year
+               td
+                 | {{teacherProfile.phdyear}}
+          br
+          button.btn.btn-default(ng-click='editToggle()') {{editButton}}
+          br
+          div(ng-show='isSelected()')
+            form(role='form', style='max-width: 470px;', novalidate, name='form', class='css-form', ng-submit='processForm()')
+             br
+             label First Name *
+             .form-group
+                 input.form-control(type='text', name="fname", placeholder='First Name', ng-model='teacherProfile.teachername.firstname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
+             div(ng-show!="form.fname.$dirty && !form.fname.$focused")
+               div(ng-show="form.fname.$invalid")
+                 span(ng-show="form.fname.$error.required")
+                   | Enter the first name.
+                 span(ng-show="form.fname.$error.minlength")
+                   | First name is too short.
+                 span(ng-show="form.fname.$error.maxlength")
+                   | First name is too big.
+             br
+             label Last Name *
+             .form-group
+                 input.form-control(type='text', name="lname", placeholder='Last Name', ng-model='teacherProfile.teachername.lastname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
+             div(ng-show!="form.lname.$dirty && !form.lname.$focused")
+               div(ng-show="form.lname.$invalid")
+                 span(ng-show="form.lname.$error.required")
+                   | Enter the last name.
+                 span(ng-show="form.lname.$error.minlength")
+                   | Last name is too short.
+                 span(ng-show="form.lname.$error.maxlength")
+                   | Last name is too big.
+             br
+             label Undergrad Area
+             .form-group
+                 select(name="undergradarea", ng-model='teacherProfile.undergradarea')
+                   option(value="None") None
+                   option(value="Agriculture") Agriculture
+                   option(value="Anthropology") Anthropology
+                   option(value="Archaeology") Archaeology
+                   option(value="Architecture and Design") Architecture and Design
+                   option(value="Area studies") Area studies
+                   option(value="Business") Business
+                   option(value="Chemistry") Chemistry
+                   option(value="Computer sciences") Computer sciences
+                   option(value="Cultural and ethnic studies") Cultural and ethnic studies
+                   option(value="Divinity") Divinity
+                   option(value="Earth sciences") Earth sciences
+                   option(value="Economics") Economics
+                   option(value="Education") Education
+                   option(value="Engineering") Engineering
+                   option(value="Environmental studies and Forestry") Environmental studies and Forestry
+                   option(value="Family and consumer science") Family and consumer science
+                   option(value="Gender and sexuality studies") Gender and sexuality studies
+                   option(value="Geography") Geography
+                   option(value="Healthcare science") Healthcare science
+                   option(value="History") History
+                   option(value="Human physical performance and recreation*") Human physical performance and recreation*
+                   option(value="Journalism, media studies and communication") Journalism, media studies and communication
+                   option(value="Law") Law
+                   option(value="Library and museum studies") Library and museum studies
+                   option(value="Life sciences") Life sciences
+                   option(value="Linguistics") Linguistics
+                   option(value="Literature") Literature
+                   option(value="Logic") Logic
+                   option(value="Mathematics") Mathematics
+                   option(value="Military sciences") Military sciences
+                   option(value="Performing arts") Performing arts
+                   option(value="Philosophy") Philosophy
+                   option(value="Physics") Physics
+                   option(value="Political science") Political science
+                   option(value="Psychology") Psychology
+                   option(value="Public administration") Public administration
+                   option(value="Religion") Religion
+                   option(value="Social work") Social work
+                   option(value="Sociology") Sociology
+                   option(value="Space sciences") Space sciences
+                   option(value="Statistics") Statistics
+                   option(value="Systems science") Systems science
+                   option(value="Transportation") Transportation
+                   option(value="Visual arts") Visual arts
+             br
+             label Undergrad School
+             .form-group
+                 input.form-control(type='text', name="undergradschool", placeholder='Undergrad School', ng-model='teacherProfile.undergradschool', ng-minlength='3', ng-maxlength='65', ng-focus)
+             div(ng-show!="form.undergradschool.$dirty && !form.undergradschool.$focused")
+               div(ng-show="form.undergradschool.$invalid")
+                 span(ng-show="form.undergradschool.$error.minlength")
+                   | School name is too short.
+                 span(ng-show="form.undergradschool.$error.maxlength")
+                   | School name is too big.
+             br
+             label Undergrad Year
+             .form-group
+                 input.form-control(type='text', name="undergradyear", placeholder='Undergrad Year', ng-model='teacherProfile.undergradyear', ng-minlength='4', ng-maxlength='4', ng-focus)
+             div(ng-show!="form.undergradyear.$dirty && !form.undergradyear.$focused")
+               div(ng-show="form.undergradyear.$invalid")
+                 span(ng-show="form.undergradyear.$error.minlength")
+                   | Invalid Year
+                 span(ng-show="form.undergradyear.$error.maxlength")
+                   | Invalid Year
+             br
+             label Graduate Area
+             .form-group
+                 select(name="gradarea", ng-model='teacherProfile.gradarea')
+                   option(value="None") None
+                   option(value="Agriculture") Agriculture
+                   option(value="Anthropology") Anthropology
+                   option(value="Archaeology") Archaeology
+                   option(value="Architecture and Design") Architecture and Design
+                   option(value="Area studies") Area studies
+                   option(value="Business") Business
+                   option(value="Chemistry") Chemistry
+                   option(value="Computer sciences") Computer sciences
+                   option(value="Cultural and ethnic studies") Cultural and ethnic studies
+                   option(value="Divinity") Divinity
+                   option(value="Earth sciences") Earth sciences
+                   option(value="Economics") Economics
+                   option(value="Education") Education
+                   option(value="Engineering") Engineering
+                   option(value="Environmental studies and Forestry") Environmental studies and Forestry
+                   option(value="Family and consumer science") Family and consumer science
+                   option(value="Gender and sexuality studies") Gender and sexuality studies
+                   option(value="Geography") Geography
+                   option(value="Healthcare science") Healthcare science
+                   option(value="History") History
+                   option(value="Human physical performance and recreation*") Human physical performance and recreation*
+                   option(value="Journalism, media studies and communication") Journalism, media studies and communication
+                   option(value="Law") Law
+                   option(value="Library and museum studies") Library and museum studies
+                   option(value="Life sciences") Life sciences
+                   option(value="Linguistics") Linguistics
+                   option(value="Literature") Literature
+                   option(value="Logic") Logic
+                   option(value="Mathematics") Mathematics
+                   option(value="Military sciences") Military sciences
+                   option(value="Performing arts") Performing arts
+                   option(value="Philosophy") Philosophy
+                   option(value="Physics") Physics
+                   option(value="Political science") Political science
+                   option(value="Psychology") Psychology
+                   option(value="Public administration") Public administration
+                   option(value="Religion") Religion
+                   option(value="Social work") Social work
+                   option(value="Sociology") Sociology
+                   option(value="Space sciences") Space sciences
+                   option(value="Statistics") Statistics
+                   option(value="Systems science") Systems science
+                   option(value="Transportation") Transportation
+                   option(value="Visual arts") Visual arts
+             br
+             label Graduate School
+             .form-group
+                 input.form-control(type='text', name="gradschool", placeholder='Undergrad School', ng-model='teacherProfile.gradschool', ng-minlength='3', ng-maxlength='65', ng-focus)
+             div(ng-show!="form.gradschool.$dirty && !form.gradschool.$focused")
+               div(ng-show="form.gradschool.$invalid")
+                 span(ng-show="form.gradschool.$error.minlength")
+                   | School name is too short.
+                 span(ng-show="form.gradschool.$error.maxlength")
+                   | School name is too big.
+             br
+             label Graduate Year
+             .form-group
+                 input.form-control(type='text', name="gradyear", placeholder='Graduate Year', ng-model='teacherProfile.gradyear', ng-minlength='4', ng-maxlength='4', ng-focus)
+             div(ng-show!="form.gradyear.$dirty && !form.gradyear.$focused")
+               div(ng-show="form.gradyear.$invalid")
+                 span(ng-show="form.gradyear.$error.minlength")
+                   | Invalid Year
+                 span(ng-show="form.gradyear.$error.maxlength")
+                   | Invalid Year
+             br
+             label PhD Area
+             .form-group
+                 input.form-control(type='text', name="phdarea", placeholder='PhD Area', ng-model='teacherProfile.phdarea', ng-minlength='3', ng-focus)
+             div(ng-show!="form.phdarea.$dirty && !form.phdarea.$focused")
+               div(ng-show="form.phdarea.$invalid")
+                 span(ng-show="form.phdarea.$error.minlength")
+                   | Invalid area.
+             br
+             label PhD School
+             .form-group
+                 input.form-control(type='text', name="phdschool", placeholder='PhD School', ng-model='teacherProfile.phdschool', ng-minlength='3', ng-maxlength='65', ng-focus)
+             div(ng-show!="form.phdschool.$dirty && !form.phdschool.$focused")
+               div(ng-show="form.phdschool.$invalid")
+                 span(ng-show="form.phdschool.$error.minlength")
+                   | School name is too short.
+                 span(ng-show="form.phdschool.$error.maxlength")
+                   | School name is too big.
+             br
+             label PhD Year
+             .form-group
+                 input.form-control(type='text', name="phdyear", placeholder='PhD Year', ng-model='teacherProfile.phdyear', ng-minlength='4', ng-maxlength='4', ng-focus)
+             div(ng-show!="form.phdyear.$dirty && !form.phdyear.$focused")
+               div(ng-show="form.phdyear.$invalid")
+                 span(ng-show="form.phdyear.$error.minlength")
+                   | Invalid Year
+                 span(ng-show="form.phdyear.$error.maxlength")
+                   | Invalid Year
+             br
+             button.btn.btn-default(type='submit', ng-disabled="form.$invalid || isUnchanged(user)", class='action') Save
+             &nbsp;
+             button.btn.btn-primary(type="reset", ng-click="reset()", ng-disabled="isUnchanged(user)") Reset
+        if(studentProfile)
+         div(ng-controller='editStudentController', ng-init='studentProfile= #{JSON.stringify(studentProfile)}')
+          div(ng-show='!isSelected()')
+            h3 Username : #{user.username}
+            table(width="750px", border='0', bordercolor='#000000', cellspacing='0', cellpadding='18')
+             tr
+               td(width='25%')
+                 b First Name
+               td
+                 | {{studentProfile.studentname.firstname}}
+             tr
+               td(width='25%')
+                 b Last Name
+               td
+                 | {{studentProfile.studentname.lastname}}
+             tr
+               td(width='25%')
+                 b Degree
+               td
+                 | {{studentProfile.degree}}
+             tr
+               td(width='25%')
+                 b Batch
+               td
+                 | {{studentProfile.batch}}
+          br
+          button.btn.btn-default(ng-click='editToggle()') {{editButton}}
+          br
+          div(ng-show='isSelected()')
+            form(role='form', style='max-width: 470px;', novalidate, name='form', class='css-form', ng-submit='processForm()')
+             br
+             label First Name *
+             .form-group
+                 input.form-control(type='text', name="fname", placeholder='First Name', ng-model='studentProfile.studentname.firstname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
+             div(ng-show!="form.fname.$dirty && !form.fname.$focused")
+               div(ng-show="form.fname.$invalid")
+                 span(ng-show="form.fname.$error.required")
+                   | Enter the first name.
+                 span(ng-show="form.fname.$error.minlength")
+                   | First name is too short.
+                 span(ng-show="form.fname.$error.maxlength")
+                   | First name is too big.
+             br
+             label Last Name *
+             .form-group
+                 input.form-control(type='text', name="lname", placeholder='Last Name', ng-model='studentProfile.studentname.lastname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
+             div(ng-show!="form.lname.$dirty && !form.lname.$focused")
+               div(ng-show="form.lname.$invalid")
+                 span(ng-show="form.lname.$error.required")
+                   | Enter the last name.
+                 span(ng-show="form.lname.$error.minlength")
+                   | Last name is too short.
+                 span(ng-show="form.lname.$error.maxlength")
+                   | Last name is too big.
+             br
+             label Batch
+             .form-group
+                 input.form-control(type='text', name="batch", placeholder='2014', ng-model='studentProfile.batch', ng-minlength='4', ng-maxlength='4', ng-focus)
+             div(ng-show!="form.batch.$dirty && !form.batch.$focused")
+               div(ng-show="form.batch.$invalid")
+                 span(ng-show="form.batch.$error.required")
+                   | Enter the batch year.
+                 span(ng-show="form.batch.$error.minlength")
+                   | Invalid Year
+                 span(ng-show="form.batch.$error.maxlength")
+                   | Invalid Year
+             br
+             label Degree
+             .form-group
+                 input.form-control(type='text', name="degree", placeholder='BS or MS', ng-model='studentProfile.degree', ng-minlength='1', ng-focus)
+             div(ng-show!="form.degree.$dirty && !form.degree.$focused")
+               div(ng-show="form.degree.$invalid")
+                 span(ng-show="form.degree.$error.required")
+                   | Enter the Degree. Write NONE if not applicable.
+                 span(ng-show="form.degree.$error.minlength")
+                   | Invalid Degree
+             br
+             button.btn.btn-default(type='submit', ng-disabled="form.$invalid || isUnchanged(user)", class='action') Save
+             &nbsp;
+             button.btn.btn-primary(type="reset", ng-click="reset()", ng-disabled="isUnchanged(user)") Reset
+        if(adminProfile)
+         div(ng-controller='editAdminController', ng-init='adminProfile= #{JSON.stringify(adminProfile)}')
+          div(ng-show='!isSelected()')
+            h3 Username : #{user.username}
+            table(width="750px", border='0', bordercolor='#000000', cellspacing='0', cellpadding='18')
+             tr
+               td(width='25%')
+                 b First Name
+               td
+                 | {{adminProfile.adminname.firstname}}
+             tr
+               td(width='25%')
+                 b Last Name
+               td
+                 | {{adminProfile.adminname.lastname}}
+          br
+          button.btn.btn-default(ng-click='editToggle()') {{editButton}}
+          br
+          div(ng-show='isSelected()')
+            form(role='form', style='max-width: 470px;', novalidate, name='form', class='css-form', ng-submit='processForm()')
+             br
+             label First Name *
+             .form-group
+                 input.form-control(type='text', name="fname", placeholder='First Name', ng-model='adminProfile.adminname.firstname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
+             div(ng-show!="form.fname.$dirty && !form.fname.$focused")
+               div(ng-show="form.fname.$invalid")
+                 span(ng-show="form.fname.$error.required")
+                   | Enter the first name.
+                 span(ng-show="form.fname.$error.minlength")
+                   | First name is too short.
+                 span(ng-show="form.fname.$error.maxlength")
+                   | First name is too big.
+             br
+             label Last Name *
+             .form-group
+                 input.form-control(type='text', name="lname", placeholder='Last Name', ng-model='adminProfile.adminname.lastname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
+             div(ng-show!="form.lname.$dirty && !form.lname.$focused")
+               div(ng-show="form.lname.$invalid")
+                 span(ng-show="form.lname.$error.required")
+                   | Enter the last name.
+                 span(ng-show="form.lname.$error.minlength")
+                   | Last name is too short.
+                 span(ng-show="form.lname.$error.maxlength")
+                   | Last name is too big.
+             br
+             button.btn.btn-default(type='submit', ng-disabled="form.$invalid || isUnchanged(user)", class='action') Save
+             &nbsp;
+             button.btn.btn-primary(type="reset", ng-click="reset()", ng-disabled="isUnchanged(user)") Reset
+        if(parentProfile)
+         div(ng-controller='editParentController', ng-init='parentProfile= #{JSON.stringify(parentProfile)}')
+          div(ng-show='!isSelected()')
+            h3 Username : #{user.username}
+            table(width="750px", border='0', bordercolor='#000000', cellspacing='0', cellpadding='18')
+             tr
+               td(width='25%')
+                 b First Name
+               td
+                 | {{parentProfile.parentname.firstname}}
+             tr
+               td(width='25%')
+                 b Last Name
+               td
+                 | {{parentProfile.parentname.lastname}}
+          br
+          button.btn.btn-default(ng-click='editToggle()') {{editButton}}
+          br
+          div(ng-show='isSelected()')
+            form(role='form', style='max-width: 470px;', novalidate, name='form', class='css-form', ng-submit='processForm()')
+             br
+             label First Name *
+             .form-group
+                 input.form-control(type='text', name="fname", placeholder='First Name', ng-model='parentProfile.parentname.firstname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
+             div(ng-show!="form.fname.$dirty && !form.fname.$focused")
+               div(ng-show="form.fname.$invalid")
+                 span(ng-show="form.fname.$error.required")
+                   | Enter the first name.
+                 span(ng-show="form.fname.$error.minlength")
+                   | First name is too short.
+                 span(ng-show="form.fname.$error.maxlength")
+                   | First name is too big.
+             br
+             label Last Name *
+             .form-group
+                 input.form-control(type='text', name="lname", placeholder='Last Name', ng-model='parentProfile.parentname.lastname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
+             div(ng-show!="form.lname.$dirty && !form.lname.$focused")
+               div(ng-show="form.lname.$invalid")
+                 span(ng-show="form.lname.$error.required")
+                   | Enter the last name.
+                 span(ng-show="form.lname.$error.minlength")
+                   | Last name is too short.
+                 span(ng-show="form.lname.$error.maxlength")
+                   | Last name is too big.
+             br
+             button.btn.btn-default(type='submit', ng-disabled="form.$invalid || isUnchanged(user)", class='action') Save
+             &nbsp;
+             button.btn.btn-primary(type="reset", ng-click="reset()", ng-disabled="isUnchanged(user)") Reset
+           br
+ .fullBodyPane
+    .sidePane
+     if(user)
+      #sidePanebox
+        p You are logged in as 
+         br
+         b
+           | #{role}
+      br
+      if(user.picture)
+        img(src='/userimage'+user.picture, width='110px', height='140px')
+      else
+        img(src='/images/displaypic.png', width='110px', height='140px')
+      br
+      if(teacherProfile)
+        b
+          | #{teacherProfile.teachername.firstname} #{teacherProfile.teachername.lastname}
+        br
+        a(href='/myteacherprofile')
+          | View Profile
+      if(studentProfile)
+        b
+          | #{studentProfile.studentname.firstname} #{studentProfile.studentname.lastname}
+        br
+        a(href='/mystudentprofile')
+          | View Profile
+      if(adminProfile)
+        b
+          | #{adminProfile.adminname.firstname} #{adminProfile.adminname.lastname}
+        br
+        a(href='/myadminprofile')
+          | View Profile
+      if(parentProfile)
+        b
+          | #{parentProfile.parentname.firstname} #{parentProfile.parentname.lastname}
+        br
+        a(href='/myparentprofile')
+          | View Profile
+        br
+        br

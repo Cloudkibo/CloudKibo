@@ -1,0 +1,23 @@
+extends header
+
+block bodycontent
+  .container
+    h1 Upload File
+    p.lead Browse for the file to upload
+    br
+    form(action="/upload", method="post", enctype="multipart/form-data")
+      input(type="file", name="fileUploaded")
+      br
+      p.confirm
+        label        
+          input(type="checkbox", name="privatecheckbox")
+          = " Make it Public"
+      br
+      button.btn.btn-default(type='submit') Submit
+      &nbsp;
+      a(href='/')
+        button.btn.btn-primary(type="button") Cancel
+    br
+    h4= info
+
+

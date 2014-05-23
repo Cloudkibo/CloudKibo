@@ -1,0 +1,872 @@
+extends header
+
+block append head
+  //script(src='https://cdn.firebase.com/js/client/1.0.6/firebase.js')
+
+block bodycontent
+ body(ng-controller='HomeController', ng-init='user=#{JSON.stringify(user)}')
+  div(ng-init='teacher=#{JSON.stringify(teacherprofile)}')
+   .fullBodyPane(ng-init='student=#{JSON.stringify(studentprofile)}')
+      if (user)
+        div(ng-show='testingDefined()', class='well well-lg modalBox')
+          .animate-show(ng-show='!userNameDone', ng-init='uniqueusername=#{JSON.stringify(user.username)}')
+            h3 Identify yourself with a unique kiboname (username)
+            br
+            form(role='form', ng-submit='sendUniqueUserName()')
+              .form-group
+                input.form-control(type='text', name="username", placeholder='Enter Username (kiboname)', required, ng-model='uniqueusername')
+              small E.g. &nbsp;&nbsp;michael2014, &nbsp;&nbsp;arain90, &nbsp;&nbsp;sojharo
+              br
+              br
+              h4 Your Unique KiboName: {{uniqueusername}}
+              br
+              alert(ng-repeat='alert in uniqueNamealerts', type='alert.type', close='closeuniqueNameAlert($index)') {{alert.msg}}
+              br
+              b Note: 
+              | Your kiboname will be used by others to call you.
+              br
+              if(user.hash)
+                b Whatever username (kiboname) you choose, it will be used to log in henceforth. Be CAREFUL!!
+              div(style='text-align:right;')
+                button.btn.btn-default(type='submit') Save
+          .animate-show(ng-show='userNameDone')
+            h3 Checking Browser Compatibility
+            br
+            ul
+              li
+                div(ng-show='supportedBrowser')
+                  | Your browser supports WebRTC.
+                div(ng-show='!supportedBrowser')
+                  b Your browser does not support WebRTC.
+              li
+                div(ng-show='hasDeviceAccess()')
+                  | You have access to your Video and Audio input devices.
+                div(ng-show='!hasDeviceAccess()')
+                  b You do not have access to your Video and Audio input devices.
+            br
+            center
+              video(id='testvideo', autoplay='true', muted='true', width='160', height='120')
+            br
+            br
+            b Note: 
+            | Latest version of Google Chrome is recommended.
+            div(style='text-align:right;')
+              button.btn.btn-default(ng-click='ReadyToGo()') I'm Ready
+        div(ng-show='isMeetingSelected()', class='well well-lg animate-show modalBox')
+          label Name your Meeting Room
+          input.form-control(type='text', ng-model='meetingroom')
+          br
+          br
+          label Meeting Room Link to share with participants
+          br
+          input.form-control(type='text', disabled, value='https://wwww.cloudkibo.com/meeting/{{meetingroom}}')
+          br
+          center
+            a(href='https://www.cloudkibo.com/meeting/{{meetingroom}}', target='_blank')
+              h4 Join My Meeting Room
+          br
+          br
+          div(style='text-align:right;')
+            button.btn.btn-default(ng-click='openMeeting()') Hide Me!
+        div(ng-show='isCallSelected()', class='well well-lg animate-show modalBox')
+          div(style='width:40%;')
+            div(ng-show='isUserNameSearchSelected()', class='well well-lg')
+              form(role='form', ng-submit='searchUserName()', novalidate, name='form5', class='css-form')
+                .form-group
+                  label Type the person's kiboname (username) to make a call
+                  input.form-control(type='text', name="username", placeholder='Enter Username (kiboname)', required, ng-model='search.searchusername')
+                a(ng-href='#', ng-click='switchSearchOption()')
+                  small Call using email
+                div(style='text-align:right;')
+                  button.btn.btn-default(type='submit', ng-disabled="form5.$invalid") Call
+            div(ng-show='!isUserNameSearchSelected()', class='well well-lg')
+              form(role='form', ng-submit='searchEmail()', novalidate, name='form4', class='css-form')
+                .form-group
+                  label Type the person's email address to make a call
+                  input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='search.searchemail')
+                div(ng-show="form4.email.$dirty && !form4.email.$focused")
+                  div(ng-show="form4.email.$invalid")
+                    span(ng-show="form4.email.$error.required")
+                      | Enter the email address.
+                    span(ng-show="form4.email.$error.email")
+                      | This is not a valid email address.
+                a(ng-href='#', ng-click='switchSearchOption()')
+                  small Call using username
+                div(style='text-align:right;')
+                  button.btn.btn-default(type='submit', ng-disabled="form4.$invalid") Call
+            br
+            div(class='well well-lg animate-show', ng-show='userFound == null')
+              b User, you are trying to call is not registered on CloudKibo
+              br
+              a(ng-href='#', ng-click='openInvite()')
+                small Invite to CloudKibo
+          div(style='text-align:right;')
+            button.btn.btn-default(ng-click='openCall()') Hide Me!
+        div(ng-show='isInviteSelected()', class='well well-lg animate-show modalBox')
+          div
+            #inviteEmailBox(class='well well-lg')
+              h4 Invite your friend to CloudKibo
+              br
+              form(role='form', method="post", style='max-width: 300px;', novalidate, name='form6', class='css-form', ng-submit='emailInvite()')
+                .form-group
+                  input.form-control(type='email', name="email", placeholder='Enter Recipient\'s Email Address', required, ng-model='inviteemail.recipientEmail')
+                div(ng-show="form6.email.$dirty && !form6.email.$focused")
+                  div(ng-show="form6.email.$invalid")
+                    span(ng-show="form6.email.$error.required")
+                      | Enter the email address.
+                    span(ng-show="form6.email.$error.email")
+                      | This is not a valid email address.
+                br
+                label Optional Message
+                .form-group
+                  textarea.form-control(rows=8, cols=40, name="smessage", ng-model='inviteemail.shortmessage', ng-focus)
+                br
+                div(style='text-align:right;')
+                  button.btn.btn-default(type='submit', ng-disabled="form.$invalid") Invite
+              br
+              alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
+            div(style='text-align:right;')
+              button.btn.btn-default(ng-click='openInvite()') Hide Me!
+        div(ng-show='isSettingsSelected()', class='well well-lg  animate-show modalBox')
+          div
+            tabset(justified='true')
+              tab(heading='Profile', class='animate-show')
+                div(class='well well-lg')
+                  #profileLeft
+                    form(role='form', novalidate, name='form', class='css-form', enctype='multipart/form-data', ng-submit='updateProfile()')
+                      h4 My Profile
+                      br
+                      label Unique KiboName
+                      input.form-control(type='text', name="username", ng-model='user.username', disabled)
+                      br
+                      #profileItemLeft
+                        label First Name
+                        input.form-control(type='text', name="firstname", ng-model='user.firstname')
+                      #profileItemRight
+                        label Last Name
+                        input.form-control(type='text', name="lastname", ng-model='user.lastname')
+                      br
+                      #profileItemLeft
+                        label Email Address
+                        input.form-control(type='text', name="email", ng-model='user.email', disabled)
+                      #profileItemRight
+                        label Phone
+                        input.form-control(type='text', name="phone", ng-model='user.phone')
+                      br
+                      #profileItemLeft
+                        label City
+                        input.form-control(type='text', name="city", ng-model='user.city')
+                      #profileItemRight
+                        label State
+                        input.form-control(type='text', name="state", ng-model='user.state')
+                      br
+                      label Country
+                      .form-group
+                          select.form-control(name="country", ng-model='user.country', required)
+                            option(value="Afghanistan") Afghanistan
+                            option(value="Albania") Albania
+                            option(value="Algeria") Algeria
+                            option(value="Andorra") Andorra
+                            option(value="Antigua and Barbuda") Antigua and Barbuda
+                            option(value="Argentina") Argentina
+                            option(value="Armenia") Armenia
+                            option(value="Aruba") Aruba
+                            option(value="Australia") Australia
+                            option(value="Austria") Austria
+                            option(value="Azerbaijan") Azerbaijan
+                            option(value="Bahamas") Bahamas
+                            option(value="Bahrain") Bahrain
+                            option(value="Bangladesh") Bangladesh
+                            option(value="Barbados") Barbados
+                            option(value="Belarus") Belarus
+                            option(value="Belgium") Belgium
+                            option(value="Belize") Belize
+                            option(value="Benin") Benin
+                            option(value="Bhutan") Bhutan
+                            option(value="Bolivia") Bolivia
+                            option(value="Bosnia and Herzegovina") Bosnia and Herzegovina
+                            option(value="Botswana") Botswana
+                            option(value="Brazil") Brazil
+                            option(value="Brunei") Brunei
+                            option(value="Bulgaria") Bulgaria
+                            option(value="Burkina Faso") Burkina Faso
+                            option(value="Burundi") Burundi
+                            option(value="Cambodia") Cambodia
+                            option(value="Cameroon") Cameroon
+                            option(value="Canada") Canada
+                            option(value="Cape Verde") Cape Verde
+                            option(value="Central African Republic") Central African Republic
+                            option(value="Chad") Chad
+                            option(value="Chile") Chile
+                            option(value="China") China
+                            option(value="Colombia") Colombia
+                            option(value="Comoros") Comoros
+                            option(value="Democratic Republic of the Congo") Democratic Republic of the Congo
+                            option(value="Republic of the Congo") Republic of the Congo
+                            option(value="Costa Rica") Costa Rica
+                            option(value="C&ocirc;te d'Ivoire") C&ocirc;te d'Ivoire
+                            option(value="Croatia") Croatia
+                            option(value="Cuba") Cuba
+                            option(value="Cyprus") Cyprus
+                            option(value="Czech Republic") Czech Republic
+                            option(value="Denmark") Denmark
+                            option(value="Djibouti") Djibouti
+                            option(value="Dominica") Dominica
+                            option(value="Dominican Republic") Dominican Republic
+                            option(value="East Timor") East Timor
+                            option(value="Ecuador") Ecuador
+                            option(value="Egypt") Egypt
+                            option(value="El Salvador") El Salvador
+                            option(value="Equatorial Guinea") Equatorial Guinea
+                            option(value="Eritrea") Eritrea
+                            option(value="Estonia") Estonia
+                            option(value="Ethiopia") Ethiopia
+                            option(value="Fiji") Fiji
+                            option(value="Finland") Finland
+                            option(value="France") France
+                            option(value="Gabon") Gabon
+                            option(value="Gambia") Gambia
+                            option(value="Georgia") Georgia
+                            option(value="Germany") Germany
+                            option(value="Gibraltar") Gibraltar
+                            option(value="Ghana") Ghana
+                            option(value="Greece") Greece
+                            option(value="Grenada") Grenada
+                            option(value="Guatemala") Guatemala
+                            option(value="Guinea") Guinea
+                            option(value="Guinea-Bissau") Guinea-Bissau
+                            option(value="Guyana") Guyana
+                            option(value="Haiti") Haiti
+                            option(value="Honduras") Honduras
+                            option(value="Hungary") Hungary
+                            option(value="Iceland") Iceland
+                            option(value="India") India
+                            option(value="Indonesia") Indonesia
+                            option(value="Iran") Iran
+                            option(value="Iraq") Iraq
+                            option(value="Ireland") Ireland
+                            option(value="Israel") Israel
+                            option(value="Italy") Italy
+                            option(value="Jamaica") Jamaica
+                            option(value="Japan") Japan
+                            option(value="Jordan") Jordan
+                            option(value="Kazakhstan") Kazakhstan
+                            option(value="Kenya") Kenya
+                            option(value="Kiribati") Kiribati
+                            option(value="North Korea") North Korea
+                            option(value="South Korea") South Korea
+                            option(value="Kuwait") Kuwait
+                            option(value="Kyrgyzstan") Kyrgyzstan
+                            option(value="Laos") Laos
+                            option(value="Latvia") Latvia
+                            option(value="Lebanon") Lebanon
+                            option(value="Lesotho") Lesotho
+                            option(value="Liberia") Liberia
+                            option(value="Libya") Libya
+                            option(value="Liechtenstein") Liechtenstein
+                            option(value="Lithuania") Lithuania
+                            option(value="Luxembourg") Luxembourg
+                            option(value="Macedonia") Macedonia
+                            option(value="Madagascar") Madagascar
+                            option(value="Malawi") Malawi
+                            option(value="Malaysia") Malaysia
+                            option(value="Maldives") Maldives
+                            option(value="Mali") Mali
+                            option(value="Malta") Malta
+                            option(value="Marshall Islands") Marshall Islands
+                            option(value="Mauritania") Mauritania
+                            option(value="Mauritius") Mauritius
+                            option(value="Mexico") Mexico
+                            option(value="Micronesia") Micronesia
+                            option(value="Moldova") Moldova
+                            option(value="Monaco") Monaco
+                            option(value="Mongolia") Mongolia
+                            option(value="Montenegro") Montenegro
+                            option(value="Morocco") Morocco
+                            option(value="Mozambique") Mozambique
+                            option(value="Myanmar") Myanmar
+                            option(value="Namibia") Namibia
+                            option(value="Nauru") Nauru
+                            option(value="Nepal") Nepal
+                            option(value="Netherlands") Netherlands
+                            option(value="Netherlands Antilles") Netherlands Antilles
+                            option(value="New Zealand") New Zealand
+                            option(value="Nicaragua") Nicaragua
+                            option(value="Niger") Niger
+                            option(value="Nigeria") Nigeria
+                            option(value="Norway") Norway
+                            option(value="Oman") Oman
+                            option(value="Pakistan", selected) Pakistan
+                            option(value="Palau") Palau
+                            option(value="Palestine") Palestine
+                            option(value="Panama") Panama
+                            option(value="Papua New Guinea") Papua New Guinea
+                            option(value="Paraguay") Paraguay
+                            option(value="Peru") Peru
+                            option(value="Philippines") Philippines
+                            option(value="Poland") Poland
+                            option(value="Portugal") Portugal
+                            option(value="Qatar") Qatar
+                            option(value="Romania") Romania
+                            option(value="Russia") Russia
+                            option(value="Rwanda") Rwanda
+                            option(value="Saint Kitts and Nevis") Saint Kitts and Nevis
+                            option(value="Saint Lucia") Saint Lucia
+                            option(value="Saint Vincent and the Grenadines") Saint Vincent and the Grenadines
+                            option(value="Samoa") Samoa
+                            option(value="San Marino") San Marino
+                            option(value="Sao Tome and Principe") Sao Tome and Principe
+                            option(value="Saudi Arabia") Saudi Arabia
+                            option(value="Senegal") Senegal
+                            option(value="Serbia") Serbia
+                            option(value="Seychelles") Seychelles
+                            option(value="Sierra Leone") Sierra Leone
+                            option(value="Singapore") Singapore
+                            option(value="Slovakia") Slovakia
+                            option(value="Slovenia") Slovenia
+                            option(value="Solomon Islands") Solomon Islands
+                            option(value="Somalia") Somalia
+                            option(value="South Africa") South Africa
+                            option(value="Spain") Spain
+                            option(value="Sri Lanka") Sri Lanka
+                            option(value="Sudan") Sudan
+                            option(value="Suriname") Suriname
+                            option(value="Swaziland") Swaziland
+                            option(value="Sweden") Sweden
+                            option(value="Switzerland") Switzerland
+                            option(value="Syria") Syria
+                            option(value="Taiwan") Taiwan
+                            option(value="Tajikistan") Tajikistan
+                            option(value="Tanzania") Tanzania
+                            option(value="Thailand") Thailand
+                            option(value="Togo") Togo
+                            option(value="Tonga") Tonga
+                            option(value="Trinidad and Tobago") Trinidad and Tobago
+                            option(value="Tunisia") Tunisia
+                            option(value="Turkey") Turkey
+                            option(value="Turkmenistan") Turkmenistan
+                            option(value="Tuvalu") Tuvalu
+                            option(value="Uganda") Uganda
+                            option(value="Ukraine") Ukraine
+                            option(value="United Arab Emirates") United Arab Emirates
+                            option(value="United Kingdom") United Kingdom
+                            option(value="United States") United States
+                            option(value="Uruguay") Uruguay
+                            option(value="Uzbekistan") Uzbekistan
+                            option(value="Vanuatu") Vanuatu
+                            option(value="Vatican City") Vatican City
+                            option(value="Venezuela") Venezuela
+                            option(value="Vietnam") Vietnam
+                            option(value="Yemen") Yemen
+                            option(value="Zambia") Zambia
+                            option(value="Zimbabwe") Zimbabwe
+                      br
+                      div(ng-show = 'user.isStudent')
+                        h4 My Student Profile
+                        br
+                        #profileItemLeft
+                          label Degree
+                          input.form-control(type='text', name="degree", ng-model='student.degree', placeholder='BS')
+                        #profileItemRight
+                          label Batch
+                          input.form-control(type='text', name="batch", ng-model='student.batch', placeholder='2014')
+                      br
+                      div(ng-show = 'user.isTeacher')
+                        h4 My Teacher Profile
+                        br
+                        label Undergrad Area
+                        .form-group
+                            select.form-control(name="undergradarea", ng-model='teacher.undergradarea')
+                              option(value="None") None
+                              option(value="Agriculture") Agriculture
+                              option(value="Anthropology") Anthropology
+                              option(value="Archaeology") Archaeology
+                              option(value="Architecture and Design") Architecture and Design
+                              option(value="Area studies") Area studies
+                              option(value="Business") Business
+                              option(value="Chemistry") Chemistry
+                              option(value="Computer sciences") Computer sciences
+                              option(value="Cultural and ethnic studies") Cultural and ethnic studies
+                              option(value="Divinity") Divinity
+                              option(value="Earth sciences") Earth sciences
+                              option(value="Economics") Economics
+                              option(value="Education") Education
+                              option(value="Engineering") Engineering
+                              option(value="Environmental studies and Forestry") Environmental studies and Forestry
+                              option(value="Family and consumer science") Family and consumer science
+                              option(value="Gender and sexuality studies") Gender and sexuality studies
+                              option(value="Geography") Geography
+                              option(value="Healthcare science") Healthcare science
+                              option(value="History") History
+                              option(value="Human physical performance and recreation*") Human physical performance and recreation*
+                              option(value="Journalism, media studies and communication") Journalism, media studies and communication
+                              option(value="Law") Law
+                              option(value="Library and museum studies") Library and museum studies
+                              option(value="Life sciences") Life sciences
+                              option(value="Linguistics") Linguistics
+                              option(value="Literature") Literature
+                              option(value="Logic") Logic
+                              option(value="Mathematics") Mathematics
+                              option(value="Military sciences") Military sciences
+                              option(value="Performing arts") Performing arts
+                              option(value="Philosophy") Philosophy
+                              option(value="Physics") Physics
+                              option(value="Political science") Political science
+                              option(value="Psychology") Psychology
+                              option(value="Public administration") Public administration
+                              option(value="Religion") Religion
+                              option(value="Social work") Social work
+                              option(value="Sociology") Sociology
+                              option(value="Space sciences") Space sciences
+                              option(value="Statistics") Statistics
+                              option(value="Systems science") Systems science
+                              option(value="Transportation") Transportation
+                              option(value="Visual arts") Visual arts
+                        #profileItemLeft
+                         label Undergrad School
+                         .form-group
+                            input.form-control(type='text', name="undergradschool", placeholder='Undergrad School', ng-model='teacher.undergradschool', ng-minlength='3', ng-maxlength='65', ng-focus)
+                         div(ng-show!="form.undergradschool.$dirty && !form.undergradschool.$focused")
+                          div(ng-show="form.undergradschool.$invalid")
+                            span(ng-show="form.undergradschool.$error.minlength")
+                              | School name is too short.
+                            span(ng-show="form.undergradschool.$error.maxlength")
+                              | School name is too big.
+                        #profileItemRight
+                         label Undergrad Year
+                         .form-group
+                            input.form-control(type='text', name="undergradyear", placeholder='Undergrad Year', ng-model='teacher.undergradyear', ng-minlength='4', ng-maxlength='4', ng-focus)
+                         div(ng-show!="form.undergradyear.$dirty && !form.undergradyear.$focused")
+                          div(ng-show="form.undergradyear.$invalid")
+                            span(ng-show="form.undergradyear.$error.minlength")
+                              | Invalid Year
+                            span(ng-show="form.undergradyear.$error.maxlength")
+                              | Invalid Year
+                        label Graduate Area
+                        .form-group
+                            select.form-control(name="gradarea", ng-model='teacher.gradarea')
+                              option(value="None") None
+                              option(value="Agriculture") Agriculture
+                              option(value="Anthropology") Anthropology
+                              option(value="Archaeology") Archaeology
+                              option(value="Architecture and Design") Architecture and Design
+                              option(value="Area studies") Area studies
+                              option(value="Business") Business
+                              option(value="Chemistry") Chemistry
+                              option(value="Computer sciences") Computer sciences
+                              option(value="Cultural and ethnic studies") Cultural and ethnic studies
+                              option(value="Divinity") Divinity
+                              option(value="Earth sciences") Earth sciences
+                              option(value="Economics") Economics
+                              option(value="Education") Education
+                              option(value="Engineering") Engineering
+                              option(value="Environmental studies and Forestry") Environmental studies and Forestry
+                              option(value="Family and consumer science") Family and consumer science
+                              option(value="Gender and sexuality studies") Gender and sexuality studies
+                              option(value="Geography") Geography
+                              option(value="Healthcare science") Healthcare science
+                              option(value="History") History
+                              option(value="Human physical performance and recreation*") Human physical performance and recreation*
+                              option(value="Journalism, media studies and communication") Journalism, media studies and communication
+                              option(value="Law") Law
+                              option(value="Library and museum studies") Library and museum studies
+                              option(value="Life sciences") Life sciences
+                              option(value="Linguistics") Linguistics
+                              option(value="Literature") Literature
+                              option(value="Logic") Logic
+                              option(value="Mathematics") Mathematics
+                              option(value="Military sciences") Military sciences
+                              option(value="Performing arts") Performing arts
+                              option(value="Philosophy") Philosophy
+                              option(value="Physics") Physics
+                              option(value="Political science") Political science
+                              option(value="Psychology") Psychology
+                              option(value="Public administration") Public administration
+                              option(value="Religion") Religion
+                              option(value="Social work") Social work
+                              option(value="Sociology") Sociology
+                              option(value="Space sciences") Space sciences
+                              option(value="Statistics") Statistics
+                              option(value="Systems science") Systems science
+                              option(value="Transportation") Transportation
+                              option(value="Visual arts") Visual arts
+                        #profileItemLeft
+                         label Graduate School
+                         .form-group
+                            input.form-control(type='text', name="gradschool", placeholder='Undergrad School', ng-model='teacher.gradschool', ng-minlength='3', ng-maxlength='65', ng-focus)
+                         div(ng-show!="form.gradschool.$dirty && !form.gradschool.$focused")
+                          div(ng-show="form.gradschool.$invalid")
+                            span(ng-show="form.gradschool.$error.minlength")
+                              | School name is too short.
+                            span(ng-show="form.gradschool.$error.maxlength")
+                              | School name is too big.
+                        #profileItemRight
+                         label Graduate Year
+                         .form-group
+                            input.form-control(type='text', name="gradyear", placeholder='Graduate Year', ng-model='teacher.gradyear', ng-minlength='4', ng-maxlength='4', ng-focus)
+                         div(ng-show!="form.gradyear.$dirty && !form.gradyear.$focused")
+                          div(ng-show="form.gradyear.$invalid")
+                            span(ng-show="form.gradyear.$error.minlength")
+                              | Invalid Year
+                            span(ng-show="form.gradyear.$error.maxlength")
+                              | Invalid Year
+                        label PhD Area
+                        .form-group
+                            input.form-control(type='text', name="phdarea", placeholder='PhD Area', ng-model='teacher.phdarea', ng-minlength='3', ng-focus)
+                        div(ng-show!="form.phdarea.$dirty && !form.phdarea.$focused")
+                          div(ng-show="form.phdarea.$invalid")
+                            span(ng-show="form.phdarea.$error.minlength")
+                              | Invalid area.
+                        #profileItemLeft
+                         label PhD School
+                         .form-group
+                            input.form-control(type='text', name="phdschool", placeholder='PhD School', ng-model='teacher.phdschool', ng-minlength='3', ng-maxlength='65', ng-focus)
+                         div(ng-show!="form.phdschool.$dirty && !form.phdschool.$focused")
+                          div(ng-show="form.phdschool.$invalid")
+                            span(ng-show="form.phdschool.$error.minlength")
+                              | School name is too short.
+                            span(ng-show="form.phdschool.$error.maxlength")
+                              | School name is too big.
+                        #profileItemRight
+                         label PhD Year
+                         .form-group
+                            input.form-control(type='text', name="phdyear", placeholder='PhD Year', ng-model='teacher.phdyear', ng-minlength='4', ng-maxlength='4', ng-focus)
+                         div(ng-show!="form.phdyear.$dirty && !form.phdyear.$focused")
+                          div(ng-show="form.phdyear.$invalid")
+                            span(ng-show="form.phdyear.$error.minlength")
+                              | Invalid Year
+                            span(ng-show="form.phdyear.$error.maxlength")
+                              | Invalid Year
+                      br
+                      div(style='text-align:right;')
+                        button.btn.btn-default(type='submit') Save
+                  #profileRight
+                      #pictureBox
+                       if(user.picture)
+                         img(src='/userimage'+user.picture, width='152px', height='152px', class='img-frame')
+                         br
+                         br
+                         form(role='form', method="post", action='/updateProfilePic', style='max-width: 300px;', enctype='multipart/form-data', novalidate, name='form8', class='css-form')
+                           input(type="file", name="fileUploaded", required, ng-model="myfile.file")
+                           br
+                           br
+                           button.btn.btn-submit(type='submit', ng-disabled="form8.$invalid || isUnchanged(myfile)") Update Photo
+                       else if(user.fb_photo)
+                         img(src='{{user.fb_photo}}', width='152px', height='152px', class='img-frame')
+                       else if(user.google_photo)
+                         img(src='{{user.google_photo}}', width='152px', height='152px', class='img-frame')
+                       else if(user.windows_photo)
+                         img(src='{{user.windows_photo}}', width='152px', height='152px', class='img-frame')
+                       else
+                         img(src='/images/displayPic.jpg', width='152px', height='152px', class='img-frame')
+                         br
+                         br
+                         form(role='form', method="post", action='/updateProfilePic', style='max-width: 300px;', enctype='multipart/form-data', novalidate, name='form8', class='css-form')
+                           input(type="file", name="fileUploaded", required, ng-model="user.file")
+                           br
+                           br
+                           button.btn.btn-submit(type='submit', ng-disabled="form8.$invalid || isUnchanged(myfile)") Update Photo
+              tab(heading='Support Test', class='animate-show')
+                div(class='well well-lg')
+                  h3 Checking Browser Compatibility
+                  br
+                  ul
+                    li
+                      div(ng-show='supportedBrowser')
+                        | Your browser supports WebRTC.
+                      div(ng-show='!supportedBrowser')
+                        b Your browser does not support WebRTC.
+                    li
+                      div(ng-show='hasDeviceAccess()')
+                        | You have access to your Video and Audio input devices.
+                      div(ng-show='!hasDeviceAccess()')
+                        b You do not have access to your Video and Audio input devices.
+                  br
+                  center
+                    video(id='testvideo2', autoplay='true', muted='true', width='160', class='videoelement')
+                  br
+                  div(style='text-align:center;')
+                    button.btn.btn-default(ng-click='checkDeviceAccess()') Test Audio/Video
+                  br
+                  br
+                  b Note: 
+                  | Latest version of Google Chrome is recommended.
+          div(style='text-align:right;')
+            button.btn.btn-default(ng-click='openSettings()') Hide Me!
+        #fullBodyLightCoverShow(ng-show='isCallSelected() || isInviteSelected() || isSettingsSelected() || isMeetingSelected()')
+        div(ng-show='!testingDefined()', class='animate-show')
+          .mainBodyPane
+            div(ng-show='isThereIncomingCall()', class='well well-lg animate-show')
+              div(style='text-align:center;')
+                h3 {{IncomingCallStatement | uppercase}}
+                b
+                  div(ng-show='isItRinging()')
+                    a(ng-href='#', ng-click='AcceptCall()')
+                      | Attend Call
+                    | &nbsp; | &nbsp;
+                    a(ng-href='#', ng-click='RejectCall()')
+                      | Reject Call
+            div(ng-show='isThereOutgoingCall()', class='well well-lg animate-show')
+              div(class='well well-lg animate-show', ng-show='userFound')
+                #pictureBox
+                  div(ng-show='userFound.picture')
+                    img(src='/userimage{{userFound.picture}}', width='62px', height='62px', class='img-frame')
+                  div(ng-show='userFound.fb_photo')
+                    img(src='{{userFound.fb_photo}}', width='62px', height='62px', class='img-frame')
+                  div(ng-show='userFound.google_photo')
+                    img(src='{{userFound.google_photo}}', width='62px', height='62px', class='img-frame')
+                  div(ng-show='userFound.windows_photo')
+                    img(src='{{userFound.windows_photo}}', width='62px', height='62px', class='img-frame')
+                  div(ng-show='!userFound.windows_photo && !userFound.google_photo && !userFound.fb_photo && !userFound.picture')
+                    img(src='/images/displayPic.jpg', width='62px', height='62px', class='img-frame')
+                #userNameBox
+                  h4 {{userFound.firstname}} {{userFound.lastname}}
+                  b KiboName: 
+                  i {{userFound.username}}
+                  br
+              div(style='text-align:center;')
+                h3 {{OutgoingCallStatement | uppercase}}
+                div(ng-show='isOtherSideRinging()')
+                  a(href='#', ng-click='StopOutgoingCall()')
+                    | Stop Calling
+            div(ng-show='!isEducationViewOn()')
+             div(class='well well-lg animate-show', ng-show='!localCameraCaptured()')
+              br
+              br
+              br
+              center
+                div(ng-show='isConnected()', class='animate-show')
+                  br
+                  h4 To call someone you know
+                  br
+                  a(ng-href='#', ng-click='openCall()')
+                    h4 Click Here. 
+                  br
+                  h4 You should know kiboname or email address of the callee.
+                  br
+                  br
+                  br
+                  br
+              div(ng-show = '!sentFeedback() && hasCallEnded()')
+                br
+                br
+                h4 We would like your Feedback
+                br
+                form(role='form', novalidate, name='form7', class='css-form', enctype='multipart/form-data', ng-submit='feedBackForm()')
+                  table(width='100%')
+                    tr
+                      td
+                        label Audio Quality
+                      td(style='width:60%;')
+                        select.form-control(name="audio", ng-model='feedback.audio', required)
+                          option(value="1") 1 (Very Bad)
+                          option(value="2") 2 (Bad)
+                          option(value="3") 3 (Good)
+                          option(value="4") 4 (Best)
+                          option(value="5") 5 (Awesome)
+                    tr
+                      td
+                        label Video Quality
+                      td(style='width:60%;')
+                        select.form-control(name="video", ng-model='feedback.video', required)
+                          option(value="1") 1 (Very Bad)
+                          option(value="2") 2 (Bad)
+                          option(value="3") 3 (Good)
+                          option(value="4") 4 (Best)
+                          option(value="5") 5 (Awesome)
+                    tr
+                      td
+                        label Screen Quality
+                      td(style='width:60%;')
+                        select.form-control(name="screen", ng-model='feedback.screen', required)
+                          option(value="1") 1 (Very Bad)
+                          option(value="2") 2 (Bad)
+                          option(value="3") 3 (Good)
+                          option(value="4") 4 (Best)
+                          option(value="5") 5 (Awesome)
+                    tr
+                      td
+                        label File Transfer Quality
+                      td(style='width:60%;')
+                        select.form-control(name="filetransfer", ng-model='feedback.filetransfer', required)
+                          option(value="1") 1 (Very Bad)
+                          option(value="2") 2 (Bad)
+                          option(value="3") 3 (Good)
+                          option(value="4") 4 (Best)
+                          option(value="5") 5 (Awesome)
+                    tr(colspan='2')
+                      td
+                        label Comments
+                    tr(colspan='2')
+                      td
+                        textarea.form-control(rows=8, cols=100, name="comments", ng-model='feedback.comments', ng-focus)
+                    tr(colspan='2')
+                      td
+                        button.btn.btn-default(type='submit', , ng-disabled="form7.$invalid") Send Feedback
+                        button(ng-click='ignoreFeedBack()') Ignore
+             div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
+              div(style='text-align: center;')
+                video(id='remotevideo', autoplay='true', width='560', class='videoelement', controls)
+                br
+                //button(ng-click='enterVideoFullScreen()') Full Screen
+                br
+                div(ng-show='hasOtherPartySharedScreen()')
+                  video(id='remotevideoscreen', autoplay='true', width='560', class='videoelement', controls)
+                  br
+                  //button(ng-click='enterVideoScreenFullScreen()') Full Screen
+                br
+                button(ng-click='endCall()') End Call
+                br
+                alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
+                br
+            div(ng-show='isEducationViewOn()')
+             div(ng-show='!user.isStudent && !user.isTeacher', class='well well-lg')
+               center
+                 h3 Welcome to CloudKibo School
+                 h4 A Collaborative Learning System
+                 br
+                 br
+                 b JOIN NOW AS
+                 br
+                 br
+                 div(class='divButton')
+                   a(href='#', ng-click='joinAsStudent()')
+                     h3 Student
+                 div(class='divButton')
+                   a(href='#', ng-click='joinAsTeacher()')
+                     h3 Teacher
+               br
+               br
+               p(style='font-size: 15px;'). With CloudKibo Virtual School you can
+               ul(style='font-size: 15px;')
+                 li Enroll Courses
+                 li Teach Courses
+                 li Find New Study Partners
+                 li Do Group Study using CloudKibo Video Conference
+                 li Store your Documents and Files
+             div(ng-show='user.isStudent || user.isTeacher')
+               #cssmenu-header-wrapper
+                   #cssmenu
+                    ul
+                      if(page == '/')
+                        li.active
+                          a(href='#dashboard')
+                            span
+                              | Dashboard
+                      else
+                        li
+                          a(href='#dashboard')
+                            span
+                              | Dashboard
+                      if(page == '/createcourse')
+                          li.active(ng-show='user.isTeacher')
+                            a(href='#createcourse')
+                              span
+                                | Create Course
+                      else
+                          li(ng-show='user.isTeacher')
+                            a(href='#createcourse')
+                              span
+                                | Create Course
+                      if(page == '/mycourses')
+                          li.active(ng-show='user.isTeacher')
+                            a(href='#mycourses')
+                              span
+                                | My Courses
+                      else
+                          li(ng-show='user.isTeacher')
+                            a(href='#mycourses')
+                              span
+                                | My Courses
+                      if(page == '/mycourses')
+                          li.active(ng-show='user.isStudent')
+                            a(href='#mycourses')
+                              span
+                                | My Courses
+                      else
+                          li(ng-show='user.isStudent')
+                            a(href='#mycourses')
+                              span
+                                | My Courses
+                      if(page == '/myfiles')
+                        li.active
+                          a(href='#myfiles')
+                            span
+                              | My Files
+                      else
+                        li
+                          a(href='#myfiles')
+                            span
+                              | My Files
+                      if(page == '/searchcourses')
+                          li.active(ng-show='user.isStudent')
+                            a(href='#searchcourses')
+                              span
+                                | Search Courses
+                      else
+                          li(ng-show='user.isStudent')
+                            a(href='#searchcourses')
+                              span
+                                | Search Courses
+               br
+               div(ng-view, class='MainNgView')
+          .sidePane
+            div(ng-show='!isEducationViewOn()', style='text-align:center;')
+                div(ng-show='!user.isStudent && !user.isTeacher')
+                  a(href='#', ng-click='openEducationView()', class='divButtonSwitch')
+                    b Join CloudKibo School
+                div(ng-show='user.isStudent || user.isTeacher')
+                  a(href='#dashboard', ng-click='openEducationView()', class='divButtonSwitch')
+                    b CloudKibo School
+            div(ng-show='isEducationViewOn()', style='text-align:center;')
+                a(href='#', ng-click='openEducationView()', class='divButtonSwitch')
+                  b CloudKibo Talk
+            br
+            div(class='well well-lg')
+              #pictureBox
+                if(user.picture)
+                  img(src='/userimage'+user.picture, width='62px', height='62px', class='img-frame')
+                else if(user.fb_photo)
+                  img(src='{{user.fb_photo}}', width='62px', height='62px', class='img-frame')
+                else if(user.google_photo)
+                  img(src='{{user.google_photo}}', width='62px', height='62px', class='img-frame')
+                else if(user.windows_photo)
+                  img(src='{{user.windows_photo}}', width='62px', height='62px', class='img-frame')
+                else
+                  img(src='/images/displayPic.jpg', width='62px', height='62px', class='img-frame')
+              #userNameBox
+                h4 {{user.firstname}} {{user.lastname}}
+                b KiboName: 
+                i {{user.username}}
+            div(ng-show='localCameraCaptured()', class='well well-lg animate-show')
+              div(style='text-align:center;')
+                video(id='localvideo', autoplay='true', muted='true', width='160', class='videoelement')
+                br
+                div(ng-show='isLocalScreenShared()')
+                  video(id='localvideoscreen', autoplay='true', muted='true', width='160', class='videoelement')
+                br
+                button(ng-click='showScreen()') {{showScreenText}}
+              br
+              br
+              label Send File
+              input(id='file', type='file')
+              br
+              div(id='0')
+              div(id='filelist_cointainer')
+              br
+              div(id='chatBox', scroll-if)
+                .chatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
+                  | {{userMessage}}
+              br
+              form
+                input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
+                button(ng-click='sendData()') Send
+            br
+      else
+        br
+  #footer
+    | CloudKibo &copy; (Beta Version)
+    br
+    | All Rights Reserved
+    br
+    | Contact Us: support@cloudkibo.com

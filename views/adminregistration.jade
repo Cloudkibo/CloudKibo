@@ -1,0 +1,46 @@
+extends header
+
+block append head
+  //script(src='/javascripts/cloudKiboApp.js')
+  
+block bodycontent
+ #formbody()
+  h1 Admin Registration
+  br
+  form(role='form', action="/adminregister", method="post", style='max-width: 300px;', novalidate, name='form', class='css-form')
+    br
+    label Username
+    .form-group
+        input.form-control(type='text', name="username", placeholder='Enter Username', ng-model='user.username', required, ng-minlength='3', ng-maxlength='20', ng-focus)
+    div(ng-show!="form.username.$dirty && !form.name.$focused")
+      div(ng-show="form.username.$invalid")
+        span(ng-show="form.username.$error.required")
+          | Enter the username.
+        span(ng-show="form.username.$error.minlength")
+          | Username is too short.
+        span(ng-show="form.username.$error.maxlength")
+          | Username is too big.
+    br
+    label Password
+    .form-group
+        input.form-control(type='password', name="password", placeholder='Password', ng-model="user.pass", ng-minlength='6', required, ng-focus)
+    div(ng-show="form.password.$dirty")
+      div(ng-show="form.password.$invalid")
+        span(ng-show="form.password.$error.required")
+          | Enter the password.
+        span(ng-show="form.password.$error.minlength")
+          | Length of password should be greater than 6 characters.
+    br
+    br
+    button.btn.btn-default(type='submit', ng-click="update(user)", ng-disabled="form.$invalid || isUnchanged(user)") Submit
+    &nbsp;
+    button.btn.btn-primary(type="reset", ng-click="reset()", ng-disabled="isUnchanged(user)") Reset
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    &nbsp;

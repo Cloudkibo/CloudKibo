@@ -1,0 +1,33 @@
+extends header
+
+block append head
+  //script(src='/javascripts/cloudKiboApp.js')
+
+block bodycontent
+ #formbody
+  h1 Admin Login Page
+  br
+  form(role='form', action="/adminlogin",method="post", style='max-width: 300px;')
+    br
+    label Username
+    .form-group
+        input.form-control(type='text', name="username", placeholder='Enter Username')
+    br
+    label Password
+    .form-group
+        input.form-control(type='password', name="password", placeholder='Password')
+    br
+    button.btn.btn-default(type='submit') Submit
+    &nbsp;
+    a(href='/')
+      button.btn.btn-primary(type="button") Cancel
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    p. &nbsp;

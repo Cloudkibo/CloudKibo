@@ -1,0 +1,95 @@
+extends layout
+
+block content
+ body(ng-controller='MeetingController', ng-init='user=#{JSON.stringify(user)}')
+  #header-wrapper
+    #header.container
+      #logo
+        a(href="/")
+          h1= title
+      #header-menu
+        if(user)
+          ul
+            li
+              a(href='/logout')
+                | Logout
+  .fullBodyPane
+      if (user)
+          .mainBodyPane
+            div(class='well well-lg animate-show', ng-show='!localCameraCaptured()')
+              br
+              br
+              center
+                div(ng-show='isConnected()', class='animate-show')
+                  br
+                  br
+                  h3 Share the following link with Participants
+                  br
+                  h4 https://www.cloudkibo.com/meeting/{{roomname}}
+                  br
+                  br
+            div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
+              div(style='text-align: center;')
+                span
+                  video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                span(ng-show='hasPeer2Joined()')
+                  video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                span(ng-show='hasPeer3Joined()')
+                  video(id='remotevideo3', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                span(ng-show='hasPeer4Joined()')
+                  video(id='remotevideo4', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                br
+                span(ng-show='hasPeerSharedScreen()')
+                  video(id='remoteVideoScreen', autoplay='true', width='560', class='videoelement', controls='true')
+                br
+                alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
+                br
+          .sidePane
+            div(class='well well-lg')
+              #pictureBox
+                if(user.picture)
+                  img(src='/userimage'+user.picture, width='62px', height='62px', class='img-frame')
+                else if(user.fb_photo)
+                  img(src='{{user.fb_photo}}', width='62px', height='62px', class='img-frame')
+                else if(user.google_photo)
+                  img(src='{{user.google_photo}}', width='62px', height='62px', class='img-frame')
+                else if(user.windows_photo)
+                  img(src='{{user.windows_photo}}', width='62px', height='62px', class='img-frame')
+                else
+                  img(src='/images/displayPic.jpg', width='62px', height='62px', class='img-frame')
+              #userNameBox
+                h4 {{user.firstname}} {{user.lastname}}
+                b KiboName: 
+                i {{user.username}}
+            div(ng-show='localCameraCaptured()', class='well well-lg animate-show')
+              div(style='text-align:center;')
+                video(id='localvideo', autoplay='true', muted='true', width='160', class='videoelement')
+                br
+                div(ng-show='isLocalScreenShared()')
+                  video(id='localvideoscreen', autoplay='true', muted='true', width='160', class='videoelement')
+                br
+                button(id='showScreenButton', ng-click='showScreen()') {{showScreenText}}
+              br
+              br
+              label Send File
+              input(id='file', type='file')
+              br
+              div(id='0')
+              div(id='filelist_cointainer')
+              br
+              div(id='chatBox', scroll-if)
+                .chatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
+                  | {{userMessage}}
+              br
+              form
+                input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
+                button(ng-click='sendData()') Send
+            br
+      else
+        br
+  #footer
+    | CloudKibo &copy; (Beta Version)
+    br
+    | All Rights Reserved
+    br
+    | Contact Us: support@cloudkibo.com

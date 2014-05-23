@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html ng-app="cloudKiboApp">
+
+<title>CloudKibo</title>
+
+<link rel="stylesheet" href="/css/iui.css">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+
+<script src="/js/adapter.js">
+</script>
+<script src="/js/angular.min.js">
+</script>
+<script src="/js/ui-bootstrap-tpls-0.10.0.js">
+</script>
+<script src="/js/angular-animate.min.js">
+</script>
+<script src="/socket.io/socket.io.js">
+</script>
+<script src="/js/cloudKiboApp.js">
+</script>
+<script src="/js/controllers.js">
+</script>
+
+
+<div id="header-wrapper">
+<div id="header" class="container">
+<div id="logo">
+
+<h1>CloudKibo</h1>
+
+</div>
+
+<div id="header-menu">
+<ul>
+<li><a ng-href="#" ng-click="openMeeting()">Meeting</a></li>
+<li><a ng-href="#" ng-click="openCall()">Call</a></li>
+<li><a ng-href="#" ng-click="openInvite()">Invite People</a></li>
+<!--<li><a ng-href="#" ng-click="openSettings()">Settings</a></li>-->
+<!--<li><a href="/logout">Logout</a></li>-->
+
+</ul>
+</div>
+
+</div></div>
+
+<body ng-controller="HomeController" ng-init="user={&quot;_id&quot;:&quot;535814eb8bdc65e81b000001&quot;,&quot;salt&quot;:&quot;3d4d2b4d96258e7766ea0191ed924ec5b2e4be2c313eb3120e8d0574b712c7c9&quot;,&quot;hash&quot;:&quot;61877ee2ea7b1738eb098015e0c065aee10b2a17338d3dfdbd38c1faad0877dd7e608583a26c2f2b47f84ba418bc596cec04fa9abee50960e5785dd84207cc3bff1523713808cb4b2434cc105c4858ac89a07313bb7c8c9875461a1310e623bedd0f8fdbaf1d88a5968da4ee66f6a73b0b8351439ba5de1303b0fb4f3f574866e9c183b258b161427bbbfced350236d8140bc738d3badcbfab74800adcca6b00f742a428218ece890457fd8a825786c4e75215121ee439883221f68d5cf99bba37bee0cab75a4c578dea866c0795aba04f83a50cc0126af6019873ec7815c7219c787bd4385533a2fc131065eac702adb29c87600cc4cae3c709b30e449519d9f0a09fe262df2a39af9cc1d6075c8d5ed1c1426b451561675230897240c7eaa8f386c1803f79edd4c07b743a8eef5c25d3d99ac06582bf42a3b66d31127a38ded4568b644b03776c200968529f99f1f8e028a66b1a8cfc5fdd6dfbb68fab1af0fbe7091c1b3c00358a80a2d1d731f50ffde54a7cc54720d10d373c933097497b40f20a3c36e750c5e33153a6e95f09647cbbd4c2e8f992e6f395269ae1d18b6dd680a537bdacf5d80a80585fcc6d54595ea58c4aef6799f5185f565c061581781c494bce8f5e4c6ef8b909739574303ae368a3eab9b30560ba948f8d21ac3798dd027763ef829bdb9c08a3936965944f6ffc2024aa8e5b68b4874444f8f79aa4&quot;,&quot;firstname&quot;:&quot;Sarang&quot;,&quot;lastname&quot;:&quot;Mangi&quot;,&quot;username&quot;:&quot;sarang&quot;,&quot;email&quot;:&quot;just_sbm09@gmail.com&quot;,&quot;phone&quot;:&quot;03363078828&quot;,&quot;__v&quot;:0,&quot;initialTesting&quot;:&quot;Yes&quot;,&quot;date&quot;:&quot;2014-04-23T19:30:51.446Z&quot;,&quot;accountVerified&quot;:&quot;No&quot;}">
+
+<div class="fullBodyPane">
+
+<div ng-show="testingDefined()" class="well well-lg modalBox">
+<div ng-show="!userNameDone" ng-init="uniqueusername=&quot;sarang&quot;" class="animate-show">
+<h3>Identify yourself with a unique kiboname (username)</h3>
+<form role="form" ng-submit="sendUniqueUserName()">
+<div class="form-group"><input type="text" name="username" placeholder="Enter Username (kiboname)" required ng-model="uniqueusername" class="form-control"></div>
+<small>E.g. &nbsp;&nbsp;michael2014, &nbsp;&nbsp;arain90, &nbsp;&nbsp;sojharo</small><br><br>
+<h4>Your Unique KiboName: {{uniqueusername}}</h4>
+<br><alert ng-repeat="alert in uniqueNamealerts" type="alert.type" close="closeuniqueNameAlert($index)">{{alert.msg}}</alert><br><b>Note: </b>Your kiboname will be used by others to call you.<br>
+<b>Whatever username (kiboname) you choose, it will be used to log in henceforth. Be CAREFUL!!</b>
+<div style="text-align:right;"><button type="submit" class="btn btn-default">Save</button></div>
+</form></div>
+<div ng-show="userNameDone" class="animate-show">
+<h3>Checking Browser Compatibility</h3><br>
+<ul>
+<li><div ng-show="supportedBrowser">Your browser supports WebRTC.</div><div ng-show="!supportedBrowser"><b>Your browser does not support WebRTC.</b></div></li>
+<li><div ng-show="hasDeviceAccess()">You have access to your Video and Audio input devices.</div><div ng-show="!hasDeviceAccess()"><b>You do not have access to your Video and Audio input devices.</b></div></li>
+</ul><br>
+<center>
+<video id="testvideo" autoplay="true" muted="true" width="160" height="120"></video></center>
+<br><br>
+<b>Note: </b>Latest version of Google Chrome is recommended.
+<div style="text-align:right;">
+<button ng-click="ReadyToGo()" class="btn btn-default">I'm Ready</button>
+</div>
+</div>
+</div>
+
+<div ng-show="isMeetingSelected()" class="well well-lg animate-show modalBox"><label>Name your Meeting Room</label><input type="text" ng-model="meetingroom" class="form-control"><br><br><label>Meeting Room Link to share with participants</label><br><input type="text" disabled value="https://wwww.cloudkibo.com/meeting/{{meetingroom}}" class="form-control"><br><center><a href="https://www.cloudkibo.com/meeting/{{meetingroom}}" target="_blank"><h4>Join My Meeting Room</h4></a></center><br><br><div style="text-align:right;"><button ng-click="openMeeting()" class="btn btn-default">Hide Me!</button></div></div>
+
+<div ng-show="isCallSelected()" class="well well-lg animate-show modalBox"><div><div ng-show="isUserNameSearchSelected()" class="well well-lg"><form role="form" ng-submit="searchUserName()" novalidate name="form5" class="css-form"><div class="form-group"><label>Type the person's kiboname (username) to make a call</label><input type="text" name="username" placeholder="Enter Username (kiboname)" required ng-model="search.searchusername" class="form-control"></div><a ng-href="#" ng-click="switchSearchOption()"><small>Call using email</small></a><div style="text-align:right;"><button type="submit" ng-disabled="form5.$invalid" class="btn btn-default">Call</button></div></form></div><div ng-show="!isUserNameSearchSelected()" class="well well-lg"><form role="form" ng-submit="searchEmail()" novalidate name="form4" class="css-form"><div class="form-group"><label>Type the person's email address to make a call</label><input type="email" name="email" placeholder="Enter Email Address" required ng-model="search.searchemail" class="form-control"></div><div ng-show="form4.email.$dirty &amp;&amp; !form4.email.$focused"><div ng-show="form4.email.$invalid"><span ng-show="form4.email.$error.required">Enter the email address.</span><span ng-show="form4.email.$error.email">This is not a valid email address.</span></div></div><a ng-href="#" ng-click="switchSearchOption()"><small>Call using username</small></a><div style="text-align:right;"><button type="submit" ng-disabled="form4.$invalid" class="btn btn-default">Call</button></div></form></div><br><div ng-show="userFound == null" class="well well-lg animate-show"><b>User, you are trying to call is not registered on CloudKibo</b><br><a ng-href="#" ng-click="openInvite()"><small>Invite to CloudKibo</small></a></div></div><div style="text-align:right;"><button ng-click="openCall()" class="btn btn-default">Hide Me!</button></div></div>
+
+<div ng-show="isInviteSelected()" class="well well-lg animate-show modalBox"><div><div id="inviteEmailBox" class="well well-lg"><h4>Invite your friend to CloudKibo</h4><form role="form" method="post" style="max-width: 300px;" novalidate name="form6" ng-submit="emailInvite()" class="css-form"><div class="form-group"><input type="email" name="email" placeholder="Enter Recipient's Email Address" required ng-model="inviteemail.recipientEmail" class="form-control"></div><div ng-show="form6.email.$dirty &amp;&amp; !form6.email.$focused"><div ng-show="form6.email.$invalid"><span ng-show="form6.email.$error.required">Enter the email address.</span><span ng-show="form6.email.$error.email">This is not a valid email address.</span></div></div><label>Optional Message</label><div class="form-group"><textarea rows="8" cols="40" name="smessage" ng-model="inviteemail.shortmessage" ng-focus class="form-control"></textarea></div><div style="text-align:right;"><button type="submit" ng-disabled="form.$invalid" class="btn btn-default">Invite</button></div></form><alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert></div><div style="text-align:right;"><button ng-click="openInvite()" class="btn btn-default">Hide Me!</button></div></div></div>
+
+<div id="fullBodyLightCoverShow" ng-show="isCallSelected() || isInviteSelected() || isSettingsSelected() || isMeetingSelected()"></div>
+
+<div ng-show="!testingDefined()" class="animate-show">
+<div class="mainBodyPane"><div ng-show="isThereIncomingCall()" class="well well-lg animate-show"><div style="text-align:center;"><h3>{{IncomingCallStatement | uppercase}}</h3><b><div ng-show="isItRinging()"><a ng-href="#" ng-click="AcceptCall()">Attend Call</a>&nbsp; | &nbsp;<a ng-href="#" ng-click="RejectCall()">Reject Call</a></div></b></div></div><div ng-show="isThereOutgoingCall()" class="well well-lg animate-show"><div ng-show="userFound" class="well well-lg animate-show"><div id="pictureBox"><div ng-show="userFound.picture"><img src="/userimage{{userFound.picture}}" width="62px" height="62px" class="img-frame"></div><div ng-show="userFound.fb_photo"><img src="{{userFound.fb_photo}}" width="62px" height="62px" class="img-frame"></div><div ng-show="userFound.google_photo"><img src="{{userFound.google_photo}}" width="62px" height="62px" class="img-frame"></div><div ng-show="userFound.windows_photo"><img src="{{userFound.windows_photo}}" width="62px" height="62px" class="img-frame"></div><div ng-show="!userFound.windows_photo &amp;&amp; !userFound.google_photo &amp;&amp; !userFound.fb_photo &amp;&amp; !userFound.picture"><img src="/images/displayPic.jpg" width="62px" height="62px" class="img-frame"></div></div><div id="userNameBox"><h4>{{userFound.firstname}} {{userFound.lastname}}</h4><b>KiboName: </b><i>{{userFound.username}}</i><br></div></div><div style="text-align:center;"><h3>{{OutgoingCallStatement | uppercase}}</h3><div ng-show="isOtherSideRinging()"><a href="#" ng-click="StopOutgoingCall()">Stop Calling</a></div></div></div><div ng-show="!localCameraCaptured()" class="well well-lg animate-show"><br><br><br><center><div ng-show="isConnected()" class="animate-show"><br><h4>To call someone you know</h4><br><a ng-href="#" ng-click="openCall()"><h4>Click Here. </h4></a><br><h4>You should know kiboname (cloudkibo username) or email address of the callee.</h4><br><br><br><br><alert ng-repeat="alertCall in alertsCallStart" type="alert.type" close="closeAlertCallStart($index)">{{alertCall.msg}}</alert></div></center><div ng-show="!sentFeedback() &amp;&amp; hasCallEnded()"><br><br><h4>We would like your Feedback</h4><br><form role="form" novalidate name="form7" enctype="multipart/form-data" ng-submit="feedBackForm()" class="css-form"><table width="100%"><tr><td><label>Audio Quality</label></td><td style="width:60%;"><select name="audio" ng-model="feedback.audio" required class="form-control"><option value="1">1 (Very Bad)</option><option value="2">2 (Bad)</option><option value="3">3 (Good)</option><option value="4">4 (Best)</option><option value="5">5 (Awesome)</option></select></td></tr><tr><td><label>Video Quality</label></td><td style="width:60%;"><select name="video" ng-model="feedback.video" required class="form-control"><option value="1">1 (Very Bad)</option><option value="2">2 (Bad)</option><option value="3">3 (Good)</option><option value="4">4 (Best)</option><option value="5">5 (Awesome)</option></select></td></tr><tr><td><label>Screen Quality</label></td><td style="width:60%;"><select name="screen" ng-model="feedback.screen" required class="form-control"><option value="1">1 (Very Bad)</option><option value="2">2 (Bad)</option><option value="3">3 (Good)</option><option value="4">4 (Best)</option><option value="5">5 (Awesome)</option></select></td></tr><tr><td><label>File Transfer Quality</label></td><td style="width:60%;"><select name="filetransfer" ng-model="feedback.filetransfer" required class="form-control"><option value="1">1 (Very Bad)</option><option value="2">2 (Bad)</option><option value="3">3 (Good)</option><option value="4">4 (Best)</option><option value="5">5 (Awesome)</option></select></td></tr><tr colspan="2"><td><label>Comments</label></td></tr><tr colspan="2"><td><textarea rows="8" cols="100" name="comments" ng-model="feedback.comments" ng-focus class="form-control"></textarea></td></tr><tr colspan="2"><td><button type="submit" , ng-disabled="form7.$invalid" class="btn btn-default">Send Feedback</button><button ng-click="ignoreFeedBack()">Ignore</button></td></tr></table></form></div></div><div ng-show="localCameraCaptured()" class="well well-lg animate-show"><div style="text-align: center;"><video id="remotevideo" autoplay="true" width="100%"></video><br><div ng-show="hasOtherPartySharedScreen()"><video id="remotevideoscreen" autoplay="true" width="100%"></video></div><br><button ng-click="endCall()">End Call</button><br></div></div></div>
+<div class="sidePane"><div class="well well-lg"><div id="pictureBox"><img src="/images/displayPic.jpg" width="62px" height="62px" class="img-frame"></div><div id="userNameBox"><h4>{{user.firstname}} {{user.lastname}}</h4><b>KiboName: </b><i>{{user.username}}</i></div></div><div ng-show="localCameraCaptured()" class="well well-lg animate-show"><div style="text-align:center;"><button ng-click="showScreen()">{{showScreenText}}</button></div><br><br><label>Send File</label><input id="file" type="file"><br><div id="0"></div><div id="filelist_cointainer"></div><br><div id="chatBox" scroll-if><div ng-repeat="userMessage in userMessages track by $index" scroll-item class="chatMessage">{{userMessage}}</div></div><br><form><input type="text" id="dataChannelSend" ng-model="dataChannelSend" placeholder="Type Message here" autocomplete="off"><button ng-click="sendData()">Send</button></form></div><br></div></div>
+
+</div><div id="footer">CloudKibo &copy; (Limited Beta Version)<br>All Rights Reserved<br>Contact Us: support@cloudkibo.com</div></body></html>

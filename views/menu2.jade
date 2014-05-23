@@ -1,0 +1,65 @@
+                    ul
+                      if(page == '/')
+                        li.active
+                          a(href='#dashboard')
+                            span
+                              | Dashboard
+                      else
+                        li
+                          a(href='#dashboard')
+                            span
+                              | Dashboard
+                      if(role == 'Teacher')
+                        if(page == '/createcourse')
+                          li.active
+                            a(href='#createcourse')
+                              span
+                                | Create Course
+                        else
+                          li
+                            a(href='#createcourse')
+                              span
+                                | Create Course
+                      if(role == 'Teacher')
+                        if(page == '/mycourses')
+                          li.active
+                            a(href='#mycourses')
+                              span
+                                | My Courses
+                        else
+                          li
+                            a(href='#mycourses')
+                              span
+                                | My Courses
+                      if(role == 'Student')
+                        if(page == '/mycourses')
+                          li.active
+                            a(href='#mycourses')
+                              span
+                                | My Courses
+                        else
+                          li
+                            a(href='#mycourses')
+                              span
+                                | My Courses
+                      if(page == '/myfiles')
+                        li.active
+                          a(href='#myfiles')
+                            span
+                              | My Files
+                      else
+                        li
+                          a(href='#myfiles')
+                            span
+                              | My Files
+                      if(role == 'Student')
+                        if(page == '/searchcourses')
+                          li.active
+                            a(href='#searchcourses')
+                              span
+                                | Search Courses
+                        else
+                          li
+                            a(href='#searchcourses')
+                              span
+                                | Search Courses

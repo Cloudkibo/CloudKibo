@@ -1,0 +1,382 @@
+
+body {
+  margin: 0;
+  font-family: Helvetica;
+  background: #FFFFFF;
+  color: #000000;
+  -webkit-user-select: none;
+  -webkit-text-size-adjust: none;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}  
+
+/*********************************************************************************/
+/* From Previous file                                                            */
+/*********************************************************************************/
+
+
+h1
+{
+	margin: 0;
+	padding: 0;
+	font-weight: 600;
+	color: #000000;
+}
+
+h2, h3, h4, h5, h6
+{
+	font-weight: 100;
+	margin: 0;
+	padding: 0;
+	color: #000000;
+}
+
+a
+{
+	color: #2C383B;
+	text-decoration: none;
+}
+
+a:hover
+{
+	color: #000000;
+	text-decoration: bold;
+}
+
+.container
+{
+	width: auto;
+}
+
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+/*********************************************************************************/
+/* Header                                                                        */
+/*********************************************************************************/
+	
+#header-wrapper
+{
+	background: #2b2b2b;
+	width: 100%;
+	border-radius: 10px;
+}
+
+#header
+{
+	position: relative;
+	background: #2b2b2b;
+	height: 140px;
+	-webkit-border-top-left-radius: 10px;
+	-webkit-border-top-right-radius: 10px;
+	-moz-border-radius-topleft: 10px;
+	-moz-border-radius-topright: 10px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+
+
+/*********************************************************************************/
+/* Logo                                                                          */
+/*********************************************************************************/
+
+#logo
+{
+	position: absolute;
+	width: 100%;
+}
+
+#logo h1
+{
+	#display: inline-block;
+	font-size: 2.5em;
+	text-transform: uppercase;
+	font-weight: 700;
+	text-align: center;
+	color: #ED7070;
+}
+
+/*********************************************************************************/
+/* Header Menu                                                                   */
+/*********************************************************************************/
+
+#header-menu
+{
+	position: absolute;
+	right: 0;
+	left : 0;
+	top: 4.6em;
+}
+
+#header-menu ul
+{
+	#display: inline-block;
+}
+
+#header-menu li
+{
+	display: inline-block;
+	#float: center;
+	text-align: center;
+}
+
+#header-menu li a, #header-menu li span
+{
+	display: inline-block;
+	#margin-left: 0.5px;
+	padding: 1em 0.5em 0em 0.5em;
+	letter-spacing: 0.10em;
+	text-decoration: none;
+	font-size: 1em;
+	text-transform: uppercase;
+	outline: 0;
+	color: #FFF;
+}
+
+#header-menu li:hover a
+{
+	color: #FFD700;
+}
+
+#menu li.active a, #menu li.active span
+{
+}
+
+/*********************************************************************************/
+/* Body                                                                          */
+/*********************************************************************************/
+
+.sidePane
+{
+	width: 100%;
+	background: #badfef;
+	border-radius: 10px;
+}
+
+.fullBodyPane
+{
+	width: 100%;
+	border: 2px Solid black;
+}
+
+#fullBodyLightCoverShow{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background: #000;
+	z-index: 8;
+	opacity: 0.8;
+}
+
+.mainBodyPane
+{
+	width: 100%;
+	padding: 20px 20px 20px 20px;
+	border-radius: 10px;
+	background: #badfef;
+}
+
+#footer
+{
+	background: #2b2b2b;
+	width: 100%;
+	height: 80px;
+	-webkit-border-bottom-right-radius: 10px;
+	-webkit-border-bottom-left-radius: 10px;
+	-moz-border-radius-bottomright: 10px;
+	-moz-border-radius-bottomleft: 10px;
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+	text-align: center;
+	color: #FFFFFF;
+}
+
+.modalBox{
+  position: fixed;
+  width: 100%;
+  z-index: 10;
+}
+
+#inviteEmailBox
+{
+	width:auto;
+	vertical-align: top;
+}
+
+#profileLeft
+{
+	display: inline-block;
+	position: relative;
+	left: 100px;
+	width:450px;
+	#border: 1px solid;
+}
+
+#profileRight
+{
+	display: inline-block;
+	position: relative;
+	width:250px;
+	left: 200px;
+	vertical-align: top;
+	#border: 1px solid;
+}
+
+#profileItemLeft
+{
+	display: inline-block;
+	position: relative;
+	left: 0px;
+	width:200px;
+	#border: 1px solid;
+}
+
+#profileItemRight
+{
+	display: inline-block;
+	position: relative;
+	width:200px;
+	left: 50px;
+	vertical-align: top;
+	#border: 1px solid;
+}
+
+#pictureBox
+{
+	display: inline-block;
+	position: relative;
+	left: 0px;
+	width:75px;
+	text-align: center;
+}
+
+#userNameBox
+{
+	display: inline-block;
+	position: relative;
+	width:145px;
+	left: 0px;
+	vertical-align: top;
+	padding: 5px 5px 5px 5px;
+}
+
+#chatBox
+{
+	overflow : auto;
+	width : 240px;
+	height : 260px;
+	background: #22DFFF;
+	border: 2px solid;
+	#box-shadow: 10px 10px 5px #888888;
+	border-radius : 5px;
+	padding: 10px 10px 10px 10px;
+}
+
+.chatMessage
+{
+	width : 210px;
+	background : white;
+	box-shadow: 5px 5px 2.5px #888888;
+	border: 1.5px solid;
+	border-radius : 15px;
+	padding: 5px 5px 5px 5px;
+	text-align: left;
+	margin-bottom: 8px;
+}
+
+/********************************************************************************/
+/* Angular Animation                                                            */
+/********************************************************************************/
+
+.divCourseScheduleMain-Wrapper
+{
+	border:1px solid #7d6d7d;
+}
+
+.divCourseScheduleMain-Wrapper.ng-move,
+.divCourseScheduleMain-Wrapper.ng-enter,
+.divCourseScheduleMain-Wrapper.ng-leave {
+  -webkit-transition:all linear 0.5s;
+  transition:all linear 0.5s;
+}
+
+.divCourseScheduleMain-Wrapper.ng-leave.ng-leave-active,
+.divCourseScheduleMain-Wrapper.ng-move,
+.divCourseScheduleMain-Wrapper.ng-enter {
+  opacity:0;
+  max-height:0;
+}
+
+.divCourseScheduleMain-Wrapper.ng-leave,
+.divCourseScheduleMain-Wrapper.ng-move.ng-move-active,
+.divCourseScheduleMain-Wrapper.ng-enter.ng-enter-active {
+  opacity:1;
+  max-height:40px;
+}
+
+.divSearchCourse
+{
+	border:1px solid #7d6d7d;
+	background: white;
+}
+
+.divSearchCourse.ng-move,
+.divSearchCourse.ng-enter,
+.divSearchCourse.ng-leave {
+  -webkit-transition:all linear 0.5s;
+  transition:all linear 0.5s;
+}
+
+.divSearchCourse.ng-leave.ng-leave-active,
+.divSearchCourse.ng-move,
+.divSearchCourse.ng-enter {
+  opacity:0;
+  max-height:0;
+}
+
+.divSearchCourse.ng-leave,
+.divSearchCourse.ng-move.ng-move-active,
+.divSearchCourse.ng-enter.ng-enter-active {
+  opacity:1;
+  max-height:40px;
+}
+
+.animate-show {
+  -webkit-transition:all linear 0.9s;
+  transition:all linear 0.9s;
+  line-height:20px;
+  opacity:1;
+}
+
+.animate-show.ng-hide-add,
+.animate-show.ng-hide-remove {
+  display:block!important;
+}
+
+.animate-show.ng-hide {
+  line-height:20px;
+  opacity:0;
+}
+
+
+.chatMessage.ng-move,
+.chatMessage.ng-enter,
+.chatMessage.ng-leave {
+  -webkit-transition:all linear 0.5s;
+  transition:all linear 0.5s;
+}
+
+.chatMessage.ng-leave.ng-leave-active,
+.chatMessage.ng-move,
+.chatMessage.ng-enter {
+  opacity:0;
+  max-height:0;
+}
+
+.chatMessage.ng-leave,
+.chatMessage.ng-move.ng-move-active,
+.chatMessage.ng-enter.ng-enter-active {
+  opacity:1;
+  max-height:40px;
+}
+

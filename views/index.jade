@@ -1,0 +1,200 @@
+extends header
+
+block append head
+  //script(src='/javascripts/cloudKiboApp.js')
+
+block bodycontent
+ body(ng-controller='IndexController')
+  .fullBodyPane
+    .mainBodyPane
+      div(class='well well-lg')
+        if (user)
+          br
+        else
+          center
+            h4 A Complete Video Conferencing Solution for Virtual Classrooms
+            br
+            h5 No Downloads, No Plugins required
+            br
+            h5 Just Click and Go
+            br
+            //video(id='adVideo')
+            iframe(src="//player.vimeo.com/video/94386848?autoplay=1", width="500", height="279", frameborder="0", webkitallowfullscreen, mozallowfullscreen, allowfullscreen)
+          br
+          p(style='font-size: 13px;'). With CloudKibo you can do
+          ul(style='font-size: 13px;')
+            li Video Call
+            li Audio Call
+            li File Transferring (upto any size you want)
+            li Screen Sharing
+            li Instant Messaging
+            li Enroll Courses and meet new study partners
+            li Online Group Study with CloudKibo Conference Call
+    .sidePane
+      #formbody(ng-controller='LoginRegister')
+        div(ng-show='!isSelected()')
+         h4 Register using &nbsp;
+           br
+           br
+           a(href="/auth/facebook")
+             img(src='images/fb.png', width='30px', height='30px')
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+           a(href="/auth/google")
+             img(src='images/google.png', width='30px', height='30px')
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+           a(href="/auth/windowslive")
+             img(src='images/windows.png', width='30px', height='30px')
+         br
+         h4 Register with your Email
+         br
+         form(role='form', style='max-width: 300px;', novalidate, name='form', class='css-form', enctype='multipart/form-data', ng-submit='registerForm()')
+           .form-group
+               input.form-control(type='text', name="fname", placeholder='First Name', ng-model='user.fname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
+           div(ng-show!="form.fname.$dirty && !form.fname.$focused")
+             div(ng-show="form.fname.$invalid")
+               span(ng-show="form.fname.$error.required")
+                 | Enter the first name.
+               span(ng-show="form.fname.$error.minlength")
+                 | First name is too short.
+               span(ng-show="form.fname.$error.maxlength")
+                 | First name is too big.
+           br
+           .form-group
+               input.form-control(type='text', name="lname", placeholder='Last Name', ng-model='user.lname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
+           div(ng-show!="form.lname.$dirty && !form.lname.$focused")
+             div(ng-show="form.lname.$invalid")
+               span(ng-show="form.lname.$error.required")
+                 | Enter the last name.
+               span(ng-show="form.lname.$error.minlength")
+                 | Last name is too short.
+               span(ng-show="form.lname.$error.maxlength")
+                 | Last name is too big.
+           br
+           .form-group
+               input.form-control(type='text', name="username", placeholder='Enter Username (kiboname)', ng-model='user.username', required, ng-minlength='3', ng-maxlength='20', ng-focus)
+           div(ng-show!="form.username.$dirty && !form.username.$focused")
+             div(ng-show="form.username.$invalid")
+               span(ng-show="form.username.$error.required")
+                 | Enter the username.
+               span(ng-show="form.username.$error.minlength")
+                 | Username is too short.
+               span(ng-show="form.username.$error.maxlength")
+                 | Username is too big.
+           br
+           .form-group
+               input.form-control(type='password', id='password' name="password", placeholder='Password', ng-model="user.password", ng-minlength='6', required, ng-focus)
+           div(ng-show!="form.password.$dirty && !form.password.$focused")
+             div(ng-show="form.password.$invalid")
+               span(ng-show="form.password.$error.required")
+                 | Enter the password.
+               span(ng-show="form.password.$error.minlength")
+                 | Length of password should be greater than 6 characters.
+           br
+           .form-group
+               input.form-control(type='email', name="email", placeholder='Email Address', ng-model="user.email", required, ng-focus)
+           div(ng-show="form.email.$dirty && !form.email.$focused")
+             div(ng-show="form.email.$invalid")
+               span(ng-show="form.email.$error.required")
+                 | Enter your email address.
+               span(ng-show="form.email.$error.email")
+                 | This is not a valid email address.
+           br
+           .form-group
+               input.form-control(type='text', name="phoneNumber", placeholder='Phone Number', ng-model="user.phone", required, ng-focus)
+           div(ng-show="form.phoneNumber.$dirty && !form.phoneNumber.$focused")
+             div(ng-show="form.phoneNumber.$invalid")
+               span(ng-show="form.phoneNumber.$error.required")
+                 | Enter your contact number.
+               span(ng-show="form.email.$error.phoneNumber")
+                 | This is not a valid phone number.
+           br
+           div(style='text-align:right;')
+             button.btn.btn-default(type='submit', ng-disabled="form.$invalid || isUnchanged(user)") Submit
+           br
+           div(ng-show='underProgress()', style='text-align:center;')
+             img(src='images/ProgressIcon.gif', width='60px', height='60px')
+           br
+           alert(ng-repeat='alert in alertsRegister', type='alert.type', close='closeAlertRegister($index)') {{alert.msg}}
+           br
+           h5 Google Chrome is recommended
+           br
+           a(href='http://www.google.com/chrome', target='_blank')
+             img(src='images/chrome.png', width='250px', height='59px')
+        div(ng-show='isSelected()')
+         p(style='font-size: 22px;'). Login Page
+         br
+         form(role='form', method="post", style='max-width: 300px;', novalidate, name='form1', class='css-form', ng-submit='loginForm()')
+          br
+          .form-group
+              input.form-control(type='text', name="username", placeholder='Enter Username (kiboname)', ng-model='user1.username', required, ng-minlength='3', ng-maxlength='20', ng-focus)
+           div(ng-show!="form1.username.$dirty && !form1.username.$focused")
+             div(ng-show="form1.username.$invalid")
+               span(ng-show="form1.username.$error.required")
+                 | Enter the username.
+               span(ng-show="form1.username.$error.minlength")
+                 | Username is too short.
+               span(ng-show="form1.username.$error.maxlength")
+                 | Username is too big.
+          br
+          .form-group
+              input.form-control(type='password', id='password' name="password", placeholder='Password', ng-model="user1.password", ng-minlength='6', required, ng-focus)
+          div(ng-show!="form1.password.$dirty && !form1.password.$focused")
+             div(ng-show="form1.password.$invalid")
+               span(ng-show="form1.password.$error.required")
+                 | Enter the password.
+               span(ng-show="form1.password.$error.minlength")
+                 | Length of password should be greater than 6 characters.
+          br
+          div(style='text-align:right;')
+            button.btn.btn-default(type='submit', ng-disabled="form1.$invalid || isUnchanged(user1)") Submit
+          br
+          div(ng-show='underProgress()', style='text-align:center;')
+             img(src='images/ProgressIcon.gif', width='60px', height='60px')
+         br
+         alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
+         br
+         div(ng-controller='ForgotPassword')
+           a(ng-href='#', ng-click='isCollapsed = !isCollapsed')
+             | Forgot your password?
+           br
+           br
+           div(collapse="isCollapsed", class='well well-lg')
+             h4 Password Reset Options
+             br
+             div
+               div(ng-show='!sentData')
+                  form(role='form', ng-submit='save()', style='max-width: 600px;')
+                    label What is your username?
+                    .form-group
+                        input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='user3.username')
+                    button.btn.btn-default(type='submit') Submit
+                    br
+               alert(ng-repeat='alert in forgotPassAlerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
+             br
+             div
+               button.btn.btn-primary(type="button", ng-click='isCollapsed = !isCollapsed') Cancel
+         br
+         br
+         b You can also login using &nbsp;
+         br
+         br
+         a(href="/auth/facebook")
+           img(src='images/fb.png', width='30px', height='30px')
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         a(href="/auth/google")
+           img(src='images/google.png', width='30px', height='30px')
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         a(href="/auth/windowslive")
+           img(src='images/windows.png', width='30px', height='30px')
+         br
+         br
+         h5 Google Chrome is recommended
+         br
+         a(href='http://www.google.com/chrome', target='_blank')
+           img(src='images/chrome.png', width='250px', height='59px')
+  #footer
+    | CloudKibo &copy; (Beta Version)
+    br
+    | All Rights Reserved
+    br
+    | Contact Us: support@cloudkibo.com
