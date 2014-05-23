@@ -69,13 +69,8 @@ mongoose.connect('mongodb://localhost/cloudkibo');
 // routes
 require('./routes')(app);
 
-/*http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});
-*/
-
 httpapp.get('*',function(req,res){  
-    res.redirect('https://www.cloudkibo.com'+req.url)
+    res.redirect('https://www.synap3webrtc.com/'+req.url)
 });
 
 var options = {
