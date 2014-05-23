@@ -67,7 +67,7 @@ passport.deserializeUser(function(obj, done) {
 mongoose.connect('mongodb://localhost/cloudkibo');
 
 // routes
-require('./routes')(app);
+require('./routes')(httpapp);
 
 //httpapp.get('*',function(req,res){  
 //    res.redirect('https://www.synap3webrtc.com/'+req.url)
