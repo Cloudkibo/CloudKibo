@@ -98,11 +98,14 @@ angular.module('cloudKiboApp', ['angularFileUpload', 'ngAnimate', 'ui.bootstrap'
 	})
 	
 	.factory('pc_config', function(){
+		//turnserver -o -f -a -n -v -L 107.170.46.121 -u cloudkibo:cloudkibo -r kibo
 		return pc_config = {'iceServers': [createIceServer('stun:stun.l.google.com:19302', null, null),
-								createIceServer('stun:stun.anyfirewall.com:3478', null, null),
-								createIceServer('turn:turn.bistri.com:80?transport=udp', 'homeo', 'homeo'),
-								createIceServer('turn:turn.bistri.com:80?transport=tcp', 'homeo', 'homeo'),
-								createIceServer('turn:turn.anyfirewall.com:443?transport=tcp', 'webrtc', 'webrtc')
+								createIceServer('turn:107.170.46.121:3478?transport=udp', 'cloudkibo', 'cloudkibo'),
+								createIceServer('turn:107.170.46.121:3478?transport=tcp', 'cloudkibo', 'cloudkibo')
+								//createIceServer('stun:stun.anyfirewall.com:3478', null, null),
+								//createIceServer('turn:turn.bistri.com:80?transport=udp', 'homeo', 'homeo'),
+								//createIceServer('turn:turn.bistri.com:80?transport=tcp', 'homeo', 'homeo'),
+								//createIceServer('turn:turn.anyfirewall.com:443?transport=tcp', 'webrtc', 'webrtc')
                 ]};
                 /*
 				{url: 'turn:cloudkibo@162.243.217.34:3478?transport=udp', username: 'cloudkibo',

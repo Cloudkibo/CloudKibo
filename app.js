@@ -70,7 +70,7 @@ mongoose.connect('mongodb://localhost/cloudkibo');
 require('./routes')(app);
 
 httpapp.get('*',function(req,res){  
-    res.redirect('https://www.synap3webrtc.com/'+req.url)
+    res.redirect('https://www.synap3webrtc.com'+req.url)
 });
 
 var options = {
