@@ -70,13 +70,13 @@ mongoose.connect('mongodb://localhost/cloudkibo');
 require('./routes')(app);
 
 httpapp.get('*',function(req,res){  
-    res.redirect('https://www.synap3webrtc.com'+req.url)
+    res.redirect('https://www.synaps3webrtc.com'+req.url)
 });
 
 var options = {
   ca: fs.readFileSync('security/gd_bundle-g2-g1.crt'),
   key: fs.readFileSync('security/server.key'),
-  cert: fs.readFileSync('security/4b8c51ff8c772a.crt')
+  cert: fs.readFileSync('security/4846d274dcd6c.crt')
 };
 
 var server = http.createServer(httpapp)
