@@ -66,9 +66,9 @@ exports.windows = new WindowsLiveStrategy({
 );
 
 exports.facebook = new FacebookStrategy({
-    clientID: "	456637644436523",
-    clientSecret: "f46495b908b408bc8e4f5b259b18e952",
-    callbackURL: "http://www.cloudkibo.com/auth/facebook/callback"
+    clientID: "	1499615666918690",
+    clientSecret: "4e5c71c53b3880de8fe9cf2450416cda",
+    callbackURL: "http://www.synaps3webrtc.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
 	

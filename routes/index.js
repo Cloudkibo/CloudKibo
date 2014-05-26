@@ -62,7 +62,7 @@ module.exports = function (app) {
 
   app.get('/', function (req, res) {
 	  if (typeof req.user == 'undefined')
-	      res.render('index', { title: 'CloudKibo'});
+	      res.render('index', { title: 'Synaps3WebRTC'});
       else{
 		
 		res.redirect('/home');
@@ -95,7 +95,7 @@ module.exports = function (app) {
 						
 						var  teacherprofile = {};
 						
-						res.render('home', { title: 'CloudKibo', user: gotUser, role: role, studentprofile : gotStudentProfile, teacherprofile : teacherprofile });
+						res.render('home', { title: 'Synaps3WebRTC', user: gotUser, role: role, studentprofile : gotStudentProfile, teacherprofile : teacherprofile });
 						
 					})
 				}
@@ -108,13 +108,13 @@ module.exports = function (app) {
 						
 						var studentprofile = {};
 						
-						res.render('home', { title: 'CloudKibo', user: gotUser, role: role, teacherprofile : gotTeacherProfile, studentprofile : studentprofile});
+						res.render('home', { title: 'Synaps3WebRTC', user: gotUser, role: role, teacherprofile : gotTeacherProfile, studentprofile : studentprofile});
 						
 					})
 				}
 				else
 				{
-					res.render('home', { title: 'CloudKibo', user: gotUser, role: role});
+					res.render('home', { title: 'Synaps3WebRTC', user: gotUser, role: role});
 			    }
     		  
 		  })
@@ -130,7 +130,7 @@ module.exports = function (app) {
 			Account.findById(req.user._id, function (err, gotUser) {
 				if (err) return console.log(err);
 				
-				res.render('meetingroom', { title: 'CloudKibo', user: gotUser, meetingroom : req.params[0]});    		  
+				res.render('meetingroom', { title: 'Synaps3WebRTC', user: gotUser, meetingroom : req.params[0]});    		  
 		  })
 		
       }
