@@ -10,9 +10,9 @@ var Users = require('./account');
 
 
 exports.windows = new WindowsLiveStrategy({
-    clientID: "000000004C10C835",
-    clientSecret: "Nyyk7O4vZtn6ExbSJLamrtL5BtRadd96",
-    callbackURL: "http://www.cloudkibo.com/auth/windowslive/callback"
+    clientID: "000000004411C93F",
+    clientSecret: "4A00-ICRyIBDOYh640SXd5zAyDndjhIn",
+    callbackURL: "http://www.synaps3webrtc.com/auth/windowslive/callback"
   },
   function(accessToken, refreshToken, profile, done) {
 	  
