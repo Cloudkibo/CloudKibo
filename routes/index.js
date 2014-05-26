@@ -940,7 +940,7 @@ module.exports = function (app) {
 	res.redirect('/')
   })
   
-  app.get("/auth/facebook", passport.authenticate("facebook", { scope : ['basic_info', 'publish_actions',
+  app.get("/auth/facebook", passport.authenticate("facebook", { scope : ['public_profile', 'publish_actions',
    'email', 'user_photos', 'user_location', 'user_groups', 'user_friends', 'user_about_me']}));
 
   app.get("/auth/facebook/callback",
