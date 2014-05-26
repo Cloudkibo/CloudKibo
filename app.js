@@ -76,7 +76,7 @@ httpapp.get('*',function(req,res){
 var options = {
   ca: fs.readFileSync('security/gd_bundle-g2-g1.crt'),
   key: fs.readFileSync('security/server.key'),
-  cert: fs.readFileSync('security/4846d274dcd6c.crt')
+  cert: fs.readFileSync('security/467611346ca15.crt')
 };
 
 var server = http.createServer(httpapp)
