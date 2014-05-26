@@ -121,9 +121,9 @@ exports.facebook = new FacebookStrategy({
 )
 
 exports.google = new GoogleStrategy({
-    clientID: '23885365928-lhtk02c2ljokrfl0d53cba9aid4o26rj.apps.googleusercontent.com',
-    clientSecret: 'O1mECTnazsVvysBxRNmZ2hvG',
-    callbackURL: "http://www.cloudkibo.com/auth/google/callback",
+    clientID: '224432070325-gr4tterht51j1rhueo375n1hg4vr592e.apps.googleusercontent.com',
+    clientSecret: 'bvRrg4eG-aFkDbjp6gIU067K',
+    callbackURL: "http://www.synaps3webrtc.com/auth/google/callback",
     scope: 'https://www.google.com/m8/feeds https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
   },
   function(accessToken, refreshToken, profile, done) {
