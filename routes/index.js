@@ -1381,14 +1381,14 @@ module.exports = function (app) {
   app.post('/adminlogin', passport.authenticate('local'), function(req, res) {
 	  res.redirect('/superuser');
   });
-  /*
+  
   app.get('/adminregister', function(req, res) {
 	  if (typeof req.user == 'undefined') res.render('adminregistration', {title: 'CloudKibo'});
       else res.redirect('/');
   });
   
   app.post('/adminregister', superuserroutes.adminregisterPostReq);
-  */
+  
   app.get('/superuser', superuserroutes.superuser);
   
   app.get('/display/*', superuserroutes.displayuser);
