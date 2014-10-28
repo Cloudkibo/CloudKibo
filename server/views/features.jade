@@ -1,0 +1,143 @@
+extends header
+
+block append head
+  //script(src='/javascripts/cloudKiboApp.js')
+
+block bodycontent
+ .main
+   .container
+     div(class='row margin-bottom-40')
+       div(class='col-md-12 col-sm-12')
+         h1 Features
+         .content-page
+           .row
+             .col-md-7
+             
+               div(class='row margin-bottom-20')
+                 
+                 .col-md-6
+                   .service-box-v1
+                     div
+                       i(class='fa fa-globe color-grey')
+                       h2 Collaboration Made Easy
+                       p.
+                          CloudKibo is a next generation communication technology. It’s intuitive, cost effective, 
+                          and rich with functionality. It can be used both for internal and external communications. 
+                          It provides integrated and unified communication across web, voice, video, and data.
+                 
+                 .col-md-6
+                   .service-box-v1
+                     div
+                       i(class='fa fa-users color-grey')
+                       h2 A Complete Video Collaboration Solution
+                       p.
+                          CloudKibo allows you to invite multiple people to join the Web meeting. 
+                          Your participants do not need to install complex software before the meeting, 
+                          all they need to do is click on a URL and join the meeting.
+                          
+               div(class='row margin-bottom-20')
+                          
+                 .col-md-6
+                   .service-box-v1
+                     div
+                       i(class='fa fa-cloud color-grey')
+                       h2 No Downloads, No Plugins required 
+                       p.
+                          Downloading, installing, and updating plugins can be complex, error prone, and 
+                          annoying. With CloudKibo you are able to join the call straight from your browser 
+                          without any need to download and install client software. Plugins can be difficult 
+                          to deploy, debug, troubleshoot, test and maintain and may require licensing and 
+                          integration with complex, expensive technology.
+                 
+                 .col-md-6
+                   .service-box-v1
+                     div
+                       i(class='fa fa-desktop color-grey')
+                       h2 Screen Sharing
+                       p.
+                          Cloudkibo lets you share your weekly project status, share your weekly sales slides, edit 
+                          final copy before releasing your deck, collect feedback on the latest design rendering, 
+                          and makes sharing a screen easy as clicking the “Share Screen” button.
+                          
+               div(class='row margin-bottom-20')
+                 
+                 .col-md-6
+                   .service-box-v1
+                     div
+                       i(class='fa fa-share color-grey')
+                       h2 File Transfer
+                       p.
+                          Cloudkibo makes it simple for you or anyone in your call to instantly share notes,
+                          documents, videos, or any kind of files. File transfer is highly secured. All file transfers 
+                          are peer to peer with 128 Bit encryption. Current email systems normally limit your 
+                          attachments to 25MB and multiple copies of your files are left on the mail servers.
+                          
+                 .col-md-6
+                   .service-box-v1
+                     div
+                       i(class='fa fa-book color-grey')
+                       h2 CloudKibo School
+                       p.
+                          With CloudKibo School, you can enroll or create classes. Learn in a real-time
+                          classroom environment having facilities of video conferencing for devilivering
+                          lectures.
+             
+             .col-md-5
+               iframe(src="//player.vimeo.com/video/94386848?portrait=0", height='270', style='width:100%; border:0;', frameborder="0", webkitallowfullscreen, mozallowfullscreen, allowfullscreen, class='margin-bottom-10')
+             
+           div(class='row quote-v1 margin-bottom-30')
+               .col-md-9
+                 span
+                   | Make Your FREE Account Now!
+               div(class='col-md-3 text-right')
+                 a(class='btn-transparent', href='/register')
+                   i(class='fa fa-check margin-right-10')
+                   | Register
+                 
+             
+ .footer
+    .container
+      .row
+        div(class='col-md-6 col-sm-6 padding-top-10')
+          | CloudKibo &copy; (Beta Version) All Rights Reserved
+        div(class='col-md-6 col-sm-6')
+          ul(class='social-footer list-unstyled list-inline pull-right')
+                li
+                  a(href='#')
+                    i(class='fa fa-facebook')
+                li
+                  a(href='#')
+                    i(class='fa fa-google-plus')
+                li
+                  a(href='#')
+                    i(class='fa fa-linkedin')
+                li
+                  a(href='#')
+                    i(class='fa fa-twitter')
+                li
+                  a(href='#')
+                    i(class='fa fa-youtube')
+ 
+ script(src='/global/plugins/jquery-1.11.0.min.js')
+ script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
+ script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
+ script(src='/frontend/layout/scripts/back-to-top.js')
+ 
+ script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
+ script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
+ 
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
+ script(src='/frontend/pages/scripts/revo-slider-init.js')
+ 
+ script(src='/frontend/layout/scripts/layout.js')
+ 
+ script(type='text/javascript').
+        jQuery(document).ready(function() {
+            Layout.init();    
+            Layout.initOWL();
+            RevosliderInit.initRevoSlider();
+            Layout.initTwitter();
+            //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
+            //Layout.initNavScrolling(); 
+        });

@@ -1,0 +1,89 @@
+extends layout
+
+block content
+ body(ng-controller='VideoCallController')
+  .header
+    .container
+      a(class='site-logo', href='/')
+        img(src='/images/logo_small.png')
+        | #{title}
+      a(href='javascript:void(0);', class='mobi-toggler')
+        i(class='fa fa-bars')
+      div(class='header-navigation pull-right font-transform-inherit')
+              ul
+                li
+                  a(href='/')
+                    | Leave Conference
+  .fullBodyPane(class='animate-show')
+    .main
+     .container
+      div(class='row margin-bottom-40')
+       div(class='col-md-12 col-sm-12')
+        .content-page(style='background: #badfef;')
+         .row
+          div(class='')
+            div(class='well well-lg animate-show', ng-show='!localCameraCaptured()')
+              br
+              br
+              center
+                div(ng-show='isConnected()', class='animate-show')
+                  br
+                  br
+                  h3 Waiting for the other person.
+                  br
+                  h4 You can arrange/set your microphone and headphone in the mean time.
+                  br
+                  br
+            div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
+              div(style='text-align: center;')
+                span
+                  video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                br
+                alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
+                br
+ .footer
+    .container
+      .row
+        div(class='col-md-6 col-sm-6 padding-top-10')
+          | CloudKibo &copy; (Beta Version) All Rights Reserved
+        div(class='col-md-6 col-sm-6')
+          ul(class='social-footer list-unstyled list-inline pull-right')
+                li
+                  a(href='#')
+                    i(class='fa fa-facebook')
+                li
+                  a(href='#')
+                    i(class='fa fa-google-plus')
+                li
+                  a(href='#')
+                    i(class='fa fa-linkedin')
+                li
+                  a(href='#')
+                    i(class='fa fa-twitter')
+                li
+                  a(href='#')
+                    i(class='fa fa-youtube')
+ 
+ script(src='/global/plugins/jquery-1.11.0.min.js')
+ script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
+ script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
+ script(src='/frontend/layout/scripts/back-to-top.js')
+ 
+ script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
+ script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
+ 
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
+ script(src='/frontend/pages/scripts/revo-slider-init.js')
+ 
+ script(src='/frontend/layout/scripts/layout.js')
+ 
+ script(type='text/javascript').
+        jQuery(document).ready(function() {
+            Layout.init();    
+            Layout.initOWL();
+            RevosliderInit.initRevoSlider();
+            Layout.initTwitter();
+            //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
+            //Layout.initNavScrolling(); 
+        });

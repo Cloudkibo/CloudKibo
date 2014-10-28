@@ -1,0 +1,157 @@
+extends layout
+
+block content
+ body(ng-controller='MeetingController', ng-init='user=#{JSON.stringify(user)}')
+  .pre-header
+     .container
+       .row
+         div(class='col-md-6 col-sm-6 additional-shop-info')
+           ul(class='list-unstyled list-inline')
+             li
+               i(class='fa fa-phone')
+               span
+                 | 332-3800399
+             li
+               i(class='fa fa-envelope-o')
+               span
+                 | support@cloudkibo.com
+         div(class='col-md-6 col-sm-6 additional-nav')
+           ul(class='list-unstyled list-inline pull-right')
+             li
+               a(ng-href='/logout')
+                 | Log Out
+   .header
+    .container
+      a(class='site-logo', href='/')
+        img(src='/images/logo_small.png')
+        | #{title}
+      a(href='javascript:void(0);', class='mobi-toggler')
+        i(class='fa fa-bars')
+      div(class='header-navigation pull-right font-transform-inherit')
+              ul
+                li
+                  a(href='/')
+                    | Leave Conference Room
+  .fullBodyPane(class='animate-show')
+    .main
+     .container
+      div(class='row margin-bottom-40')
+       div(class='col-md-12 col-sm-12')
+        .content-page(style='background: #badfef;')
+         .row
+          .mainBodyPane(class='col-md-9 col-sm-9 blog-posts')
+            div(class='well well-lg animate-show', ng-show='!localCameraCaptured()')
+              br
+              br
+              center
+                div(ng-show='isConnected()', class='animate-show')
+                  br
+                  br
+                  h3 Share the following link with Participants
+                  br
+                  h4 https://www.cloudkibo.com/meeting/{{roomname}}
+                  br
+                  br
+            div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
+              div(style='text-align: center;')
+                span
+                  video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                span(ng-show='hasPeer2Joined()')
+                  video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                span(ng-show='hasPeer3Joined()')
+                  video(id='remotevideo3', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                span(ng-show='hasPeer4Joined()')
+                  video(id='remotevideo4', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                br
+                span(ng-show='hasPeerSharedScreen()')
+                  video(id='remoteVideoScreen', autoplay='true', width='560', class='videoelement', controls='true')
+                br
+                alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
+                br
+          .sidePane(class='col-md-3 col-sm-3 blog-sidebar')
+            div(class='well well-lg')
+              #pictureBox
+                if(user.picture)
+                  img(src='/userimage'+user.picture, width='62px', height='62px', class='img-frame')
+                else if(user.fb_photo)
+                  img(src='{{user.fb_photo}}', width='62px', height='62px', class='img-frame')
+                else if(user.google_photo)
+                  img(src='{{user.google_photo}}', width='62px', height='62px', class='img-frame')
+                else if(user.windows_photo)
+                  img(src='{{user.windows_photo}}', width='62px', height='62px', class='img-frame')
+                else
+                  img(src='/images/displayPic.jpg', width='62px', height='62px', class='img-frame')
+              #userNameBox
+                h4 {{user.firstname}} {{user.lastname}}
+                b KiboName: 
+                i {{user.username}}
+            div(ng-show='localCameraCaptured()', class='well well-lg animate-show')
+              div(style='text-align:center;')
+                video(id='localvideo', autoplay='true', muted='true', width='160', class='videoelement')
+                br
+                div(ng-show='isLocalScreenShared()')
+                  video(id='localvideoscreen', autoplay='true', muted='true', width='160', class='videoelement')
+                br
+                button(id='showScreenButton', ng-click='showScreen()') {{showScreenText}}
+              br
+              br
+              label Send File
+              input(id='file', type='file')
+              br
+              div(id='0')
+              div(id='filelist_cointainer')
+              br
+              div(id='chatBox', scroll-if)
+                .chatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
+                  | {{userMessage}}
+              br
+              form
+                input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
+                button(ng-click='sendData()') Send
+            br
+ .footer
+    .container
+      .row
+        div(class='col-md-6 col-sm-6 padding-top-10')
+          | CloudKibo &copy; (Beta Version) All Rights Reserved
+        div(class='col-md-6 col-sm-6')
+          ul(class='social-footer list-unstyled list-inline pull-right')
+                li
+                  a(href='#')
+                    i(class='fa fa-facebook')
+                li
+                  a(href='#')
+                    i(class='fa fa-google-plus')
+                li
+                  a(href='#')
+                    i(class='fa fa-linkedin')
+                li
+                  a(href='#')
+                    i(class='fa fa-twitter')
+                li
+                  a(href='#')
+                    i(class='fa fa-youtube')
+ 
+ script(src='/global/plugins/jquery-1.11.0.min.js')
+ script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
+ script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
+ script(src='/frontend/layout/scripts/back-to-top.js')
+ 
+ script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
+ script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
+ 
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
+ script(src='/frontend/pages/scripts/revo-slider-init.js')
+ 
+ script(src='/frontend/layout/scripts/layout.js')
+ 
+ script(type='text/javascript').
+        jQuery(document).ready(function() {
+            Layout.init();    
+            Layout.initOWL();
+            RevosliderInit.initRevoSlider();
+            Layout.initTwitter();
+            //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
+            //Layout.initNavScrolling(); 
+        });

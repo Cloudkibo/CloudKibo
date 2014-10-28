@@ -1,0 +1,128 @@
+extends header
+
+block append head
+  //script(src='/javascripts/cloudKiboApp.js')
+
+block bodycontent
+ div(ng-controller='LoginRegister', class='main')
+   .container
+     div(class='row margin-bottom-40')
+       div(class='sidebar col-md-3 col-sm-3')
+         ul(class='list-group margin-bottom-25 sidebar-menu')
+           li(class='list-group-item clearfix')
+             a(href='/register')
+               i(class='fa fa-angle-right')
+               | Register
+           li(class='list-group-item clearfix')
+             a(href='/forgotpassword')
+               i(class='fa fa-angle-right')
+               | Forgot Password
+       div(class='col-md-9 col-sm-9')
+         h1 Login
+         .content-form-page
+             .row
+               div(class='col-md-7 col-sm-7')
+                 form(id='open-id-a', role='form', method="post", novalidate, name='form1', class='css-form form-horizontal form-without-legend', ng-submit='loginForm()')
+                   .form-group
+                     label(for='email', class='col-lg-4 control-label') Username
+                       span(class='require')
+                         | *
+                     .col-lg-8
+                       input.form-control(id='email', type='text', name="username", placeholder='Enter Username', ng-model='user1.email', required, ng-minlength='3', ng-maxlength='20', ng-focus)
+                       span(ng-show!="form1.username.$dirty && !form1.username.$focused")
+                         span(ng-show="form1.username.$invalid")
+                           span(ng-show="form1.username.$error.required")
+                             small Enter the username.
+                           span(ng-show="form1.username.$error.minlength")
+                             small Username is too short.
+                           span(ng-show="form1.username.$error.maxlength")
+                             small Username is too big.
+                   .form-group
+                     label(for='password', class='col-lg-4 control-label') Password
+                       span(class='require')
+                         | *
+                     .col-lg-8
+                       input.form-control(id='password', type='password', name="password", placeholder='Password', ng-model="user1.password", ng-minlength='6', required, ng-focus)
+                       span(ng-show!="form1.password.$dirty && !form1.password.$focused")
+                         span(ng-show="form1.password.$invalid")
+                           span(ng-show="form1.password.$error.required")
+                             small Enter the password.
+                           span(ng-show="form1.password.$error.minlength")
+                             small Length of password should be greater than 6 characters.
+                   .row
+                     div(class='col-lg-8 col-md-offset-4 padding-left-0')
+                       a(href='/forgotpassword')
+                         | Forget Password?
+                   .row
+                     div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
+                       button.btn.btn-primary(type='submit', ng-disabled="form1.$invalid || isUnchanged(user1)") Submit
+                     div(ng-show='underProgress()', style='text-align:center;')
+                       img(src='images/ProgressIcon.gif', width='60px', height='60px')
+                   .row
+                     div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')            
+                       alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
+                   .row
+                     div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-10 padding-right-30')
+                       hr
+                       p(class='text-muted') or login using:
+                       div
+                           div
+                             a(class='btn-auth btn-facebook', href='/auth/facebook')
+                               | Login with 
+                               b Facebook
+                           br
+                           div
+                             a(class='btn-auth btn-google', href='/auth/google')
+                               | Login with 
+                               b Google+
+                           br
+                           div
+                             a(class='btn-auth btn-windows', href='/auth/windowslive')
+                               | Login with 
+                               b Microsoft
+ .footer
+    .container
+      .row
+        div(class='col-md-6 col-sm-6 padding-top-10')
+          | CloudKibo &copy; (Beta Version) All Rights Reserved
+        div(class='col-md-6 col-sm-6')
+          ul(class='social-footer list-unstyled list-inline pull-right')
+                li
+                  a(href='#')
+                    i(class='fa fa-facebook')
+                li
+                  a(href='#')
+                    i(class='fa fa-google-plus')
+                li
+                  a(href='#')
+                    i(class='fa fa-linkedin')
+                li
+                  a(href='#')
+                    i(class='fa fa-twitter')
+                li
+                  a(href='#')
+                    i(class='fa fa-youtube')
+ 
+ script(src='/global/plugins/jquery-1.11.0.min.js')
+ script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
+ script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
+ script(src='/frontend/layout/scripts/back-to-top.js')
+ 
+ script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
+ script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
+ 
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
+ script(src='/frontend/pages/scripts/revo-slider-init.js')
+ 
+ script(src='/frontend/layout/scripts/layout.js')
+ 
+ script(type='text/javascript').
+        jQuery(document).ready(function() {
+            Layout.init();    
+            Layout.initOWL();
+            RevosliderInit.initRevoSlider();
+            Layout.initTwitter();
+            //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
+            //Layout.initNavScrolling(); 
+        });

@@ -1,0 +1,72 @@
+div(ng-controller='IMController')
+  .addRequestLabelContainer
+    h5 Friend Requests
+  div
+    .contact(ng-controller='AddRequestsController', ng-repeat = 'contact in addRequestslist')
+        table(width='100%')
+          tr
+            td(width='5%')
+              #contactsPictureBox
+                img(ng-if='contact.userid.picture != null', src='/userimage{{contact.userid.picture}}', width='32px', height='32px')
+                img(ng-if='contact.userid.fb_photo != null', src='{{contact.userid.fb_photo}}', width='32px', height='32px')
+                img(ng-if='contact.userid.google_photo != null', src='{{contact.userid.google_photo}}', width='32px', height='32px')
+                img(ng-if='contact.userid.windows_photo != null', src='{{contact.userid.windows_photo}}', width='32px', height='32px')
+                img(ng-if='contact.userid.fb_photo == null && contact.userid.google_photo == null && contact.userid.windows_photo == null', src='/images/displayPic.jpg', width='32px', height='32px')
+            td(width='55%')
+              a(href='#{{contact.userid.username}}')
+                b {{contact.userid.firstname}} {{contact.userid.lastname}}
+            td(width='20%', align='center')
+              button.btn.btn-send(ng-click='approveFriendRequest($index)') Approve
+            td(width='20%', align='center')
+              button.btn.btn-send(ng-click='rejectFriendRequest($index)') Reject
+    div(ng-if='addRequestslist.length < 1')
+      center
+        b No Friend Requests
+  center
+    .animate-show(ng-show='isConnected()')
+      br
+      h4 To call someone you know
+      br
+      a(ng-href='#', ng-click='openCall()')
+        h4 Click Here. 
+      br
+      h4 You should know kiboname or email address of the callee.
+  div(ng-show='!sentFeedback() && hasCallEnded()')
+    br
+    br
+    h4 We would like your feedback
+    br
+    form.css-form(role='form', novalidate='novalidate', name='form7', enctype='multipart/form-data', ng-submit='feedBackForm()')
+      label Audio Quality
+      select.form-control(name='audio', ng-model='feedback.audio', required='required')
+        option(value='1') 1 (Very Bad)
+        option(value='2') 2 (Bad)
+        option(value='3') 3 (Good)
+        option(value='4') 4 (Best)
+        option(value='5') 5 (Awesome)
+      label Video Quality
+      select.form-control(name='video', ng-model='feedback.video', required='required')
+        option(value='1') 1 (Very Bad)
+        option(value='2') 2 (Bad)
+        option(value='3') 3 (Good)
+        option(value='4') 4 (Best)
+        option(value='5') 5 (Awesome)
+      label Screen Quality
+      select.form-control(name='screen', ng-model='feedback.screen', required='required')
+        option(value='1') 1 (Very Bad)
+        option(value='2') 2 (Bad)
+        option(value='3') 3 (Good)
+        option(value='4') 4 (Best)
+        option(value='5') 5 (Awesome)
+      label File Transfer Quality
+      select.form-control(name='filetransfer', ng-model='feedback.filetransfer', required='required')
+        option(value='1') 1 (Very Bad)
+        option(value='2') 2 (Bad)
+        option(value='3') 3 (Good)
+        option(value='4') 4 (Best)
+        option(value='5') 5 (Awesome)
+      label Comments
+      textarea.form-control(rows='8', cols='100', name='comments', ng-model='feedback.comments', ng-focus='ng-focus')
+      br
+      button.btn.btn-send(type='submit', ,=',', ng-disabled='form7.$invalid') Send Feedback
+      button.btn.btn-send(ng-click='ignoreFeedBack()') Ignore

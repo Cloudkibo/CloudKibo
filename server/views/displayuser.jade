@@ -1,0 +1,406 @@
+extends layout
+
+block content
+ if(user)
+  body(ng-init='user=#{JSON.stringify(user)}')
+   .pre-header
+     .container
+       .row
+         div(class='col-md-6 col-sm-6 additional-shop-info')
+           ul(class='list-unstyled list-inline')
+             li
+               i(class='fa fa-phone')
+               span
+                 | 332-3800399
+             li
+               i(class='fa fa-envelope-o')
+               span
+                 | support@cloudkibo.com
+         div(class='col-md-6 col-sm-6 additional-nav')
+           ul(class='list-unstyled list-inline pull-right')
+             li
+               a(ng-href='/logout')
+                 | Log Out
+   .header
+    .container
+      a(class='site-logo', href='/')
+        img(src='/images/logo_small.png')
+        | #{title}
+      a(href='javascript:void(0);', class='mobi-toggler')
+        i(class='fa fa-bars')
+      div(class='header-navigation pull-right font-transform-inherit')
+              ul
+   .container
+        br
+        h1 Administration Dashboard
+        br
+        div(style='background : #00FFFF; width: 145px; text-align : center; color : #FFFFFF')
+          a(href='/superuser')
+            h5
+              | Back to dashboard
+        br
+        if(account.picture)
+          img(src='/userimage'+account.picture, width='262px', height='262px', class='img-frame')
+        if(account.picture)
+          img(src='/userimage'+account.picture, width='262px', height='262px', class='img-frame')
+        else if(account.fb_photo)
+          img(src='{{account.fb_photo}}', width='262px', height='262px', class='img-frame')
+        else if(account.google_photo)
+          img(src='{{account.google_photo}}', width='262px', height='262px', class='img-frame')
+        else if(account.windows_photo)
+          img(src='{{account.windows_photo}}', width='262px', height='262px', class='img-frame')
+        else
+          img(src='/images/displayPic.jpg', width='262px', height='262px', class='img-frame')
+        h3 User Details
+        br
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
+         tr
+           td(width='25%')
+             | User Name
+           td
+             | #{account.username}
+         tr
+           td(width='25%')
+             | First Name
+           td
+             | #{account.firstname}
+         tr
+           td(width='25%')
+             | Last Name
+           td
+             | #{account.lastname}
+         tr
+           td(width='25%')
+             | Email
+           td
+             | #{account.email}
+         tr
+           td(width='25%')
+             | Contact No.
+           td
+             | #{account.phone}
+         tr
+           td(width='25%')
+             | Country
+           td
+             | #{account.country}
+         tr
+           td(width='25%')
+             | State
+           td
+             | #{account.state}
+         tr
+           td(width='25%')
+             | Facebook Login ID
+           td
+             if(account.fbId)
+               | #{account.fbId}
+             else
+               | None
+         tr
+           td(width='25%')
+             | Google Login ID
+           td
+             if(account.googleId)
+               | #{account.googleId}
+             else
+               | None
+         tr
+           td(width='25%')
+             | Windows Login ID
+           td
+             if(account.windowsId)
+               | #{account.windowsId}
+             else
+               | None
+         tr
+           td(width='25%')
+             | Is Teacher
+           td
+             | #{account.isTeacher}
+         tr
+           td(width='25%')
+             | Is Student
+           td
+             | #{account.isStudent}
+         tr
+           td(width='25%')
+             | Is Admin
+           td
+             | #{account.isAdmin}
+         tr
+           td(width='25%')
+             | Is Parent
+           td
+             | #{account.isParent}
+         tr
+           td(width='25%')
+             | Date of Joining
+           td
+             | #{account.date.toDateString()}
+        br
+        br
+        h3 Student Profile
+        br
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
+         if(studentProfile)
+           tr
+             td(width='25%')
+               | First Name
+             td
+               | #{studentProfile.studentname.firstname}
+           tr
+             td(width='25%')
+               | Last Name
+             td
+               | #{studentProfile.studentname.lastname}
+           tr
+             td(width='25%')
+               | Degree
+             td
+               | #{studentProfile.degree}
+           tr
+             td(width='25%')
+               | Batch
+             td
+               | #{studentProfile.batch}
+         else
+           tr
+             td
+               | No Student Profile
+        
+        br
+        h3 Teacher Profile
+        br
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
+         if(teacherProfile)
+           tr
+             td(width='25%')
+               | First Name
+             td
+               | #{teacherProfile.teachername.firstname}
+           tr
+             td(width='25%')
+               | Last Name
+             td
+               | #{teacherProfile.teachername.lastname}
+           tr
+             td(colspan='2')
+               b
+                 | Undergrad Education
+           tr
+             td(width='25%')
+               | Subject Area
+             td
+               | #{teacherProfile.undergradarea}
+           tr
+             td(width='25%')
+               | Academic Institution
+             td
+               | #{teacherProfile.undergradschool}
+           tr
+             td(width='25%')
+               | Year
+             td
+               | #{teacherProfile.undergradyear}
+           tr
+             td(colspan='2')
+               b
+                 | Graduate Education
+           tr
+             td(width='25%')
+               | Subject Area
+             td
+               | #{teacherProfile.gradarea}
+           tr
+             td(width='25%')
+               | Academic Institution
+             td
+               | #{teacherProfile.gradschool}
+           tr
+             td(width='25%')
+               | Year
+             td
+               | #{teacherProfile.gradyear}
+           tr
+             td(colspan='2')
+               b
+                 | PhD Education
+           tr
+             td(width='25%')
+               | Subject Area
+             td
+               | #{teacherProfile.phdarea}
+           tr
+             td(width='25%')
+               | Academic Institution
+             td
+               | #{teacherProfile.phdschool}
+           tr
+             td(width='25%')
+               | Year
+             td
+               | #{teacherProfile.phdyear}
+         else
+           tr
+             td
+               | No Teacher Profile
+        br
+        h3 Admin Profile
+        br
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
+         if(adminProfile)
+           tr
+             td(width='25%')
+               | First Name
+             td
+               | #{adminProfile.adminname.firstname}
+           tr
+             td(width='25%')
+               | Last Name
+             td
+               | #{adminProfile.adminname.lastname}
+         else
+           tr
+             td
+               | No Admin Profile
+        br
+        h3 Parent Profile
+        br
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
+         if(parentProfile)
+           tr
+             td(width='25%')
+               | First Name
+             td
+               | #{parentProfile.parentname.firstname}
+           tr
+             td(width='25%')
+               | Last Name
+             td
+               | #{parentProfile.parentname.lastname}
+         else
+           tr
+             td
+               | No Parent Profile
+        br
+        h3 Files Uploaded
+        br
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
+         if(files.length > 0)
+           tr
+             td(align="center")
+               i File Name
+             td(align="center")
+               i File Size
+             td(align="center")
+               i Is Private?
+             td(align="center")
+               i Upload Date
+             td(align="center", colspan=2)
+               i Options
+           for file in files
+            tr
+              td
+                | #{file.fileid.filename}
+              td
+                | #{file.fileid.size}
+              td
+                | #{file.fileid.isprivate}
+              td
+                | #{file.fileid.uploaddate.toDateString()}
+              td
+                a(href='/download'+ file.fileid.filephysicalpath, target="_blank")
+                  | Download
+              td
+                a(href='/delete'+ file.fileid.filephysicalpath)
+                  | Remove
+         else
+           tr
+             td
+               | No File Uploaded
+        br
+        h3 Courses Created
+        br
+        if(coursesCreated)
+         if(coursesCreated.length > 0)
+          | Total Courses Created : #{coursesCreated.length}
+          br
+          br
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
+         if(coursesCreated)
+          if(coursesCreated.length > 0)
+           tr
+             td
+               i Course Code
+             td
+               i Course Name
+             td
+               i Course Days
+             td
+               i Course Timings
+           for course in coursesCreated
+            tr
+              td
+                | #{course.coursecode}
+              td
+                | #{course.coursename}
+              td
+                | #{course.days}
+              td
+                | #{course.time} (#{course.timecountry} Time)
+          else
+           tr
+             td
+               | Does not teach any course
+         else
+           tr
+             td
+               | Does not teach any course
+        br
+        h3 Courses Enrolled
+        br
+        if(coursesEnrolled)
+         if(coursesEnrolled.length>0)
+          | Total Courses Enrolled : #{coursesEnrolled.length}
+          br
+          br
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
+         if(coursesEnrolled)
+          if(coursesEnrolled.length > 0)
+           tr
+             td
+               i Course Code
+             td
+               i Course Name
+             td
+               i Course Days
+             td
+               i Course Timings
+           for course in coursesEnrolled
+            tr
+              td
+                | #{course.courseid.coursecode}
+              td
+                | #{course.courseid.coursename}
+              td
+                | #{course.courseid.days}
+              td
+                | #{course.courseid.time} (#{course.courseid.timecountry} Time)
+          else
+           tr
+             td
+               | Is not enrolled in any course
+         else
+           tr
+             td
+               | Is not enrolled in any course
+        br
+        br
+        div(style='background : #00FFFF; width: 145px; text-align : center; color : #FFFFFF')
+          a(href='/superuser')
+            h5
+              | Back to dashboard
+ br
+ br
+ br

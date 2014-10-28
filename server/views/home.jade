@@ -1,0 +1,133 @@
+extends tabcontents
+
+block appbodycontent
+        div(ng-show='!testingDefined()', class='animate-show')
+         .main
+          .container
+           div(class='row margin-bottom-40')
+            div(class='col-md-12 col-sm-12')
+             .content-page(style='background: #badfef;')
+               .row
+                 .mainBodyPane(class='col-md-9 col-sm-9 blog-posts')
+                   div(style='padding: 20px 20px 20px 20px', class='well well-lg')
+                      div(ng-show='isThereIncomingCall()', class='well well-lg animate-show')
+                        div(style='text-align:center;')
+                          h3 {{IncomingCallStatement | uppercase}}
+                          b
+                            div(ng-show='isItRinging()')
+                              button.btn.btn-send(ng-click='AcceptCall()')
+                                | Attend Call
+                              | &nbsp; | &nbsp;
+                              button.btn.btn-send(ng-click='RejectCall()')
+                                | Reject Call
+                      div(ng-show='isThereOutgoingCall()', class='well well-lg animate-show')
+                        div(class='well well-lg animate-show', ng-show='userFound')
+                          #pictureBox
+                            div(ng-show='userFound.picture')
+                              img(src='/userimage{{userFound.picture}}', width='62px', height='62px', class='img-frame')
+                            div(ng-show='userFound.fb_photo')
+                              img(src='{{userFound.fb_photo}}', width='62px', height='62px', class='img-frame')
+                            div(ng-show='userFound.google_photo')
+                              img(src='{{userFound.google_photo}}', width='62px', height='62px', class='img-frame')
+                            div(ng-show='userFound.windows_photo')
+                              img(src='{{userFound.windows_photo}}', width='62px', height='62px', class='img-frame')
+                            div(ng-show='!userFound.windows_photo && !userFound.google_photo && !userFound.fb_photo && !userFound.picture')
+                              img(src='/images/displayPic.jpg', width='62px', height='62px', class='img-frame')
+                          #userNameBox
+                            h5 {{userFound.firstname}} {{userFound.lastname}}
+                            b KiboName: 
+                            i {{userFound.username}}
+                            br
+                        div(style='text-align:center;')
+                          h3 {{OutgoingCallStatement | uppercase}}
+                          div(ng-show='isOtherSideRinging()')
+                            button.btn.btn-send(ng-click='StopOutgoingCall()')
+                              | Stop Calling
+                      div(class='animate-show', ng-show='!localCameraCaptured()')
+                        div(ng-view, class='viewClass')
+                      div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
+                        div(style='text-align: center;')
+                          video(id='remotevideo', autoplay='true', width='95%', class='videoelement', controls)
+                          br
+                          //button(ng-click='enterVideoFullScreen()') Full Screen
+                          br
+                          div(ng-show='hasOtherPartySharedScreen()')
+                            video(id='remotevideoscreen', autoplay='true', width='95%', class='videoelement', controls)
+                            br
+                            //button(ng-click='enterVideoScreenFullScreen()') Full Screen
+                          br
+                          button(ng-click='endCall()') End Call
+                          br
+                          alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
+                          br
+                 .sidePane(class='col-md-3 col-sm-3 blog-sidebar')
+                   div
+                      div(class="userInfoBoxContainer")
+                        #pictureBox
+                          if(user.picture)
+                            img(src='/userimage'+user.picture, width='62px', height='62px', class='img-frame')
+                          else if(user.fb_photo)
+                            img(src='{{user.fb_photo}}', width='62px', height='62px', class='img-frame')
+                          else if(user.google_photo)
+                            img(src='{{user.google_photo}}', width='62px', height='62px', class='img-frame')
+                          else if(user.windows_photo)
+                            img(src='{{user.windows_photo}}', width='62px', height='62px', class='img-frame')
+                          else
+                            img(src='/images/displayPic.jpg', width='62px', height='62px', class='img-frame')
+                        #userNameBox
+                          h5 {{user.firstname}} {{user.lastname}}
+                          b KiboName: 
+                          i {{user.username}}
+                        #userStatusBox
+                          form.userStatusForm(role='form', ng-submit='setStatus()')
+                            input.statusTextField(type='text', ng-model='user.status', placeholder='Update your status here')
+                      div(ng-show='localCameraCaptured()', class='well well-lg animate-show')
+                        div(style='text-align:center;')
+                          video(id='localvideo', autoplay='true', muted='true', width='160', class='videoelement')
+                          br
+                          div(ng-show='isLocalScreenShared()')
+                            video(id='localvideoscreen', autoplay='true', muted='true', width='160', class='videoelement')
+                          br
+                          button(ng-click='showScreen()') {{showScreenText}}
+                        br
+                        br
+                        label Send File
+                        input(id='file', type='file')
+                        br
+                        div(id='0')
+                        div(id='filelist_cointainer')
+                        //br
+                        //div(id='chatBox', scroll-if)
+                          .chatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
+                            | {{userMessage}}
+                        //br
+                        //form
+                          input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
+                          button(ng-click='sendData()') Send
+                   .contactsPaneContainer(ng-show='!localCameraCaptured()')
+                     .contactsPane
+                       .input-icon.margin-top-10
+                         i.fa.fa-search
+                         input.form-control(type='text', placeholder='Search Contacts', ng-model='searchContactText')
+                       .contacts
+                        .contact(ng-controller='ContactsListController', ng-repeat='contact in contactslist | filter: {contactid.firstname: searchContactText}')
+                          a(href='#{{contact.contactid.username}}')
+                            table(width='100%')
+                              tr
+                                td(width='20%')
+                                  #contactsPictureBox
+                                    img(ng-if='contact.contactid.picture != null', src='/userimage{{contact.contactid.picture}}', width='32px', height='32px')
+                                    img(ng-if='contact.contactid.fb_photo != null', src='{{contact.contactid.fb_photo}}', width='32px', height='32px')
+                                    img(ng-if='contact.contactid.google_photo != null', src='{{contact.contactid.google_photo}}', width='32px', height='32px')
+                                    img(ng-if='contact.contactid.windows_photo != null', src='{{contact.contactid.windows_photo}}', width='32px', height='32px')
+                                    img(ng-if='contact.contactid.fb_photo == null && contact.contactid.google_photo == null && contact.contactid.windows_photo == null', src='/images/displayPic.jpg', width='32px', height='32px')
+                                td(width='60%')
+                                  | {{contact.contactid.firstname}} {{contact.contactid.lastname}}
+                                td(width='10%')
+                                  i.fa.fa-envelope-o(ng-show="isUnreadMessage($index)")
+                                td(width='10%')
+                                  img(src ="/images/onlinIcon.gif", height='10px', width='10px', ng-show="isOnline($index)")
+                        .addNewContactOption
+                          a(href='', ng-click='openAddContact()')
+                            i.fa.fa-plus &nbsp; &nbsp;
+                            b Add New Contact

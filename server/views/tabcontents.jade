@@ -1,0 +1,509 @@
+extends header
+
+block bodycontent
+ div
+  .fullBodyPane(class='animate-show')
+   .main
+    .container
+      div(class='row margin-bottom-40')
+        div(ng-show='testingDefined()', class='well well-lg modalBox')
+          .animate-show(ng-show='!userNameDone', ng-init='uniqueusername=#{JSON.stringify(user.username)}')
+            h3 Identify yourself with a unique KiboName
+            br
+            form(role='form', ng-submit='sendUniqueUserName()')
+              .form-group
+                input.form-control(type='text', name="username", placeholder='Enter Username (kiboname)', required, ng-model='uniqueusername')
+              small E.g. &nbsp;&nbsp;michael2014, &nbsp;&nbsp;arain90, &nbsp;&nbsp;sojharo
+              br
+              br
+              h4 Your current unique KiboName: {{uniqueusername}}
+              br
+              alert(ng-repeat='alert in uniqueNamealerts', type='alert.type', close='closeuniqueNameAlert($index)') {{alert.msg}}
+              br
+              b Note: 
+              | Your kiboname will be used by others to call you.
+              br
+              if(user.hash)
+                b Whatever kiboname (username) you choose, it will be used to log in henceforth. Be CAREFUL!!
+              div(style='text-align:right;')
+                button.btn.btn-default(type='submit') Save
+          .animate-show(ng-show='userNameDone')
+            h3 Checking Browser Compatibility
+            br
+            ul
+              li
+                div(ng-show='supportedBrowser')
+                  | Your browser supports WebRTC.
+                div(ng-show='!supportedBrowser')
+                  b Your browser does not support WebRTC.
+              li
+                div(ng-show='hasDeviceAccess()')
+                  | You have access to your Video and Audio input devices.
+                div(ng-show='!hasDeviceAccess()')
+                  b You do not have access to your Video and Audio input devices.
+            br
+            center
+              video(id='testvideo', autoplay='true', muted='true', width='160', height='120')
+            br
+            br
+            b Note: 
+            | Latest version of Google Chrome is recommended.
+            div(style='text-align:right;')
+              button.btn.btn-default(ng-click='ReadyToGo()') I'm Ready
+        div(ng-show='isMeetingSelected()', class='well well-lg animate-show modalBox')
+          label Name your Meeting Room
+          input.form-control(type='text', ng-model='meetingroom')
+          br
+          br
+          label Meeting Room Link to share with participants
+          br
+          b https://www.cloudkibo.com/meeting/{{meetingroom}}
+          br
+          br
+          center
+            a(href='https://www.cloudkibo.com/meeting/{{meetingroom}}', target='_blank')
+              h4 Join My Meeting Room
+          br
+          br
+          div(style='text-align:right;')
+            button.btn.btn-default(ng-click='openMeeting()') Hide Me!
+        div(ng-show='isCallSelected()', class='well well-lg animate-show modalBox')
+          div
+            div(ng-show='isUserNameSearchSelected()', class='well well-lg')
+              form(role='form', ng-submit='searchUserName()', novalidate, name='form5', class='css-form')
+                .form-group
+                  label Type the person's username to make a call
+                  input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='search.searchusername')
+                a(ng-href='#', ng-click='switchSearchOption()')
+                  small Call using email
+                br
+                br
+                div
+                  button.btn.btn-send(type='submit', ng-disabled="form5.$invalid") Call
+            div(ng-show='!isUserNameSearchSelected()', class='well well-lg')
+              form(role='form', ng-submit='searchEmail()', novalidate, name='form4', class='css-form')
+                .form-group
+                  label Type the person's email address to make a call
+                  input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='search.searchemail')
+                div(ng-show="form4.email.$dirty && !form4.email.$focused")
+                  div(ng-show="form4.email.$invalid")
+                    span(ng-show="form4.email.$error.required")
+                      | Enter the email address.
+                    span(ng-show="form4.email.$error.email")
+                      | This is not a valid email address.
+                a(ng-href='#', ng-click='switchSearchOption()')
+                  small Call using username
+                br
+                br
+                div
+                  button.btn.btn-send(type='submit', ng-disabled="form4.$invalid") Call
+            br
+            div(class='well well-lg animate-show', ng-show='userFound == null')
+              b User, you are trying to call is not registered on CloudKibo
+              br
+              a(ng-href='#', ng-click='openInvite()')
+                small Invite to CloudKibo
+          div(style='text-align:right;')
+            button.btn.btn-default(ng-click='openCall()') Hide Me!
+        div(ng-show='isInviteSelected()', class='well well-lg animate-show modalBox')
+          div
+            div(style='text-align:right;')
+              button.btn.btn-default(ng-click='openInvite()') Hide Me!
+            #inviteEmailBox(class='well well-lg')
+              label Invite your friend to CloudKibo
+              br
+              form(role='form', method="post", novalidate, name='form6', class='css-form', ng-submit='emailInvite()')
+                .form-group
+                  input.form-control(type='email', name="email", placeholder='Enter Recipient\'s Email Address', required, ng-model='inviteemail.recipientEmail')
+                div(ng-show="form6.email.$dirty && !form6.email.$focused")
+                  div(ng-show="form6.email.$invalid")
+                    span(ng-show="form6.email.$error.required")
+                      | Enter the email address.
+                    span(ng-show="form6.email.$error.email")
+                      | This is not a valid email address.
+                br
+                label Optional Message
+                .form-group
+                  textarea.form-control(rows=8, cols=40, name="smessage", ng-model='inviteemail.shortmessage', ng-focus)
+                br
+                div
+                  button.btn.btn-send(type='submit', ng-disabled="form.$invalid") Invite
+              br
+              alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
+        div(ng-show='isAddContactSelected()', class='well well-lg animate-show modalBox')
+          div
+            div(ng-show='isUserNameAddSelected()', class='well well-lg')
+              form(role='form', ng-submit='addUserName()', novalidate, name='form9', class='css-form')
+                .form-group
+                  label Add contact by username
+                  input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='add.searchusername')
+                a(ng-href='#', ng-click='switchAddOption()')
+                  small Add contact by email
+                br
+                br
+                div
+                  button.btn.btn-send(type='submit', ng-disabled="form9.$invalid") Add
+            div(ng-show='!isUserNameAddSelected()', class='well well-lg')
+              form(role='form', ng-submit='addEmail()', novalidate, name='form41', class='css-form')
+                .form-group
+                  label Add contact by email
+                  input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='add.searchemail')
+                div(ng-show="form41.email.$dirty && !form41.email.$focused")
+                  div(ng-show="form4.email.$invalid")
+                    span(ng-show="form41.email.$error.required")
+                      | Enter the email address.
+                    span(ng-show="form41.email.$error.email")
+                      | This is not a valid email address.
+                a(ng-href='#', ng-click='switchAddOption()')
+                  small Add contact by username
+                br
+                br
+                div
+                  button.btn.btn-send(type='submit', ng-disabled="form41.$invalid") Add
+            br
+            div(class='well well-lg animate-show', ng-show='userFound == null')
+              b User, you are trying to add is not registered on CloudKibo
+              br
+              a(ng-href='#', ng-click='openInvite()')
+                small Invite to CloudKibo
+            div(class='well well-lg animate-show', ng-show='userFound == "danger"')
+              b {{addUserResponseMessage}}
+          div(style='text-align:right;')
+            button.btn.btn-default(ng-click='openAddContact()') Hide Me!
+        div(ng-show='isSettingsSelected()', class='well well-lg  animate-show modalBox')
+          div
+            tabset(justified='true')
+              tab(heading='Profile', class='animate-show')
+                div(class='well well-lg')
+                  #profileLeft
+                    form(role='form', novalidate, name='form', class='css-form', enctype='multipart/form-data', ng-submit='updateProfile()')
+                      h4 My Profile
+                      br
+                      label Unique KiboName
+                      input.form-control(type='text', name="username", ng-model='user.username', disabled)
+                      br
+                      #profileItemLeft
+                        label First Name
+                        input.form-control(type='text', name="firstname", ng-model='user.firstname')
+                      #profileItemRight
+                        label Last Name
+                        input.form-control(type='text', name="lastname", ng-model='user.lastname')
+                      br
+                      #profileItemLeft
+                        label Email Address
+                        input.form-control(type='text', name="email", ng-model='user.email', disabled)
+                      #profileItemRight
+                        label Phone
+                        input.form-control(type='text', name="phone", ng-model='user.phone')
+                      br
+                      #profileItemLeft
+                        label City
+                        input.form-control(type='text', name="city", ng-model='user.city')
+                      #profileItemRight
+                        label State
+                        input.form-control(type='text', name="state", ng-model='user.state')
+                      br
+                      label Country
+                      .form-group
+                          select.form-control(name="country", ng-model='user.country', required)
+                            option(value="Afghanistan") Afghanistan
+                            option(value="Albania") Albania
+                            option(value="Algeria") Algeria
+                            option(value="Andorra") Andorra
+                            option(value="Antigua and Barbuda") Antigua and Barbuda
+                            option(value="Argentina") Argentina
+                            option(value="Armenia") Armenia
+                            option(value="Aruba") Aruba
+                            option(value="Australia") Australia
+                            option(value="Austria") Austria
+                            option(value="Azerbaijan") Azerbaijan
+                            option(value="Bahamas") Bahamas
+                            option(value="Bahrain") Bahrain
+                            option(value="Bangladesh") Bangladesh
+                            option(value="Barbados") Barbados
+                            option(value="Belarus") Belarus
+                            option(value="Belgium") Belgium
+                            option(value="Belize") Belize
+                            option(value="Benin") Benin
+                            option(value="Bhutan") Bhutan
+                            option(value="Bolivia") Bolivia
+                            option(value="Bosnia and Herzegovina") Bosnia and Herzegovina
+                            option(value="Botswana") Botswana
+                            option(value="Brazil") Brazil
+                            option(value="Brunei") Brunei
+                            option(value="Bulgaria") Bulgaria
+                            option(value="Burkina Faso") Burkina Faso
+                            option(value="Burundi") Burundi
+                            option(value="Cambodia") Cambodia
+                            option(value="Cameroon") Cameroon
+                            option(value="Canada") Canada
+                            option(value="Cape Verde") Cape Verde
+                            option(value="Central African Republic") Central African Republic
+                            option(value="Chad") Chad
+                            option(value="Chile") Chile
+                            option(value="China") China
+                            option(value="Colombia") Colombia
+                            option(value="Comoros") Comoros
+                            option(value="Democratic Republic of the Congo") Democratic Republic of the Congo
+                            option(value="Republic of the Congo") Republic of the Congo
+                            option(value="Costa Rica") Costa Rica
+                            option(value="C&ocirc;te d'Ivoire") C&ocirc;te d'Ivoire
+                            option(value="Croatia") Croatia
+                            option(value="Cuba") Cuba
+                            option(value="Cyprus") Cyprus
+                            option(value="Czech Republic") Czech Republic
+                            option(value="Denmark") Denmark
+                            option(value="Djibouti") Djibouti
+                            option(value="Dominica") Dominica
+                            option(value="Dominican Republic") Dominican Republic
+                            option(value="East Timor") East Timor
+                            option(value="Ecuador") Ecuador
+                            option(value="Egypt") Egypt
+                            option(value="El Salvador") El Salvador
+                            option(value="Equatorial Guinea") Equatorial Guinea
+                            option(value="Eritrea") Eritrea
+                            option(value="Estonia") Estonia
+                            option(value="Ethiopia") Ethiopia
+                            option(value="Fiji") Fiji
+                            option(value="Finland") Finland
+                            option(value="France") France
+                            option(value="Gabon") Gabon
+                            option(value="Gambia") Gambia
+                            option(value="Georgia") Georgia
+                            option(value="Germany") Germany
+                            option(value="Gibraltar") Gibraltar
+                            option(value="Ghana") Ghana
+                            option(value="Greece") Greece
+                            option(value="Grenada") Grenada
+                            option(value="Guatemala") Guatemala
+                            option(value="Guinea") Guinea
+                            option(value="Guinea-Bissau") Guinea-Bissau
+                            option(value="Guyana") Guyana
+                            option(value="Haiti") Haiti
+                            option(value="Honduras") Honduras
+                            option(value="Hungary") Hungary
+                            option(value="Iceland") Iceland
+                            option(value="India") India
+                            option(value="Indonesia") Indonesia
+                            option(value="Iran") Iran
+                            option(value="Iraq") Iraq
+                            option(value="Ireland") Ireland
+                            option(value="Israel") Israel
+                            option(value="Italy") Italy
+                            option(value="Jamaica") Jamaica
+                            option(value="Japan") Japan
+                            option(value="Jordan") Jordan
+                            option(value="Kazakhstan") Kazakhstan
+                            option(value="Kenya") Kenya
+                            option(value="Kiribati") Kiribati
+                            option(value="North Korea") North Korea
+                            option(value="South Korea") South Korea
+                            option(value="Kuwait") Kuwait
+                            option(value="Kyrgyzstan") Kyrgyzstan
+                            option(value="Laos") Laos
+                            option(value="Latvia") Latvia
+                            option(value="Lebanon") Lebanon
+                            option(value="Lesotho") Lesotho
+                            option(value="Liberia") Liberia
+                            option(value="Libya") Libya
+                            option(value="Liechtenstein") Liechtenstein
+                            option(value="Lithuania") Lithuania
+                            option(value="Luxembourg") Luxembourg
+                            option(value="Macedonia") Macedonia
+                            option(value="Madagascar") Madagascar
+                            option(value="Malawi") Malawi
+                            option(value="Malaysia") Malaysia
+                            option(value="Maldives") Maldives
+                            option(value="Mali") Mali
+                            option(value="Malta") Malta
+                            option(value="Marshall Islands") Marshall Islands
+                            option(value="Mauritania") Mauritania
+                            option(value="Mauritius") Mauritius
+                            option(value="Mexico") Mexico
+                            option(value="Micronesia") Micronesia
+                            option(value="Moldova") Moldova
+                            option(value="Monaco") Monaco
+                            option(value="Mongolia") Mongolia
+                            option(value="Montenegro") Montenegro
+                            option(value="Morocco") Morocco
+                            option(value="Mozambique") Mozambique
+                            option(value="Myanmar") Myanmar
+                            option(value="Namibia") Namibia
+                            option(value="Nauru") Nauru
+                            option(value="Nepal") Nepal
+                            option(value="Netherlands") Netherlands
+                            option(value="Netherlands Antilles") Netherlands Antilles
+                            option(value="New Zealand") New Zealand
+                            option(value="Nicaragua") Nicaragua
+                            option(value="Niger") Niger
+                            option(value="Nigeria") Nigeria
+                            option(value="Norway") Norway
+                            option(value="Oman") Oman
+                            option(value="Pakistan", selected) Pakistan
+                            option(value="Palau") Palau
+                            option(value="Palestine") Palestine
+                            option(value="Panama") Panama
+                            option(value="Papua New Guinea") Papua New Guinea
+                            option(value="Paraguay") Paraguay
+                            option(value="Peru") Peru
+                            option(value="Philippines") Philippines
+                            option(value="Poland") Poland
+                            option(value="Portugal") Portugal
+                            option(value="Qatar") Qatar
+                            option(value="Romania") Romania
+                            option(value="Russia") Russia
+                            option(value="Rwanda") Rwanda
+                            option(value="Saint Kitts and Nevis") Saint Kitts and Nevis
+                            option(value="Saint Lucia") Saint Lucia
+                            option(value="Saint Vincent and the Grenadines") Saint Vincent and the Grenadines
+                            option(value="Samoa") Samoa
+                            option(value="San Marino") San Marino
+                            option(value="Sao Tome and Principe") Sao Tome and Principe
+                            option(value="Saudi Arabia") Saudi Arabia
+                            option(value="Senegal") Senegal
+                            option(value="Serbia") Serbia
+                            option(value="Seychelles") Seychelles
+                            option(value="Sierra Leone") Sierra Leone
+                            option(value="Singapore") Singapore
+                            option(value="Slovakia") Slovakia
+                            option(value="Slovenia") Slovenia
+                            option(value="Solomon Islands") Solomon Islands
+                            option(value="Somalia") Somalia
+                            option(value="South Africa") South Africa
+                            option(value="Spain") Spain
+                            option(value="Sri Lanka") Sri Lanka
+                            option(value="Sudan") Sudan
+                            option(value="Suriname") Suriname
+                            option(value="Swaziland") Swaziland
+                            option(value="Sweden") Sweden
+                            option(value="Switzerland") Switzerland
+                            option(value="Syria") Syria
+                            option(value="Taiwan") Taiwan
+                            option(value="Tajikistan") Tajikistan
+                            option(value="Tanzania") Tanzania
+                            option(value="Thailand") Thailand
+                            option(value="Togo") Togo
+                            option(value="Tonga") Tonga
+                            option(value="Trinidad and Tobago") Trinidad and Tobago
+                            option(value="Tunisia") Tunisia
+                            option(value="Turkey") Turkey
+                            option(value="Turkmenistan") Turkmenistan
+                            option(value="Tuvalu") Tuvalu
+                            option(value="Uganda") Uganda
+                            option(value="Ukraine") Ukraine
+                            option(value="United Arab Emirates") United Arab Emirates
+                            option(value="United Kingdom") United Kingdom
+                            option(value="United States") United States
+                            option(value="Uruguay") Uruguay
+                            option(value="Uzbekistan") Uzbekistan
+                            option(value="Vanuatu") Vanuatu
+                            option(value="Vatican City") Vatican City
+                            option(value="Venezuela") Venezuela
+                            option(value="Vietnam") Vietnam
+                            option(value="Yemen") Yemen
+                            option(value="Zambia") Zambia
+                            option(value="Zimbabwe") Zimbabwe
+                      br
+                      div
+                        button.btn.btn-send(type='submit') Save
+                  #profileRight
+                      #pictureBox
+                       if(user.picture)
+                         img(src='/userimage'+user.picture, width='152px', height='152px', class='img-frame')
+                         br
+                         br
+                         form(role='form', method="post", action='/updateProfilePic', style='max-width: 300px;', enctype='multipart/form-data', novalidate, name='form8', class='css-form')
+                           input(type="file", name="fileUploaded", required, ng-model="myfile.file")
+                           br
+                           br
+                           button.btn.btn-submit(type='submit', ng-disabled="form8.$invalid || isUnchanged(myfile)") Update Photo
+                       else if(user.fb_photo)
+                         img(src='{{user.fb_photo}}', width='152px', height='152px', class='img-frame')
+                       else if(user.google_photo)
+                         img(src='{{user.google_photo}}', width='152px', height='152px', class='img-frame')
+                       else if(user.windows_photo)
+                         img(src='{{user.windows_photo}}', width='152px', height='152px', class='img-frame')
+                       else
+                         img(src='/images/displayPic.jpg', width='152px', height='152px', class='img-frame')
+                         br
+                         br
+                         form(role='form', method="post", action='/updateProfilePic', style='max-width: 300px;', enctype='multipart/form-data', novalidate, name='form8', class='css-form')
+                           input(type="file", name="fileUploaded", required, ng-model="user.file")
+                           br
+                           br
+                           button.btn.btn-submit(type='submit', ng-disabled="form8.$invalid || isUnchanged(myfile)") Update Photo
+              tab(heading='Support Test', class='animate-show')
+                div(class='well well-lg')
+                  h3 Checking Browser Compatibility
+                  br
+                  ul
+                    li
+                      div(ng-show='supportedBrowser')
+                        | Your browser supports WebRTC.
+                      div(ng-show='!supportedBrowser')
+                        b Your browser does not support WebRTC.
+                    li
+                      div(ng-show='hasDeviceAccess()')
+                        | You have access to your Video and Audio input devices.
+                      div(ng-show='!hasDeviceAccess()')
+                        b You do not have access to your Video and Audio input devices.
+                  br
+                  center
+                    video(id='testvideo2', autoplay='true', muted='true', width='160', class='videoelement')
+                  br
+                  div(style='text-align:center;')
+                    button.btn.btn-default(ng-click='checkDeviceAccess()') Test Audio/Video
+                  br
+                  br
+                  b Note: 
+                  | Latest version of Google Chrome is recommended.
+          div(style='text-align:right;')
+            button.btn.btn-default(ng-click='openSettings()') Hide Me!
+        //fullBodyLightCoverShow(ng-show='isCallSelected() || isInviteSelected() || isSettingsSelected() || isMeetingSelected()')
+        block appbodycontent
+ .footer
+    .container
+      .row
+        div(class='col-md-6 col-sm-6 padding-top-10')
+          | CloudKibo &copy; (Beta Version) All Rights Reserved
+        div(class='col-md-6 col-sm-6')
+          ul(class='social-footer list-unstyled list-inline pull-right')
+                li
+                  a(href='#')
+                    i(class='fa fa-facebook')
+                li
+                  a(href='#')
+                    i(class='fa fa-google-plus')
+                li
+                  a(href='#')
+                    i(class='fa fa-linkedin')
+                li
+                  a(href='#')
+                    i(class='fa fa-twitter')
+                li
+                  a(href='#')
+                    i(class='fa fa-youtube')
+ 
+ script(src='/global/plugins/jquery-1.11.0.min.js')
+ script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
+ script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
+ script(src='/frontend/layout/scripts/back-to-top.js')
+ 
+ script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
+ script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
+ 
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
+ script(src='/frontend/pages/scripts/revo-slider-init.js')
+ 
+ script(src='/frontend/layout/scripts/layout.js')
+ 
+ script(type='text/javascript').
+        jQuery(document).ready(function() {
+            Layout.init();    
+            Layout.initOWL();
+            RevosliderInit.initRevoSlider();
+            Layout.initTwitter();
+            //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
+            //Layout.initNavScrolling(); 
+        });

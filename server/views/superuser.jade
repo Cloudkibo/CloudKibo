@@ -1,0 +1,458 @@
+extends layout
+
+block content
+ if(user)
+  body(ng-init='user=#{JSON.stringify(user)}')
+   .pre-header
+     .container
+       .row
+         div(class='col-md-6 col-sm-6 additional-shop-info')
+           ul(class='list-unstyled list-inline')
+             li
+               i(class='fa fa-phone')
+               span
+                 | 332-3800399
+             li
+               i(class='fa fa-envelope-o')
+               span
+                 | support@cloudkibo.com
+         div(class='col-md-6 col-sm-6 additional-nav')
+           ul(class='list-unstyled list-inline pull-right')
+             li
+               a(ng-href='/logout')
+                 | Log Out
+   .header
+    .container
+      a(class='site-logo', href='/')
+        img(src='/images/logo_small.png')
+        | #{title}
+      a(href='javascript:void(0);', class='mobi-toggler')
+        i(class='fa fa-bars')
+      div(class='header-navigation pull-right font-transform-inherit')
+              ul
+   .container
+        br
+        h1 Administration Dashboard
+        br
+        p. Total Registered Users: #{accounts.length}
+        br
+        table(border='0', width='1000px')
+          tr
+            td
+              | Teachers: #{teacherCount}
+            td
+              | Students: #{studentCount}
+            td
+              | Admins: #{adminCount}
+            td
+              | Parents: #{parentCount}
+        br
+        input(type='text', ng-model='searchNameText', placeholder='Search')
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='accounts= #{JSON.stringify(accounts)}')
+          tr
+           th
+             | User Name
+           th
+             | Email
+           th
+             | Country
+           th
+             | Role
+           th
+             | Joining Date
+           th(colspan='2')
+             | Options
+          tr(ng-repeat='account in accounts | filter : {username:searchNameText} | orderBy : "-date"', class='divCourseScheduleMain-Wrapper')
+            td
+              b {{account.username | lowercase}}
+            td
+              | {{account.email}}
+            td
+              | {{account.country}}
+            td
+              div(ng-if="account.isTeacher == 'Yes'")
+                |  Teacher &nbsp;
+              div(ng-if="account.isStudent == 'Yes'")
+                |  Student &nbsp;
+              div(ng-if="account.isAdmin == 'Yes'")
+                |  Admin &nbsp;
+              div(ng-if="account.isParent == 'Yes'")
+                |  Parent &nbsp;
+            td
+              | {{account.date | date : 'medium'}}
+            td
+              a(href='/display/{{account._id}}')
+                | Display
+            td
+              a(href='/removeuser/{{account._id}}', ng-confirm-click='Are you sure???')
+                | Remove
+        br
+        br
+        p
+         b
+           | Note: 
+         | Deleting any user will remove all of his/her details, profiles, files and courses he/she has created.
+        br
+        h1 User Feedback
+        br
+        input(type='text', ng-model='feedbackUserName', placeholder='Search')
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='feedback= #{JSON.stringify(feedback)}')
+          tr
+           th
+             | User Name
+           th
+             | Date
+           th
+             | Audio
+           th
+             | Video
+           th
+             | Screen
+           th
+             | File Transfer
+           th
+             | Comments
+          tr(ng-repeat='fb in feedback | filter : {userid.username:feedbackUserName} | orderBy : "-datetime"', class='divCourseScheduleMain-Wrapper')
+            td
+              b {{fb.userid.username | lowercase}}
+            td
+              | {{fb.datetime | date : 'medium'}}
+            td
+              | {{fb.audio}}
+            td
+              | {{fb.video}}
+            td
+              | {{fb.screen}}
+            td
+              | {{fb.filetransfer}}
+            td
+              | {{fb.comment}}
+        br
+        br
+        h1 Call Log
+        br
+        input(type='text', ng-model='callBackName', placeholder='Search')
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='call_log= #{JSON.stringify(callrecord)}')
+          tr
+           th
+             | Caller
+           th
+             | Callee
+           th
+             | Start Time
+           th
+             | End Time
+          tr(ng-repeat='log in call_log | filter : callBackName | orderBy : "-endtime"', class='divCourseScheduleMain-Wrapper')
+            td
+              b {{log.caller | lowercase}}
+            td
+              b {{log.callee | lowercase}}
+            td
+              | {{log.starttime | date : 'medium'}}
+            td
+              | {{log.endtime | date : 'medium'}}
+        br
+        br
+        h3 All Courses
+        br
+        | Total Courses : #{courses.length}
+        br
+        br
+        input(type='text', ng-model='searchCourseText', placeholder='Search')
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='courses= #{JSON.stringify(courses)}')
+         tr
+           th
+             | Course Code
+           th
+             | Course Name
+           th
+             | Teacher
+           th
+             | Course Days
+           th
+             | Course Timings
+           th(colspan='2')
+             | Options
+          tr(ng-repeat='course in courses | filter : {coursename:searchCourseText} | orderBy : coursename', class='divCourseScheduleMain-Wrapper')
+            td
+              | {{course.coursecode}}
+            td
+              | {{course.coursename}}
+            td
+              | {{course.teacherid.teachername.lastname}}, {{course.teacherid.teachername.firstname}}
+            td
+              | {{course.days}}
+            td
+              | {{course.time}} ({{course.timecountry}} Time)
+            td
+              a(href = '/displaycourse/{{course._id}}')
+                | Display
+            td
+              a(href = '/removecourse/{{course._id}}', ng-confirm-click='Are you sure???')
+                | Remove
+        br
+        br
+        h3 Files Uploaded by Users
+        br
+        | Total Files : #{fileusers.length}
+        br
+        br
+        input(type='text', ng-model='searchUserFiles', placeholder='Search')
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='fileusers= #{JSON.stringify(fileusers)}')
+         tr
+           th
+             | File Name
+           th
+             | File Size
+           th
+             | Upload Date
+           th
+             | User Name
+           th(colspan='2')
+             | Options
+          tr(ng-repeat='fileuser in fileusers | filter : {fileid.filename:searchUserFiles} | orderBy : "fileid.filename"', class='divCourseScheduleMain-Wrapper')
+            td
+              | {{fileuser.fileid.filename}}
+            td
+              | {{fileuser.fileid.size}}
+            td
+              | {{fileuser.fileid.uploaddate | date:'medium'}}
+            td
+              | {{fileuser.userid.username | lowercase}}
+            td
+              a(href = '/download{{fileuser.fileid.filephysicalpath}}')
+                | Download
+            td
+              a(href = '/delete{{fileuser.fileid.filephysicalpath}}', ng-confirm-click='Are you sure???')
+                | Remove
+         br
+        br
+        h3 Files Uploaded in Course
+        br
+        | Total Files : #{filecourses.length}
+        br
+        br
+        input(type='text', ng-model='searchCourseFiles', placeholder='Search')
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='filecourses= #{JSON.stringify(filecourses)}')
+         tr
+           th
+             | File Name
+           th
+             | File Size
+           th
+             | Upload Date
+           th
+             | Course Name
+           th(colspan='2')
+             | Options
+          tr(ng-repeat='filecourse in filecourses | filter : {fileid.filename:searchCourseFiles} | orderBy : "fileid.filename"', class='divCourseScheduleMain-Wrapper')
+            td
+              | {{filecourse.fileid.filename}}
+            td
+              | {{filecourse.fileid.size}}
+            td
+              | {{filecourse.fileid.uploaddate | date:'medium'}}
+            td
+              | {{filecourse.courseid.coursename}}
+            td
+              a(href = '/downloadClassFile{{filecourse.fileid.filephysicalpath}}')
+                | Download
+            td
+              a(href = '/deleteClassFile{{filecourse.fileid.filephysicalpath}}', ng-confirm-click='Are you sure???')
+                | Remove
+        br
+        br
+        h3 News Updates
+        br
+        | Total Updates : #{news.length}
+        br
+        br
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5',
+        ng-controller='NewsControllerSuperUser', ng-init='news= #{JSON.stringify(news)}')
+         tr
+           th
+             | Updates
+           th
+             label Limit News Updates &nbsp; &nbsp; &nbsp;
+             input(type='text', ng-model='data.theLimit')
+         tr(ng-repeat='newselement in news | limitTo: data.theLimit', class='divCourseScheduleMain-Wrapper')
+           td(width='20%')
+             b
+               | {{newselement.datetime | date:'medium'}}
+           td
+             | {{newselement.content}}
+        br
+        br
+        h3 Configurations
+        br
+        br
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
+          form(role='form', action="/configPost", method="post", style='max-width: 470px;', novalidate, name='form', class='css-form', ng-init='configData= #{JSON.stringify(configData)}')
+            tr
+              th
+                | Variable
+              th
+                | Current Value
+              th
+                | New Value
+            tr
+              td
+                b
+                  | Maximum Upload File Size
+              td
+                | {{configData.fileUploadSizeLimit}} bytes
+              td
+                input(type='text', name='fileUploadSizeLimit', ng-model='configData.fileUploadSizeLimit')
+            tr
+              td
+                b
+                  | Number of Users per meeting
+              td
+                | {{configData.numberOfUsersPerMeeting}}
+              td
+                input(type='text', name='numberOfUsersPerMeeting', ng-model='configData.numberOfUsersPerMeeting')
+            tr
+              td
+                b
+                  | Storage Space for individual user
+              td
+                | {{configData.totalSizeForUser}} bytes
+              td
+                input(type='text', name='totalSizeForUser', ng-model='configData.totalSizeForUser')
+            tr
+              td
+                b
+                  | Storage Space for class
+              td
+                | {{configData.totalSizeForClass}} bytes
+              td
+                input(type='text', name='totalSizeForClass', ng-model='configData.totalSizeForClass')
+            tr
+              td(colspan='3', style='text-align:right;')
+                button.btn.btn-default(type='submit', ng-disabled="form.$invalid || isUnchanged(user)", class='action') Save Changes
+        br
+        br
+        h3 Database Schemas
+        br
+        br
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
+          form(role='form', action="/configPost", method="post", style='max-width: 470px;', novalidate, name='form', class='css-form', ng-init='configData= #{JSON.stringify(configData)}')
+            tr
+              th
+                | Schema Name
+              th
+                | Standard Name and Explanation
+              th
+                | Options
+            tr
+              td
+                b
+                  | Accounts
+              td
+                | Local and federate accounts details
+              td
+                a(href = '/viewschema/Accounts')
+                  | View
+            tr
+              td
+                b
+                  | Students
+              td
+                | Student Profile
+              td
+                a(href = '/viewschema/Students')
+                  | View
+            tr
+              td
+                b
+                  | Teachers
+              td
+                | Teacher Profile
+              td
+                a(href = '/viewschema/Teachers')
+                  | View
+            tr
+              td
+                b
+                  | Admins
+              td
+                | Admin Profile
+              td
+                a(href = '/viewschema/Admins')
+                  | View
+            tr
+              td
+                b
+                  | Parents
+              td
+                | Parent Profile
+              td
+                a(href = '/viewschema/Parents')
+                  | View
+            tr
+              td
+                b
+                  | Courses
+              td
+                | Courses Details
+              td
+                a(href = '/viewschema/Courses')
+                  | View
+            tr
+              td
+                b
+                  | CourseStudents
+              td
+                | Students and Courses Association Table
+              td
+                a(href = '/viewschema/CourseStudents')
+                  | View
+            tr
+              td
+                b
+                  | Files
+              td
+                | Uploaded Files Details
+              td
+                a(href = '/viewschema/Files')
+                  | View
+            tr
+              td
+                b
+                  | FileUsers
+              td
+                | Files and Users Association Table
+              td
+                a(href = '/viewschema/FileUsers')
+                  | View
+            tr
+              td
+                b
+                  | FileCourses
+              td
+                | Files and Courses Association Table
+              td
+                a(href = '/viewschema/FileCourses')
+                  | View
+            tr
+              td
+                b
+                  | News
+              td
+                | News Statements
+              td
+                a(href = '/viewschema/News')
+                  | View
+            tr
+              td
+                b
+                  | Announcements
+              td
+                | Teacher's Announcements
+              td
+                a(href = '/viewschema/Announcements')
+                  | View
+        br
+ br
+ br
+ br

@@ -1,0 +1,111 @@
+extends layout
+
+block content
+ if(user)
+  body(ng-controller='HomeController', ng-init='user=#{JSON.stringify(user)}')
+   .pre-header
+     .container
+       .row
+         div(class='col-md-6 col-sm-6 additional-shop-info')
+           ul(class='list-unstyled list-inline')
+             li
+               i(class='fa fa-phone')
+               span
+                 | 332-3800399
+             li
+               i(class='fa fa-envelope-o')
+               span
+                 | support@cloudkibo.com
+             li
+               i(class='fa')
+                 button(onclick='loadKiboWidget("cd89f71715f2014725163952")')
+                   | Live Help
+         div(class='col-md-6 col-sm-6 additional-nav')
+           ul(class='list-unstyled list-inline pull-right')
+             li
+               a(ng-href='/logout')
+                 | Log Out
+   .header
+    .container
+      a(class='site-logo', href='#')
+        img(src='/images/logo_small.png')
+        | #{title}
+      a(href='javascript:void(0);', class='mobi-toggler')
+        i(class='fa fa-bars')
+      div(class='header-navigation pull-right font-transform-inherit')
+              ul
+                li
+                  a(href='', ng-click='openMeeting()', ng-if='!isMeetingSelected()')
+                    | Group Meeting
+                  a(href='', ng-click='openMeeting()', ng-if='isMeetingSelected()')
+                    b Group Meeting
+                li
+                  a(href='', ng-click='openCall()', ng-if='!isCallSelected()')
+                    | Call
+                  a(href='', ng-click='openCall()', ng-if='isCallSelected()')
+                    b Call
+                li
+                  a(href='', ng-click='openInvite()', ng-if='!isInviteSelected()')
+                    | Invite People
+                  a(href='', ng-click='openInvite()', ng-if='isInviteSelected()')
+                    b Invite People
+                li
+                  a(href='', ng-click='openAddContact()', ng-if='!isAddContactSelected()')
+                    | Add Contact
+                  a(href='', ng-click='openAddContact()', ng-if='isAddContactSelected()')
+                    b Add Contact
+                li
+                  a(href='', ng-click='openSettings()', ng-show='!isSettingsSelected()')
+                    | Settings
+                  a(href='', ng-click='openSettings()', ng-show='isSettingsSelected()')
+                    b Settings
+   block bodycontent
+ if(!user)
+  body
+   .pre-header
+     .container
+       .row
+         div(class='col-md-6 col-sm-6 additional-shop-info')
+           ul(class='list-unstyled list-inline')
+             li
+               i(class='fa fa-phone')
+               span
+                 | 332-3800399
+             li
+               i(class='fa fa-envelope-o')
+               span
+                 | support@cloudkibo.com
+             li
+               i(class='fa')
+                 button(onclick='loadKiboWidget("cd89f71715f2014725163952")')
+                   | Live Help
+         div(class='col-md-6 col-sm-6 additional-nav')
+           ul(class='list-unstyled list-inline pull-right')
+             li
+               a(ng-href='/login')
+                 | Log In
+             li
+               a(ng-href='/register')
+                 | Registration
+   .header
+    .container
+      a(class='site-logo', href='/')
+        img(src='/images/logo_small.png')
+        | #{title}
+      a(href='javascript:void(0);', class='mobi-toggler')
+        i(class='fa fa-bars')
+      div(class='header-navigation pull-right font-transform-inherit')
+        ul
+          li
+            a(ng-href='/')
+              | Home
+          li
+            a(ng-href='#')
+              | About Us
+          li
+            a(ng-href='/features')
+              | Features
+          li
+            a(ng-href='#')
+              | Contact
+   block bodycontent
