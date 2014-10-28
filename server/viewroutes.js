@@ -1,10 +1,10 @@
 var passport = require('passport');
 var mongoose = require('mongoose');
-var Account = require('./../models/account');
+var Account = require('./api/user/user.model');
 var fs = require('fs');
 var crypto = require("crypto");
-var otherSchemas = require('./../models/otherSchemas');
-var tokenSchemas = require('./../models/tokenSchemas');
+var otherSchemas = require('./models/otherSchemas');
+var tokenSchemas = require('./models/tokenSchemas');
 
 var html_dir = './public/';
 
@@ -27,10 +27,6 @@ exports.homeRoute = function (req, res) {
 				
 				var role;
 				if (gotUser.isOwner == 'Yes') role = 'Owner';
-				if (gotUser.isTeacher == 'Yes') role = 'Teacher';
-				if (gotUser.isStudent == 'Yes') role = 'Student';
-				if (gotUser.isAdmin == 'Yes') role = 'Admin';
-				if (gotUser.isParent == 'Yes') role = 'Parent';
 				
 				if(role == 'Owner')
 				  return res.redirect('/superuser')

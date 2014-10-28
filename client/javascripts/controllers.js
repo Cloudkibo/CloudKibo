@@ -2105,14 +2105,13 @@ function LoginRegister ($scope, $http, $window){
 			
 			$http.post('/auth/local', JSON.stringify($scope.user1))   //it was /login
 			.error(function(data) {
-				console.log(data)
 				$scope.progressState = false;
-				$scope.addAlert('danger', 'Invalid username or password')
+				$scope.addAlert('danger', data.message)
 			})
 			.success(function(data) {
-				console.log(data)
+				alert('Token: '+ data.token);
 				$scope.progressState = false;
-				$window.location.href = '/home';
+				$window.location.href = '/home?access_token='+ data.token;
 			});
 			
 		};
@@ -2121,17 +2120,23 @@ function LoginRegister ($scope, $http, $window){
 			
 			$scope.progressState = true;
 			
-			$http.post('/register', JSON.stringify($scope.user))
+			$http.post('/api/users', JSON.stringify($scope.user))
 			.success(function(data) {
+				alert('Token: '+ data.token);
 				$scope.progressState = false;
 				if(data.status != 'success')
 					$scope.addAlertRegister(data.status, data.msg)
 				else
-					$window.location.href = '/home';
+					$window.location.href = '/home?access_token='+ data.token;
 			})
 			.error(function(data) {
 				$scope.progressState = false;
-				$scope.addAlertRegister(data, data)
+				if(data.errors.username)
+					$scope.addAlertRegister(data, data.errors.username.message)
+				if(data.errors.email)
+					$scope.addAlertRegister(data, data.errors.email.message)
+				if(data.errors.phone)
+					$scope.addAlertRegister(data, data.errors.phone.message)
 			});
 			
 		};

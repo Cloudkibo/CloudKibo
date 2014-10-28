@@ -63,7 +63,7 @@ var all = {
     scope: 'https://www.google.com/m8/feeds https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
   },
   
-  windows: {
+  windowslive: {
     clientID:     process.env.GOOGLE_ID || '000000004C10C835',
     clientSecret: process.env.GOOGLE_SECRET || 'Nyyk7O4vZtn6ExbSJLamrtL5BtRadd96',
     callbackURL:  (process.env.DOMAIN || '') + 'http://www.cloudkibo.com/auth/windowslive/callback'

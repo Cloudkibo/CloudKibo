@@ -6,18 +6,39 @@ var crypto = require('crypto');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
-  name: String,
+  username : String,
+  firstname : String,
+  lastname : String,
   email: { type: String, lowercase: true },
+  phone : String, 
+  country : String,
+  city : String,
+  state : String,
+  gender : String,
   role: {
     type: String,
     default: 'user'
   },
+  
+  fb_photo: String,
+  google_photo: String,
+  windows_photo: String,
+  
+  isOwner : String,
+  picture: String,
+  accountVerified : {type: String, default: 'No' },
+  date  :  { type: Date, default: Date.now },
+  initialTesting : String,
+  status : {type: String, default: 'I am on CloudKibo' },
+  
   hashedPassword: String,
   provider: String,
   salt: String,
+  
   facebook: {},
   twitter: {},
   google: {},
+  windowslive: {},
   github: {}
 });
 
@@ -40,7 +61,7 @@ UserSchema
   .virtual('profile')
   .get(function() {
     return {
-      'name': this.name,
+      'name': this.username,
       'role': this.role
     };
   });
@@ -58,6 +79,14 @@ UserSchema
 /**
  * Validations
  */
+
+// Validate empty username
+UserSchema
+  .path('username')
+  .validate(function(username) {
+    if (authTypes.indexOf(this.provider) !== -1) return true;
+    return username.length;
+  }, 'Username cannot be blank');
 
 // Validate empty email
 UserSchema
@@ -89,6 +118,38 @@ UserSchema
       respond(true);
     });
 }, 'The specified email address is already in use.');
+
+// Validate username is not taken
+UserSchema
+  .path('username')
+  .validate(function(value, respond) {
+    var self = this;
+    this.constructor.findOne({username: value}, function(err, user) {
+      if(err) throw err;
+      if(user) {
+        if(self.id === user.id) return respond(true);
+        return respond(false);
+      }
+      respond(true);
+    });
+}, 'The specified username is already in use.');
+
+// Validate username is not taken
+UserSchema
+  .path('phone')
+  .validate(function(value, respond) {
+    var self = this;
+    this.constructor.findOne({phone: value}, function(err, user) {
+      if(err) throw err;
+      if(user) {
+        if(self.id === user.id) return respond(true);
+        return respond(false);
+      }
+      respond(true);
+    });
+}, 'The specified phone number is already in use.');
+
+
 
 var validatePresenceOf = function(value) {
   return value && value.length;
@@ -146,4 +207,4 @@ UserSchema.methods = {
   }
 };
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('accounts', UserSchema);

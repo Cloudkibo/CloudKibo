@@ -1,6 +1,7 @@
 {
   "name": "cloud-kibo",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "complete web-based video conferencing solution",
   "main": "server/app.js",
   "dependencies": {
     "express": "~4.0.0",
@@ -23,6 +24,7 @@
     "passport-facebook": "latest",
     "passport-twitter": "latest",
     "passport-google-oauth": "latest",
+    "passport-windowslive": "latest",
     "composable-middleware": "^0.3.0",
     "socket.io": "0.9.14",
     "socket.io-client": "^1.0.6",

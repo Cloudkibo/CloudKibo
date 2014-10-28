@@ -53,12 +53,8 @@
 var errors = require('./components/errors');
 
 
-
-var superuserroutes = require('./routes/superuserroutes');
-var viewroutes = require('./routes/viewroutes');
-var apiroutes = require('./routes/apiroutes');
-var postroutes = require('./routes/postroutes');
-var registrationroutes = require('./routes/registrationroutes');
+var auth = require('./auth/auth.service');
+var viewroutes = require('./viewroutes');
 var config = require('./config/environment');
 
 module.exports = function(app) {
@@ -82,10 +78,10 @@ module.exports = function(app) {
 	.get(viewroutes.indexRoute);
 
   app.route('/home')
-	.get(viewroutes.homeRoute);
+	.get(auth.isAuthenticated(), viewroutes.homeRoute);
 
   app.route('/meeting/*')
-	.get(viewroutes.meetingRoute);
+	.get(auth.isAuthenticated(), viewroutes.meetingRoute);
 
   app.route('/livehelp/*')
 	.get(viewroutes.liveHelpRoute);
@@ -109,10 +105,10 @@ module.exports = function(app) {
 	.get(viewroutes.resetPasswordViewRoute);
 
   app.route("/welcomescreen")
-	.get(viewroutes.welcomeScreenViewRoute);
+	.get(auth.isAuthenticated(), viewroutes.welcomeScreenViewRoute);
 
   app.route("/getuserview/*")
-	.get(viewroutes.getUserViewRoute);
+	.get(auth.isAuthenticated(), viewroutes.getUserViewRoute);
   
   
   

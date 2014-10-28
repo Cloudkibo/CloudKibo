@@ -1,15 +1,15 @@
 var passport = require('passport');
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var WindowsLiveStrategy = require('passport-windowslive').Strategy;
 
 exports.setup = function (User, config) {
-  passport.use(new GoogleStrategy({
-      clientID: config.google.clientID,
-      clientSecret: config.google.clientSecret,
-      callbackURL: config.google.callbackURL
+  passport.use(new WindowsLiveStrategy({
+      clientID: config.windowslive.clientID,
+      clientSecret: config.windowslive.clientSecret,
+      callbackURL: config.windowslive.callbackURL
     },
     function(accessToken, refreshToken, profile, done) {
       User.findOne({
-        'google.id': profile.id
+        'windowslive.id': profile.id
       }, function(err, user) {
 		if (err) {
           return done(err);
@@ -20,10 +20,11 @@ exports.setup = function (User, config) {
 		    lastname : profile.name.familyName,
             email: profile.emails[0].value,
             role: 'user',
-            google_photo: profile._json.picture,
+            windows_photo: profile.photos[0].value,
+            phone : profile._json.phones.personal,
             username: profile.username,
-            provider: 'google',
-            google: profile._json
+            provider: 'windowslive',
+            windowslive: profile._json
           });
           user.save(function(err) {
             if (err) done(err);

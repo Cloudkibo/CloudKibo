@@ -17,11 +17,13 @@ exports.setup = function (User, config) {
         }
         if (!user) {
           user = new User({
-            name: profile.displayName,
+            firstname : profile.name.givenName,
+		    lastname : profile.name.familyName,
             email: profile.emails[0].value,
             role: 'user',
             username: profile.username,
             provider: 'facebook',
+            fb_photo: 'https://graph.facebook.com/'+ profile.id +'/picture?width=140&height=110',
             facebook: profile._json
           });
           user.save(function(err) {

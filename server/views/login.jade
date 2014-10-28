@@ -28,7 +28,7 @@ block bodycontent
                        span(class='require')
                          | *
                      .col-lg-8
-                       input.form-control(id='email', type='text', name="username", placeholder='Enter Username', ng-model='user1.email', required, ng-minlength='3', ng-maxlength='20', ng-focus)
+                       input.form-control(id='email', type='text', name="username", placeholder='Enter Username', ng-model='user1.username', required, ng-minlength='3', ng-maxlength='20', ng-focus)
                        span(ng-show!="form1.username.$dirty && !form1.username.$focused")
                          span(ng-show="form1.username.$invalid")
                            span(ng-show="form1.username.$error.required")
