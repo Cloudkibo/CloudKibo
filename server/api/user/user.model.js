@@ -3,7 +3,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
-var authTypes = ['github', 'twitter', 'facebook', 'google'];
+var authTypes = ['github', 'twitter', 'facebook', 'google', 'windowslive'];
 
 var UserSchema = new Schema({
   username : String,
@@ -134,7 +134,7 @@ UserSchema
     });
 }, 'The specified username is already in use.');
 
-// Validate username is not taken
+// Validate phone is not taken
 UserSchema
   .path('phone')
   .validate(function(value, respond) {
