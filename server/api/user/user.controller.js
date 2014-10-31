@@ -94,6 +94,151 @@ exports.me = function(req, res, next) {
 };
 
 /**
+ * Get User Image
+ */
+exports.userimage = function(req, res, next) { 
+  res.sendfile(req.params.image, {root: './userpictures'});
+};
+
+/**
+ * Change user profile
+ */
+exports.update = function(req, res, next) {
+  var userId = req.user._id;
+  User.findById(userId, function (err, gotUser) {
+    gotUser.username = req.body.username;
+	gotUser.firstname = req.body.firstname;
+	gotUser.lastname = req.body.lastname;
+	gotUser.email = req.body.email;
+	gotUser.phone = req.body.phone;
+	gotUser.city = req.body.city;
+	gotUser.state = req.body.state;
+	gotUser.country = req.body.country;
+	gotUser.save(function (err2) {
+		if (err2) return console.log('Error 2'+ err2);
+		User.findById(gotUser, function (err, gotUserSaved) {
+			res.json(gotUserSaved);
+		})
+	});
+  });
+};
+
+/**
+ * Update User Image
+ */
+exports.updateimage = function(req, res, next){
+	User.findById(req.user._id, function (err, gotUser) {
+		if (err) return console.log('Error 1'+ err)
+		
+		if(gotUser.picture == null)
+		{
+			  var today = new Date();
+			  var uid = crypto.randomBytes(5).toString('hex');
+			  var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
+			  serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
+			  serverPath += '' + req.files.fileUploaded.name;
+			  
+			  var dir = __dirname + "/userpictures";
+			  
+			  if(req.files.fileUploaded.size == 0) return res.send('No file submitted')
+			  
+			  require('fs').rename(
+				 req.files.fileUploaded.path,
+				 dir + "/" + serverPath,
+				  function(error) {
+					   if(error) {
+						  res.send({
+							  error: 'Server Error: Could not upload the file'
+						  });
+						  return;
+					   }
+				   }
+			  );
+			  
+			  gotUser.picture = serverPath;
+			
+				gotUser.save(function (err2) {
+					if (err2) return console.log('Error 2'+ err2);
+					
+					User.findById(gotUser, function (err, gotUserSaved) {
+						
+						res.json(gotUserSaved);
+						//res.redirect('/home');
+						
+					})
+					
+				});
+			  
+		  }
+		  else
+		  {
+			  var dir = './userpictures';
+			  dir += gotUser.picture;
+				
+				if(gotUser.picture)
+				{
+					require('fs').unlink(dir, function (err) {
+						  if (err) throw err;
+						
+						
+						  var today = new Date();
+						  var uid = crypto.randomBytes(5).toString('hex');
+						  var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
+						  serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
+						  serverPath += '' + req.files.fileUploaded.name;
+						  
+						  var dir = __dirname + "/userpictures";
+						  
+						  if(req.files.fileUploaded.size == 0) return res.send('No file submitted')
+						  
+						  require('fs').rename(
+							 req.files.fileUploaded.path,
+							 dir + "/" + serverPath,
+							  function(error) {
+								   if(error) {
+									  res.send({
+										  error: 'Server Error: Could not upload the file'
+									  });
+									  return;
+								   }
+							   }
+						  );
+						  
+						  gotUser.picture = serverPath;
+						
+							gotUser.save(function (err2) {
+								if (err2) return console.log('Error 2'+ err2);
+								
+								User.findById(gotUser, function (err, gotUserSaved) {
+									
+									res.json(gotUserSaved);
+									//res.redirect('/home');
+									
+								})
+								
+							});
+						
+						
+					})  
+				}
+		  }
+		
+		
+	})
+}
+
+/**
+ * Search by username
+ */
+exports.searchbyusername = function(req, res, next){
+	User.findOne({username : req.body.searchusername}, function (err, gotUserSaved) {
+		res.json(gotUserSaved);		
+	})
+}
+
+
+
+/**
  * Authentication callback
  */
 exports.authCallback = function(req, res, next) {

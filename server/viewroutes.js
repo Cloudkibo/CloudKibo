@@ -3,8 +3,6 @@ var mongoose = require('mongoose');
 var Account = require('./api/user/user.model');
 var fs = require('fs');
 var crypto = require("crypto");
-var otherSchemas = require('./models/otherSchemas');
-var tokenSchemas = require('./models/tokenSchemas');
 
 var html_dir = './public/';
 
