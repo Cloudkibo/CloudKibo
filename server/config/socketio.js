@@ -107,7 +107,7 @@ function onConnect(socketio, socket) {
 			
 			var socketid = '';
 			
-			var contactslist = require('./api/contactslist/contactslist.model.js');
+			var contactslist = require('./../api/contactslist/contactslist.model.js');
 				
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
 				
@@ -180,7 +180,7 @@ function onConnect(socketio, socket) {
 			
 			var socketid = '';
 			
-			var contactslist = require('./api/contactslist/contactslist.model.js');
+			var contactslist = require('./../api/contactslist/contactslist.model.js');
 				
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
 				
@@ -216,7 +216,7 @@ function onConnect(socketio, socket) {
 			
 			var socketid = '';
 			
-			var contactslist = require('./api/contactslist/contactslist.model.js');
+			var contactslist = require('./../api/contactslist/contactslist.model.js');
 				
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
 				
