@@ -142,6 +142,8 @@ function onConnect(socketio, socket) {
 		
 		socket.on('im', function(im){
 			
+			console.log("GOT THIS MESSAGE", im);
+			/*
 			var clients = socketio.sockets.clients(im.room)
 			
 			var socketid = '';
@@ -154,8 +156,9 @@ function onConnect(socketio, socket) {
 					i++;
 				})
 			});
+			* */
 			
-			socketio.sockets.socket(socketid).emit('im', im.stanza);
+			//socketio.sockets.socket(socketid).emit('im', im.stanza);
 			
 		});
 		
