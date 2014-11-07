@@ -30,7 +30,7 @@ block bodycontent
                        span(class='require')
                          | *
                      .col-lg-8
-                       input.form-control(type='text', name="fname", placeholder='First Name', ng-model='user.fname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
+                       input.form-control(type='text', name="firstname", placeholder='First Name', ng-model='user.firstname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
                        div(ng-show!="form.fname.$dirty && !form.fname.$focused")
                          div(ng-show="form.fname.$invalid")
                            span(ng-show="form.fname.$error.required")
@@ -44,7 +44,7 @@ block bodycontent
                        span(class='require')
                          | *
                      .col-lg-8
-                       input.form-control(type='text', name="lname", placeholder='Last Name', ng-model='user.lname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
+                       input.form-control(type='text', name="lastname", placeholder='Last Name', ng-model='user.lastname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
                        div(ng-show!="form.lname.$dirty && !form.lname.$focused")
                          div(ng-show="form.lname.$invalid")
                            span(ng-show="form.lname.$error.required")

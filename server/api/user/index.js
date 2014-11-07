@@ -16,6 +16,6 @@ router.post('/', controller.create);
 router.post('/userimage/update', auth.isAuthenticated(), controller.updateimage);
 router.get('userimage/:image', auth.isAuthenticated(), controller.userimage);
 router.put('/update', auth.isAuthenticated(), controller.update);
-router.get('/searchbyusername', auth.isAuthenticated(), controller.searchbyusername);
+router.post('/searchbyusername', auth.isAuthenticated(), controller.searchbyusername);
 
 module.exports = router;

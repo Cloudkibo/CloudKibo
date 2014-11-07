@@ -107,8 +107,7 @@ function onConnect(socketio, socket) {
 			
 			var socketid = '';
 			
-			/*
-			var contactslist = otherSchemas.contactslist;
+			var contactslist = require('./api/contactslist/contactslist.model.js');
 				
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
 				
@@ -135,7 +134,7 @@ function onConnect(socketio, socket) {
 				}
 				
 			})
-			*/
+			
 			console.log(socketio.sockets.manager.rooms)
 			console.log(room.user.username)
 			
@@ -181,7 +180,7 @@ function onConnect(socketio, socket) {
 			
 			var socketid = '';
 			
-			var contactslist = otherSchemas.contactslist;
+			var contactslist = require('./api/contactslist/contactslist.model.js');
 				
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
 				
@@ -217,7 +216,7 @@ function onConnect(socketio, socket) {
 			
 			var socketid = '';
 			
-			var contactslist = otherSchemas.contactslist;
+			var contactslist = require('./api/contactslist/contactslist.model.js');
 				
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
 				
