@@ -1,51 +1,77 @@
-angular.module('cloudKiboApp', ['ngAnimate', 'ui.bootstrap', 'ngRoute'])
+angular.module('cloudKiboApp', [
+  'ngCookies',
+  'ngResource',
+  'ngSanitize',
+  'ngRoute',
+  'btford.socket-io',
+  'ui.bootstrap'
+])
+  .config(function ($routeProvider, $locationProvider, $httpProvider) {
+    $routeProvider
 
-	.config(function ($routeProvider) {
-
-	    $routeProvider.
-
-	    when('/', {
-	        templateUrl: '/welcomescreen',
-	        controller: 'WelcomeScreenController'
-	    })
-
-	    .when('/:username', {
+	  .when('/contact/:username', {
 			templateUrl: function(params){ return '/getuserview/'+ params.username},
-			controller: 'UserViewController'
-		});
+			controller: 'HomeController'
+	  })
+	  
+      .otherwise({
+        redirectTo: '/'
+      });
 
-	})
-
+    $locationProvider.html5Mode({
+	  enabled: true,
+	  requireBase: false
+	});
 	
-	.factory('Data', function(){
+    $httpProvider.interceptors.push('authInterceptor');
+  })
+  
+  .factory('socket', function (socketFactory) {
+     return socketFactory();
+  })
+
+  .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
+    return {
+      // Add authorization token to headers
+      request: function (config) {
+        config.headers = config.headers || {};
+        if ($cookieStore.get('token')) {
+          config.headers.Authorization = 'Bearer ' + $cookieStore.get('token');
+        }
+        return config;
+      },
+
+      // Intercept 401s and redirect you to login
+      responseError: function(response) {
+        if(response.status === 401) {
+          $location.path('/');
+          // remove any stale tokens
+          $cookieStore.remove('token');
+          return $q.reject(response);
+        }
+        else {
+          return $q.reject(response);
+        }
+      }
+    };
+  })
+  
+  .factory('Data', function(){
 		return {theLimit : 10};
 	})
 
-	.factory('socket', function($rootScope) {
-		var socket = io.connect();
-		return {
-			on: function(eventName, callback) {
-				socket.on(eventName, function() {
-					var args = arguments;
-					$rootScope.$apply(function() {
-						callback.apply(socket, args);
-					});
-				});
-			},
-			emit: function(eventName, data, callback) {
-				socket.emit(eventName, data, function() {
-					var args = arguments;
-					$rootScope.$apply(function() {
-						if(callback) {
-						callback.apply(socket, args);
-						}
-					});
-				});
-			}
-		};
-	})
-	
-	.factory('pc_config', function(){
+  .run(function ($rootScope, $location, Auth) {
+    // Redirect to login if route requires auth and you're not logged in
+    $rootScope.$on('$routeChangeStart', function (event, next) {
+      Auth.isLoggedInAsync(function(loggedIn) {
+        if (next.authenticate && !loggedIn) {
+          $location.path('/login');
+        }
+      });
+    });
+  })
+  
+  .factory('pc_config', function(){
 		/*
 		return pc_config = {'iceServers': [createIceServer('stun:stun.l.google.com:19302', null, null),
 								createIceServer('stun:stun.anyfirewall.com:3478', null, null),
@@ -99,8 +125,6 @@ angular.module('cloudKiboApp', ['ngAnimate', 'ui.bootstrap', 'ngRoute'])
 	  }
 	])	
 
-
-	
 	.directive('schrollBottom', function () {
 	  return {
 		scope: {

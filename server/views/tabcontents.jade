@@ -1,33 +1,47 @@
 extends header
 
 block bodycontent
- div
+ .header(ng-show='isLoggedIn()')
+    .container
+      a(class='site-logo', href='/app')
+        img(src='/images/logo_small.png')
+        | #{title}
+      a(href='javascript:void(0);', class='mobi-toggler')
+        i(class='fa fa-bars')
+      div(class='header-navigation pull-right font-transform-inherit')
+              ul
+                li
+                  a(href='', ng-click='openMeeting()', ng-if='!isMeetingSelected()')
+                    | Group Meeting
+                  a(href='', ng-click='openMeeting()', ng-if='isMeetingSelected()')
+                    b Group Meeting
+                li
+                  a(href='', ng-click='openCall()', ng-if='!isCallSelected()')
+                    | Call
+                  a(href='', ng-click='openCall()', ng-if='isCallSelected()')
+                    b Call
+                li
+                  a(href='', ng-click='openInvite()', ng-if='!isInviteSelected()')
+                    | Invite People
+                  a(href='', ng-click='openInvite()', ng-if='isInviteSelected()')
+                    b Invite People
+                li
+                  a(href='', ng-click='openAddContact()', ng-if='!isAddContactSelected()')
+                    | Add Contact
+                  a(href='', ng-click='openAddContact()', ng-if='isAddContactSelected()')
+                    b Add Contact
+                li
+                  a(href='', ng-click='openSettings()', ng-show='!isSettingsSelected()')
+                    | Settings
+                  a(href='', ng-click='openSettings()', ng-show='isSettingsSelected()')
+                    b Settings
+ div(ng-init='otherUser=#{JSON.stringify(otherUser)}')
   .fullBodyPane(class='animate-show')
    .main
     .container
       div(class='row margin-bottom-40')
         div(ng-show='testingDefined()', class='well well-lg modalBox')
-          .animate-show(ng-show='!userNameDone', ng-init='uniqueusername=#{JSON.stringify(user.username)}')
-            h3 Identify yourself with a unique KiboName
-            br
-            form(role='form', ng-submit='sendUniqueUserName()')
-              .form-group
-                input.form-control(type='text', name="username", placeholder='Enter Username (kiboname)', required, ng-model='uniqueusername')
-              small E.g. &nbsp;&nbsp;michael2014, &nbsp;&nbsp;arain90, &nbsp;&nbsp;sojharo
-              br
-              br
-              h4 Your current unique KiboName: {{uniqueusername}}
-              br
-              alert(ng-repeat='alert in uniqueNamealerts', type='alert.type', close='closeuniqueNameAlert($index)') {{alert.msg}}
-              br
-              b Note: 
-              | Your kiboname will be used by others to call you.
-              br
-              if(user.hash)
-                b Whatever kiboname (username) you choose, it will be used to log in henceforth. Be CAREFUL!!
-              div(style='text-align:right;')
-                button.btn.btn-default(type='submit') Save
-          .animate-show(ng-show='userNameDone')
+          .animate-show
             h3 Checking Browser Compatibility
             br
             ul
@@ -50,6 +64,7 @@ block bodycontent
             | Latest version of Google Chrome is recommended.
             div(style='text-align:right;')
               button.btn.btn-default(ng-click='ReadyToGo()') I'm Ready
+        
         div(ng-show='isMeetingSelected()', class='well well-lg animate-show modalBox')
           label Name your Meeting Room
           input.form-control(type='text', ng-model='meetingroom')
@@ -67,6 +82,7 @@ block bodycontent
           br
           div(style='text-align:right;')
             button.btn.btn-default(ng-click='openMeeting()') Hide Me!
+        
         div(ng-show='isCallSelected()', class='well well-lg animate-show modalBox')
           div
             div(ng-show='isUserNameSearchSelected()', class='well well-lg')
@@ -105,6 +121,7 @@ block bodycontent
                 small Invite to CloudKibo
           div(style='text-align:right;')
             button.btn.btn-default(ng-click='openCall()') Hide Me!
+        
         div(ng-show='isInviteSelected()', class='well well-lg animate-show modalBox')
           div
             div(style='text-align:right;')
@@ -112,7 +129,7 @@ block bodycontent
             #inviteEmailBox(class='well well-lg')
               label Invite your friend to CloudKibo
               br
-              form(role='form', method="post", novalidate, name='form6', class='css-form', ng-submit='emailInvite()')
+              form(role='form', method="post", novalidate, name='form6', class='css-form', ng-submit='emailInvite(inviteemail)')
                 .form-group
                   input.form-control(type='email', name="email", placeholder='Enter Recipient\'s Email Address', required, ng-model='inviteemail.recipientEmail')
                 div(ng-show="form6.email.$dirty && !form6.email.$focused")
@@ -130,10 +147,11 @@ block bodycontent
                   button.btn.btn-send(type='submit', ng-disabled="form.$invalid") Invite
               br
               alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
+        
         div(ng-show='isAddContactSelected()', class='well well-lg animate-show modalBox')
           div
             div(ng-show='isUserNameAddSelected()', class='well well-lg')
-              form(role='form', ng-submit='addUserName()', novalidate, name='form9', class='css-form')
+              form(role='form', ng-submit='addUserName(add)', novalidate, name='form9', class='css-form')
                 .form-group
                   label Add contact by username
                   input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='add.searchusername')
@@ -144,7 +162,7 @@ block bodycontent
                 div
                   button.btn.btn-send(type='submit', ng-disabled="form9.$invalid") Add
             div(ng-show='!isUserNameAddSelected()', class='well well-lg')
-              form(role='form', ng-submit='addEmail()', novalidate, name='form41', class='css-form')
+              form(role='form', ng-submit='addEmail(add)', novalidate, name='form41', class='css-form')
                 .form-group
                   label Add contact by email
                   input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='add.searchemail')
@@ -170,13 +188,14 @@ block bodycontent
               b {{addUserResponseMessage}}
           div(style='text-align:right;')
             button.btn.btn-default(ng-click='openAddContact()') Hide Me!
+        
         div(ng-show='isSettingsSelected()', class='well well-lg  animate-show modalBox')
           div
             tabset(justified='true')
               tab(heading='Profile', class='animate-show')
                 div(class='well well-lg')
                   #profileLeft
-                    form(role='form', novalidate, name='form', class='css-form', enctype='multipart/form-data', ng-submit='updateProfile()')
+                    form(role='form', novalidate, name='form', class='css-form', enctype='multipart/form-data', ng-submit='updateProfile(user)')
                       h4 My Profile
                       br
                       label Unique KiboName
@@ -412,7 +431,7 @@ block bodycontent
                          img(src='/userimage'+user.picture, width='152px', height='152px', class='img-frame')
                          br
                          br
-                         form(role='form', method="post", action='/updateProfilePic', style='max-width: 300px;', enctype='multipart/form-data', novalidate, name='form8', class='css-form')
+                         form(role='form', method="post", action='/userimage/update', style='max-width: 300px;', enctype='multipart/form-data', novalidate, name='form8', class='css-form')
                            input(type="file", name="fileUploaded", required, ng-model="myfile.file")
                            br
                            br
@@ -460,7 +479,9 @@ block bodycontent
           div(style='text-align:right;')
             button.btn.btn-default(ng-click='openSettings()') Hide Me!
         //fullBodyLightCoverShow(ng-show='isCallSelected() || isInviteSelected() || isSettingsSelected() || isMeetingSelected()')
+        
         block appbodycontent
+        
  .footer
     .container
       .row
@@ -483,27 +504,3 @@ block bodycontent
                 li
                   a(href='#')
                     i(class='fa fa-youtube')
- 
- script(src='/global/plugins/jquery-1.11.0.min.js')
- script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
- script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
- script(src='/frontend/layout/scripts/back-to-top.js')
- 
- script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
- script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
- 
- script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
- script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
- script(src='/frontend/pages/scripts/revo-slider-init.js')
- 
- script(src='/frontend/layout/scripts/layout.js')
- 
- script(type='text/javascript').
-        jQuery(document).ready(function() {
-            Layout.init();    
-            Layout.initOWL();
-            RevosliderInit.initRevoSlider();
-            Layout.initTwitter();
-            //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
-            //Layout.initNavScrolling(); 
-        });

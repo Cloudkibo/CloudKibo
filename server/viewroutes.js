@@ -10,12 +10,18 @@ exports.indexRoute = function (req, res) {
 	  if (typeof req.user == 'undefined')
 	      res.render('index', { title: 'CloudKibo'});
       else{
-		
-		res.redirect('/home');
+		res.render('index', { title: 'CloudKibo'});
+		//res.redirect('/home');
       }
+  };
+
+exports.appRoute = function (req, res) {
+		
+		res.render('app', {title : 'CloudKibo'});
   };
   
 exports.homeRoute = function (req, res) {
+	
 	  if (typeof req.user == 'undefined')
 	      res.redirect('/')
       else{
@@ -65,9 +71,9 @@ exports.getUserViewRoute = function (req, res) {
 				if (err) return console.log(err);
 				
 				if(gotUser != null)
-					res.render('userview', { title: 'CloudKibo', otherUser: gotUser});    		  
+					res.render('home', { title: 'CloudKibo', otherUser: gotUser, user: req.user});    		  
 				else
-					res.render('404', { title: 'CloudKibo'});
+					res.render('401', { title: 'CloudKibo'});
 		    })
 		
       }

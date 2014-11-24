@@ -1,43 +1,43 @@
-div(ng-controller='IMController')
-  div(ng-init='otherUser=#{JSON.stringify(otherUser)}')
-    div(class="friendInfoBoxContainer")
-      #pictureBoxForFriend
-        if(otherUser.picture)
-          img(src='/userimage'+otherUser.picture, width='102px', height='102px')
-        else if(otherUser.fb_photo)
-          img(src='{{otherUser.fb_photo}}', width='102px', height='102px')
-        else if(otherUser.google_photo)
-          img(src='{{otherUser.google_photo}}', width='102px', height='102px')
-        else if(otherUser.windows_photo)
-          img(src='{{otherUser.windows_photo}}', width='102px', height='102px')
-        else
-          img(src='/images/displayPic.jpg', width='102px', height='102px')
-      #userNameBoxForFriend
-        #userInfoDetails
-          h5 {{otherUser.firstname}} {{otherUser.lastname}}
-          b KiboName: 
-          i {{otherUser.username}}
-          br
-          small
-            i {{otherUser.status}}
-        #userViewOptions
-          span
-            button.btn.btn-send(ng-click='callThisPerson(otherUser.username)') Make a Call
-    .chatArea
-      .chatBox(schroll-bottom='messages')
-        div(ng-show='loadUnderProgress()', style='text-align:center;')
-          img(src='images/ProgressIcon.gif', width='60px', height='60px')
-        div(ng-repeat='message in messages')
-          .chatMessage
-            .senderInfoInMessage
-              b {{message.fromFullName}} 
-            .messageTextInMessage
-              | {{message.msg}}
-      .chatControls
-        form(class='chatMessageForm', role='form', ng-submit='sendIM()', ng-if='hasSharedDetails()')
-          //http://stackoverflow.com/questions/6014702/how-do-i-detect-shiftenter-and-generate-a-new-line-in-textarea
-          input.chatTextField(type='text', ng-model='im.msg', placeholder='Send a message')
-        div(ng-if='!hasSharedDetails()')
-          center You must be friends with {{otherUser.firstname}} {{otherUser.lastname}} to start chat.
-          center
-            button.btn.btn-send(ng-click='openAddContact()') Send a friend request
+                        div(ng-controller='IMController')
+                          div(ng-init='otherUser=#{JSON.stringify(otherUser)}')
+                            div(class="friendInfoBoxContainer")
+                              #pictureBoxForFriend
+                                if(otherUser.picture)
+                                  img(src='/api/users/userimage'+otherUser.picture, width='102px', height='102px')
+                                else if(otherUser.fb_photo)
+                                  img(src='{{otherUser.fb_photo}}', width='102px', height='102px')
+                                else if(otherUser.google_photo)
+                                  img(src='{{otherUser.google_photo}}', width='102px', height='102px')
+                                else if(otherUser.windows_photo)
+                                  img(src='{{otherUser.windows_photo}}', width='102px', height='102px')
+                                else
+                                  img(src='/images/displayPic.jpg', width='102px', height='102px')
+                              #userNameBoxForFriend
+                                #userInfoDetails
+                                  h5 {{otherUser.firstname}} {{otherUser.lastname}}
+                                  b KiboName: 
+                                  i {{otherUser.username}}
+                                  br
+                                  small
+                                    i {{otherUser.status}}
+                                #userViewOptions
+                                  span
+                                    button.btn.btn-send(ng-click='callThisPerson(otherUser.username)') Make a Call
+                            .chatArea
+                              .chatBox(schroll-bottom='messages')
+                                div(ng-show='loadUnderProgress()', style='text-align:center;')
+                                  img(src='images/ProgressIcon.gif', width='60px', height='60px')
+                                div(ng-repeat='message in messages')
+                                  .chatMessage
+                                    .senderInfoInMessage
+                                      b {{message.fromFullName}} 
+                                    .messageTextInMessage
+                                      | {{message.msg}}
+                              .chatControls
+                                form(class='chatMessageForm', role='form', ng-submit='sendIM()', ng-if='hasSharedDetails()')
+                                  //http://stackoverflow.com/questions/6014702/how-do-i-detect-shiftenter-and-generate-a-new-line-in-textarea
+                                  input.chatTextField(type='text', ng-model='im.msg', placeholder='Send a message')
+                                div(ng-if='!hasSharedDetails()')
+                                  center You must be friends with {{otherUser.firstname}} {{otherUser.lastname}} to start chat.
+                                  center
+                                    button.btn.btn-send(ng-click='openAddContact()') Send a friend request

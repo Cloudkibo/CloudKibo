@@ -29,7 +29,7 @@ exports.create = function (req, res, next) {
   newUser.role = 'user';
   newUser.save(function(err, user) {
     if (err) return validationError(res, err);
-    var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 }); // 60*5
+    var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
     res.json({ token: token });
   });
 };
@@ -231,9 +231,146 @@ exports.updateimage = function(req, res, next){
  * Search by username
  */
 exports.searchbyusername = function(req, res, next){
-	User.findOne({username : req.body.searchusername}, function (err, gotUserSaved) {
-		res.json(gotUserSaved);		
+	User.findOne({username : req.body.searchusername}, function (err, gotUser) {
+		res.json(gotUser);		
 	})
+}
+
+
+
+/**
+ * Search by email
+ */
+exports.searchbyemail = function(req, res, next){
+	User.findOne({email : req.body.searchemail}, function (err, gotUser) {
+		res.json(gotUser);		
+	})
+}
+
+
+
+/**
+ * Invite by email
+ */
+exports.invitebyemail = function(req, res, next){
+	
+				
+	var sendgrid  = require('sendgrid')('cloudkibo', 'cl0udk1b0');
+
+	var email     = new sendgrid.Email({
+	  to:       req.body.recipientEmail,
+	  from:     'support@cloudkibo.com',
+	  subject:  ''+ req.user.firstname +' via CloudKibo: Join my Video Call',
+	  text:     ''
+	});
+	
+	var message = req.body.shortmessage;
+	if(req.body.shortmessage == null || req.body.shortmessage == 'undefined')
+	   message = 'Hello, I am available on CloudKibo for Video Chat.';
+
+	email.setHtml('<h1>CloudKibo</h1><br><br>'+req.user.firstname+' has invited you to connect on CloudKibo.<br><br>'+
+	'Follow the following URL to make an account on CloudKibo and Starting Video Conversations in real time in your browser.'+
+	' <br><br><a href="https://www.cloudkibo.com/" target=_blank>http://www.cloudkibo.com/</a><br><br><br>' +
+	'<span style="background:#22DFFF; width:100%; text-align:center;"><b><i>'+ message +'</i></b></span><br><br><br>'+
+	'<p><b>With CloudKibo<b> you can do</b></p><br><ul><li>Video Call</li><li>Audio Call</li><li>File Transfering'+
+	'</li><li>Screen Sharing</li><li>Instant Messaging</li></ul><br><br> Join CloudKibo and talk your dearest ones.');
+
+	sendgrid.send(email, function(err, json) {
+	  if (err) { return console.error(err); }
+
+	  console.log(json);
+
+	});
+	
+	res.send({status: 'success', msg: 'Email Sent Successfully'})
+
+}
+
+
+
+/**
+ * Initial Testing done by user is updated here
+ */
+exports.initialtesting = function(req, res, next){
+	User.findById(req.user._id, function (err, gotUser) {
+		if (err) return console.log('Error 1'+ err)
+		
+		gotUser.initialTesting = req.body.initialTesting;
+			
+		gotUser.save(function (err2) {
+			if (err2) return console.log('Error 2'+ err2);
+			
+			User.findById(req.user._id, function (err3, gotUser1) {
+				if (err3) return console.log('Error 3'+ err3);
+				res.send({status: 'success', msg: gotUser1})
+			})
+			
+			
+		});
+	})
+}
+
+
+
+/**
+ * Set the status message of the user
+ */
+exports.setstatusmessage = function(req, res, next){
+	User.findById(req.user._id, function (err, gotUser) {
+		if (err) return console.log('Error 1'+ err)
+		
+		gotUser.status = req.body.status;
+				 
+		gotUser.save(function (err2) {
+				if (err2) return console.log('Error 2'+ err2);
+				res.send({status : 'success', msg : 'stored the message'});
+		 });
+	})
+}
+
+
+
+/**
+ * Password reset request route
+ */
+exports.resetpasswordrequest = function(req, res, next){
+	User.findOne({username : req.body.username}, function(err, gotUser){
+	  if(err) return console.log(err)
+	  if(!gotUser) return res.send({status:'error', msg:'Sorry! No such username exists in our database.'})
+	  
+	  var tokenString = crypto.randomBytes(15).toString('hex');
+			
+		var passwordresettoken = tokenSchemas.passwordresettoken
+		
+		var newToken = new passwordresettoken({
+					user : gotUser._id,
+					token : tokenString
+		});
+		
+		newToken.save(function(err){
+			if (err) return console.log(err)
+		})
+		
+		var sendgrid  = require('sendgrid')('cloudkibo', 'cl0udk1b0');
+			
+		var email     = new sendgrid.Email({
+		  to:       gotUser.email,
+		  from:     'support@cloudkibo.com',
+		  subject:  'CloudKibo: Password Reset',
+		  text:     'Password Reset'
+		});
+		
+		email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to change your password <br><br> http://www.cloudkibo.com/resetpassword/'+ tokenString);
+		
+		sendgrid.send(email, function(err, json) {
+		  if (err) { return console.error(err); }
+		  
+		  console.log(json);
+		  
+		  res.send({status:'success', msg:'Password Reset Link has been sent to your email address. Check your spam or junk folder if you have not received our email.'});
+		  
+		});
+  })
 }
 
 

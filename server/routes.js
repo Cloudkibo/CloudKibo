@@ -75,11 +75,17 @@ module.exports = function(app) {
   //**************************************************************************************************//
   
 
-  app.route('/')
+  app.route('/index')
 	.get(viewroutes.indexRoute);
-
+	
+  app.route('/')
+	.get(viewroutes.appRoute);
+	
   app.route('/home')
 	.get(auth.isAuthenticated(), viewroutes.homeRoute);
+	
+  app.route('/app')
+	.get(function(req, res){ res.redirect('/'); })
 
   app.route('/meeting/*')
 	.get(auth.isAuthenticated(), viewroutes.meetingRoute);
@@ -93,10 +99,10 @@ module.exports = function(app) {
   app.route('/features')
 	.get(viewroutes.featuresViewRoute);
 
-  app.route('/login')
+  app.route('/loginview')
 	.get(viewroutes.loginViewRoute);
 
-  app.route('/register')
+  app.route('/registerview')
 	.get(viewroutes.registerViewRoute);
 
   app.route('/forgotpassword')
@@ -104,9 +110,6 @@ module.exports = function(app) {
 
   app.route("/resetpassword/*")
 	.get(viewroutes.resetPasswordViewRoute);
-
-  app.route("/welcomescreen")
-	.get(auth.isAuthenticated(), viewroutes.welcomeScreenViewRoute);
 
   app.route("/getuserview/*")
 	.get(auth.isAuthenticated(), viewroutes.getUserViewRoute);
@@ -135,7 +138,10 @@ module.exports = function(app) {
   // All other routes should redirect to the index.html
   app.route('/*')
     .get(function(req, res) {
-      res.render('404');
+      res.redirect('/');//res.render('404');
+    })
+    .post(function(req, res) {
+      res.redirect('/');//res.render('404');
     });
   
   

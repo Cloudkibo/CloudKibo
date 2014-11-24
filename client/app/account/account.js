@@ -4,15 +4,15 @@ angular.module('cloudKiboApp')
   .config(function ($routeProvider) {
     $routeProvider
       .when('/login', {
-        templateUrl: 'app/account/login/login.html',
+        templateUrl: '/loginview',
         controller: 'LoginCtrl'
       })
-      .when('/signup', {
-        templateUrl: 'app/account/signup/signup.html',
+      .when('/register', {
+        templateUrl: 'registerview',
         controller: 'SignupCtrl'
       })
       .when('/settings', {
-        templateUrl: 'app/account/settings/settings.html',
+        templateUrl: '/settings',
         controller: 'SettingsCtrl',
         authenticate: true
       });

@@ -4,7 +4,7 @@ block append head
   //script(src='/javascripts/cloudKiboApp.js')
 
 block bodycontent
- div(ng-controller='LoginRegister', class='main')
+ div(class='main')
    .container
      div(class='row margin-bottom-40')
        div(class='sidebar col-md-3 col-sm-3')
@@ -22,7 +22,7 @@ block bodycontent
          .content-form-page
            .row
              div(class='col-md-7 col-sm-7')
-               form(role='form', novalidate, name='form', class='css-form form-horizontal', enctype='multipart/form-data', ng-submit='registerForm()')
+               form(role='form', novalidate, name='form', class='css-form form-horizontal', enctype='multipart/form-data', ng-submit='register(form)')
                  fieldset
                    legend Your Personal Details
                    .form-group
@@ -110,7 +110,7 @@ block bodycontent
                    div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')            
                      button.btn.btn-account.btn-send(type='submit', ng-disabled="form.$invalid || isUnchanged(user)") Submit
                    div(ng-show='underProgress()', style='text-align:center;')
-                     img(src='images/ProgressIcon.gif', width='60px', height='60px')
+                     img(src='/images/ProgressIcon.gif', width='60px', height='60px')
                  .row
                    div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')            
                      alert(ng-repeat='alert in alertsRegister', type='alert.type', close='closeAlertRegister($index)') {{alert.msg}}

@@ -14,8 +14,14 @@ router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', controller.create);
 router.post('/userimage/update', auth.isAuthenticated(), controller.updateimage);
-router.get('userimage/:image', auth.isAuthenticated(), controller.userimage);
+router.get('/userimage/:image', controller.userimage);
 router.put('/update', auth.isAuthenticated(), controller.update);
 router.post('/searchbyusername', auth.isAuthenticated(), controller.searchbyusername);
+router.post('/searchbyemail', auth.isAuthenticated(), controller.searchbyemail);
+router.post('/invitebyemail', auth.isAuthenticated(), controller.invitebyemail);
+router.post('/initialtestingdone', auth.isAuthenticated(), controller.initialtesting);
+router.post('/setstatusmessage', auth.isAuthenticated(), controller.setstatusmessage);
+router.post('/resetpasswordrequest', controller.resetpasswordrequest);
+//app.post("/ChangePassword", postroutes.changePasswordRoute); 			FROM RESET PASSWORD TOKEN TOO
 
 module.exports = router;

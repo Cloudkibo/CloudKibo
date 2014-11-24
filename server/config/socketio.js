@@ -64,8 +64,11 @@ function onConnect(socketio, socket) {
 			var i = 0;
 			clients.forEach(function(client) {
 				client.get('nickname', function(err, nickname) {
-					if(nickname == room.username)
+					if(nickname == room.username){
 						canJoin = false;
+						//client.leave(room.room);
+						console.log('CASE OF JOINING TWICE!')
+					}
 					i++;
 				})
 			});
@@ -82,6 +85,9 @@ function onConnect(socketio, socket) {
 					socket.emit('joined', room);
 				}
 				else{
+					//socket.join(room.room);
+					//socket.set('nickname', room.username);
+					//socket.emit('created', room);
 					socket.emit('joining twice', room);
 				}
 			} else { // max two clients
@@ -157,7 +163,7 @@ function onConnect(socketio, socket) {
 				})
 			});
 			
-			
+			 
 			socketio.sockets.socket(socketid).emit('im', im.stanza);
 			
 		});
@@ -193,7 +199,7 @@ function onConnect(socketio, socket) {
 					clients.forEach(function(client) {
 						client.get('nickname', function(err, nickname) {
 							
-							for(j in gotContactList){
+							for(var j in gotContactList){
 									if(nickname == gotContactList[j].contactid.username){
 										socketid = client.id;
 										socketio.sockets.socket(socketid).emit('offline', room.user);

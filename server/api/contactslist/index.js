@@ -9,5 +9,9 @@ var router = express.Router();
 
 router.get('/', auth.isAuthenticated(), controller.index);
 router.get('/pendingcontacts', auth.isAuthenticated(), controller.pendingcontacts);
+router.post('/addbyusername', auth.isAuthenticated(), controller.addbyusername);
+router.post('/addbyemail', auth.isAuthenticated(), controller.addbyemail);
+router.post('/approvefriendrequest', auth.isAuthenticated(), controller.approvefriendrequest);
+router.post('/rejectfriendrequest', auth.isAuthenticated(), controller.rejectfriendrequest);
 
 module.exports = router;
