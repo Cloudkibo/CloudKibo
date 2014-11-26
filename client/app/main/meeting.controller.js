@@ -1,19 +1,16 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('MeetingController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
+  .controller('MeetingController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location){
 	  
 	  $scope.user = $scope.getCurrentUser();
 	  
-	  
+	  var roomid;
 	////////////////////////////////////////////////////////////////////////////////////////
 	// Create or Join Room Logic                                                          //
 	////////////////////////////////////////////////////////////////////////////////////////
 	
-	if(window.location.pathname.replace('/', '') != 'home'){
-	  roomid = window.location.pathname.replace('/', '');
-	  roomid = roomid.split('/')[1];
-	}
+	roomid = $location.url().split('/')[2];
 	
 	////////////////////////////////////////////////////////////////////////////////////////
 	// WebRTC User Interface Logic                                                        //
@@ -159,12 +156,22 @@ angular.module('cloudKiboApp')
 	  console.log.apply(console, array);
 	});
 	
+	$scope.$on('$locationChangeStart', function(event) {
+		var endTime = new Date();
+		$scope.meetingData.EndTime = endTime.toUTCString();
+		$scope.recordMeetingData();
+		sendMessage({msg: 'bye', FromUser : $scope.user.username});
+		$scope.LeaveRoom();  
+		localStream.stop(); 
+    });
+
 	window.onbeforeunload = function(e){
 		var endTime = new Date();
 		$scope.meetingData.EndTime = endTime.toUTCString();
 		$scope.recordMeetingData();
 		sendMessage({msg: 'bye', FromUser : $scope.user.username});
 		$scope.LeaveRoom();
+		localStream.stop();
 	}
 	
 	function sendMessage(message){
@@ -177,7 +184,7 @@ angular.module('cloudKiboApp')
 	
 	////////////////////////////////////////////////////////////////////////////////////////
 	// Variables for WebRTC Session                                                       //
-	///////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////
 	
 	var pcIndex = 0;
 	var pcLength = 4;
@@ -415,6 +422,13 @@ angular.module('cloudKiboApp')
 				$scope.$apply(function(){
 					$scope.peer4Joined = false;
 				 })
+			}
+
+			if(!$scope.firstVideoAdded && !$scope.secondVideoAdded && !$scope.thirdVideoAdded && !$scope.forthVideoAdded){
+				localStream.stop();
+				$scope.localCameraOn = false;
+				$scope.callEnded = true;
+				console.log("HIN MEI AYO AAA")
 			}
 			
 			pcIndex--;
@@ -1541,6 +1555,15 @@ angular.module('cloudKiboApp')
 	////////////////////////////////////////////////////////////////////////////////////////
 	  
   })
+
+
+
+
+
+
+
+
+
   
   .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
 	  
@@ -2791,6 +2814,14 @@ angular.module('cloudKiboApp')
 	  
   })
   
+
+
+
+
+
+
+
+
   .controller('VideoCallController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
 	  
 	  	

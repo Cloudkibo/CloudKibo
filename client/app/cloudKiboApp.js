@@ -13,6 +13,11 @@ angular.module('cloudKiboApp', [
 			templateUrl: function(params){ return '/getuserview/'+ params.username},
 			controller: 'HomeController'
 	  })
+
+	  .when('/meeting/:mname', {
+			templateUrl: function(params){ return '/meeting/'+ params.mname},
+			controller: 'MeetingController'
+	  })
 	  
       .otherwise({
         redirectTo: '/'

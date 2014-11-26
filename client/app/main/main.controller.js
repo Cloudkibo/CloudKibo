@@ -698,6 +698,7 @@ angular.module('cloudKiboApp')
 	 })
 	 
 	 socket.on('statusUpdate', function(user){
+	 	
 		if($scope.otherUser.username == user.username) 
 			$scope.otherUser.status = user.status;
 	 })
@@ -794,7 +795,7 @@ angular.module('cloudKiboApp')
 	
 	socket.on('youareonline', function (friends){
 	    for(i in friends){
-			for(j in $scope.contactslist){
+			for(var j in $scope.contactslist){
 				if($scope.contactslist[j].contactid.username == friends[i].username){
 					$scope.contactslist[j].online = true;
 					break;

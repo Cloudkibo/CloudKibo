@@ -70,13 +70,13 @@ block bodycontent
           input.form-control(type='text', ng-model='meetingroom')
           br
           br
-          label Meeting Room Link to share with participants
+          label Please ask participants to join meeting using this meeting name
           br
-          b https://www.cloudkibo.com/meeting/{{meetingroom}}
+          b {{meetingroom}}
           br
           br
           center
-            a(href='https://www.cloudkibo.com/meeting/{{meetingroom}}', target='_blank')
+            a(href='/meeting/{{meetingroom}}')
               h4 Join My Meeting Room
           br
           br
@@ -446,7 +446,7 @@ block bodycontent
                          img(src='/images/displayPic.jpg', width='152px', height='152px', class='img-frame')
                          br
                          br
-                         form(role='form', method="post", action='/updateProfilePic', style='max-width: 300px;', enctype='multipart/form-data', novalidate, name='form8', class='css-form')
+                         form(role='form', method="post", action='/userimage/update', style='max-width: 300px;', enctype='multipart/form-data', novalidate, name='form8', class='css-form')
                            input(type="file", name="fileUploaded", required, ng-model="user.file")
                            br
                            br
