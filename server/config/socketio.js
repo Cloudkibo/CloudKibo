@@ -235,7 +235,7 @@ function onConnect(socketio, socket) {
 					clients.forEach(function(client) {
 						client.get('nickname', function(err, nickname) {
 							
-							for(j in gotContactList){
+							for(var j in gotContactList){
 									if(nickname == gotContactList[j].contactid.username){
 										socketid = client.id;
 										socketio.sockets.socket(socketid).emit('statusUpdate', room.user);
