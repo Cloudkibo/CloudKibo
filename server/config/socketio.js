@@ -146,6 +146,42 @@ function onConnect(socketio, socket) {
 			
 		});
 		
+		socket.on('whozonline', function(room){
+			var myOnlineContacts = [];
+			
+			var clients = socketio.sockets.clients(room.room)
+			
+			var socketid = '';
+			
+			var contactslist = require('./../api/contactslist/contactslist.model.js');
+				
+			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
+				
+				if(gotContactList != null){
+
+					var i = 0;
+					clients.forEach(function(client) {
+						client.get('nickname', function(err, nickname) {
+							
+							for(var j in gotContactList){
+									if(nickname == gotContactList[j].contactid.username){
+										socketid = client.id;
+										socketio.sockets.socket(socketid).emit('online', room.user);
+										myOnlineContacts.push(gotContactList[j].contactid);
+									}
+							}
+							
+							i++;
+						})
+					});
+					
+					socket.emit('theseareonline', myOnlineContacts);
+
+				}
+				
+			})
+		})
+		
 		socket.on('im', function(im){
 			
 			console.log("GOT THIS MESSAGE", im);
