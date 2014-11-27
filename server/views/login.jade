@@ -67,17 +67,17 @@ block bodycontent
                        p(class='text-muted') or login using:
                        div
                            div
-                             a(class='btn-auth btn-facebook', href='/auth/facebook')
+                             a(class='btn-auth btn-facebook', ng-click='loginOauth("facebook")')
                                | Login with 
                                b Facebook
                            br
                            div
-                             a(class='btn-auth btn-google', href='/auth/google')
+                             a(class='btn-auth btn-google', ng-click='loginOauth("google")')
                                | Login with 
                                b Google+
                            br
                            div
-                             a(class='btn-auth btn-windows', href='/auth/windowslive')
+                             a(class='btn-auth btn-windows', ng-click='loginOauth("windowslive")')
                                | Login with 
                                b Microsoft
  .footer

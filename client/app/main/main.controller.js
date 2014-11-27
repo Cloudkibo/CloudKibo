@@ -41,6 +41,7 @@ angular.module('cloudKiboApp')
 		$http.post('/api/users/searchbyusername', {searchusername : $location.url().split('/')[2]})
 		.success(function (data){
 			$scope.otherUser = data;
+			$scope.fetchChatNow();
 		});
 	}
 
@@ -631,9 +632,9 @@ angular.module('cloudKiboApp')
 	 $scope.messages = [];
 	 $scope.im = {};
 	 
-	 $scope.timeOut = function(){
-		
-		$http.post('/getChatMessages', {user1: $scope.user.username, user2: $scope.otherUser.username}).success(
+	 $scope.fetchChatNow = function(){
+		console.log($scope.user.username +'    '+ $scope.otherUser.username);
+		$http.post('/api/userchat/', {user1: $scope.user.username, user2: $scope.otherUser.username}).success(
 		 function(data){
 			 if(data.status == 'success'){
 				
@@ -649,14 +650,12 @@ angular.module('cloudKiboApp')
 		 for(i in $scope.contactslist){
 			if($scope.contactslist[i].contactid.username == $scope.otherUser.username){
 				$scope.contactslist[i].unreadMessage = false;
-				$http.post('/markMessageRead', {user1: $scope.user._id, user2: $scope.otherUser._id}).success();
+				$http.post('/api/userchat/markasread', {user1: $scope.user._id, user2: $scope.otherUser._id}).success();
 			}
 		 }
 		 	
 	}
 	
-	if($location.url() != '/app')
-		$timeout($scope.timeOut, 1000);
 	 
 	 $scope.sendIM = function (){
 		 
@@ -673,7 +672,7 @@ angular.module('cloudKiboApp')
 				 
 				 $scope.messages.push($scope.im);
 				 
-				 $http.post('/saveChatMessage', $scope.im).success(function(data){});
+				 $http.post('/api/userchat/save', $scope.im).success(function(data){});
 				 
 				 $scope.im = {};
 			 }
@@ -2066,6 +2065,10 @@ angular.module('cloudKiboApp')
 	   
 	  
   })
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // HOME CONTROLLER ENDS HERE
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   .controller('AddRequestsController', function($scope){})
   
@@ -2134,3 +2137,4 @@ angular.module('cloudKiboApp')
 
 	  
   });
+  

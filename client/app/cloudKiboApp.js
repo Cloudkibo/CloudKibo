@@ -11,7 +11,7 @@ angular.module('cloudKiboApp', [
 
 	  .when('/contact/:username', {
 			templateUrl: function(params){ return '/getuserview/'+ params.username},
-			controller: 'HomeController'
+			controller: 'HomeController' // IMCONtroller
 	  })
 
 	  .when('/meeting/:mname', {
