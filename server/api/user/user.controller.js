@@ -127,6 +127,7 @@ exports.update = function(req, res, next) {
  * Update User Image
  */
 exports.updateimage = function(req, res, next){
+	console.log(req.files)
 	User.findById(req.user._id, function (err, gotUser) {
 		if (err) return console.log('Error 1'+ err)
 		

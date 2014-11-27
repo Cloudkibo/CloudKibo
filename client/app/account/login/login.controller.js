@@ -36,8 +36,9 @@ angular.module('cloudKiboApp')
           $location.path('/app');
         })
         .catch( function(err) {
-		  $scope.progressState = false;
-          $scope.errors.other = err.message;
+          console.log(err)
+		      $scope.progressState = false;
+          //$scope.errors.other = err.message;
           $scope.addAlert('danger', err.message)
         });
       }

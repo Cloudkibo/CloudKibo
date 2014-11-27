@@ -628,7 +628,7 @@ angular.module('cloudKiboApp')
 	////////////////////////////////////////////////////////////////////////////////////////
 	
 	
-	$scope.messages = [];
+	 $scope.messages = [];
 	 $scope.im = {};
 	 
 	 $scope.timeOut = function(){
@@ -748,7 +748,7 @@ angular.module('cloudKiboApp')
 	
 	 $scope.createOrJoinRoom = function(){
 		//console.log('Create or join room', {room: roomid, username: $scope.user.username});
-		
+		console.log(roomid)
 		// Leave room if already joined... (temporary fix)
 		socket.emit('leave', {room: roomid, username: $scope.user.username});
 		socket.emit('leaveChat', {room: 'globalchatroom', user: $scope.user});
@@ -1240,6 +1240,7 @@ angular.module('cloudKiboApp')
 		$scope.areYouCallingSomeone = true;
 		$scope.OutgoingCallStatement = 'Now Calling... '; 
 		$scope.otherSideRinging = true;
+		$scope.ILeftMyRoom = true;
 	 }
 	 
 	 $scope.StopOutgoingCall = function(){
