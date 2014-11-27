@@ -250,8 +250,8 @@ function onConnect(socketio, socket) {
 				
 			})
 			
-			
-			//console.log(socketio.sockets.manager.rooms)
+			console.log('I LEFT CHAT')
+			console.log(socketio.sockets.manager.rooms)
 			
 		});
 		
