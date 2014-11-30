@@ -3,6 +3,7 @@
 var contactslist = require('./contactslist.model');
 var User = require('../user/user.model');
 var config = require('../../config/environment');
+var userchat = require('../userchat/userchat.model');
 
 
 exports.index = function(req, res) {
@@ -165,3 +166,33 @@ exports.rejectfriendrequest = function(req, res) {
 		})
 	})
 };
+
+
+exports.removefriend = function(req, res) {
+	 User.findById(req.user._id, function (err, gotUser) {
+		if (err) return console.log('Error 1'+ err)
+						
+		User.findOne({username : req.body.contact.username}, function (err, gotUserSaved) {
+			
+			contactslist.remove({userid : gotUserSaved._id, contactid : gotUser._id}, function(err6){ //dost jee list mei ma ahya
+
+				contactslist.remove({userid : gotUser._id, contactid : gotUserSaved._id}, function(err6){ //munji list mei dost aa
+
+					userchat.remove({$or: [ { to : gotUserSaved.username, from : gotUser.username }, 
+										{ to : gotUser.username, from : gotUserSaved.username } ]}, 
+										function(err1){
+											if(err1) return console.log(err1);
+											
+											res.send({status: 'success', msg: 'Friend is removed'});
+											
+										})
+				
+
+				})
+				
+			})
+			
+		})
+	})
+};
+

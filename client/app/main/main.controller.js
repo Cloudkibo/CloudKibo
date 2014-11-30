@@ -430,6 +430,26 @@ angular.module('cloudKiboApp')
 		});
 	}
 
+	$scope.removeFriend = function(index){
+		$http.post('/api/contactslist/removefriend', {contact : index})
+		.success(function(data){
+			console.log(data)
+			if(data.status == 'success'){
+				$location.path('/app');
+			}
+		});
+	}
+
+	$scope.removechathistory = function(index){
+		$http.post('/api/userchat/removechathistory', {contact : index})
+		.success(function(data){
+			console.log(data)
+			if(data.status == 'success'){
+				$location.path('/app');
+			}
+		});
+	}
+
 	
 	////////////////////////////////////////////////////////////////////////////////////////
 	// WebRTC User Interface Logic                                                        //

@@ -8,7 +8,8 @@ var userchat = new Schema({
       from : String,
       fromFullName : String,
       msg : String,
-      date : {type: Date, default: Date.now }
+      date : {type: Date, default: Date.now },
+      owneruser : String
 });
 
 
