@@ -307,6 +307,8 @@ angular.module('cloudKiboApp')
 					$scope.openAddContact();
 					
 					$scope.contactslist = data.msg;
+
+					socket.emit('friendrequest', {room: 'globalchatroom', userid: $scope.user, contact: add.searchusername})
 					
 				}
 				else{
@@ -331,6 +333,8 @@ angular.module('cloudKiboApp')
 					$scope.openAddContact();
 					
 					$scope.contactslist = data.msg;
+
+					socket.emit('friendrequest', {room: 'globalchatroom', userid: $scope.user, contact: add.searchemail})
 					
 				}
 				else{
@@ -409,6 +413,10 @@ angular.module('cloudKiboApp')
 	$http.get('/api/contactslist/pendingcontacts').success(function(data){ 
     	$scope.addRequestslist = data;
     });
+
+    socket.on('friendrequest', function(data){
+    	$scope.addRequestslist.push(data);
+    })
 	
 	
 	$scope.approveFriendRequest = function(index){
@@ -417,6 +425,7 @@ angular.module('cloudKiboApp')
 			if(data.status == 'success'){
 				$scope.contactslist = data.msg;
 				$scope.addRequestslist.splice(index, 1);
+				socket.emit('whozonline', {room: 'globalchatroom', user: $scope.user})
 			}
 		});
 	}
@@ -813,6 +822,17 @@ angular.module('cloudKiboApp')
 	});
 	
 	socket.on('youareonline', function (friends){
+	    for(i in friends){
+			for(var j in $scope.contactslist){
+				if($scope.contactslist[j].contactid.username == friends[i].username){
+					$scope.contactslist[j].online = true;
+					break;
+				}
+			}
+		}
+	});
+
+	socket.on('theseareonline', function (friends){
 	    for(i in friends){
 			for(var j in $scope.contactslist){
 				if($scope.contactslist[j].contactid.username == friends[i].username){

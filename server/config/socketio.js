@@ -203,6 +203,28 @@ function onConnect(socketio, socket) {
 			socketio.sockets.socket(socketid).emit('im', im.stanza);
 			
 		});
+
+		socket.on('friendrequest', function(im){
+			
+			console.log("GOT THIS MESSAGE", im);
+			
+			var clients = socketio.sockets.clients(im.room)
+			
+			var socketid = '';
+			
+			var i = 0;
+			clients.forEach(function(client) {
+				client.get('nickname', function(err, nickname) {
+					if(nickname == im.contact)
+						socketid = client.id;
+					i++;
+				})
+			});
+			
+			 
+			socketio.sockets.socket(socketid).emit('friendrequest', im);
+			
+		});
 		
 		socket.on('leave', function (room) {
 			

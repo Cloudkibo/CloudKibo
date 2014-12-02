@@ -98,29 +98,6 @@ block appbodycontent
 
                         if(!otherUser)
                           div(ng-if='getlocation() == "/app"')
-                            .addRequestLabelContainer
-                              h5 Friend Requests
-                            div
-                              .contact(ng-controller='AddRequestsController', ng-repeat = 'contact in addRequestslist')
-                                  table(width='100%')
-                                    tr
-                                      td(width='5%')
-                                        #contactsPictureBox
-                                          img(ng-if='contact.userid.picture != null', src='/api/users/userimage{{contact.userid.picture}}', width='32px', height='32px')
-                                          img(ng-if='contact.userid.fb_photo != null', src='{{contact.userid.fb_photo}}', width='32px', height='32px')
-                                          img(ng-if='contact.userid.google_photo != null', src='{{contact.userid.google_photo}}', width='32px', height='32px')
-                                          img(ng-if='contact.userid.windows_photo != null', src='{{contact.userid.windows_photo}}', width='32px', height='32px')
-                                          img(ng-if='contact.userid.fb_photo == null && contact.userid.google_photo == null && contact.userid.windows_photo == null', src='/images/displayPic.jpg', width='32px', height='32px')
-                                      td(width='55%')
-                                        a(href='#{{contact.userid.username}}')
-                                          b {{contact.userid.firstname}} {{contact.userid.lastname}}
-                                      td(width='20%', align='center')
-                                        button.btn.btn-send(ng-click='approveFriendRequest($index)') Approve
-                                      td(width='20%', align='center')
-                                        button.btn.btn-send(ng-click='rejectFriendRequest($index)') Reject
-                              div(ng-if='addRequestslist.length < 1')
-                                center
-                                  b No Friend Requests
                             center
                               .animate-show(ng-show='isConnected()')
                                 br
@@ -187,6 +164,7 @@ block appbodycontent
                           br
                           alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
                           br
+
                  .sidePane(class='col-md-3 col-sm-3 blog-sidebar')
                    div
                       div(class="userInfoBoxContainer")
@@ -232,6 +210,29 @@ block appbodycontent
                           input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
                           button(ng-click='sendData()') Send
                    .contactsPaneContainer(ng-show='!localCameraCaptured()')
+                     div(ng-if='addRequestslist.length > 0')
+                              b Friend Requests
+                     div(ng-if='addRequestslist.length > 0')
+                              .contact(ng-controller='AddRequestsController', ng-repeat = 'contact in addRequestslist')
+                                  table(width='100%')
+                                    tr
+                                      td(width='5%')
+                                        #contactsPictureBox
+                                          img(ng-if='contact.userid.picture != null', src='/api/users/userimage{{contact.userid.picture}}', width='32px', height='32px')
+                                          img(ng-if='contact.userid.fb_photo != null', src='{{contact.userid.fb_photo}}', width='32px', height='32px')
+                                          img(ng-if='contact.userid.google_photo != null', src='{{contact.userid.google_photo}}', width='32px', height='32px')
+                                          img(ng-if='contact.userid.windows_photo != null', src='{{contact.userid.windows_photo}}', width='32px', height='32px')
+                                          img(ng-if='contact.userid.fb_photo == null && contact.userid.google_photo == null && contact.userid.windows_photo == null', src='/images/displayPic.jpg', width='32px', height='32px')
+                                      td(width='55%')
+                                        a(href='/contact/{{contact.userid.username}}')
+                                          b {{contact.userid.firstname}} {{contact.userid.lastname}}
+                                      td(width='20%', align='center')
+                                        a(href='', ng-click='approveFriendRequest($index)')
+                                          i.fa.fa-check-circle
+                                      td(width='20%', align='center')
+                                        a(href='', ng-click='rejectFriendRequest($index)')
+                                          i.fa.fa-times-circle
+
                      .contactsPane
                        .input-icon.margin-top-10
                          i.fa.fa-search
