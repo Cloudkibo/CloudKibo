@@ -22,7 +22,7 @@ exports.setup = function (User, config) {
             email: profile.emails[0].value,
             role: 'user',
             windows_photo: profile.photos[0].value,
-            username: profile.username,
+            username: profile.emails[0].value.split('@')[0],
             provider: 'windowslive',
             windowslive: profile._json
           });
