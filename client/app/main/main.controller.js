@@ -41,7 +41,7 @@ angular.module('cloudKiboApp')
 		$http.post('/api/users/searchbyusername', {searchusername : $location.url().split('/')[2]})
 		.success(function (data){
 			$scope.otherUser = data;
-			$scope.fetchChatNow();
+			
 		});
 	}
 
@@ -406,6 +406,7 @@ angular.module('cloudKiboApp')
 	
 	$http.get('/api/contactslist/').success(function(data){ 
     	$scope.contactslist = data;
+    	$scope.fetchChatNow();
     }).error(function(err){ console.log('error ', err)});
     
     $scope.addRequestslist = {};
@@ -662,7 +663,7 @@ angular.module('cloudKiboApp')
 	 $scope.im = {};
 	 
 	 $scope.fetchChatNow = function(){
-		console.log($scope.user.username +'    '+ $scope.otherUser.username);
+		
 		$http.post('/api/userchat/', {user1: $scope.user.username, user2: $scope.otherUser.username}).success(
 		 function(data){
 			 if(data.status == 'success'){
@@ -676,7 +677,7 @@ angular.module('cloudKiboApp')
 			}
 		 })
 		 
-		 for(i in $scope.contactslist){
+		 for(var i in $scope.contactslist){
 			if($scope.contactslist[i].contactid.username == $scope.otherUser.username){
 				$scope.contactslist[i].unreadMessage = false;
 				$http.post('/api/userchat/markasread', {user1: $scope.user._id, user2: $scope.otherUser._id}).success();
