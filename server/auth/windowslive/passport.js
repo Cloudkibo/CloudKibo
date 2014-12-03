@@ -22,7 +22,6 @@ exports.setup = function (User, config) {
             email: profile.emails[0].value,
             role: 'user',
             windows_photo: profile.photos[0].value,
-            phone : profile._json.phones.personal,
             username: profile.username,
             provider: 'windowslive',
             windowslive: profile._json
