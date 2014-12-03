@@ -22,7 +22,7 @@ exports.setup = function (User, config) {
             email: profile.emails[0].value,
             role: 'user',
             google_photo: profile._json.picture,
-            username: profile.username,
+            username: profile.emails[0].value.split('@')[0],
             provider: 'google',
             google: profile._json
           });
