@@ -10,6 +10,7 @@ require('./local/passport').setup(User, config);
 require('./facebook/passport').setup(User, config);
 require('./google/passport').setup(User, config);
 require('./twitter/passport').setup(User, config);
+require('./windowslive/passport').setup(User, config);
 
 var router = express.Router();
 

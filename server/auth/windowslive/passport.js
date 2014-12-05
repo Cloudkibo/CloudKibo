@@ -8,6 +8,7 @@ exports.setup = function (User, config) {
       callbackURL: config.windowslive.callbackURL
     },
     function(accessToken, refreshToken, profile, done) {
+      console.log(profile);
       User.findOne({
         'windowslive.id': profile.id
       }, function(err, user) {
@@ -17,12 +18,11 @@ exports.setup = function (User, config) {
         if (!user) {
           user = new User({
             firstname : profile.name.givenName,
-		    lastname : profile.name.familyName,
+		        lastname : profile.name.familyName,
             email: profile.emails[0].value,
             role: 'user',
             windows_photo: profile.photos[0].value,
-            phone : profile._json.phones.personal,
-            username: profile.username,
+            username: profile.emails[0].value.split('@')[0],
             provider: 'windowslive',
             windowslive: profile._json
           });
