@@ -2824,7 +2824,7 @@ angular.module('cloudKiboApp')
 
   .controller('VideoCallController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
 	  
-	  	
+	 var roomid = '';
 	////////////////////////////////////////////////////////////////////////////////////////
 	// Create or Join Room Logic                                                          //
 	////////////////////////////////////////////////////////////////////////////////////////

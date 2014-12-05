@@ -1311,12 +1311,14 @@ angular.module('cloudKiboApp')
 		sendMessage('Accept Call');
 		$scope.isSomeOneCalling = false;
 		bell.pause();
+		bell.stop();
 		$scope.ringing = false;
 	 }
 	 $scope.RejectCall = function(){
 		sendMessage('Reject Call')
 		$scope.isSomeOneCalling = false;
 		bell.pause();
+		bell.stop();
 		$scope.ringing = false;
 	 }
 	 
