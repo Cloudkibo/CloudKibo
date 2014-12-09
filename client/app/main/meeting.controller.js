@@ -3120,7 +3120,9 @@ angular.module('cloudKiboApp')
 	 var video_constraints = {video: true, audio: true};
 	 
 	 $scope.startCalling = function(){
+		 
 		getUserMedia(video_constraints, handleUserMedia, handleUserMediaError);
+		
 	 }
 
 	  

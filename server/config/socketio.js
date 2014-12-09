@@ -47,6 +47,31 @@ function onConnect(socketio, socket) {
 			//console.log(socketio.sockets.manager.rooms)
 			
 		});
+		
+		socket.on('messagefordatachannel', function (message) {
+			//console.log('Got message:', message);
+			
+			//socket.broadcast.emit('message', message);
+			
+			message.msg.from = message.from;
+			
+			var clients = socketio.sockets.clients(message.room)
+			
+			var socketid = '';
+			
+			var i = 0;
+			clients.forEach(function(client) {
+				client.get('nickname', function(err, nickname) {
+					if(nickname == message.to)
+						socketid = client.id;
+					i++;
+				})
+			});
+			
+			 
+			socketio.sockets.socket(socketid).emit('messagefordatachannel', message.msg);
+			
+		});
 
 		socket.on('create or join', function (room) {
 			var numClients = socketio.sockets.clients(room.room).length;
