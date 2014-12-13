@@ -3039,6 +3039,7 @@ angular.module('cloudKiboApp')
 	function handleIceCandidate(event) {
 		  if (event.candidate) {
 			  console.log('I got candidate...')
+			  console.log(event.candidate)
 			sendMessage({
 			  type: 'candidate',
 			  label: event.candidate.sdpMLineIndex,
