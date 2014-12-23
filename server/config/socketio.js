@@ -10,7 +10,39 @@ var config = require('./environment');
 
 
 // When the user disconnects.. perform this
-function onDisconnect(socket) {
+function onDisconnect(socketio,socket) {
+	var socketid = '';
+		
+	socket.get('nickname', function(err, nickname) {
+		
+		var clients = socketio.sockets.clients('globalchatroom')
+		var socketid = '';
+		var user = require('./../api/user/user.model.js');
+		user.findOne({username : nickname}, function(err, gotuser){
+			var contactslist = require('./../api/contactslist/contactslist.model.js');
+			
+			contactslist.find({userid : gotuser._id}).populate('contactid').exec(function(err3, gotContactList){
+			console.log(gotContactList);	
+				if(gotContactList != null){
+					var i = 0;
+					clients.forEach(function(client) {
+						client.get('nickname', function(err, nickname2) {
+							for(var j in gotContactList){
+								if(nickname2 == gotContactList[j].contactid.username){
+									socketid = client.id;
+									socketio.sockets.socket(socketid).emit('offline', gotuser);
+								}
+							}
+							i++;
+						})
+					});
+
+				}
+				
+			})
+
+		});
+	})
 }
 
 
@@ -267,7 +299,7 @@ function onConnect(socketio, socket) {
 		socket.on('leaveChat', function (room) {
 			
 			socket.leave(room.room);
-			
+			/*
 			var clients = socketio.sockets.clients(room.room)
 			
 			var socketid = '';
@@ -299,7 +331,7 @@ function onConnect(socketio, socket) {
 			
 			console.log('I LEFT CHAT')
 			console.log(socketio.sockets.manager.rooms)
-			
+			*/
 		});
 		
 		socket.on('status', function (room) {
@@ -469,7 +501,7 @@ module.exports = function (socketio) {
 
     // Call onDisconnect.
     socket.on('disconnect', function () {
-      onDisconnect(socket);
+      onDisconnect(socketio, socket);
       console.info('[%s] DISCONNECTED', socket.address);
     });
 
