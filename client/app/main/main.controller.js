@@ -39,11 +39,11 @@ angular.module('cloudKiboApp')
 	 
 	 $scope.openFileView = false;
 	 
-	 $scope.openFileSendView = function(){
+	$scope.openFileSendView = function(){
 		 return $scope.openFileView;
 	 }
 	  
-	 $scope.startFileChat = function () {	
+	$scope.startFileChat = function () {	
 		 
 		 $scope.openFileView = !$scope.openFileView;
 		 
@@ -923,7 +923,9 @@ angular.module('cloudKiboApp')
 	var i;
 	
 	$scope.otherUser = {};
-	
+
+
+
 	if($location.url() != '/app'){
 		$http.post('/api/users/searchbyusername', {searchusername : $location.url().split('/')[2]})
 		.success(function (data){
@@ -1395,6 +1397,16 @@ angular.module('cloudKiboApp')
 	$scope.ignoreFeedBack = function () {
 		$scope.feedBackSent = true;
 	};
+
+	$scope.showExtension = function(){
+
+		if (chrome.app.isInstalled) {
+		  return false;
+		}
+
+		return true;
+
+	}
 	
 	$scope.localCameraCaptured = function () {
 		return $scope.localCameraOn;
