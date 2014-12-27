@@ -204,6 +204,10 @@ block appbodycontent
                             video(id='localvideoscreen', autoplay='true', muted='true', width='160', class='videoelement')
                           br
                           button(ng-click='showScreen()') {{showScreenText}}
+                          button#install-button(ng-click='installExtension()', style='padding: 0;background: none;height: 61px;vertical-align: middle;cursor:pointer;')
+                            img(src='https://www.webrtc-experiment.com/images/btn-install-chrome-extension.png', alt='Add to Chrome')
+                          
+
                         br
                         br
                         //br

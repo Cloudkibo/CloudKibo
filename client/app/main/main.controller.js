@@ -2235,7 +2235,28 @@ angular.module('cloudKiboApp')
 		 }
 	     
 	 }
-	 
+
+	 $scope.installExtension= function(){
+
+        !!navigator.webkitGetUserMedia
+        && !!window.chrome
+        && !!chrome.webstore
+        && !!chrome.webstore.install &&
+        chrome.webstore.install(
+        'https://chrome.google.com/webstore/detail/hjfejjmhpakdodimneibbmgfhfhjedod',
+        successInstallCallback,
+        failureInstallCallback
+        );
+                            
+	 }
+
+	 function successInstallCallback() {
+        location.reload();
+     }
+    function failureInstallCallback(error) {
+      alert(error);
+    }
+
 	 function handleUserMediaShowScreen(newStream){
 		
 		//if(localStream){
