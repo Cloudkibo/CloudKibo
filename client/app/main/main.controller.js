@@ -1422,17 +1422,12 @@ angular.module('cloudKiboApp')
 	$scope.ignoreFeedBack = function () {
 		$scope.feedBackSent = true;
 	};
+	
+	$scope.extensionAvailable = false;
 
 	$scope.showExtension = function(){
 		
-		console.log('In the show extension place.... ')
-		console.log(chrome.app.isInstalled)
-		
-		if (chrome.app.isInstalled) {
-		  return false;
-		}
-
-		return true;
+		return $scope.extensionAvailable;
 
 	}
 	
@@ -1590,27 +1585,28 @@ angular.module('cloudKiboApp')
 	 $scope.im = {};
 	 
 	 $scope.fetchChatNow = function(){
-		
-		$http.post('/api/userchat/', {user1: $scope.user.username, user2: $scope.otherUser.username}).success(
-		 function(data){
-			 if(data.status == 'success'){
-				
-				for(i in data.msg){
-					$scope.messages.push(data.msg[i]);
+		if(typeof $scope.otherUser != 'undefined'){
+			$http.post('/api/userchat/', {user1: $scope.user.username, user2: $scope.otherUser.username}).success(
+			 function(data){
+				 if(data.status == 'success'){
+					
+					for(i in data.msg){
+						$scope.messages.push(data.msg[i]);
+					}
+					
+					$scope.isUnderProgress = false;
+					
 				}
-				
-				$scope.isUnderProgress = false;
-				
-			}
-		 })
-		 
-		 for(var i in $scope.contactslist){
-			if($scope.contactslist[i].contactid.username == $scope.otherUser.username){
-				$scope.contactslist[i].unreadMessage = false;
-				$http.post('/api/userchat/markasread', {user1: $scope.user._id, user2: $scope.otherUser._id}).success();
-			}
-		 }
-		 	
+			 })
+			 
+			 for(var i in $scope.contactslist){
+				if($scope.contactslist[i].contactid.username == $scope.otherUser.username){
+					$scope.contactslist[i].unreadMessage = false;
+					$http.post('/api/userchat/markasread', {user1: $scope.user._id, user2: $scope.otherUser._id}).success();
+				}
+			 }
+			
+		}
 	}
 	
 	 
@@ -2176,7 +2172,6 @@ angular.module('cloudKiboApp')
 	 }		 
 		
 	 var video_constraints = {video: true, audio: true};
-	 var screen_constraints = {video: { mandatory: { chromeMediaSource: 'screen' } }};
 	 
 	 $scope.startCalling = function(){
 		sendMessage('Incoming Call: '+ $scope.user.username);
@@ -2228,13 +2223,137 @@ angular.module('cloudKiboApp')
 	// Screen Sharing Logic                                                               //
 	///////////////////////////////////////////////////////////////////////////////////////
 	 
+	 // todo: need to check exact chrome browser because opera also uses chromium framework
+	var isChrome = !!navigator.webkitGetUserMedia;
+
+	// DetectRTC.js - https://github.com/muaz-khan/WebRTC-Experiment/tree/master/DetectRTC
+	// Below code is taken from RTCMultiConnection-v1.8.js (http://www.rtcmulticonnection.org/changes-log/#v1.8)
+	var DetectRTC = {};
+
+	(function () {
+		var screenCallback;
+
+		DetectRTC.screen = {
+			chromeMediaSource: 'screen',
+			getSourceId: function (callback) {
+				if (!callback) throw '"callback" parameter is mandatory.';
+				screenCallback = callback;
+				window.postMessage('get-sourceId', '*');
+			},
+			isChromeExtensionAvailable: function (callback) {
+				if (!callback) return;
+
+				if (DetectRTC.screen.chromeMediaSource == 'desktop') callback(true);
+
+				// ask extension if it is available
+				window.postMessage('are-you-there', '*');
+
+				setTimeout(function () {
+					if (DetectRTC.screen.chromeMediaSource == 'screen') {
+						callback(false);
+					} else callback(true);
+				}, 2000);
+			},
+			onMessageCallback: function (data) {
+				console.log('chrome message', data);
+
+				// "cancel" button is clicked
+				if (data == 'PermissionDeniedError') {
+					DetectRTC.screen.chromeMediaSource = 'PermissionDeniedError';
+					if (screenCallback) return screenCallback('PermissionDeniedError');
+					else throw new Error('PermissionDeniedError');
+				}
+
+				// extension notified his presence
+				if (data == 'rtcmulticonnection-extension-loaded') {
+					DetectRTC.screen.chromeMediaSource = 'desktop';
+				}
+
+				// extension shared temp sourceId
+				if (data.sourceId) {
+					DetectRTC.screen.sourceId = data.sourceId;
+					if (screenCallback) screenCallback(DetectRTC.screen.sourceId);
+				}
+			}
+		};
+
+		// check if desktop-capture extension installed.
+		if (window.postMessage && isChrome) {
+			DetectRTC.screen.isChromeExtensionAvailable(function(status){
+				$scope.extensionAvailable = status;
+			});
+		}
+	})();
+	
+	
+	window.addEventListener('message', function (event) {
+		if (event.origin != window.location.origin) {
+			return;
+		}
+
+		DetectRTC.screen.onMessageCallback(event.data);
+	});
+	
+	//-----------------//
+	
+	function captureUserMedia(onStreamApproved) {
+		// this statement defines getUserMedia constraints
+		// that will be used to capture content of screen
+		var screen_constraints = {
+			mandatory: {
+				chromeMediaSource: DetectRTC.screen.chromeMediaSource,
+				maxWidth: 1920,
+				maxHeight: 1080,
+				minAspectRatio: 1.77
+			},
+			optional: []
+		};
+
+		// this statement verifies chrome extension availability
+		// if installed and available then it will invoke extension API
+		// otherwise it will fallback to command-line based screen capturing API
+		if (DetectRTC.screen.chromeMediaSource == 'desktop' && !DetectRTC.screen.sourceId) {
+			DetectRTC.screen.getSourceId(function (error) {
+				// if exception occurred or access denied
+				if (error && error == 'PermissionDeniedError') {
+					alert('PermissionDeniedError: User denied to share content of his screen.');
+				}
+
+				captureUserMedia(onStreamApproved);
+			});
+			return;
+		}
+
+		// this statement sets gets 'sourceId" and sets "chromeMediaSourceId" 
+		if (DetectRTC.screen.chromeMediaSource == 'desktop') {
+			screen_constraints.mandatory.chromeMediaSourceId = DetectRTC.screen.sourceId;
+		}
+
+		// it is the session that we want to be captured
+		// audio must be false
+		var session = {
+			audio: false,
+			video: screen_constraints
+		};
+
+		// now invoking native getUserMedia API
+		navigator.webkitGetUserMedia(session, onStreamApproved, OnStreamDenied);
+
+	}
+
+	 
+     //--------//
+     	 
+	 //var screen_constraints = {video: { mandatory: { chromeMediaSource: 'screen' } }};
+	 
 	 $scope.showScreenText = 'Share Screen';
 	 
 	 $scope.showScreen = function(){
 		 
 		 if($scope.showScreenText == 'Share Screen')
 		 {
-			getUserMedia(screen_constraints, handleUserMediaShowScreen, handleUserMediaErrorShowScreen)
+			//getUserMedia(screen_constraints, handleUserMediaShowScreen, handleUserMediaErrorShowScreen)
+			captureUserMedia(onStreamApproved);
 			$scope.showScreenText = 'Hide Screen';
 			$scope.screenSharedLocal = true;
 		 }
@@ -2252,6 +2371,30 @@ angular.module('cloudKiboApp')
 	     
 	 }
 
+	 function onStreamApproved(newStream){
+		
+		//if(localStream){
+		//	localStream.stop();
+		//	pc.removeStream(localStream);
+		//}
+		
+		var localvideoscreen = document.getElementById("localvideoscreen");
+		localvideoscreen.src = URL.createObjectURL(newStream);
+		localStreamScreen = newStream;
+		pc.addStream(localStreamScreen);
+		$scope.localCameraOn = true;
+		
+		doCall();
+		
+	 }
+	   
+	 function OnStreamDenied(error){
+		//alert(error);
+		console.log(error)
+		$scope.addAlertCallStart('danger', error);
+									
+	 }
+	 
 	 $scope.installExtension= function(){
 
         !!navigator.webkitGetUserMedia
@@ -2269,34 +2412,9 @@ angular.module('cloudKiboApp')
 	 function successInstallCallback() {
         location.reload();
      }
-    function failureInstallCallback(error) {
-      alert(error);
-    }
-
-	 function handleUserMediaShowScreen(newStream){
-		
-		//if(localStream){
-		//	localStream.stop();
-		//	pc.removeStream(localStream);
-		//}
-		
-		var localvideoscreen = document.getElementById("localvideoscreen");
-		localvideoscreen.src = URL.createObjectURL(newStream);
-		localStreamScreen = newStream;
-		pc.addStream(localStreamScreen);
-		$scope.localCameraOn = true;
-		
-		doCall();
-		
-	 }
-	   
-	 function handleUserMediaErrorShowScreen(error){
-		//console.log(error);
-		$scope.addAlertCallStart('danger', 'If you tried to share '+
-									'screen you must enable the option "Enable screen capture support in getUserMedia()." '+
-									'from chrome://flags. Type chrome://flags in separate tab of your Chrome browser to enable the option.');
-									
-	 }
+     function failureInstallCallback(error) {
+        alert(error);
+     }
 	 
 	 
 	 ////////////////////////////////////////////////////////////////////////////////////////
