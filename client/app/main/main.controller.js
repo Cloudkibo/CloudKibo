@@ -937,7 +937,32 @@ angular.module('cloudKiboApp')
 	$scope.getlocation = function(){
 		return $location.url();
 	}
-
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////////
+	// Variables for WebRTC Session                                                       //
+	///////////////////////////////////////////////////////////////////////////////////////
+	
+	var isChannelReady;
+	var isInitiator = false;
+	var isStarted = false;
+	var sendChannel;
+	var receiveChannel;
+	var localStream;
+	var localStreamScreen;
+	var pc;
+	var remoteStream;
+	var remoteStreamScreen;
+	var turnReady;
+	var bell = new Audio('/sounds/bells_simple.mp3');
+	bell.loop = true;
+	
+	var remotevideo = document.getElementById("remotevideo");
+	remotevideo.src = null;
+	
+	var remotevideoscreen = document.getElementById("remotevideoscreen");
+	remotevideoscreen.src = null;
+	
 	
 	//**********************************************************************************//	
 	//**********************************************************************************//
@@ -1399,7 +1424,10 @@ angular.module('cloudKiboApp')
 	};
 
 	$scope.showExtension = function(){
-
+		
+		console.log('In the show extension place.... ')
+		console.log(chrome.app.isInstalled)
+		
 		if (chrome.app.isInstalled) {
 		  return false;
 		}
@@ -1822,31 +1850,7 @@ angular.module('cloudKiboApp')
 		//console.log('Client sending message: ', message);
 		socket.emit('message', message);
 	}
-	
-	////////////////////////////////////////////////////////////////////////////////////////
-	// Variables for WebRTC Session                                                       //
-	///////////////////////////////////////////////////////////////////////////////////////
-	
-	var isChannelReady;
-	var isInitiator = false;
-	var isStarted = false;
-	var sendChannel;
-	var receiveChannel;
-	var localStream;
-	var localStreamScreen;
-	var pc;
-	var remoteStream;
-	var remoteStreamScreen;
-	var turnReady;
-	var bell = new Audio('/sounds/bells_simple.mp3');
-	bell.loop = true;
-	
-	var remotevideo = document.getElementById("remotevideo");
-	remotevideo.src = null;
-	
-	var remotevideoscreen = document.getElementById("remotevideoscreen");
-	remotevideoscreen.src = null;
-	
+
 	////////////////////////////////////////////////////////////////////////////////////////
 	// WebRTC using sigaling logic                                                        //
 	///////////////////////////////////////////////////////////////////////////////////////
