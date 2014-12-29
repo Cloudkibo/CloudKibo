@@ -1700,7 +1700,7 @@ angular.module('cloudKiboApp')
 	
 	 $scope.createOrJoinRoom = function(){
 		//console.log('Create or join room', {room: roomid, username: $scope.user.username});
-		console.log(roomid)
+		//console.log(roomid)
 		// Leave room if already joined... (temporary fix)
 		socket.emit('leave', {room: roomid, username: $scope.user.username});
 		socket.emit('leaveChat', {room: 'globalchatroom', user: $scope.user});
@@ -2265,7 +2265,7 @@ angular.module('cloudKiboApp')
 				}
 
 				// extension notified his presence
-				if (data == 'rtcmulticonnection-extension-loaded') {
+				if (data == 'kiboconnection-extension-loaded') {
 					DetectRTC.screen.chromeMediaSource = 'desktop';
 				}
 
@@ -2280,7 +2280,7 @@ angular.module('cloudKiboApp')
 		// check if desktop-capture extension installed.
 		if (window.postMessage && isChrome) {
 			DetectRTC.screen.isChromeExtensionAvailable(function(status){
-				$scope.extensionAvailable = status;
+				$scope.extensionAvailable = !status;
 			});
 		}
 	})();
@@ -2290,7 +2290,10 @@ angular.module('cloudKiboApp')
 		if (event.origin != window.location.origin) {
 			return;
 		}
-
+		
+		console.log('THIS IS THE EVENT')
+		console.log(event)
+		
 		DetectRTC.screen.onMessageCallback(event.data);
 	});
 	
@@ -2323,6 +2326,8 @@ angular.module('cloudKiboApp')
 			});
 			return;
 		}
+		
+		console.log(DetectRTC.screen.chromeMediaSource)
 
 		// this statement sets gets 'sourceId" and sets "chromeMediaSourceId" 
 		if (DetectRTC.screen.chromeMediaSource == 'desktop') {
