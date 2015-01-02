@@ -6,9 +6,6 @@
 
 var config = require('./environment');
 
-
-
-
 // When the user disconnects.. perform this
 function onDisconnect(socketio,socket) {
 	var socketid = '';
@@ -58,13 +55,9 @@ function onDisconnect(socketio,socket) {
 }
 
 
-
-
 // When the user connects.. perform this
 function onConnect(socketio, socket) {
   
-	
-
 		//console.log(socket);
 
 		socket.emit('id', socket.id);
@@ -118,7 +111,7 @@ function onConnect(socketio, socket) {
 		});
 
 		socket.on('create or join', function (room) {
-			var numClients = socketio.sockets.clients(room.room).length;
+			var numClients = socketio.sockets.clients(room.room).length; 
 			
 			//console.log(socketio.sockets.manager.rooms)
 			//console.log(room)
@@ -251,9 +244,28 @@ function onConnect(socketio, socket) {
 			})
 		})
 		
-		socket.on('im', function(im){
+		socket.on('callthisperson', function(message){
 			
-			console.log("GOT THIS MESSAGE", im);
+			var clients = socketio.sockets.clients(message.room)
+			
+			var socketid = '';
+			
+			var i = 0;
+			clients.forEach(function(client) {
+				client.get('nickname', function(err, nickname) {
+					if(nickname == message.callee)
+						socketid = client.id;
+					i++;
+				})
+			});
+			
+			if(socketid == ''){
+				socket.emit('calleeisoffline', message.callee);
+			}
+			
+		});
+		
+		socket.on('im', function(im){
 			
 			var clients = socketio.sockets.clients(im.room)
 			
@@ -275,7 +287,7 @@ function onConnect(socketio, socket) {
 
 		socket.on('friendrequest', function(im){
 			
-			console.log("GOT THIS MESSAGE", im);
+			//console.log("GOT THIS MESSAGE", im);
 			
 			var clients = socketio.sockets.clients(im.room)
 			

@@ -954,6 +954,7 @@ angular.module('cloudKiboApp')
 	var remoteStream;
 	var remoteStreamScreen;
 	var turnReady;
+	
 	var bell = new Audio('/sounds/bells_simple.mp3');
 	bell.loop = true;
 	
@@ -1308,15 +1309,15 @@ angular.module('cloudKiboApp')
 	  $scope.supportedBrowser = false;
 	  
 	
-
 	$scope.callThisPerson = function(calleeusername) {		
-		$scope.LeaveRoom();
-		$scope.ILeftMyRoom = true;
-		roomid = calleeusername;
-		$scope.createOrJoinRoom();
+		
+		socket.emit('callthisperson', {room: 'globalchatroom', callee : calleeusername})
+		
+		$scope.OutgoingCallStatement = 'Outgoing Call to : '+ calleeusername;
+		
+		$scope.areYouCallingSomeone = true;
+		
 	}
-	
-	$scope.ILeftMyRoom = false;
 	
 	$http.get('/api/contactslist/').success(function(data){ 
     	$scope.contactslist = data;
@@ -1332,7 +1333,6 @@ angular.module('cloudKiboApp')
     socket.on('friendrequest', function(data){
     	$scope.addRequestslist.push(data);
     })
-	
 	
 	$scope.approveFriendRequest = function(index){
 		$http.post('/api/contactslist/approvefriendrequest', $scope.addRequestslist[index].userid)
@@ -1426,9 +1426,7 @@ angular.module('cloudKiboApp')
 	$scope.extensionAvailable = false;
 
 	$scope.showExtension = function(){
-		
 		return $scope.extensionAvailable;
-
 	}
 	
 	$scope.localCameraCaptured = function () {
@@ -1561,7 +1559,7 @@ angular.module('cloudKiboApp')
 		return $scope.otherSideRinging;
 	}
 	
-	$scope.onTimeout = function(){
+	$scope.onTimeoutForPersonOfflineOrBusy = function(){
 		$scope.areYouCallingSomeone = false;
 	}
 	
@@ -1687,7 +1685,6 @@ angular.module('cloudKiboApp')
 		$scope.createOrJoinRoom();
 		$scope.connected = true;
 		
-		
 	}
 	
 	$timeout($scope.connectTimeOut, 1000);
@@ -1699,20 +1696,19 @@ angular.module('cloudKiboApp')
 	///////////////////////////////////////////////////////////////////////////////////////
 	
 	 $scope.createOrJoinRoom = function(){
-		//console.log('Create or join room', {room: roomid, username: $scope.user.username});
-		//console.log(roomid)
+		
 		// Leave room if already joined... (temporary fix)
-		socket.emit('leave', {room: roomid, username: $scope.user.username});
+		
 		socket.emit('leaveChat', {room: 'globalchatroom', user: $scope.user});
 		
 		// Rejoin the room... (temporary fix)
-		socket.emit('create or join', {room: roomid, username: $scope.user.username});
+		
 		socket.emit('join global chatroom', {room: 'globalchatroom', user: $scope.user});
 	 }
 	 
 	 $scope.LeaveRoom = function(){
 		//console.log('Leave room', {room: roomid, username: $scope.user.username});
-		socket.emit('leave', {room: roomid, username: $scope.user.username});
+		
 		socket.emit('leaveChat', {room: 'globalchatroom', user: $scope.user});
 	 }
 	 
@@ -1766,73 +1762,18 @@ angular.module('cloudKiboApp')
 			}
 		}
 	});
+	
+	socket.on('calleeisoffline', function(nickname){
+		
+		//console.log('Callee is OFFLINE')
+		
+		$scope.OutgoingCallStatement = nickname + ' is offline.';
+		
+		$timeout($scope.onTimeoutForPersonOfflineOrBusy, 6000);
+
+		
+	})
 	 	
-	socket.on('created', function (room){
-	    console.log('Created room ' + room);
-	  
-	    if(room.room != $scope.user.username)
-	    {
-			$scope.areYouCallingSomeone = true;
-			$scope.OutgoingCallStatement = 'Now Calling... '; 
-			$scope.otherSideRinging = true;
-			$timeout($scope.onTimeout, 6000);
-			$scope.OutgoingCallStatement = 'Callee seems offline or is busy.'; 
-			$scope.otherSideRinging = false;
-		}
-		
-		if($scope.ILeftMyRoom == true)
-		{
-			$scope.LeaveRoom();
-			$scope.ILeftMyRoom = false;
-			roomid = $scope.user.username;
-			$scope.createOrJoinRoom();
-		}
-	  
-	  //isInitiator = true;
-	});
-
-	socket.on('full', function (room){
-	  
-	    $scope.areYouCallingSomeone = true;
-		$scope.OutgoingCallStatement = 'Now Calling... '; 
-		$scope.otherSideRinging = true;
-	    $timeout($scope.onTimeout, 6000);
-		$scope.OutgoingCallStatement = 'Callee is Busy on another call...'; 
-		$scope.otherSideRinging = false;
-		
-		if($scope.ILeftMyRoom == true)
-		{
-			$scope.LeaveRoom();
-			$scope.ILeftMyRoom = false;
-			roomid = $scope.user.username;
-			$scope.createOrJoinRoom();
-		}
-			
-	    console.log('Room ' + room + ' is full');
-	});
-
-	socket.on('join', function (room){
-	  //console.log('Another peer made a request to join room ' + room);
-	  //console.log('This peer is the initiator of room ' + room + '!');
-	  isChannelReady = true;
-	});
-	
-	socket.on('joining twice', function (room){
-	  //console.log('Another peer made a request to join room ' + room);
-	  //console.log('This peer is the initiator of room ' + room + '!');
-	  alert('You are logged in from some other device. You won\'t be able to receive calls here. Log out from other device then refresh this page.');
-	});
-
-	socket.on('joined', function (room){
-	  console.log('This peer has joined room ' + room.room + ' '+ room.username);
-	  isChannelReady = true;
-	  $scope.startCalling();
-	});
-
-	socket.on('log', function (array){
-	  console.log.apply(console, array);
-	});
-	
 	window.onbeforeunload = function(e){
 		$scope.LeaveRoom();
 		if(!$scope.isOtherPeerBusy())
@@ -2291,8 +2232,8 @@ angular.module('cloudKiboApp')
 			return;
 		}
 		
-		console.log('THIS IS THE EVENT')
-		console.log(event)
+		//console.log('THIS IS THE EVENT')
+		//console.log(event)
 		
 		DetectRTC.screen.onMessageCallback(event.data);
 	});
@@ -2421,85 +2362,7 @@ angular.module('cloudKiboApp')
         alert(error);
      }
 	 
-	 
-	 ////////////////////////////////////////////////////////////////////////////////////////
-	// WebRTC DataChannel logic (Text Messages)                                           //
-	///////////////////////////////////////////////////////////////////////////////////////
-	
-	$scope.userMessages = [];
-		
-	$scope.sendData = function() {
-		 
-		 var data = $scope.dataChannelSend;
-		  sendChannel.send(''+ $scope.user.username +': '+ data);
-		  //trace('Sent data: ' + data);
-		  $scope.userMessages.push('Me: '+ data)
-		  $scope.dataChannelSend = '';
-		  
-		  var chatBox = document.getElementById('chatBox');
-		  chatBox.scrollTop = 300 + 8 + ($scope.userMessages.length * 240);
-	 
-	 }
-	
-	function handleMessage(event) {
-	  //trace('Received message: ' + event.data);
-	  //document.getElementById("dataChannelReceive").value = event.data;
-	  
-		var message = event.data;
-		
-		if(message.byteLength) {
-			process_binary(0,message,0);
-		}
-		else if (message.charAt(0) == '{' && message.charAt(message.length-1) == '}') {
-			process_data(message);
-		}
-	    else {
-		  $scope.$apply(function(){
-			  
-			  $scope.userMessages.push(event.data)
-			 
-		  })
-		  var chatBox = document.getElementById('chatBox');
-		  //chatBox.scrollTop = 300 + 8 + ($scope.userMessages.length * 240);
-	  }
-	}
-	
-	function handleSendChannelStateChange() {
-		  var readyState = sendChannel.readyState;
-		  //trace('Send channel state is: ' + readyState);
-		  enableMessageInterface(readyState == "open");
-	}
-
-	function gotReceiveChannel(event) {
-		  //trace('Receive Channel Callback');
-		  sendChannel = event.channel;
-		  sendChannel.onmessage = handleMessage;
-		  sendChannel.onopen = handleReceiveChannelStateChange;
-		  sendChannel.onclose = handleReceiveChannelStateChange;
-	}
-
-	function handleReceiveChannelStateChange() {
-		  var readyState = sendChannel.readyState;
-		  //trace('Receive channel state is: ' + readyState);
-		  enableMessageInterface(readyState == "open");
-	}
-
-	function enableMessageInterface(shouldEnable) {
-		  if (shouldEnable) {
-			//dataChannelSend.disabled = false;
-			//dataChannelSend.focus();
-			//dataChannelSend.placeholder = "";
-			//sendButton.disabled = false;
-		  } else {
-			//dataChannelSend.disabled = true;
-			//sendButton.disabled = true;
-		  }
-	}
-	
-	 
-
-	   
-	   
+   
 	  
   })
 
