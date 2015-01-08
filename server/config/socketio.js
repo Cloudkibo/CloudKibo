@@ -63,7 +63,7 @@ function onConnect(socketio, socket) {
 		socket.emit('id', socket.id);
 
 	  // convenience function to log server messages on the client
-		function log(){
+	function log(){
 			var array = [">>> Message from server: "];
 		  for (var i = 0; i < arguments.length; i++) {
 			array.push(arguments[i]);
@@ -72,16 +72,29 @@ function onConnect(socketio, socket) {
 		}
 
 		socket.on('message', function (message) {
-			//console.log('Got message:', message);
-			
-			//socket.broadcast.emit('message', message);
 			
 			message.msg.from = socket.id;
+		
 			
-			//socketio.sockets.in(message.room).emit('message', message.msg);
-			socket.broadcast.to(message.room).emit('message', message.msg);
-			//console.log('Got message:', message.msg);
-			//console.log(socketio.sockets.manager.rooms)
+			var clients = socketio.sockets.clients(message.room)
+			
+			var socketid = '';
+			
+			var i = 0;
+			clients.forEach(function(client) {
+				client.get('nickname', function(err, nickname) {
+					if(nickname == message.to)
+						socketid = client.id;
+					i++;
+				})
+			});
+			
+			if(socketid == ''){
+				//socket.emit('disconnected', message.mycaller);
+			}
+			else{
+				socketio.sockets.socket(socketid).emit('message', message.msg);
+			}
 			
 		});
 		
@@ -261,6 +274,57 @@ function onConnect(socketio, socket) {
 			
 			if(socketid == ''){
 				socket.emit('calleeisoffline', message.callee);
+			}
+			else{
+				socketio.sockets.socket(socketid).emit('areyoufreeforcall', {caller : message.caller});
+			}
+			
+		});
+		
+		socket.on('noiambusy', function(message){
+			
+			var clients = socketio.sockets.clients(message.room)
+			
+			var socketid = '';
+			
+			var i = 0;
+			clients.forEach(function(client) {
+				client.get('nickname', function(err, nickname) {
+					if(nickname == message.mycaller)
+						socketid = client.id;
+					i++;
+				})
+			});
+			
+			if(socketid == ''){
+				//socket.emit('calleeisoffline', message.callee);
+			}
+			else{
+				socketio.sockets.socket(socketid).emit('calleeisbusy', {callee : message.me});
+			}
+			
+		});
+		
+		socket.on('yesiamfreeforcall', function(message){
+			
+			var clients = socketio.sockets.clients(message.room)
+			
+			var socketid = '';
+			
+			var i = 0;
+			clients.forEach(function(client) {
+				client.get('nickname', function(err, nickname) {
+					if(nickname == message.mycaller)
+						socketid = client.id;
+					i++;
+				})
+			});
+			
+			if(socketid == ''){
+				socket.emit('disconnected', message.mycaller);
+			}
+			else{
+				socketio.sockets.socket(socketid).emit('othersideringing', {callee : message.me});
 			}
 			
 		});

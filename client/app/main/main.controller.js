@@ -942,8 +942,7 @@ angular.module('cloudKiboApp')
 	////////////////////////////////////////////////////////////////////////////////////////
 	// Variables for WebRTC Session                                                       //
 	///////////////////////////////////////////////////////////////////////////////////////
-	
-	var isChannelReady;
+
 	var isInitiator = false;
 	var isStarted = false;
 	var sendChannel;
@@ -1185,9 +1184,9 @@ angular.module('cloudKiboApp')
 			if(data != 'null' && data != null && data != ''){
 				$scope.userFound = data;
 				$scope.openCall();
-				$scope.LeaveRoom();
-				roomid = data.username;
-				$scope.createOrJoinRoom();
+				//$scope.LeaveRoom();
+				//roomid = data.username;
+				//$scope.createOrJoinRoom();
 			}
 			else{
 				$scope.userFound = null;
@@ -1201,9 +1200,9 @@ angular.module('cloudKiboApp')
 			if(data != 'null' && data != null && data != ''){
 				$scope.userFound = data;
 				$scope.openCall();
-				$scope.LeaveRoom();
-				roomid = data.username;
-				$scope.createOrJoinRoom();
+				//$scope.LeaveRoom();
+				//roomid = data.username;
+				//$scope.createOrJoinRoom();
 			}
 			else{
 				$scope.userFound = null;
@@ -1307,17 +1306,7 @@ angular.module('cloudKiboApp')
 	  $scope.supportedBrowser = true;
 	else
 	  $scope.supportedBrowser = false;
-	  
-	
-	$scope.callThisPerson = function(calleeusername) {		
-		
-		socket.emit('callthisperson', {room: 'globalchatroom', callee : calleeusername})
-		
-		$scope.OutgoingCallStatement = 'Outgoing Call to : '+ calleeusername;
-		
-		$scope.areYouCallingSomeone = true;
-		
-	}
+
 	
 	$http.get('/api/contactslist/').success(function(data){ 
     	$scope.contactslist = data;
@@ -1478,63 +1467,70 @@ angular.module('cloudKiboApp')
 	}
 	
 	$scope.screenSharedLocal = false;
-	
+
 	$scope.isLocalScreenShared = function(){
 		return $scope.screenSharedLocal;
 	}
-	
+
+	$scope.callThisPerson = function(calleeusername) {
+
+		socket.emit('callthisperson', {room: 'globalchatroom', callee : calleeusername, caller : $scope.user.username})
+
+		$scope.OutgoingCallStatement = 'Outgoing Call to : '+ calleeusername;
+
+		$scope.areYouCallingSomeone = true;
+
+	}
+
 	$scope.endCall = function(){
-			isStarted = false;
-			isInitiator = false;
-		    
- 		    if(localStream)
- 		    {
-			  localStream.stop();
-		    }
-			if(localStreamScreen)
-			{
-			  localStreamScreen.stop();
-		    }
-		    if(remoteStream)
-		    {
-				remoteStream.stop();
-				remotevideo.src = null;
-			}
-			if(remoteStreamScreen)
-			{
-				remoteStreamScreen.stop();
-				remotevideoscreen.src = null;
-			}
-			
-			$scope.firstVideoAdded = false;
-			$scope.screenSharedLocal = false;
-			$scope.screenSharedByPeer = false;
-			  
-			$scope.localCameraOn = false;
-			
-			
-		    pc.close();
-		    pc = null;
-		    
-		    sendMessage('hangup');
-		    
-		    var endTime = new Date();
-		
-		    $scope.callData.EndTime = endTime;
-		    
-		    $scope.recordCallData();
-		    
-		    if($scope.ILeftMyRoom == true)
-		    {
-				$scope.LeaveRoom();
-				$scope.ILeftMyRoom = false;
-				roomid = $scope.user.username;
-				$scope.createOrJoinRoom();
-			}
-			
-			$scope.userMessages = [];
-		    
-		    $scope.callEnded = true;
+
+		isStarted = false;
+		isInitiator = false;
+
+		if(localStream)
+		{
+		  localStream.stop();
+		}
+		if(localStreamScreen)
+		{
+		  localStreamScreen.stop();
+		}
+		if(remoteStream)
+		{
+			remoteStream.stop();
+			remotevideo.src = null;
+		}
+		if(remoteStreamScreen)
+		{
+			remoteStreamScreen.stop();
+			remotevideoscreen.src = null;
+		}
+
+		$scope.firstVideoAdded = false;
+		$scope.screenSharedLocal = false;
+		$scope.screenSharedByPeer = false;
+
+		$scope.localCameraOn = false;
+
+
+		pc.close();
+		pc = null;
+
+		sendMessage('hangup');
+
+		var endTime = new Date();
+
+		$scope.callData.EndTime = endTime;
+
+		$scope.recordCallData();
+
+		$scope.userMessages = [];
+
+		$scope.callEnded = true;
+
+		$scope.amInCall = false;
+
+		$scope.amInCallWith = '';
 	}
 	
 	$scope.IncomingCallStatement = '';
@@ -1572,107 +1568,7 @@ angular.module('cloudKiboApp')
 	$scope.recordCallData = function(){
 		$http.post('/recordCallData', JSON.stringify($scope.callData))
 	};
-	
-	
-	////////////////////////////////////////////////////////////////////////////////////////
-	// IM Chat Controller Code Used here (Will remove the IM Chat Controller)             //
-	////////////////////////////////////////////////////////////////////////////////////////
-	
-	
-	 $scope.messages = [];
-	 $scope.im = {};
-	 
-	 $scope.fetchChatNow = function(){
-		if(typeof $scope.otherUser != 'undefined'){
-			$http.post('/api/userchat/', {user1: $scope.user.username, user2: $scope.otherUser.username}).success(
-			 function(data){
-				 if(data.status == 'success'){
-					
-					for(i in data.msg){
-						$scope.messages.push(data.msg[i]);
-					}
-					
-					$scope.isUnderProgress = false;
-					
-				}
-			 })
-			 
-			 for(var i in $scope.contactslist){
-				if($scope.contactslist[i].contactid.username == $scope.otherUser.username){
-					$scope.contactslist[i].unreadMessage = false;
-					$http.post('/api/userchat/markasread', {user1: $scope.user._id, user2: $scope.otherUser._id}).success();
-				}
-			 }
-			
-		}
-	}
-	
-	 
-	 $scope.sendIM = function (){
-		 
-		 if($scope.im.msg != null){
-			 if($scope.im.msg != ''){
-				 
-				 $scope.im.from = $scope.user.username;
-				 $scope.im.to = $scope.otherUser.username;
-				 $scope.im.from_id = $scope.user._id;
-				 $scope.im.to_id = $scope.otherUser._id;
-				 $scope.im.fromFullName = $scope.user.firstname +' '+ $scope.user.lastname;
-				 
-				 socket.emit('im', {room: 'globalchatroom', stanza: $scope.im})
-				 
-				 $scope.messages.push($scope.im);
-				 
-				 $http.post('/api/userchat/save', $scope.im).success(function(data){});
-				 
-				 $scope.im = {};
-			 }
-		 }
-		 
-	 }	 
-	 
-	 socket.on('im', function(im){
-		 
-		if(im.to == $scope.user.username && im.from == $scope.otherUser.username)
-		{
-			$scope.messages.push(im);
-		}
-		else if(im.to == $scope.user.username && im.from != $scope.otherUser.username){
-			for(i in $scope.contactslist){
-				if($scope.contactslist[i].contactid.username == im.from){
-					$scope.contactslist[i].unreadMessage = true;
-				}
-			}
-		}
-		
-	 })
-	 
-	 socket.on('statusUpdate', function(user){
-	 	
-		if($scope.otherUser.username == user.username) 
-			$scope.otherUser.status = user.status;
-	 })
-	 
-	 $scope.isUnderProgress = true;
-	 
-	 $scope.loadUnderProgress = function(){
-		 return $scope.isUnderProgress;
-	 }
-	 
-	 $scope.hasSharedDetails = function(){
-		for(i in $scope.contactslist){
-			if($scope.contactslist[i].contactid.username == $scope.otherUser.username){
-				if($scope.contactslist[i].detailsshared != 'No')
-					return true;
-				else
-					return false;
-			}
-		}
-		return false;
-	}
-	
-	
-		
+
 	////////////////////////////////////////////////////////////////////////////////////////
 	// Create or Join Room Logic                                                          //
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -1770,8 +1666,67 @@ angular.module('cloudKiboApp')
 		$scope.OutgoingCallStatement = nickname + ' is offline.';
 		
 		$timeout($scope.onTimeoutForPersonOfflineOrBusy, 6000);
+		
+		$scope.amInCall = false;
+		
+		$scope.amInCallWith = '';
+		
+	})
+	
+	socket.on('calleeisbusy', function(data){
+		
+		//console.log('Callee is OFFLINE')
+		
+		$scope.OutgoingCallStatement = data.callee + ' is busy on other call.';
+		
+		$timeout($scope.onTimeoutForPersonOfflineOrBusy, 6000);
+		
+		$scope.amInCall = false;
+		
+		$scope.amInCallWith = '';
 
 		
+	})
+	
+	$scope.amInCallWith = '';
+	
+	socket.on('othersideringing', function(data){
+		
+		$scope.otherSideRinging = true;
+		
+		$scope.amInCall = true;
+		
+		$scope.amInCallWith = data.callee;
+		
+	})
+	
+	$scope.amInCall = false;
+	
+	socket.on('areyoufreeforcall', function(data){
+
+		if($scope.amInCall == false){
+
+			$scope.IncomingCallStatement = data.caller + ' is calling you';
+			$scope.isSomeOneCalling = true;
+			bell.load();
+			bell.play();
+			$scope.ringing = true;
+			socket.emit('yesiamfreeforcall', {mycaller : data.caller, me : $scope.user.username})
+			$scope.amInCall = true;
+			$scope.amInCallWith = data.caller;
+		}
+		else{
+			socket.emit('noiambusy', {mycaller : data.caller, me : $scope.user.username})
+		}
+		
+	})
+	
+	socket.on('disconnected', function(data){
+		if(typeof bell != 'undefined')
+			bell.pause();
+		$scope.ringing = false;
+		$scope.amInCall = false;
+		$scope.amInCallWith = '';
 	})
 	 	
 	window.onbeforeunload = function(e){
@@ -1782,7 +1737,8 @@ angular.module('cloudKiboApp')
 	
 	function sendMessage(message){
 		message = {msg:message};
-		message.room = roomid;
+		message.room = 'globalchatroom';
+		message.to = $scope.amInCallWith;
 		message.username = $scope.user.username;
 		//console.log('Client sending message: ', message);
 		socket.emit('message', message);
@@ -1796,17 +1752,13 @@ angular.module('cloudKiboApp')
 		console.log('Client received message: '+ message);
 		
 		try{
-			if(message.split(' ')[0] === 'Incoming')
-			{
-				$scope.IncomingCallStatement = message;
-				$scope.isSomeOneCalling = true;
-				bell.load();
-				bell.play();
-				$scope.ringing = true;
-			}
 			if(message.split(' ')[0] === 'Missed')
 			{
 				$scope.IncomingCallStatement = message;
+		
+				$scope.amInCall = false;
+				$scope.amInCallWith = '';
+				
 				$scope.ringing = false;
 				$timeout($scope.onTimeoutOfMissedCall, 6000);
 				bell.pause();
@@ -1827,20 +1779,16 @@ angular.module('cloudKiboApp')
 		}
 		else if(message === 'Reject Call')
 		{
-			$timeout($scope.onTimeout, 6000);
-			$scope.OutgoingCallStatement = 'Callee is Busy...'; 
+			$timeout($scope.onTimeoutForPersonOfflineOrBusy, 6000);
+			$scope.OutgoingCallStatement = $scope.amInCallWith +' is Busy...'; 
 			$scope.otherSideRinging = false;
+			$scope.amInCall = false;
+			$scope.amInCallWith = '';
 			
-			if($scope.ILeftMyRoom == true)
-		    {
-				$scope.LeaveRoom();
-				$scope.ILeftMyRoom = false;
-				roomid = $scope.user.username;
-				$scope.createOrJoinRoom();
-			}
 		}
 		else if(message === 'bye')
 		{
+
 			isStarted = false;
 			isInitiator = false;
 		    
@@ -1875,21 +1823,18 @@ angular.module('cloudKiboApp')
 				pc.close();
 				pc = null;
 			}
-			
-			if($scope.ILeftMyRoom == true)
-		    {
-				$scope.LeaveRoom();
-				$scope.ILeftMyRoom = false;
-				roomid = $scope.user.username;
-				$scope.createOrJoinRoom();
-			}
-			
+
 			$scope.userMessages = [];
 			
 			$scope.callEnded = true;
+
+			$scope.amInCall = false;
+
+			$scope.amInCallWith = '';
 		}
 		else if(message === 'hangup')
 		{
+
 			isStarted = false;
 			isInitiator = false;
 		    
@@ -1929,18 +1874,14 @@ angular.module('cloudKiboApp')
 		    $scope.callData.EndTime = endTime.toUTCString();
 		    
 		    $scope.recordCallData();
-		    
-		    if($scope.ILeftMyRoom == true)
-		    {
-				$scope.LeaveRoom();
-				$scope.ILeftMyRoom = false;
-				roomid = $scope.user.username;
-				$scope.createOrJoinRoom();
-			}
-			
+
 			$scope.userMessages = [];
 			
 			$scope.callEnded = true;
+
+			$scope.amInCall = false;
+
+			$scope.amInCallWith = '';
 			
 		}
 		else if (message.type === 'offer') {
@@ -1962,9 +1903,9 @@ angular.module('cloudKiboApp')
 		}
 	});
 	
-	function maybeStart() {	
+	function maybeStart() {
 		//console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
-		  if (!isStarted && typeof localStream != 'undefined' && isChannelReady) {
+		  if (!isStarted && typeof localStream != 'undefined') {
 			
 			createPeerConnection();
 			pc.addStream(localStream);
@@ -1981,45 +1922,19 @@ angular.module('cloudKiboApp')
 	///////////////////////////////////////////////////////////////////////////////////////
 	
 	function createPeerConnection() {
-		  try {
-			//
-			//Different URL way for FireFox
-			//
-			pc = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
-			pc.onicecandidate = handleIceCandidate;
-			pc.onaddstream = handleRemoteStreamAdded;
-			pc.onremovestream = handleRemoteStreamRemoved;
-			
-			if (!isInitiator) {
-				try {
-				  // Reliable Data Channels not yet supported in Chrome
-				  try{
-					sendChannel = pc.createDataChannel("sendDataChannel", {reliable: true});
-				  }
-				  catch(e){
-					  console.log('UNRELIABLE DATA CHANNEL')
-					  sendChannel = pc.createDataChannel("sendDataChannel", {reliable: false});
-				  }
-				  sendChannel.onmessage = handleMessage;
-				  trace('Created send data channel');
-				} catch (e) {
-				  alert('Failed to create data channel. ' +
-						'You need Chrome M25 or later with RtpDataChannel enabled : '+ e.message );
-				  trace('createDataChannel() failed with exception: ' + e.message);
-				}
-				sendChannel.onopen = handleSendChannelStateChange;
-				sendChannel.onclose = handleSendChannelStateChange;
-			  } else {
-				pc.ondatachannel = gotReceiveChannel;
-			  }
-		  } catch (e) {
-			console.log('Failed to create PeerConnection, exception: ' + e.message);
-			alert('Cannot create RTCPeerConnection object.');
-			  return;
-		  }
+
+		//
+		//Different URL way for FireFox
+		//
+		pc = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
+		pc.onicecandidate = handleIceCandidate;
+		pc.onaddstream = handleRemoteStreamAdded;
+		pc.onremovestream = handleRemoteStreamRemoved;
+
 	}
 	
 	function handleIceCandidate(event) {
+		console.log('ice candidates')
 		  if (event.candidate) {
 			sendMessage({
 			  type: 'candidate',
@@ -2090,7 +2005,7 @@ angular.module('cloudKiboApp')
 		localvideo.src = URL.createObjectURL(newStream);
 		localStream = newStream;
 		$scope.localCameraOn = true;
-		
+
 		sendMessage('got user media');
 		
 		if (!isInitiator) {
@@ -2114,30 +2029,18 @@ angular.module('cloudKiboApp')
 		
 	 var video_constraints = {video: true, audio: true};
 	 
-	 $scope.startCalling = function(){
-		sendMessage('Incoming Call: '+ $scope.user.username);
-		$scope.areYouCallingSomeone = true;
-		$scope.OutgoingCallStatement = 'Now Calling... '; 
-		$scope.otherSideRinging = true;
-		$scope.ILeftMyRoom = true;
-	 }
-	 
 	 $scope.StopOutgoingCall = function(){
-		sendMessage('Missed Incoming Call: '+ $scope.user.username);
+		sendMessage('Missed Call: '+ $scope.user.username);
 		$scope.areYouCallingSomeone = false;
 		$scope.otherSideRinging = false;
+		$scope.amInCall = false;
+		$scope.amInCallWith = '';
 		$scope.OutgoingCallStatement = 'Calling stopped'; 
 		
-		if($scope.ILeftMyRoom == true)
-		{
-			$scope.LeaveRoom();
-			$scope.ILeftMyRoom = false;
-			roomid = $scope.user.username;
-			$scope.createOrJoinRoom();
-		}
 	 }
 	 
 	 $scope.receiveCalling = function(){
+
 		getUserMedia(video_constraints, handleUserMedia, handleUserMediaError);
 		
 		$scope.callData.Caller = $scope.IncomingCallStatement.split(': ')[1];
@@ -2158,9 +2061,112 @@ angular.module('cloudKiboApp')
 		$scope.isSomeOneCalling = false;
 		bell.pause();
 		$scope.ringing = false;
+		$scope.amInCall = false;
+		$scope.amInCallWith = '';
 	 }
-	 
-	 ////////////////////////////////////////////////////////////////////////////////////////
+
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// IM Chat Controller Code Used here (Will remove the IM Chat Controller)             //
+	////////////////////////////////////////////////////////////////////////////////////////
+
+
+	$scope.messages = [];
+	$scope.im = {};
+
+	$scope.fetchChatNow = function(){
+		if(typeof $scope.otherUser != 'undefined'){
+			$http.post('/api/userchat/', {user1: $scope.user.username, user2: $scope.otherUser.username}).success(
+				function(data){
+					if(data.status == 'success'){
+
+						for(i in data.msg){
+							$scope.messages.push(data.msg[i]);
+						}
+
+						$scope.isUnderProgress = false;
+
+					}
+				})
+
+			for(var i in $scope.contactslist){
+				if($scope.contactslist[i].contactid.username == $scope.otherUser.username){
+					$scope.contactslist[i].unreadMessage = false;
+					$http.post('/api/userchat/markasread', {user1: $scope.user._id, user2: $scope.otherUser._id}).success();
+				}
+			}
+
+		}
+	}
+
+
+	$scope.sendIM = function (){
+
+		if($scope.im.msg != null){
+			if($scope.im.msg != ''){
+
+				$scope.im.from = $scope.user.username;
+				$scope.im.to = $scope.otherUser.username;
+				$scope.im.from_id = $scope.user._id;
+				$scope.im.to_id = $scope.otherUser._id;
+				$scope.im.fromFullName = $scope.user.firstname +' '+ $scope.user.lastname;
+
+				socket.emit('im', {room: 'globalchatroom', stanza: $scope.im})
+
+				$scope.messages.push($scope.im);
+
+				$http.post('/api/userchat/save', $scope.im).success(function(data){});
+
+				$scope.im = {};
+			}
+		}
+
+	}
+
+	socket.on('im', function(im){
+
+		if(im.to == $scope.user.username && im.from == $scope.otherUser.username)
+		{
+			$scope.messages.push(im);
+		}
+		else if(im.to == $scope.user.username && im.from != $scope.otherUser.username){
+			for(i in $scope.contactslist){
+				if($scope.contactslist[i].contactid.username == im.from){
+					$scope.contactslist[i].unreadMessage = true;
+				}
+			}
+		}
+
+	})
+
+	socket.on('statusUpdate', function(user){
+
+		if($scope.otherUser.username == user.username)
+			$scope.otherUser.status = user.status;
+	})
+
+	$scope.isUnderProgress = true;
+
+	$scope.loadUnderProgress = function(){
+		return $scope.isUnderProgress;
+	}
+
+	$scope.hasSharedDetails = function(){
+		for(i in $scope.contactslist){
+			if($scope.contactslist[i].contactid.username == $scope.otherUser.username){
+				if($scope.contactslist[i].detailsshared != 'No')
+					return true;
+				else
+					return false;
+			}
+		}
+		return false;
+	}
+
+
+
+
+	////////////////////////////////////////////////////////////////////////////////////////
 	// Screen Sharing Logic                                                               //
 	///////////////////////////////////////////////////////////////////////////////////////
 	 
