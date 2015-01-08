@@ -1184,9 +1184,9 @@ angular.module('cloudKiboApp')
 			if(data != 'null' && data != null && data != ''){
 				$scope.userFound = data;
 				$scope.openCall();
-				//$scope.LeaveRoom();
-				//roomid = data.username;
-				//$scope.createOrJoinRoom();
+
+				$scope.callThisPerson(data.username);
+
 			}
 			else{
 				$scope.userFound = null;
@@ -1200,9 +1200,9 @@ angular.module('cloudKiboApp')
 			if(data != 'null' && data != null && data != ''){
 				$scope.userFound = data;
 				$scope.openCall();
-				//$scope.LeaveRoom();
-				//roomid = data.username;
-				//$scope.createOrJoinRoom();
+
+				$scope.callThisPerson(data.username);
+
 			}
 			else{
 				$scope.userFound = null;
