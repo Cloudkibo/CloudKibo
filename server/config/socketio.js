@@ -97,7 +97,21 @@ function onConnect(socketio, socket) {
 			}
 			
 		});
-		
+
+		socket.on('messageformeeting', function (message) {
+			//console.log('Got message:', message);
+
+			//socket.broadcast.emit('message', message);
+
+			message.msg.from = socket.id;
+
+			//io2.sockets.in(message.room).emit('message', message.msg);
+			socket.broadcast.to(message.room).emit('message', message.msg);
+			//console.log('Got message:', message.msg);
+			//console.log(io2.sockets.manager.rooms)
+
+		});
+
 		socket.on('messagefordatachannel', function (message) {
 			//console.log('Got message:', message);
 			

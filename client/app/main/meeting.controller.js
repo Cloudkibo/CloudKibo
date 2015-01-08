@@ -179,7 +179,7 @@ angular.module('cloudKiboApp')
 		message.room = roomid;
 		message.username = $scope.user.username;
 		//console.log('Client sending message: ', message);
-		socket.emit('message', message);
+		socket.emit('messageformeeting', message);
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -1566,8 +1566,8 @@ angular.module('cloudKiboApp')
 
   
   .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
-	  
-	  
+
+	var roomid = '';
 	////////////////////////////////////////////////////////////////////////////////////////
 	// Create or Join Room Logic                                                          //
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -1698,7 +1698,7 @@ angular.module('cloudKiboApp')
 		message = {msg:message};
 		message.room = roomid;
 		//console.log('Client sending message: ', message);
-		socket.emit('message', message);
+		socket.emit('messageformeeting', message);
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -1713,6 +1713,7 @@ angular.module('cloudKiboApp')
 	var localStream;
 	var localStreamScreen;
 	var pc;
+	var remoteStream1;
 	var remoteStreamScreen;
 	var turnReady;
 	var bell = new Audio('/sounds/bells_simple.mp3');
