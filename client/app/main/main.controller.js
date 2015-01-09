@@ -2354,9 +2354,9 @@ angular.module('cloudKiboApp')
         && !!chrome.webstore
         && !!chrome.webstore.install &&
         chrome.webstore.install(
-        'https://chrome.google.com/webstore/detail/hjfejjmhpakdodimneibbmgfhfhjedod',
-        successInstallCallback,
-        failureInstallCallback
+			'https://chrome.google.com/webstore/detail/hjfejjmhpakdodimneibbmgfhfhjedod',
+			successInstallCallback,
+			failureInstallCallback
         );
                             
 	 }
