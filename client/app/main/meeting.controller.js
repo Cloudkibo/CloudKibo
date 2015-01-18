@@ -1863,6 +1863,7 @@ angular.module('cloudKiboApp')
 	var isStarted = false;
 	var sendChannel;
 	var receiveChannel;
+	var screenSharePCIndex;
 	var localStream;
 	var localStreamScreen;
 	var pc;
