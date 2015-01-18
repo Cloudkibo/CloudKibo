@@ -1771,6 +1771,12 @@ angular.module('cloudKiboApp')
 	$scope.hasPeerSharedScreen = function(){
 		return $scope.peerSharedScreen;
 	}
+
+	$scope.extensionAvailable = false;
+
+	$scope.showExtension = function(){
+		return $scope.extensionAvailable;
+	};
 	
 	$scope.screenSharedLocal = false;
 	

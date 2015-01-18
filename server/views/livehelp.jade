@@ -171,6 +171,9 @@ html(ng-app='cloudKiboApp')
           .sidePane(class='col-md-3 col-sm-3 blog-sidebar')
             div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
               button(id='showScreenButton', ng-click='showScreen()') {{showScreenText}}
+              div(ng-show='showExtension()')
+                button(ng-click='installExtension()', style='padding: 0;background: none;height: 61px;vertical-align: middle;cursor:pointer;')
+                  | Add Chrome Screen Sharing Extension
               br
               br
               label Send File
