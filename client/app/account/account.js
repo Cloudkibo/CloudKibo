@@ -8,7 +8,7 @@ angular.module('cloudKiboApp')
         controller: 'LoginCtrl'
       })
       .when('/register', {
-        templateUrl: 'registerview',
+        templateUrl: '/registerview',
         controller: 'SignupCtrl'
       })
       .when('/settings', {

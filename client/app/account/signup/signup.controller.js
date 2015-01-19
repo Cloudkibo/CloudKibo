@@ -35,7 +35,7 @@ angular.module('cloudKiboApp')
         .catch( function(err) {
           err = err.data;
           $scope.progressState = false;
-          $scope.addAlert('danger', err.message)
+          $scope.addAlertRegister('danger', err.message)
           
           $scope.errors = {};
 
