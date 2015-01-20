@@ -1,54 +1,17 @@
-extends layout
+extends tabcontents
 
-block content
- if(user)
-  body(ng-init='user=#{JSON.stringify(user)}')
-   .pre-header
-     .container
-       .row
-         div(class='col-md-6 col-sm-6 additional-shop-info')
-           ul(class='list-unstyled list-inline')
-             li
-               i(class='fa fa-phone')
-               span
-                 | 332-3800399
-             li
-               i(class='fa fa-envelope-o')
-               span
-                 | support@cloudkibo.com
-         div(class='col-md-6 col-sm-6 additional-nav')
-           ul(class='list-unstyled list-inline pull-right')
-             li
-               a(ng-href='/logout')
-                 | Log Out
-   .header
-    .container
-      a(class='site-logo', href='/')
-        img(src='/images/logo_small.png')
-        | #{title}
-      a(href='javascript:void(0);', class='mobi-toggler')
-        i(class='fa fa-bars')
-      div(class='header-navigation pull-right font-transform-inherit')
-              ul
+block appbodycontent
+ .fullBodyPane(class='animate-show')
+  .main
    .container
         br
         h1 Administration Dashboard
         br
-        p. Total Registered Users: #{accounts.length}
+        p. Total Registered Users: {{users.length}}
         br
-        table(border='0', width='1000px')
-          tr
-            td
-              | Teachers: #{teacherCount}
-            td
-              | Students: #{studentCount}
-            td
-              | Admins: #{adminCount}
-            td
-              | Parents: #{parentCount}
         br
         input(type='text', ng-model='searchNameText', placeholder='Search')
-        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='accounts= #{JSON.stringify(accounts)}')
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
           tr
            th
              | User Name
@@ -60,9 +23,9 @@ block content
              | Role
            th
              | Joining Date
-           th(colspan='2')
+           th
              | Options
-          tr(ng-repeat='account in accounts | filter : {username:searchNameText} | orderBy : "-date"', class='divCourseScheduleMain-Wrapper')
+          tr(ng-repeat='account in users | filter : {username:searchNameText} | orderBy : "-date"', class='divCourseScheduleMain-Wrapper')
             td
               b {{account.username | lowercase}}
             td
@@ -70,21 +33,11 @@ block content
             td
               | {{account.country}}
             td
-              div(ng-if="account.isTeacher == 'Yes'")
-                |  Teacher &nbsp;
-              div(ng-if="account.isStudent == 'Yes'")
-                |  Student &nbsp;
-              div(ng-if="account.isAdmin == 'Yes'")
-                |  Admin &nbsp;
-              div(ng-if="account.isParent == 'Yes'")
-                |  Parent &nbsp;
+              | {{account.role}}
             td
               | {{account.date | date : 'medium'}}
             td
-              a(href='/display/{{account._id}}')
-                | Display
-            td
-              a(href='/removeuser/{{account._id}}', ng-confirm-click='Are you sure???')
+              a(href='', ng-click='delete(account)')
                 | Remove
         br
         br
@@ -96,7 +49,7 @@ block content
         h1 User Feedback
         br
         input(type='text', ng-model='feedbackUserName', placeholder='Search')
-        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='feedback= #{JSON.stringify(feedback)}')
+        //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='feedback= #{JSON.stringify(feedback)}')
           tr
            th
              | User Name
@@ -132,7 +85,7 @@ block content
         h1 Call Log
         br
         input(type='text', ng-model='callBackName', placeholder='Search')
-        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='call_log= #{JSON.stringify(callrecord)}')
+        //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='call_log= #{JSON.stringify(callrecord)}')
           tr
            th
              | Caller
@@ -155,11 +108,11 @@ block content
         br
         h3 All Courses
         br
-        | Total Courses : #{courses.length}
+        //| Total Courses : #{courses.length}
         br
         br
         input(type='text', ng-model='searchCourseText', placeholder='Search')
-        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='courses= #{JSON.stringify(courses)}')
+        //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='courses= #{JSON.stringify(courses)}')
          tr
            th
              | Course Code
@@ -194,11 +147,11 @@ block content
         br
         h3 Files Uploaded by Users
         br
-        | Total Files : #{fileusers.length}
+        //| Total Files : #{fileusers.length}
         br
         br
         input(type='text', ng-model='searchUserFiles', placeholder='Search')
-        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='fileusers= #{JSON.stringify(fileusers)}')
+        //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='fileusers= #{JSON.stringify(fileusers)}')
          tr
            th
              | File Name
@@ -229,11 +182,11 @@ block content
         br
         h3 Files Uploaded in Course
         br
-        | Total Files : #{filecourses.length}
+        //| Total Files : #{filecourses.length}
         br
         br
         input(type='text', ng-model='searchCourseFiles', placeholder='Search')
-        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='filecourses= #{JSON.stringify(filecourses)}')
+        //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='filecourses= #{JSON.stringify(filecourses)}')
          tr
            th
              | File Name
@@ -264,11 +217,10 @@ block content
         br
         h3 News Updates
         br
-        | Total Updates : #{news.length}
+        //| Total Updates : #{news.length}
         br
         br
-        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5',
-        ng-controller='NewsControllerSuperUser', ng-init='news= #{JSON.stringify(news)}')
+        //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-controller='NewsControllerSuperUser', ng-init='news= #{JSON.stringify(news)}')
          tr
            th
              | Updates
@@ -286,7 +238,7 @@ block content
         h3 Configurations
         br
         br
-        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
+        //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
           form(role='form', action="/configPost", method="post", style='max-width: 470px;', novalidate, name='form', class='css-form', ng-init='configData= #{JSON.stringify(configData)}')
             tr
               th
@@ -335,7 +287,7 @@ block content
         h3 Database Schemas
         br
         br
-        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
+        //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
           form(role='form', action="/configPost", method="post", style='max-width: 470px;', novalidate, name='form', class='css-form', ng-init='configData= #{JSON.stringify(configData)}')
             tr
               th

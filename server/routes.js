@@ -103,6 +103,9 @@ module.exports = function(app) {
   app.route('/loginview')
 	.get(viewroutes.loginViewRoute);
 
+  app.route('/superuser')
+      .get(auth.hasRole('admin'), viewroutes.superUserViewRoute);
+
   app.route('/registerview')
 	.get(viewroutes.registerViewRoute);
 

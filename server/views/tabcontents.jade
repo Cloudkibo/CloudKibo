@@ -35,6 +35,9 @@ block bodycontent
                     | Settings
                   a(href='', ng-click='openSettings()', ng-show='isSettingsSelected()')
                     b Settings
+                li(ng-if='isUserAdmin()')
+                  a(href='/admin')
+                    | Admin Dashboard
  div(ng-init='otherUser=#{JSON.stringify(otherUser)}')
   .fullBodyPane(class='animate-show')
    .main

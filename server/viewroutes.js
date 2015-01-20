@@ -139,3 +139,16 @@ exports.featuresViewRoute = function(req, res) {
 	  res.render('features', { title: 'CloudKibo'});
   };
   
+exports.superUserViewRoute = function(req, res) {
+	if (typeof req.user == 'undefined')
+		res.redirect('/')
+	else{
+
+		Account.findById(req.user._id, function (err, gotUser) {
+			if (err) return console.log(err);
+
+			res.render('superuser', { title: 'CloudKibo', user: gotUser, meetingroom : req.params[0]});
+		})
+
+	}
+};

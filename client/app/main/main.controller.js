@@ -13,7 +13,7 @@ angular.module('cloudKiboApp')
 		$scope.logout = function() {
 		  
 		  if(Auth.isLoggedIn()){
-			  socket.emit('leave', {room: Auth.getCurrentUser().username, username: Auth.getCurrentUser().username});
+			  //socket.emit('leave', {room: Auth.getCurrentUser().username, username: Auth.getCurrentUser().username});
 			  socket.emit('leaveChat', {room: 'globalchatroom', user: Auth.getCurrentUser()});
 		  }
 		  
@@ -25,6 +25,10 @@ angular.module('cloudKiboApp')
 		$scope.isActive = function(route) {
 		  return route === $location.path();
 		};
+
+		$scope.isUserAdmin = function(){
+			return $scope.getCurrentUser().role === 'admin';
+		}
 		
     
   })

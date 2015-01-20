@@ -4,7 +4,7 @@ angular.module('cloudKiboApp')
   .config(function ($routeProvider) {
     $routeProvider
       .when('/admin', {
-        templateUrl: 'app/admin/admin.html',
+        templateUrl: '/superuser',
         controller: 'AdminCtrl'
       });
   });
