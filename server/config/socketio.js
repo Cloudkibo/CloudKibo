@@ -213,11 +213,13 @@ function onConnect(socketio, socket) {
 						client.get('nickname', function(err, nickname) {
 							
 							for(var j in gotContactList){
+								if(gotContactList[j].contactid != null){
 									if(nickname == gotContactList[j].contactid.username){
 										socketid = client.id;
 										socketio.sockets.socket(socketid).emit('online', room.user);
 										myOnlineContacts.push(gotContactList[j].contactid);
 									}
+								}
 							}
 							
 							i++;

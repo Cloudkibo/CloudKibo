@@ -2382,7 +2382,36 @@ angular.module('cloudKiboApp')
   
   .controller('AddRequestsController', function($scope){})
   
-  .controller('IndexController', function($scope){})
+  .controller('IndexController', function($scope, $location, Auth, $http, socket){
+	  
+	$scope.isCollapsed = true;
+	$scope.isLoggedIn = Auth.isLoggedIn;
+	$scope.isAdmin = Auth.isAdmin;
+	$scope.getCurrentUser = Auth.getCurrentUser;
+	
+	$scope.user = $scope.getCurrentUser() || {};
+
+	$scope.logout = function() {
+	  
+	  if(Auth.isLoggedIn()){
+		  //socket.emit('leave', {room: Auth.getCurrentUser().username, username: Auth.getCurrentUser().username});
+		  socket.emit('leaveChat', {room: 'globalchatroom', user: Auth.getCurrentUser()});
+	  }
+	  
+	  Auth.logout();
+	  
+	  $location.path('/login');
+	};
+	
+	$scope.getlocation = function(){
+		return $location.url();
+	}
+	
+	$scope.isActive = function(route) {
+		  return route === $location.path();
+	};
+	  
+  })
   
   .controller('ContactsListController', function($scope){})
   
