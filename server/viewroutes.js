@@ -7,10 +7,18 @@ var crypto = require("crypto");
 var html_dir = './public/';
 
 exports.indexRoute = function (req, res) {
+
+	var title = 'CloudKibo';
+
+	if(req.get('host') == 'www.cloudkibo.com')
+		title = 'CloudKibo';
+	else if(req.get('host') == 'www.synaps3webrtc.com')
+		title = 'Synaps3WebRTC';
+
 	  if (typeof req.user == 'undefined')
-	      res.render('index', { title: 'CloudKibo'});
+	      res.render('index', { title: title});
       else{
-		res.render('index', { title: 'CloudKibo'});
+		res.render('index', { title: title});
 		//res.redirect('/home');
       }
   };
@@ -33,6 +41,13 @@ exports.homeRoute = function (req, res) {
 	  if (typeof req.user == 'undefined')
 	      res.redirect('/')
       else{
+
+		  var title = 'CloudKibo';
+
+		  if(req.get('host') == 'www.cloudkibo.com')
+			  title = 'CloudKibo';
+		  else if(req.get('host') == 'www.synaps3webrtc.com')
+			  title = 'Synaps3WebRTC';
 		
 			Account.findById(req.user._id, function (err, gotUser) {
 				if (err) return console.log(err);
@@ -44,7 +59,7 @@ exports.homeRoute = function (req, res) {
 				  return res.redirect('/superuser')
 				else
 				{
-					res.render('home', { title: 'CloudKibo', user: gotUser, role: role});
+					res.render('home', { title: title, user: gotUser, role: role});
 			    }
     		  
 		  })
@@ -56,11 +71,18 @@ exports.meetingRoute = function (req, res) {
 	  if (typeof req.user == 'undefined')
 	      res.redirect('/')
       else{
+
+		  var title = 'CloudKibo';
+
+		  if(req.get('host') == 'www.cloudkibo.com')
+			  title = 'CloudKibo';
+		  else if(req.get('host') == 'www.synaps3webrtc.com')
+			  title = 'Synaps3WebRTC';
 		
 			Account.findById(req.user._id, function (err, gotUser) {
 				if (err) return console.log(err);
 				
-				res.render('meetingroom', { title: 'CloudKibo', user: gotUser, meetingroom : req.params[0]});    		  
+				res.render('meetingroom', { title: title, user: gotUser, meetingroom : req.params[0]});
 		  })
 		
       }
@@ -74,38 +96,76 @@ exports.getUserViewRoute = function (req, res) {
 	  if (typeof req.user == 'undefined')
 	      res.redirect('/')
       else{
+
+		  var title = 'CloudKibo';
+
+		  if(req.get('host') == 'www.cloudkibo.com')
+			  title = 'CloudKibo';
+		  else if(req.get('host') == 'www.synaps3webrtc.com')
+			  title = 'Synaps3WebRTC';
 		
 			Account.findOne({username : req.params[0]}, function (err, gotUser) {
 				if (err) return console.log(err);
 				
 				if(gotUser != null)
-					res.render('home', { title: 'CloudKibo', otherUser: gotUser, user: req.user});    		  
+					res.render('home', { title: title, otherUser: gotUser, user: req.user});
 				else
-					res.render('401', { title: 'CloudKibo'});
+					res.render('401', { title: title});
 		    })
 		
       }
   };
 
-exports.liveHelpRoute = function (req, res) {	
-		res.render('livehelp', { title: 'CloudKibo', meetingroom : req.params[0]});    		  
+exports.liveHelpRoute = function (req, res) {
+
+	var title = 'CloudKibo';
+
+	if(req.get('host') == 'www.cloudkibo.com')
+		title = 'CloudKibo';
+	else if(req.get('host') == 'www.synaps3webrtc.com')
+		title = 'Synaps3WebRTC';
+
+		res.render('livehelp', { title: title, meetingroom : req.params[0]});
   };
 
-exports.videoCallRoute = function (req, res) {	
-		res.render('videocall', { title: 'CloudKibo', meetingroom : req.params[0]});    		  
+exports.videoCallRoute = function (req, res) {
+
+	var title = 'CloudKibo';
+
+	if(req.get('host') == 'www.cloudkibo.com')
+		title = 'CloudKibo';
+	else if(req.get('host') == 'www.synaps3webrtc.com')
+		title = 'Synaps3WebRTC';
+
+		res.render('videocall', { title: title, meetingroom : req.params[0]});
   };  
   
 exports.welcomeScreenViewRoute = function (req, res) {	
 	  if (typeof req.user == 'undefined')
           res.redirect('/');
       else{
-        res.render('welcomescreen', { title: 'CloudKibo'});    		  
+
+		  var title = 'CloudKibo';
+
+		  if(req.get('host') == 'www.cloudkibo.com')
+			  title = 'CloudKibo';
+		  else if(req.get('host') == 'www.synaps3webrtc.com')
+			  title = 'Synaps3WebRTC';
+
+        res.render('welcomescreen', { title: title});
       }
   };  
   
 exports.resetPasswordViewRoute = function(req, res){
 	  if (typeof req.user != 'undefined') res.redirect('/');
-      else{ 
+      else{
+
+	  var title = 'CloudKibo';
+
+	  if(req.get('host') == 'www.cloudkibo.com')
+		  title = 'CloudKibo';
+	  else if(req.get('host') == 'www.synaps3webrtc.com')
+		  title = 'Synaps3WebRTC';
 	    
 	    var token = req.params[0];
 		  
@@ -115,7 +175,7 @@ exports.resetPasswordViewRoute = function(req, res){
 			if (err) return done(err);
 			if(!doc) return res.render("passwordreset-failure");
 			
-			res.render('newpassword', { title: 'CloudKibo', token : token });
+			res.render('newpassword', { title: title, token : token });
 		
 		})
 
@@ -123,22 +183,53 @@ exports.resetPasswordViewRoute = function(req, res){
   };
 
 exports.loginViewRoute = function(req, res) {
-	if (typeof req.user == 'undefined')
-		res.render('login', { title: 'CloudKibo'});
+	if (typeof req.user == 'undefined') {
+
+		var title = 'CloudKibo';
+
+		if(req.get('host') == 'www.cloudkibo.com')
+			title = 'CloudKibo';
+		else if(req.get('host') == 'www.synaps3webrtc.com')
+			title = 'Synaps3WebRTC';
+
+		res.render('login', {title: title});
+	}
 	else
 		res.redirect('/home');
   };  
   
 exports.registerViewRoute = function(req, res) {
-	if (typeof req.user == 'undefined')
-		res.render('register', { title: 'CloudKibo'});
+	if (typeof req.user == 'undefined') {
+
+
+		var title = 'CloudKibo';
+
+		if(req.get('host') == 'www.cloudkibo.com')
+			title = 'CloudKibo';
+		else if(req.get('host') == 'www.synaps3webrtc.com')
+			title = 'Synaps3WebRTC';
+
+
+		res.render('register', {title: title});
+	}
 	else
 		res.redirect('/home');
   };
   
 exports.forgotPasswordViewRoute = function(req, res) {
-	if (typeof req.user == 'undefined')
-		res.render('forgotpassword', { title: 'CloudKibo'});
+	if (typeof req.user == 'undefined') {
+
+
+		var title = 'CloudKibo';
+
+		if(req.get('host') == 'www.cloudkibo.com')
+			title = 'CloudKibo';
+		else if(req.get('host') == 'www.synaps3webrtc.com')
+			title = 'Synaps3WebRTC';
+
+
+		res.render('forgotpassword', {title: title});
+	}
 	else
 		res.redirect('/home');
   };
@@ -160,10 +251,19 @@ exports.superUserViewRoute = function(req, res) {
 		res.redirect('/')
 	else{
 
+
+		var title = 'CloudKibo';
+
+		if(req.get('host') == 'www.cloudkibo.com')
+			title = 'CloudKibo';
+		else if(req.get('host') == 'www.synaps3webrtc.com')
+			title = 'Synaps3WebRTC';
+
+
 		Account.findById(req.user._id, function (err, gotUser) {
 			if (err) return console.log(err);
 
-			res.render('superuser', { title: 'CloudKibo', user: gotUser, meetingroom : req.params[0]});
+			res.render('superuser', { title: title, user: gotUser, meetingroom : req.params[0]});
 		})
 
 	}
