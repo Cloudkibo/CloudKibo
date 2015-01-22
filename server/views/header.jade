@@ -51,8 +51,11 @@
 .header(ng-hide='isLoggedIn()')
     .container
       a(class='site-logo', href='/')
-        img(src='/images/logo_small.png')
-        | #{title}
+        if(title == 'CloudKibo')
+          img(src='/images/logo_small.png')
+          | #{title}
+        else
+          img(src='/images/logo.jpg')
       a(href='javascript:void(0);', class='mobi-toggler')
         i(class='fa fa-bars')
       div(class='header-navigation pull-right font-transform-inherit')

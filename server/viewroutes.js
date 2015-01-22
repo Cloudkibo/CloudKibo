@@ -16,8 +16,16 @@ exports.indexRoute = function (req, res) {
   };
 
 exports.appRoute = function (req, res) {
-		
-		res.render('app', {title : 'CloudKibo'});
+
+		var title = 'CloudKibo';
+
+		if(req.get('host') == 'www.cloudkibo.com')
+			title = 'CloudKibo';
+		else if(req.get('host') == 'www.synaps3webrtc.com')
+			title = 'Synaps3WebRTC';
+
+
+		res.render('app', {title : title});
   };
   
 exports.homeRoute = function (req, res) {
@@ -136,7 +144,15 @@ exports.forgotPasswordViewRoute = function(req, res) {
   };
   
 exports.featuresViewRoute = function(req, res) {
-	  res.render('features', { title: 'CloudKibo'});
+
+	var title = 'CloudKibo';
+
+	if(req.get('host') == 'www.cloudkibo.com')
+		title = 'CloudKibo';
+	else if(req.get('host') == 'www.synaps3webrtc.com')
+		title = 'Synaps3WebRTC';
+
+	res.render('features', { title: title});
   };
   
 exports.superUserViewRoute = function(req, res) {
