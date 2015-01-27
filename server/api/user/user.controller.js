@@ -4,6 +4,8 @@ var User = require('./user.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
+var crypto = require('crypto');
+var verificationtoken = require('../tokens/verificationtoken.model');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -29,6 +31,39 @@ exports.create = function (req, res, next) {
   newUser.role = 'user';
   newUser.save(function(err, user) {
     if (err) return validationError(res, err);
+
+	  var tokenString = crypto.randomBytes(12).toString('hex');
+
+	  var newToken = new verificationtoken({
+		  user : user._id,
+		  token : tokenString,
+	  });
+
+
+	  newToken.save(function(err){
+		  if (err) return console.log(err)
+		  //console.log('Token Saved')
+	  })
+
+
+	  var sendgrid  = require('sendgrid')('cloudkibo', 'cl0udk1b0');
+
+	  var email     = new sendgrid.Email({
+		  to:       user.email,
+		  from:     'support@cloudkibo.com',
+		  subject:  'CloudKibo: Account Verification',
+		  text:     'Welcome to CloudKibo'
+	  });
+
+	  email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to verify your account <br><br> http://www.cloudkibo.com/verify/'+ tokenString);
+
+	  sendgrid.send(email, function(err, json) {
+		  if (err) { return console.log(err); }
+
+		  console.log(json);
+
+	  });
+
     var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
     res.json({ token: token });
   });

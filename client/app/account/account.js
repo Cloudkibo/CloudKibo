@@ -11,6 +11,10 @@ angular.module('cloudKiboApp')
         templateUrl: '/registerview',
         controller: 'SignupCtrl'
       })
+      .when('/forgotpassword', {
+          templateUrl: '/forgotpasswordview',
+          controller: 'ForgotPasswordController'
+      })
       .when('/settings', {
         templateUrl: '/settings',
         controller: 'SettingsCtrl',

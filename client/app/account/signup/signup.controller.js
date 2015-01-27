@@ -8,7 +8,6 @@ angular.module('cloudKiboApp')
     $scope.alertsRegister = [];
 
 	$scope.addAlertRegister = function(newtype, newMsg) {
-		console.log('Error', newtype, newMsg)
 		$scope.alertsRegister.push({type: newtype, msg: newMsg});
 	};
 
@@ -33,16 +32,19 @@ angular.module('cloudKiboApp')
           $location.path('/app');
         })
         .catch( function(err) {
+
+              console.log(err)
           err = err.data;
           $scope.progressState = false;
-          $scope.addAlertRegister('danger', err.message)
+
           
           $scope.errors = {};
 
           // Update validity of form fields that match the mongoose errors
           angular.forEach(err.errors, function(error, field) {
-            form[field].$setValidity('mongoose', false);
-            $scope.errors[field] = error.message;
+            //form[field].$setValidity('mongoose', false);
+            //$scope.errors[field] = error.message;
+            $scope.addAlertRegister('danger', error.message)
           });
         });
       }

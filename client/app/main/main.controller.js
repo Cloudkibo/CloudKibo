@@ -2417,63 +2417,7 @@ angular.module('cloudKiboApp')
   
   .controller('NewsControllerSuperUser', function($scope, Data){ $scope.data = Data; })
   
-  .controller('NewsController', function($scope, Data){ $scope.data = Data; })
-  
-  .controller('ForgotPassword', function($scope, $http){
-	  		
-		$scope.isCollapsed = true;
-		
-		$scope.save = function() {
-			var dataToSend = {
-				username : $scope.user3.username,
-			};
-			
-			$http.post('/forgotPasswordRequest', JSON.stringify(dataToSend))
-			.success(function(data) {
-				$scope.addAlert(data.status, data.msg)
-				if(data.status == 'success')
-				  $scope.sentData = true;
-			});
-			
-		};
-		
-		$scope.sentData = false;
-
-		$scope.forgotPassAlerts = [];
-
-		$scope.addAlert = function(newtype, newMsg) {
-			$scope.forgotPassAlerts.push({type: newtype, msg: newMsg});
-		};
-
-		$scope.closeAlert = function(index) {
-			$scope.forgotPassAlerts.splice(index, 1);
-		};
-	  
-  })
-  
-  .controller('NewPassword', function($scope, $http){
-	  
-	$scope.save = function() {
-		
-		var dataToSend = {
-			token : $scope.token,
-			password : $scope.user.password
-		};
-		
-		$http.post('/ChangePassword', JSON.stringify(dataToSend))
-		.success(function(data) {
-			$scope.user.message = data;
-			$scope.sentData = true;
-			
-		});
-		
-	};
-	
-	$scope.sentData = false;
-	$scope.user = {};
-	$scope.user.message = 'Not Sent';
-
-
-	  
-  });
+  .controller('NewsController', function($scope, Data){
+		$scope.data = Data;
+	});
   
