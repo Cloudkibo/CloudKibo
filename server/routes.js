@@ -100,6 +100,12 @@ module.exports = function(app) {
   app.route('/features')
 	.get(viewroutes.featuresViewRoute);
 
+  app.route('/contact')
+  .get(viewroutes.contactViewRoute);
+
+  app.route('/aboutus')
+  .get(viewroutes.aboutusViewRoute);
+
   app.route('/loginview')
 	.get(viewroutes.loginViewRoute);
 

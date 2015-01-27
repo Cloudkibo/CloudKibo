@@ -2,17 +2,25 @@
 
 angular.module('cloudKiboApp')
   .config(function ($routeProvider) {
-    $routeProvider
-      .when('/', {
-        templateUrl: '/index',
-        controller: 'IndexController'
-      })
-      .when('/app', {
-        templateUrl: '/home',
-        controller: 'HomeController'
-      })
-      .when('/features', {
-        templateUrl: '/features',
-        controller: 'IndexController'
-      });
+          $routeProvider
+            .when('/', {
+              templateUrl: '/index',
+              controller: 'IndexController'
+            })
+            .when('/app', {
+              templateUrl: '/home',
+              controller: 'HomeController'
+            })
+            .when('/features', {
+              templateUrl: '/features',
+              controller: 'IndexController'
+            }) 
+            .when('/aboutus', {
+              templateUrl: '/aboutus',
+              controller: 'IndexController'
+            })
+            .when('/contact', {
+              templateUrl: '/contact',
+              controller: 'IndexController'
+            });
   });

@@ -245,7 +245,32 @@ exports.featuresViewRoute = function(req, res) {
 
 	res.render('features', { title: title});
   };
-  
+
+
+exports.contactViewRoute = function(req, res) {
+
+	var title = 'CloudKibo';
+
+	if(req.get('host') == 'www.cloudkibo.com')
+		title = 'CloudKibo';
+	else if(req.get('host') == 'www.synaps3webrtc.com')
+		title = 'Synaps3WebRTC';
+
+	res.render('contact', { title: title});
+  };
+
+
+exports.aboutusViewRoute = function(req, res) {
+
+	var title = 'CloudKibo';
+
+	if(req.get('host') == 'www.cloudkibo.com')
+		title = 'CloudKibo';
+	else if(req.get('host') == 'www.synaps3webrtc.com')
+		title = 'Synaps3WebRTC';
+
+	res.render('aboutus', { title: title});
+  };  
 exports.superUserViewRoute = function(req, res) {
 	if (typeof req.user == 'undefined')
 		res.redirect('/')
