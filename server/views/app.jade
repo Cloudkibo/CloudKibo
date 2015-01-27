@@ -11,7 +11,7 @@ html
     
     link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css')
     
-    link(href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|PT+Sans+Narrow|Source+Sans+Pro:200,300,400,600,700,900&amp;subset=all', rel='stylesheet', type='text/css')
+    //link(href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|PT+Sans+Narrow|Source+Sans+Pro:200,300,400,600,700,900&amp;subset=all', rel='stylesheet', type='text/css')
     
     link(href='/global/plugins/font-awesome/css/font-awesome.min.css', rel='stylesheet')
     
@@ -62,7 +62,7 @@ html
                  li
                    i(class='fa fa-phone')
                    span
-                     | 332-3800399
+                     | 1-425-890-9414
                  li
                    i(class='fa fa-envelope-o')
                    span
@@ -87,7 +87,7 @@ html
                  li
                    i(class='fa fa-phone')
                    span
-                     | 332-3800399
+                     | 1-425-890-9414
                  li
                    i(class='fa fa-envelope-o')
                    span
@@ -120,13 +120,13 @@ html
                 a(ng-href='/')
                   | Home
               li
-                a(ng-href='#')
+                a(ng-href='/aboutus')
                   | About Us
               li
                 a(ng-href='/features')
                   | Features
               li
-                a(ng-href='#')
+                a(ng-href='/contact')
                   | Contact
         .header(ng-show='isLoggedIn()')
          .container
@@ -508,102 +508,3 @@ html
                 //Layout.initNavScrolling(); 
             });
     
-<<<<<<< HEAD
-    div(ng-view='', ng-controller='TabsController')
-    
-    
-    
-    //script(src='/javascripts/lib/angular-file-upload-shim.min.js')
-    
-    // never do angular.js, in folder it is latest version, we use oldest
-    script(src='/javascripts/lib/angular.min.js')
-    
-    script(src='/javascripts/lib/angular-route.min.js')
-    
-    //script(src='/javascripts/lib/angular-file-upload.js')
-    
-    script(src='/javascripts/lib/angular-animate.js')
-    
-    script(src='/javascripts/lib/angular-resource.js')
-    
-    script(src='/javascripts/lib/angular-cookies.js')
-    
-    script(src='/javascripts/lib/angular-sanitize.js')
-    
-    script(src='/javascripts/lib/angular-socket.io.js')
-    
-    script(src='/javascripts/lib/idb.filesystem.min.js')
-    
-    script(src='/socket.io/socket.io.js')
-    
-    script(src='/javascripts/lib/adapter.js')
-    
-    script(src='/javascripts/lib/ui-bootstrap-tpls-0.10.0.js')
-    
-    script(src='/app/cloudKiboApp.js')
-    
-    script(src='/app/main/main.js')
-    
-    
-    // New Boilerplate
-    
-    script(src='/app/account/account.js')
-    
-    script(src='/app/account/login/login.controller.js')
-    
-    script(src='/app/account/settings/settings.controller.js')
-    
-    script(src='/app/account/signup/signup.controller.js')
-    
-    script(src='/app/account/signup/signup.controller.js')
-    
-    script(src='/app/admin/admin.controller.js')
-    
-    script(src='/app/admin/admin.js')
-    
-    script(src='/app/main/main.controller.js')
-    
-    script(src='/app/main/meeting.controller.js')
-    
-    script(src='/components/auth/auth.service.js')
-    
-    script(src='/components/auth/user.service.js')
-    
-    script(src='/components/modal/modal.service.js')
-    
-    script(src='/components/mongoose-error/mongoose-error.directive.js')
-    
-    // New Boilerplate ends
-    
-    script(src='https://www.kibosupport.com/javascripts/widget/widget.js')
-    
-    script(src='/global/plugins/jquery-1.11.0.min.js')
-    script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
-    script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
-    script(src='/frontend/layout/scripts/back-to-top.js')
- 
-    script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
-    script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
-    
-    // BEGIN RevolutionSlider
-    script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
-    script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
-    script(src='/frontend/pages/scripts/revo-slider-init.js')
-    // END RevolutionSlider
-    
-    
- 
-    script(src='/frontend/layout/scripts/layout.js')
- 
-    script(type='text/javascript').
-        jQuery(document).ready(function() {
-            Layout.init();    
-            Layout.initOWL();
-            RevosliderInit.initRevoSlider();
-            Layout.initTwitter();
-            //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
-            //Layout.initNavScrolling(); 
-        });
-
-=======
->>>>>>> 87f9b9926afe304b4c567a913ba562f133619df3
