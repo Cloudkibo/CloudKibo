@@ -6,6 +6,7 @@ var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var verificationtoken = require('../tokens/verificationtoken.model');
+var passwordresettoken = require('../tokens/passwordresettoken.model');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -372,12 +373,10 @@ exports.setstatusmessage = function(req, res, next){
 exports.resetpasswordrequest = function(req, res, next){
 	User.findOne({username : req.body.username}, function(err, gotUser){
 	  if(err) return console.log(err)
-	  if(!gotUser) return res.send({status:'error', msg:'Sorry! No such username exists in our database.'})
+	  if(!gotUser) return res.send({status:'danger', msg:'Sorry! No such username exists in our database.'})
 	  
 	  var tokenString = crypto.randomBytes(15).toString('hex');
-			
-		var passwordresettoken = tokenSchemas.passwordresettoken
-		
+
 		var newToken = new passwordresettoken({
 					user : gotUser._id,
 					token : tokenString
