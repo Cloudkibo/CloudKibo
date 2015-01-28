@@ -12,15 +12,15 @@ angular.module('cloudKiboApp')
               controller: 'HomeController'
             })
             .when('/features', {
-              templateUrl: '/features',
+              templateUrl: '/featuresview',
               controller: 'IndexController'
             }) 
             .when('/aboutus', {
-              templateUrl: '/aboutus',
+              templateUrl: '/aboutusview',
               controller: 'IndexController'
             })
             .when('/contact', {
-              templateUrl: '/contact',
+              templateUrl: '/contactview',
               controller: 'IndexController'
             });
   });
