@@ -31,13 +31,13 @@ block bodycontent
                          | *
                      .col-lg-8
                        input.form-control(type='text', name="firstname", placeholder='First Name', ng-model='user.firstname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
-                       div(ng-show!="form.fname.$dirty && !form.fname.$focused")
-                         div(ng-show="form.fname.$invalid")
-                           span(ng-show="form.fname.$error.required")
+                       div(ng-show!="form.firstname.$dirty && !form.firstname.$focused")
+                         div(ng-show="form.firstname.$invalid")
+                           span(ng-show="form.firstname.$error.required")
                              | Enter the first name.
-                           span(ng-show="form.fname.$error.minlength")
+                           span(ng-show="form.firstname.$error.minlength")
                              | First name is too short.
-                           span(ng-show="form.fname.$error.maxlength")
+                           span(ng-show="form.firstname.$error.maxlength")
                              | First name is too big.
                    .form-group
                      label(for='email', class='col-lg-4 control-label') Last Name
@@ -45,13 +45,13 @@ block bodycontent
                          | *
                      .col-lg-8
                        input.form-control(type='text', name="lastname", placeholder='Last Name', ng-model='user.lastname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
-                       div(ng-show!="form.lname.$dirty && !form.lname.$focused")
-                         div(ng-show="form.lname.$invalid")
-                           span(ng-show="form.lname.$error.required")
+                       div(ng-show!="form.lastname.$dirty && !form.lastname.$focused")
+                         div(ng-show="form.lastname.$invalid")
+                           span(ng-show="form.lastname.$error.required")
                              | Enter the last name.
-                           span(ng-show="form.lname.$error.minlength")
+                           span(ng-show="form.lastname.$error.minlength")
                              | Last name is too short.
-                           span(ng-show="form.lname.$error.maxlength")
+                           span(ng-show="form.lastname.$error.maxlength")
                              | Last name is too big.
                    .form-group
                      label(for='email', class='col-lg-4 control-label') Email Address
@@ -70,12 +70,12 @@ block bodycontent
                        span(class='require')
                          | *
                      .col-lg-8
-                       input.form-control(type='text', name="phoneNumber", placeholder='Phone Number', ng-model="user.phone", required, ng-focus)
-                       div(ng-show="form.phoneNumber.$dirty && !form.phoneNumber.$focused")
-                         div(ng-show="form.phoneNumber.$invalid")
-                           span(ng-show="form.phoneNumber.$error.required")
+                       input.form-control(type='text', name="phone", placeholder='Phone Number', ng-model="user.phone", required, ng-focus)
+                       div(ng-show="form.phone.$dirty && !form.phone.$focused")
+                         div(ng-show="form.phone.$invalid")
+                           span(ng-show="form.phone.$error.required")
                              | Enter your contact number.
-                           span(ng-show="form.email.$error.phoneNumber")
+                           span(ng-show="form.email.$error.phone")
                              | This is not a valid phone number.
                  fieldset
                    legend Your Login Details
