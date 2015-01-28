@@ -137,7 +137,7 @@ exports.changePasswordRoute = function(req, res){
 				if (err) return done(err);
 				if (!user) return res.render("passwordreset-failure", { title: title, token : token });
 
-				user.password = req.body.password;
+				user.password = String(req.body.password);
 				user.save(function(err) {
 					if (err) return validationError(res, err);
 					res.send('Password Successfully Changed. Please login with your new password');
