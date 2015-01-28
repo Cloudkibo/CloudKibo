@@ -115,6 +115,41 @@ exports.changePassword = function(req, res, next) {
   });
 };
 
+// Make this res.send({status: null, msg: null}) format in future
+exports.changePasswordRoute = function(req, res){
+	if (typeof req.user != 'undefined') res.redirect('/');
+	else{
+
+		var title = 'CloudKibo';
+
+		if(req.get('host') == 'www.cloudkibo.com')
+			title = 'CloudKibo';
+		else if(req.get('host') == 'www.synaps3webrtc.com')
+			title = 'Synaps3WebRTC';
+
+		var token = req.body.token;
+
+		passwordresettoken.findOne({token: token}, function (err, doc){
+			if (err) return done(err);
+			if(!doc) return res.render("passwordreset-failure", { title: title, token : token });
+
+			User.findOne({_id: doc.user}, function (err, user) {
+				if (err) return done(err);
+				if (!user) return res.render("passwordreset-failure", { title: title, token : token });
+
+				user.password = req.body.password;
+				user.save(function(err) {
+					if (err) return validationError(res, err);
+					res.send('Password Successfully Changed. Please login with your new password');
+				});
+			})
+
+		})
+
+	}
+};
+
+
 /**
  * Get my info
  */

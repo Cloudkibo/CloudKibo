@@ -22,6 +22,6 @@ router.post('/invitebyemail', auth.isAuthenticated(), controller.invitebyemail);
 router.post('/initialtestingdone', auth.isAuthenticated(), controller.initialtesting);
 router.post('/setstatusmessage', auth.isAuthenticated(), controller.setstatusmessage);
 router.post('/resetpasswordrequest', controller.resetpasswordrequest);
-//app.post("/ChangePassword", postroutes.changePasswordRoute); 			FROM RESET PASSWORD TOKEN TOO
+router.post("/changepassword", postroutes.changePasswordRoute);
 
 module.exports = router;
