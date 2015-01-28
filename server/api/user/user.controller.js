@@ -371,9 +371,9 @@ exports.setstatusmessage = function(req, res, next){
  * Password reset request route
  */
 exports.resetpasswordrequest = function(req, res, next){
-	User.findOne({username : req.body.username}, function(err, gotUser){
+	User.findOne({email : req.body.email}, function(err, gotUser){
 	  if(err) return console.log(err)
-	  if(!gotUser) return res.send({status:'danger', msg:'Sorry! No such username exists in our database.'})
+	  if(!gotUser) return res.send({status:'danger', msg:'Sorry! No such email address exists in our database.'})
 	  
 	  var tokenString = crypto.randomBytes(15).toString('hex');
 

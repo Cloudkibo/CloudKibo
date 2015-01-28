@@ -257,6 +257,7 @@ exports.contactViewRoute = function(req, res) {
 		title = 'Synaps3WebRTC';
 
 	res.render('contact', { title: title});
+
   };
 
 

@@ -7,7 +7,7 @@ angular.module('cloudKiboApp')
 
         $scope.save = function() {
             var dataToSend = {
-                username : $scope.user3.username,
+                email : $scope.user3.email
             };
 
             $http.post('/api/users/resetpasswordrequest', JSON.stringify(dataToSend))
