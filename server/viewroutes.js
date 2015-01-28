@@ -195,14 +195,14 @@ exports.verifyViewRoute = function (req, res, next) {
 
 	var token = req.params[0];
 
-	verifyUser(token, res, function(err) {
+	verifyUser(token, req, res, function(err) {
 		if (err) return res.render("verification-failure", { title: title, token : token });
 		res.render("verification-success", { title: title, token : token });
 
 	});
 };
 
-function verifyUser(token, res, done) {
+function verifyUser(token, req, res, done) {
 
 
 	var title = 'CloudKibo';
