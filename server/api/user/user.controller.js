@@ -56,7 +56,7 @@ exports.create = function (req, res, next) {
 		  text:     'Welcome to CloudKibo'
 	  });
 
-	  email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to verify your account <br><br> https://www.cloudkibo.com/#/verify/'+ tokenString);
+	  email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to verify your account <br><br> https://www.cloudkibo.com/#verify/'+ tokenString);
 
 	  sendgrid.send(email, function(err, json) {
 		  if (err) { return console.log(err); }
