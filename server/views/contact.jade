@@ -1,0 +1,86 @@
+extends header
+
+block append head
+  //script(src='/javascripts/cloudKiboApp.js')
+
+block bodycontent
+ .main
+    .row.margin-bottom-40
+        // BEGIN CONTENT
+        .container
+          .content-page
+            .row
+              .col-md-9.col-sm-9
+                h2 Contact Us
+                p
+                  | Send your feedback 
+                // BEGIN FORM
+                form(action='#', role='form')
+                  .form-group
+                    label(for='contacts-name') Name
+                    input#contacts-name.form-control(type='text')
+                  .form-group
+                    label(for='contacts-email') Email
+                    input#contacts-email.form-control(type='email')
+                  .form-group
+                    label(for='contacts-message') Message
+                    textarea#contacts-message.form-control(rows='5')
+                  button.btn.btn-primary(type='submit')
+                    i.icon-ok
+                    |  Send
+                  button.btn.btn-default(type='button') Cancel
+                // END FORM
+
+        // END CONTENT
+
+
+           
+ .footer
+    .container
+      .row
+        div(class='col-md-6 col-sm-6 padding-top-10')
+          if(title == 'CloudKibo')
+            | CloudKibo &copy; (Beta Version) All Rights Reserved
+          else
+            | Synaps3WebRTC &copy; (Beta Version) All Rights Reserved
+        div(class='col-md-6 col-sm-6')
+          ul(class='social-footer list-unstyled list-inline pull-right')
+                li
+                  a(href='#')
+                    i(class='fa fa-facebook')
+                li
+                  a(href='#')
+                    i(class='fa fa-google-plus')
+                li
+                  a(href='#')
+                    i(class='fa fa-linkedin')
+                li
+                  a(href='#')
+                    i(class='fa fa-twitter')
+                li
+                  a(href='#')
+                    i(class='fa fa-youtube')
+ 
+ script(src='/global/plugins/jquery-1.11.0.min.js')
+ script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
+ script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
+ script(src='/frontend/layout/scripts/back-to-top.js')
+ 
+ script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
+ script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
+ 
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
+ script(src='/frontend/pages/scripts/revo-slider-init.js')
+ 
+ script(src='/frontend/layout/scripts/layout.js')
+ 
+ script(type='text/javascript').
+        jQuery(document).ready(function() {
+            Layout.init();    
+            Layout.initOWL();
+            RevosliderInit.initRevoSlider();
+            Layout.initTwitter();
+            //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
+            //Layout.initNavScrolling(); 
+        });
