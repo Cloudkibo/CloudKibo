@@ -15,6 +15,10 @@ angular.module('cloudKiboApp')
           templateUrl: '/forgotpasswordview',
           controller: 'ForgotPasswordController'
       })
+      .when('/verify/:token', {
+          templateUrl: function(params){ return '/verifyview/'+ params.token},
+          controller: 'LoginCtrl'
+      })
       .when('/settings', {
         templateUrl: '/settings',
         controller: 'SettingsCtrl',

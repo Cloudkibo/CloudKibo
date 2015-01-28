@@ -124,7 +124,7 @@ module.exports = function(app) {
   app.route("/getuserview/*")
 	.get(auth.isAuthenticated(), viewroutes.getUserViewRoute);
 
-  app.route("/verify/*")
+  app.route("/verifyview/*")
     .get(viewroutes.verifyViewRoute);
   
   
