@@ -3,6 +3,8 @@ var mongoose = require('mongoose');
 var Account = require('./api/user/user.model');
 var fs = require('fs');
 var crypto = require("crypto");
+var verificationtoken = require("./api/tokens/verificationtoken.model");
+var passwordresettoken = require("./api/tokens/passwordresettoken.model");
 
 var html_dir = './public/';
 
@@ -168,9 +170,7 @@ exports.resetPasswordViewRoute = function(req, res){
 		  title = 'Synaps3WebRTC';
 	    
 	    var token = req.params[0];
-		  
-		var passwordresettoken = tokenSchemas.passwordresettoken
-	
+
 		passwordresettoken.findOne({token: token}, function (err, doc){
 			if (err) return done(err);
 			if(!doc) return res.render("passwordreset-failure");
@@ -181,6 +181,36 @@ exports.resetPasswordViewRoute = function(req, res){
 
 	  }
   };
+
+exports.verifyViewRoute = function (req, res, next) {
+	var token = req.params[0];
+
+	console.log(token)
+
+	verifyUser(token, res, function(err) {
+		if (err) return res.render("verification-failure");
+		res.render("verification-success");
+
+	});
+};
+
+function verifyUser(token, res, done) {
+
+	verificationtoken.findOne({token: token}, function (err, doc){
+		if (err) return done(err);
+		if(!doc) return res.render("verification-failure");
+
+		Account.findOne({_id: doc.user}, function (err, user) {
+			if (err) return done(err);
+			if (!user) return res.render("verification-failure");
+
+			user["accountVerified"] = 'Yes';
+			user.save(function(err) {
+				done(err);
+			})
+		})
+	})
+}
 
 exports.loginViewRoute = function(req, res) {
 	if (typeof req.user == 'undefined') {
