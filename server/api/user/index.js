@@ -22,6 +22,6 @@ router.post('/invitebyemail', auth.isAuthenticated(), controller.invitebyemail);
 router.post('/initialtestingdone', auth.isAuthenticated(), controller.initialtesting);
 router.post('/setstatusmessage', auth.isAuthenticated(), controller.setstatusmessage);
 router.post('/resetpasswordrequest', controller.resetpasswordrequest);
-router.post("/changepassword", postroutes.changePasswordRoute);
+router.post("/changepassword", controller.changePasswordRoute);
 
 module.exports = router;
