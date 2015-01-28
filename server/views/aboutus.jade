@@ -1,0 +1,106 @@
+extends header
+
+block append head
+  //script(src='/javascripts/cloudKiboApp.js')
+
+block bodycontent
+ .main
+   .container
+
+      .col-md-12.col-sm-12
+              h1 About Us
+              |             
+              .content-page
+                .row.margin-bottom-30
+                  // BEGIN INFO BLOCK
+                  .col-md-7
+                    h2.no-top-space 
+                    |                   
+                    p
+                      | CloudKibo is a next generation communication technology solution based on webRTC. It’s intuitive, cost effective, and rich with functionality. It can be used both for internal and external communications. It provides integrated and unified voice, video, and data communication across web. .Cloudkibo is based on modern Web technology like Nodejs, Angularjs, Socket.io, WebRTC etc, thus it is highly scalable. Also as most of the communication is Peer to Peer the need for a large and complex server platform is minimized resulting in a very cost effective solution.
+                    |  
+                    |                   
+                    
+                    // BEGIN LISTS
+                    .row.front-lists-v1
+                      .col-md-6
+                        ul.list-unstyled.margin-bottom-20
+                          li
+                            i.fa.fa-check
+                            |  Video Call
+                          |                         
+                          li
+                            i.fa.fa-check
+                            |  Video Conference call
+                          |                         
+                          li
+                            i.fa.fa-check
+                            |  File Transfer
+                      |                     
+                      .col-md-6
+                        ul.list-unstyled
+                          li
+                            i.fa.fa-check
+                            |  Screen Sharing
+                          |                         
+                          li
+                            i.fa.fa-check
+                            |  Chat
+                          |                         
+                          li
+                            i.fa.fa-check
+                            |  Audio
+                    // END LISTS
+                  // END INFO BLOCK              
+                .row.margin-bottom-40
+
+           
+ .footer
+    .container
+      .row
+        div(class='col-md-6 col-sm-6 padding-top-10')
+          if(title == 'CloudKibo')
+            | CloudKibo &copy; (Beta Version) All Rights Reserved
+          else
+            | Synaps3WebRTC &copy; (Beta Version) All Rights Reserved
+        div(class='col-md-6 col-sm-6')
+          ul(class='social-footer list-unstyled list-inline pull-right')
+                li
+                  a(href='#')
+                    i(class='fa fa-facebook')
+                li
+                  a(href='#')
+                    i(class='fa fa-google-plus')
+                li
+                  a(href='#')
+                    i(class='fa fa-linkedin')
+                li
+                  a(href='#')
+                    i(class='fa fa-twitter')
+                li
+                  a(href='#')
+                    i(class='fa fa-youtube')
+ 
+ script(src='/global/plugins/jquery-1.11.0.min.js')
+ script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
+ script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
+ script(src='/frontend/layout/scripts/back-to-top.js')
+ 
+ script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
+ script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
+ 
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
+ script(src='/frontend/pages/scripts/revo-slider-init.js')
+ 
+ script(src='/frontend/layout/scripts/layout.js')
+ 
+ script(type='text/javascript').
+        jQuery(document).ready(function() {
+            Layout.init();    
+            Layout.initOWL();
+            RevosliderInit.initRevoSlider();
+            Layout.initTwitter();
+            //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
+            //Layout.initNavScrolling(); 
+        });
