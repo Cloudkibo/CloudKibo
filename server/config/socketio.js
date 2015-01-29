@@ -91,14 +91,9 @@ function onConnect(socketio, socket) {
 				//socket.emit('disconnected', message.mycaller);
 			}
 			else{
-				console.log(message)
-				try{
-					socketio.sockets.socket(socketid).emit('message', message.msg);
-				}catch(e){
-					console.log("Not sending from array")
-					console.log(e)
-					socketio.sockets.socket(socketid).emit('message', message.msg);
-				}
+			
+				socketio.sockets.socket(socketid).emit('message', message.msg);
+
 				
 			}
 			
@@ -280,6 +275,8 @@ function onConnect(socketio, socket) {
 		
 		socket.on('callthisperson', function(message){
 			
+			var socketidSender = socket.id;
+			
 			var clients = socketio.sockets.clients(message.room)
 			
 			var socketid = '';
@@ -297,7 +294,7 @@ function onConnect(socketio, socket) {
 				socket.emit('calleeisoffline', message.callee);
 			}
 			else{
-				socketio.sockets.socket(socketid).emit('areyoufreeforcall', {caller : message.caller});
+				socketio.sockets.socket(socketid).emit('areyoufreeforcall', {caller : message.caller, sendersocket: socketidSender});
 			}
 			
 		});
