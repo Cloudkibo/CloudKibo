@@ -91,7 +91,12 @@ function onConnect(socketio, socket) {
 				//socket.emit('disconnected', message.mycaller);
 			}
 			else{
-				socketio.sockets.socket(socketid).emit('message', message.msg);
+				try{
+					socketio.sockets.socket(socketid).emit('message', message[0].msg);
+				}catch(e){
+					socketio.sockets.socket(socketid).emit('message', message.msg);
+				}
+				
 			}
 			
 		});
