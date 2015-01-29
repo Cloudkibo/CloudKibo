@@ -91,8 +91,9 @@ function onConnect(socketio, socket) {
 				//socket.emit('disconnected', message.mycaller);
 			}
 			else{
+				console.log(message)
 				try{
-					socketio.sockets.socket(socketid).emit('message', message.msg[0]);
+					socketio.sockets.socket(socketid).emit('message', message.msg);
 				}catch(e){
 					console.log("Not sending from array")
 					console.log(e)
