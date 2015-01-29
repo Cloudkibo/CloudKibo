@@ -1753,7 +1753,8 @@ angular.module('cloudKiboApp')
 	///////////////////////////////////////////////////////////////////////////////////////
 	
 	socket.on('message', function (message){
-		console.log('Client received message: '+ message);
+		console.log('Client received message: ');
+		console.log(message)
 		
 		try{
 			if(message.split(' ')[0] === 'Missed')
