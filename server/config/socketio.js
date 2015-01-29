@@ -60,8 +60,6 @@ function onConnect(socketio, socket) {
   
 		//console.log(socket);
 
-		socket.emit('id', socket.id);
-
 	  // convenience function to log server messages on the client
 	function log(){
 			var array = [">>> Message from server: "];
@@ -130,8 +128,7 @@ function onConnect(socketio, socket) {
 						socketid = client.id;
 					i++;
 				})
-			});
-			
+			});			
 			 
 			socketio.sockets.socket(socketid).emit('messagefordatachannel', message.msg);
 			
