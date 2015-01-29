@@ -1740,7 +1740,7 @@ angular.module('cloudKiboApp')
 	}
 	
 	function sendMessage(message){
-		message.msg = message;
+		message = {msg:message};
 		message.room = 'globalchatroom';
 		message.to = $scope.amInCallWith;
 		message.username = $scope.user.username;
