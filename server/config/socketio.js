@@ -92,8 +92,7 @@ function onConnect(socketio, socket) {
 			}
 			else{
 				try{
-					socketio.sockets.socket(socketid).emit('message', message[0].msg);
-					console.log("Sending from array")
+					socketio.sockets.socket(socketid).emit('message', message.msg[0]);
 				}catch(e){
 					console.log("Not sending from array")
 					console.log(e)
