@@ -67,19 +67,13 @@ block bodycontent
                        p(class='text-muted') or login using:
                        div
                            div
-                             a(class='btn-auth btn-facebook', ng-click='loginOauth("facebook")')
-                               | Login with 
-                               b Facebook
+                             img(src = "/images/facebook.png", ng-click = "loginOauth('facebook')" , width='200', height = '40')
                            br
                            div
-                             a(class='btn-auth btn-google', ng-click='loginOauth("google")')
-                               | Login with 
-                               b Google+
+                             img(src = "/images/g.png", ng-click = "loginOauth('google')", width='200', height = '40')
                            br
                            div
-                             a(class='btn-auth btn-windows', ng-click='loginOauth("windowslive")')
-                               | Login with 
-                               b Microsoft
+                             img(src = "/images/microsoft.png", ng-click = "loginOauth('windowslive')", width = '200')
  .footer
     .container
       .row
