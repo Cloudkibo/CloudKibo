@@ -97,13 +97,13 @@ module.exports = function(app) {
   app.route('/videocall/*')
 	.get(viewroutes.videoCallRoute);
 
-  app.route('/features')
+  app.route('/featuresview')
 	.get(viewroutes.featuresViewRoute);
 
-  app.route('/contact')
+  app.route('/contactview')
   .get(viewroutes.contactViewRoute);
 
-  app.route('/aboutus')
+  app.route('/aboutusview')
   .get(viewroutes.aboutusViewRoute);
 
   app.route('/loginview')
@@ -118,12 +118,14 @@ module.exports = function(app) {
   app.route('/forgotpasswordview')
 	.get(viewroutes.forgotPasswordViewRoute);
 
-  app.route("/resetpassword/*")
+  app.route("/resetpasswordview/*")
 	.get(viewroutes.resetPasswordViewRoute);
 
   app.route("/getuserview/*")
 	.get(auth.isAuthenticated(), viewroutes.getUserViewRoute);
-  
+
+  app.route("/verifyview/*")
+    .get(viewroutes.verifyViewRoute);
   
   
   

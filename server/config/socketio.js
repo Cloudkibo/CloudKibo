@@ -60,8 +60,6 @@ function onConnect(socketio, socket) {
   
 		//console.log(socket);
 
-		socket.emit('id', socket.id);
-
 	  // convenience function to log server messages on the client
 	function log(){
 			var array = [">>> Message from server: "];
@@ -93,7 +91,10 @@ function onConnect(socketio, socket) {
 				//socket.emit('disconnected', message.mycaller);
 			}
 			else{
+			
 				socketio.sockets.socket(socketid).emit('message', message.msg);
+
+				
 			}
 			
 		});
@@ -130,8 +131,7 @@ function onConnect(socketio, socket) {
 						socketid = client.id;
 					i++;
 				})
-			});
-			
+			});			
 			 
 			socketio.sockets.socket(socketid).emit('messagefordatachannel', message.msg);
 			
@@ -275,6 +275,8 @@ function onConnect(socketio, socket) {
 		
 		socket.on('callthisperson', function(message){
 			
+			var socketidSender = socket.id;
+			
 			var clients = socketio.sockets.clients(message.room)
 			
 			var socketid = '';
@@ -292,7 +294,7 @@ function onConnect(socketio, socket) {
 				socket.emit('calleeisoffline', message.callee);
 			}
 			else{
-				socketio.sockets.socket(socketid).emit('areyoufreeforcall', {caller : message.caller});
+				socketio.sockets.socket(socketid).emit('areyoufreeforcall', {caller : message.caller, sendersocket: socketidSender});
 			}
 			
 		});

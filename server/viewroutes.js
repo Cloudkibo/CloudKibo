@@ -3,6 +3,8 @@ var mongoose = require('mongoose');
 var Account = require('./api/user/user.model');
 var fs = require('fs');
 var crypto = require("crypto");
+var verificationtoken = require("./api/tokens/verificationtoken.model");
+var passwordresettoken = require("./api/tokens/passwordresettoken.model");
 
 var html_dir = './public/';
 
@@ -168,12 +170,10 @@ exports.resetPasswordViewRoute = function(req, res){
 		  title = 'Synaps3WebRTC';
 	    
 	    var token = req.params[0];
-		  
-		var passwordresettoken = tokenSchemas.passwordresettoken
-	
+
 		passwordresettoken.findOne({token: token}, function (err, doc){
 			if (err) return done(err);
-			if(!doc) return res.render("passwordreset-failure");
+			if(!doc) return res.render("passwordreset-failure", { title: title, token : token });
 			
 			res.render('newpassword', { title: title, token : token });
 		
@@ -181,6 +181,53 @@ exports.resetPasswordViewRoute = function(req, res){
 
 	  }
   };
+
+exports.verifyViewRoute = function (req, res, next) {
+
+
+	var title = 'CloudKibo';
+
+	if(req.get('host') == 'www.cloudkibo.com')
+		title = 'CloudKibo';
+	else if(req.get('host') == 'www.synaps3webrtc.com')
+		title = 'Synaps3WebRTC';
+
+
+	var token = req.params[0];
+
+	verifyUser(token, req, res, function(err) {
+		if (err) return res.render("verification-failure", { title: title, token : token });
+		res.render("verification-success", { title: title, token : token });
+
+	});
+};
+
+function verifyUser(token, req, res, done) {
+
+
+	var title = 'CloudKibo';
+
+	if(req.get('host') == 'www.cloudkibo.com')
+		title = 'CloudKibo';
+	else if(req.get('host') == 'www.synaps3webrtc.com')
+		title = 'Synaps3WebRTC';
+
+
+	verificationtoken.findOne({token: token}, function (err, doc){
+		if (err) return done(err);
+		if(!doc) return res.render("verification-failure", { title: title, token : token });
+
+		Account.findOne({_id: doc.user}, function (err, user) {
+			if (err) return done(err);
+			if (!user) return res.render("verification-failure", { title: title, token : token });
+
+			user["accountVerified"] = 'Yes';
+			user.save(function(err) {
+				done(err);
+			})
+		})
+	})
+}
 
 exports.loginViewRoute = function(req, res) {
 	if (typeof req.user == 'undefined') {
@@ -257,6 +304,7 @@ exports.contactViewRoute = function(req, res) {
 		title = 'Synaps3WebRTC';
 
 	res.render('contact', { title: title});
+
   };
 
 

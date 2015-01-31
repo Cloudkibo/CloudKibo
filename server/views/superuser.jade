@@ -16,7 +16,13 @@ block appbodycontent
            th
              | User Name
            th
+             | First Name
+           th
+             | Last Name
+           th
              | Email
+           th
+             | Phone
            th
              | Country
            th
@@ -29,7 +35,13 @@ block appbodycontent
             td
               b {{account.username | lowercase}}
             td
+              | {{account.firstname}}
+            td
+              | {{account.lastname}}
+            td
               | {{account.email}}
+            td
+              | {{account.phone}}
             td
               | {{account.country}}
             td
