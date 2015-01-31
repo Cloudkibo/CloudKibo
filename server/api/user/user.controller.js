@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 'use strict';
 
 var User = require('./user.model');
@@ -417,7 +417,7 @@ exports.resetpasswordrequest = function(req, res, next){
 exports.authCallback = function(req, res, next) {
   res.redirect('/');
 };
-=======
+
 'use strict';
 
 var User = require('./user.model');
@@ -871,4 +871,4 @@ exports.resetpasswordrequest = function(req, res, next){
 exports.authCallback = function(req, res, next) {
   res.redirect('/');
 };
->>>>>>> 7d67f68d5e35404984bc8892194be8e0b6b7fb84
+
