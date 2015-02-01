@@ -112,7 +112,7 @@ exports.getUserViewRoute = function (req, res) {
 				if(gotUser != null)
 					res.render('home', { title: title, otherUser: gotUser, user: req.user});
 				else
-					res.render('401', { title: title});
+					res.render('404', { title: title});
 		    })
 		
       }

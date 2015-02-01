@@ -8,6 +8,8 @@ var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var verificationtoken = require('../tokens/verificationtoken.model');
 var passwordresettoken = require('../tokens/passwordresettoken.model');
+var contactslist = require('../contactslist/contactslist.model');
+var userchat = require('../userchat/userchat.model');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -84,16 +86,6 @@ exports.show = function (req, res, next) {
   });
 };
 
-/**
- * Deletes a user
- * restriction: 'admin'
- */
-exports.destroy = function(req, res) {
-  User.findByIdAndRemove(req.params.id, function(err, user) {
-    if(err) return res.send(500, err);
-    return res.send(204);
-  });
-};
 
 /**
  * Change a users password
@@ -291,7 +283,6 @@ exports.searchbyemail = function(req, res, next){
  * Invite by email
  */
 exports.invitebyemail = function(req, res, next){
-	
 				
 	var sendgrid  = require('sendgrid')('cloudkibo', 'cl0udk1b0');
 
@@ -307,7 +298,7 @@ exports.invitebyemail = function(req, res, next){
 	   message = 'Hello, I am available on CloudKibo for Video Chat.';
 
 	email.setHtml('<h1>CloudKibo</h1><br><br>'+req.user.firstname+' has invited you to connect on CloudKibo.<br><br>'+
-	'Follow the following URL to make an account on CloudKibo and Starting Video Conversations in real time in your browser.'+
+	'Follow the following URL to make an account on CloudKibo and start Video Conversations in real time in your browser.'+
 	' <br><br><a href="https://www.cloudkibo.com/" target=_blank>http://www.cloudkibo.com/</a><br><br><br>' +
 	'<span style="background:#22DFFF; width:100%; text-align:center;"><b><i>'+ message +'</i></b></span><br><br><br>'+
 	'<p><b>With CloudKibo<b> you can do</b></p><br><ul><li>Video Call</li><li>Audio Call</li><li>File Transfering'+
@@ -508,10 +499,28 @@ exports.show = function (req, res, next) {
  * restriction: 'admin'
  */
 exports.destroy = function(req, res) {
-  User.findByIdAndRemove(req.params.id, function(err, user) {
-    if(err) return res.send(500, err);
-    return res.send(204);
-  });
+
+	User.findById(req.params.id, function(err, gotUser) {
+		if(err) return res.send(500, err);
+
+		userchat.remove({$or: [ { to : gotUser.username}, {from : gotUser.username } ]}, function(err1) {
+			if(err1) return res.send(500, err1);
+
+			contactslist.remove({$or : [ {userid : req.params.id}, {contactid : req.params.id} ]}, function(err2) {
+				if(err2) return res.send(500, err2);
+
+				User.findByIdAndRemove(req.params.id, function(err3, user) {
+					if(err3) return res.send(500, err3);
+					return res.send(204);
+				});
+
+			});
+
+
+		});
+
+	});
+
 };
 
 /**
