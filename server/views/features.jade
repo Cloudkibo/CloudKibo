@@ -2,7 +2,6 @@ extends header
 
 block append head
   //script(src='/javascripts/cloudKiboApp.js')
-
 block bodycontent
  .main
    .container
@@ -12,6 +11,112 @@ block bodycontent
          .content-page
            .row
              .col-md-7
+             
+               div(class='row margin-bottom-20')
+                 
+                 .col-md-6
+                   .service-box-v1
+                     div
+                       i(class='fa fa-globe color-grey')
+                       h2 Collaboration Made Easy
+                       if(title == 'CloudKibo')
+                         p.
+                            CloudKibo is a next generation communication technology. It’s intuitive, cost effective,
+                            and rich with functionality. It can be used both for internal and external communications.
+                            It provides integrated and unified communication across web, voice, video, and data.
+                       else
+                         p.
+                            Synaps3WebRTC is a next generation communication technology. It’s intuitive, cost effective,
+                            and rich with functionality. It can be used both for internal and external communications.
+                            It provides integrated and unified communication across web, voice, video, and data.
+
+                 .col-md-6
+                   .service-box-v1
+                     div
+                       i(class='fa fa-users color-grey')
+                       h2 A Complete Video Collaboration Solution
+                       if(title == 'CloudKibo')
+                         p.
+                           CloudKibo allows you to invite multiple people to join the Web meeting.
+                           Your participants do not need to install complex software before the meeting,
+                           all they need to do is click on a URL and join the meeting.
+                       else
+                         p.
+                           Synaps3WebRTC allows you to invite multiple people to join the Web meeting.
+                           Your participants do not need to install complex software before the meeting,
+                           all they need to do is click on a URL and join the meeting.
+
+               div(class='row margin-bottom-20')
+                          
+                 .col-md-6
+                   .service-box-v1
+                     div
+                       i(class='fa fa-cloud color-grey')
+                       h2 No Downloads, No Plugins required
+                       if(title == 'CloudKibo')
+                         p.
+                           Downloading, installing, and updating plugins can be complex, error prone, and
+                           annoying. With CloudKibo you are able to join the call straight from your browser
+                           without any need to download and install client software. Plugins can be difficult
+                           to deploy, debug, troubleshoot, test and maintain and may require licensing and
+                           integration with complex, expensive technology.
+                       else
+                         p.
+                           Downloading, installing, and updating plugins can be complex, error prone, and
+                           annoying. With Synaps3WebRTC you are able to join the call straight from your browser
+                           without any need to download and install client software. Plugins can be difficult
+                           to deploy, debug, troubleshoot, test and maintain and may require licensing and
+                           integration with complex, expensive technology.
+
+                 .col-md-6
+                   .service-box-v1
+                     div
+                       i(class='fa fa-desktop color-grey')
+                       h2 Screen Sharing
+                       if(title == 'CloudKibo')
+                         p.
+                           Cloudkibo lets you share your weekly project status, share your weekly sales slides, edit
+                           final copy before releasing your deck, collect feedback on the latest design rendering,
+                           and makes sharing a screen easy as clicking the “Share Screen” button.
+                       else
+                         p.
+                           Synaps3WebRTC lets you share your weekly project status, share your weekly sales slides, edit
+                           final copy before releasing your deck, collect feedback on the latest design rendering,
+                           and makes sharing a screen easy as clicking the “Share Screen” button.
+
+               div(class='row margin-bottom-20')
+                 
+                 .col-md-6
+                   .service-box-v1
+                     div
+                       i(class='fa fa-share color-grey')
+                       h2 File Transfer
+                       if(title == 'CloudKibo')
+                         p.
+                           Cloudkibo makes it simple for you or anyone in your call to instantly share notes,
+                           documents, videos, or any kind of files. File transfer is highly secured. All file transfers
+                           are peer to peer with 128 Bit encryption. Current email systems normally limit your
+                           attachments to 25MB and multiple copies of your files are left on the mail servers.
+                       else
+                         p.
+                           Synaps3WebRTC makes it simple for you or anyone in your call to instantly share notes,
+                           documents, videos, or any kind of files. File transfer is highly secured. All file transfers
+                           are peer to peer with 128 Bit encryption. Current email systems normally limit your
+                           attachments to 25MB and multiple copies of your files are left on the mail servers.
+
+                 .col-md-6
+                   .service-box-v1
+                     div
+                       img(src = "/images/android.png" )
+                       h2 Android
+                       if(title == 'CloudKibo')
+                         p.
+                           Under Construction
+                       else
+                         p.
+                           Under Construction
+
+                 .col-md-7
              
                div(class='row margin-bottom-20')
                  
@@ -53,19 +158,9 @@ block bodycontent
                          p.
                            Coming soon
 
-                 .col-md-6
-                   .service-box-v1
-                     div
-                       img(src = "/images/android.png" )
-                       h2 Android
-                       if(title == 'CloudKibo')
-                         p.
-                           Under Construction
-                       else
-                         p.
-                           Under Construction
 
-               div(class='row margin-bottom-20')
+
+               div(class='row margin-bottom-20')                           
 
              .col-md-5
                iframe(src="//player.vimeo.com/video/94386848?portrait=0", height='270', style='width:100%; border:0;', frameborder="0", webkitallowfullscreen, mozallowfullscreen, allowfullscreen, class='margin-bottom-10')
