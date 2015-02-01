@@ -1478,11 +1478,18 @@ angular.module('cloudKiboApp')
 
 	$scope.callThisPerson = function(calleeusername) {
 
-		socket.emit('callthisperson', {room: 'globalchatroom', callee : calleeusername, caller : $scope.user.username})
+		if($scope.areYouCallingSomeone == false && $scope.amInCall == false) {
 
-		$scope.OutgoingCallStatement = 'Outgoing Call to : '+ calleeusername;
+			socket.emit('callthisperson', {
+				room: 'globalchatroom',
+				callee: calleeusername,
+				caller: $scope.user.username
+			})
 
-		$scope.areYouCallingSomeone = true;
+			$scope.OutgoingCallStatement = 'Outgoing Call to : ' + calleeusername;
+
+			$scope.areYouCallingSomeone = true;
+		}
 
 	}
 
@@ -1781,6 +1788,7 @@ angular.module('cloudKiboApp')
 			$scope.otherSideRinging = false;
 		    $scope.areYouCallingSomeone = false;
 		    getUserMedia(video_constraints, handleUserMedia, handleUserMediaError);
+
 		}
 		else if(message === 'Reject Call')
 		{
