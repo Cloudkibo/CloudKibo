@@ -102,9 +102,7 @@ block appbodycontent
                                     //http://stackoverflow.com/questions/6014702/how-do-i-detect-shiftenter-and-generate-a-new-line-in-textarea
                                     input.chatTextField(type='text', ng-model='im.msg', placeholder='Send a message')
                                   div(ng-if='!hasSharedDetails()')
-                                    center You must be friends with {{otherUser.firstname}} {{otherUser.lastname}} to start chat.
-                                    center
-                                      button.btn.btn-send(ng-click='openAddContact()') Send a friend request
+                                    center {{otherUser.firstname}} {{otherUser.lastname}} has not shared details with you.
 
                         if(!otherUser)
                           div(ng-if='getlocation() == "/app"')
