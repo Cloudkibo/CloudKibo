@@ -1774,6 +1774,7 @@ angular.module('cloudKiboApp')
 				$scope.ringing = false;
 				$timeout($scope.onTimeoutOfMissedCall, 6000);
 				bell.pause();
+				bell.load();
 			}
 		}catch(e){}
 		
@@ -2067,12 +2068,15 @@ angular.module('cloudKiboApp')
 		sendMessage('Accept Call');
 		$scope.isSomeOneCalling = false;
 		bell.pause();
+		bell.load();
 		$scope.ringing = false;
 	 }
+
 	 $scope.RejectCall = function(){
-		sendMessage('Reject Call')
+		sendMessage('Reject Call');
 		$scope.isSomeOneCalling = false;
 		bell.pause();
+		bell.load();
 		$scope.ringing = false;
 		$scope.amInCall = false;
 		$scope.amInCallWith = '';
