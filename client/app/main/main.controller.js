@@ -951,7 +951,7 @@ angular.module('cloudKiboApp')
 	var isStarted = false;
 	var sendChannel;
 	var receiveChannel;
-	var localStream;
+	$scope.localStream;
 	var localStreamScreen;
 	var pc;
 	var remoteStream;
@@ -1498,9 +1498,10 @@ angular.module('cloudKiboApp')
 		isStarted = false;
 		isInitiator = false;
 
-		if(localStream)
+		if($scope.localStream)
 		{
-		  localStream.stop();
+			$scope.localStream.stop();
+			console.log('Local Stream Stopped')
 		}
 		if(localStreamScreen)
 		{
@@ -1805,15 +1806,24 @@ angular.module('cloudKiboApp')
 
 			isStarted = false;
 			isInitiator = false;
-		    
- 		    if(localStream)
- 		    {
-			  localStream.stop();
-		    }
+
+			if($scope.localStream)
+			{
+				if ($scope.localStream.stop) {
+					$scope.localStream.stop();
+				}
+				$scope.localStream.stop();
+				$scope.localStream.onended = null;
+				$scope.localStream = null;
+			}
 			if(localStreamScreen)
 			{
-			  localStreamScreen.stop();
-		    }
+				if (localStreamScreen.stop) {
+					localStreamScreen.stop();
+				}
+				localStreamScreen.onended = null;
+				localStreamScreen = null;
+			}
 		    if(remoteStream)
 		    {
 				remoteStream.stop();
@@ -1852,13 +1862,22 @@ angular.module('cloudKiboApp')
 			isStarted = false;
 			isInitiator = false;
 		    
- 		    if(localStream)
+ 		    if($scope.localStream)
  		    {
-			  localStream.stop();
+				if ($scope.localStream.stop) {
+					$scope.localStream.stop();
+				}
+				$scope.localStream.stop();
+				$scope.localStream.onended = null;
+				$scope.localStream = null;
 		    }
 			if(localStreamScreen)
 			{
-			  localStreamScreen.stop();
+				if (localStreamScreen.stop) {
+					localStreamScreen.stop();
+				}
+				localStreamScreen.onended = null;
+				localStreamScreen = null;
 		    }
 		    if(remoteStream)
 		    {
@@ -1919,10 +1938,10 @@ angular.module('cloudKiboApp')
 	
 	function maybeStart() {
 		//console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
-		  if (!isStarted && typeof localStream != 'undefined') {
+		  if (!isStarted && typeof $scope.localStream != 'undefined') {
 			
 			createPeerConnection();
-			pc.addStream(localStream);
+			pc.addStream($scope.localStream);
 			isStarted = true;
 			
 			if (!isInitiator) {
@@ -2017,7 +2036,7 @@ angular.module('cloudKiboApp')
 			
 		var localvideo = document.getElementById("localvideo");
 		localvideo.src = URL.createObjectURL(newStream);
-		localStream = newStream;
+		 $scope.localStream = newStream;
 		$scope.localCameraOn = true;
 
 		sendMessage('got user media');
@@ -2032,13 +2051,9 @@ angular.module('cloudKiboApp')
 		//console.log(error);
 		$scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.')
 
-		if($scope.ILeftMyRoom == true)
-		{
-			$scope.LeaveRoom();
-			$scope.ILeftMyRoom = false;
-			roomid = $scope.user.username;
-			$scope.createOrJoinRoom();
-		}
+		 $scope.ringing = false;
+		 $scope.amInCall = false;
+		 $scope.amInCallWith = '';
 	 }		 
 		
 	 var video_constraints = {video: true, audio: true};
