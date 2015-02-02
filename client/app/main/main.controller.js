@@ -952,12 +952,12 @@ angular.module('cloudKiboApp')
 	var sendChannel;
 	var receiveChannel;
 	$scope.localStream;
-	var localStreamScreen;
+	$scope.localStreamScreen;
 	var pc;
-	var remoteStream;
-	var remoteStreamScreen;
+	$scope.remoteStream;
+	$scope.remoteStreamScreen;
 	var turnReady;
-	
+
 	var bell = new Audio('/sounds/bells_simple.mp3');
 	bell.loop = true;
 	
@@ -1503,18 +1503,18 @@ angular.module('cloudKiboApp')
 			$scope.localStream.stop();
 			console.log('Local Stream Stopped')
 		}
-		if(localStreamScreen)
+		if($scope.localStreamScreen)
 		{
-		  localStreamScreen.stop();
+			$scope.localStreamScreen.stop();
 		}
-		if(remoteStream)
+		if($scope.remoteStream)
 		{
-			remoteStream.stop();
+			$scope.remoteStream.stop();
 			remotevideo.src = null;
 		}
-		if(remoteStreamScreen)
+		if($scope.remoteStreamScreen)
 		{
-			remoteStreamScreen.stop();
+			$scope.remoteStreamScreen.stop();
 			remotevideoscreen.src = null;
 		}
 
@@ -1816,22 +1816,23 @@ angular.module('cloudKiboApp')
 				$scope.localStream.onended = null;
 				$scope.localStream = null;
 			}
-			if(localStreamScreen)
+			if($scope.localStreamScreen)
 			{
-				if (localStreamScreen.stop) {
-					localStreamScreen.stop();
+				if ($scope.localStreamScreen.stop) {
+					$scope.localStreamScreen.stop();
 				}
-				localStreamScreen.onended = null;
-				localStreamScreen = null;
+				$scope.localStreamScreen.stop();
+				$scope.localStreamScreen.onended = null;
+				$scope.localStreamScreen = null;
 			}
-		    if(remoteStream)
+		    if($scope.remoteStream)
 		    {
-				remoteStream.stop();
+				$scope.remoteStream.stop();
 				remotevideo.src = null;
 			}
-			if(remoteStreamScreen)
+			if($scope.remoteStreamScreen)
 			{
-				remoteStreamScreen.stop();
+				$scope.remoteStreamScreen.stop();
 				remotevideoscreen.src = null;
 			}
 			
@@ -1871,22 +1872,23 @@ angular.module('cloudKiboApp')
 				$scope.localStream.onended = null;
 				$scope.localStream = null;
 		    }
-			if(localStreamScreen)
+			if($scope.localStreamScreen)
 			{
-				if (localStreamScreen.stop) {
-					localStreamScreen.stop();
+				if ($scope.localStreamScreen.stop) {
+					$scope.localStreamScreen.stop();
 				}
-				localStreamScreen.onended = null;
-				localStreamScreen = null;
+				$scope.localStreamScreen.stop();
+				$scope.localStreamScreen.onended = null;
+				$scope.localStreamScreen = null;
 		    }
-		    if(remoteStream)
+		    if($scope.remoteStream)
 		    {
-				remoteStream.stop();
+				$scope.remoteStream.stop();
 				remotevideo.src = null;
 			}
-			if(remoteStreamScreen)
+			if($scope.remoteStreamScreen)
 			{
-				remoteStreamScreen.stop();
+				$scope.remoteStreamScreen.stop();
 				remotevideoscreen.src = null;
 			}
 			
@@ -2006,7 +2008,7 @@ angular.module('cloudKiboApp')
 		  
 		  if($scope.firstVideoAdded == false){
 			  remotevideo.src = URL.createObjectURL(event.stream);
-			  remoteStream = event.stream;
+			  $scope.remoteStream = event.stream;
 			  $scope.firstVideoAdded = true;
 		  }
 		  else{
@@ -2015,7 +2017,7 @@ angular.module('cloudKiboApp')
 			  })
 			  
 			  remotevideoscreen.src = URL.createObjectURL(event.stream);
-			  remoteStreamScreen = event.stream;
+			  $scope.remoteStreamScreen = event.stream;
 		  }
 	}
 
@@ -2343,9 +2345,9 @@ angular.module('cloudKiboApp')
 		 }
 		 else
 		 {
-			 if(localStreamScreen){
-				 localStreamScreen.stop();
-				 pc.removeStream(localStreamScreen);
+			 if($scope.localStreamScreen){
+				 $scope.localStreamScreen.stop();
+				 pc.removeStream($scope.localStreamScreen);
 				 doCall();
 			 }
 			   
@@ -2364,8 +2366,8 @@ angular.module('cloudKiboApp')
 		
 		var localvideoscreen = document.getElementById("localvideoscreen");
 		localvideoscreen.src = URL.createObjectURL(newStream);
-		localStreamScreen = newStream;
-		pc.addStream(localStreamScreen);
+		 $scope.localStreamScreen = newStream;
+		pc.addStream($scope.localStreamScreen);
 		$scope.localCameraOn = true;
 		
 		doCall();
