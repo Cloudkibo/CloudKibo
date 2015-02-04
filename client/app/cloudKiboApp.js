@@ -76,41 +76,6 @@ angular.module('cloudKiboApp', [
     });
   })
   
-  .factory('pc_config', function(){
-		/*
-		return pc_config = {'iceServers': [createIceServer('stun:stun.l.google.com:19302', null, null),
-								createIceServer('stun:stun.anyfirewall.com:3478', null, null),
-								createIceServer('turn:turn.bistri.com:80?transport=udp', 'homeo', 'homeo'),
-								createIceServer('turn:turn.bistri.com:80?transport=tcp', 'homeo', 'homeo'),
-								createIceServer('turn:turn.anyfirewall.com:443?transport=tcp', 'webrtc', 'webrtc')
-                ]};
-        */
-        
-        return pc_config = {'iceServers': [{url: 'turn:cloudkibo@162.243.217.34:3478?transport=udp', username: 'cloudkibo',
-													credential: 'cloudkibo'},
-								{url: 'stun:stun.l.google.com:19302', username: null, credential: null},
-								{url: 'stun:stun.anyfirewall.com:3478', username: null, credential: null},
-								{url: 'turn:turn.bistri.com:80?transport=udp', username: 'homeo', credential: 'homeo'},
-								{url: 'turn:turn.bistri.com:80?transport=tcp', username: 'homeo', credential: 'homeo'},
-								{url: 'turn:turn.anyfirewall.com:443?transport=tcp', username: 'webrtc', credential: 'webrtc'}
-                ]};
-        
-                /*
-				{url: 'turn:cloudkibo@162.243.217.34:3478?transport=udp', username: 'cloudkibo',
-													credential: 'cloudkibo'}
-				*/
-	})
-	
-	.factory('pc_constraints', function(){
-		return pc_constraints = {'optional': [{'DtlsSrtpKeyAgreement': true}, {'RtpDataChannels': true}]};
-	})
-	
-	.factory('sdpConstraints', function(){
-		return sdpConstraints = {'mandatory': {
-								  'OfferToReceiveAudio':true,
-								  'OfferToReceiveVideo':true }};
-	})
-
 
 	
 	.directive('ngConfirmClick', [ function(){

@@ -3268,6 +3268,7 @@ angular.module('cloudKiboApp')
 	var localStream;
 	var localStreamScreen;
 	var pc;
+	var remoteStream1;
 	var remoteStreamScreen;
 	var turnReady;
 	var bell = new Audio('/sounds/bells_simple.mp3');
