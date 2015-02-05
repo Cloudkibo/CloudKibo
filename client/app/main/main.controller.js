@@ -1443,7 +1443,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.hasOtherPartySharedScreen = function () {
-            return true;
+            return !WebRTC.getScreenShared();
         }
 
         $scope.screenSharedLocal = false;
