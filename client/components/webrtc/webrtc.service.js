@@ -155,67 +155,6 @@ angular.module('cloudKiboApp')
                 );
             },
 
-            shareScreen: function (cb) {
-                // this statement defines getUserMedia constraints
-                // that will be used to capture content of screen
-                var screen_constraints = {
-                    mandatory: {
-                        chromeMediaSource: DetectRTC.screen.chromeMediaSource,
-                        maxWidth: 1920,
-                        maxHeight: 1080,
-                        minAspectRatio: 1.77
-                    },
-                    optional: []
-                };
-
-                // this statement verifies chrome extension availability
-                // if installed and available then it will invoke extension API
-                // otherwise it will fallback to command-line based screen capturing API
-                if (DetectRTC.screen.chromeMediaSource == 'desktop' && !DetectRTC.screen.sourceId) {
-                    DetectRTC.screen.getSourceId(function (error) {
-                        // if exception occurred or access denied
-                        if (error && error == 'PermissionDeniedError') {
-                            alert('PermissionDeniedError: User denied to share content of his screen.');
-                            return;
-                        }
-
-                        //WebRTC.shareScreen(cb);
-
-                    });
-                    //return;
-                }
-
-                console.log('Chrome Media Source');
-                console.log(DetectRTC.screen.chromeMediaSource);
-
-                // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
-                if (DetectRTC.screen.chromeMediaSource == 'desktop') {
-                    screen_constraints.mandatory.chromeMediaSourceId = DetectRTC.screen.sourceId;
-                }
-
-                // it is the session that we want to be captured
-                // audio must be false
-                var session = {
-                    audio: false,
-                    video: screen_constraints
-                };
-
-                // now invoking native getUserMedia API
-                navigator.webkitGetUserMedia(session,
-                    function (newStream) {
-
-                        localStreamScreen = newStream;
-                        localVideoScreen.src = URL.createObjectURL(newStream);
-
-                        pc.addStream(newStream);
-
-                        cb(null);
-
-                    }, function (err) {
-                        cb(err);
-                    });
-            },
-
             /**
              * Gracefully Ends the WebRTC Peer Connection
              *
@@ -255,7 +194,13 @@ angular.module('cloudKiboApp')
             hideScreen: function () {
                 localStreamScreen.stop();
                 pc.removeStream(localStreamScreen);
-                createAndSendOffer();
+            },
+
+            addStreamForScreen: function (stream) {
+                localStreamScreen = newStream;
+                localVideoScreen.src = URL.createObjectURL(newStream);
+
+                pc.addStream(newStream);
             },
 
             getLocalStream: function () {

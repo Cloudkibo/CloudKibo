@@ -2018,20 +2018,27 @@ angular.module('cloudKiboApp')
 
             if ($scope.showScreenText == 'Share Screen') {
 
-                WebRTC.shareScreen(function (err) {
+                shareScreen(function (err, stream) {
                     if(err) {
                         $scope.addAlertCallStart('danger', err);
                     }
                     else {
+
+                        WebRTC.addStreamForScreen(stream);
+
                         WebRTC.createAndSendOffer();
+
+                        $scope.showScreenText = 'Hide Screen';
+                        $scope.screenSharedLocal = true;
+
                     }
                 });
 
-                $scope.showScreenText = 'Hide Screen';
-                $scope.screenSharedLocal = true;
+
             }
             else {
                 WebRTC.hideScreen();
+                WebRTC.createAndSendOffer();
 
                 $scope.showScreenText = 'Share Screen';
                 $scope.screenSharedLocal = false;
@@ -2039,9 +2046,67 @@ angular.module('cloudKiboApp')
 
         };
 
+        function shareScreen(cb) {
+            // this statement defines getUserMedia constraints
+            // that will be used to capture content of screen
+            var screen_constraints = {
+                mandatory: {
+                    chromeMediaSource: DetectRTC.screen.chromeMediaSource,
+                    maxWidth: 1920,
+                    maxHeight: 1080,
+                    minAspectRatio: 1.77
+                },
+                optional: []
+            };
+
+            // this statement verifies chrome extension availability
+            // if installed and available then it will invoke extension API
+            // otherwise it will fallback to command-line based screen capturing API
+            if (DetectRTC.screen.chromeMediaSource == 'desktop' && !DetectRTC.screen.sourceId) {
+                DetectRTC.screen.getSourceId(function (error) {
+                    // if exception occurred or access denied
+                    if (error && error == 'PermissionDeniedError') {
+                        alert('PermissionDeniedError: User denied to share content of his screen.');
+                    }
+
+                    shareScreen(cb);
+
+                });
+                return;
+            }
+
+            //console.log('Chrome Media Source');
+            console.log(DetectRTC.screen.chromeMediaSource);
+
+            // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
+            if (DetectRTC.screen.chromeMediaSource == 'desktop') {
+                screen_constraints.mandatory.chromeMediaSourceId = DetectRTC.screen.sourceId;
+            }
+
+            // it is the session that we want to be captured
+            // audio must be false
+            var session = {
+                audio: false,
+                video: screen_constraints
+            };
+
+            // now invoking native getUserMedia API
+            navigator.webkitGetUserMedia(session,
+                function (newStream) {
+
+                    cb(null, newStream);
+
+                }, function (err) {
+                    cb(err);
+                });
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        // Talking to extension                                                                 //
+        //////////////////////////////////////////////////////////////////////////////////////////
+
 
         // todo need to check exact chrome browser because opera also uses chromium framework
-        //noinspection UnreachableCodeJS
         var isChrome = !!navigator.webkitGetUserMedia;
 
         // DetectRTC.js - https://github.com/muaz-khan/WebRTC-Experiment/tree/master/DetectRTC
