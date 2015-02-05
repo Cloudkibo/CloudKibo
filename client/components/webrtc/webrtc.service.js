@@ -99,7 +99,7 @@ angular.module('cloudKiboApp')
                 remoteVideo = remotevideo;
                 remoteVideoScreen = remotevideoscreen;
 
-                (function () {
+                
                     var screenCallback;
 
                     DetectRTC.screen = {
@@ -152,7 +152,6 @@ angular.module('cloudKiboApp')
                             extensionAvailable = !status;
                         });
                     }
-                })();
 
             },
 
