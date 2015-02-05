@@ -178,12 +178,13 @@ angular.module('cloudKiboApp')
                             alert('PermissionDeniedError: User denied to share content of his screen.');
                         }
 
-                        WebRTC.shareScreen(cb);
+                        //WebRTC.shareScreen(cb);
 
                     });
                     return;
                 }
 
+                console.log('Chrome Media Source');
                 console.log(DetectRTC.screen.chromeMediaSource);
 
                 // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
@@ -206,8 +207,6 @@ angular.module('cloudKiboApp')
                         localVideoScreen.src = URL.createObjectURL(newStream);
 
                         pc.addStream(newStream);
-
-                        WebRTC.createAndSendOffer();
 
                         cb(null);
 

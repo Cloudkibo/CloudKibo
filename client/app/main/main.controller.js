@@ -2022,6 +2022,9 @@ angular.module('cloudKiboApp')
                     if(err) {
                         $scope.addAlertCallStart('danger', err);
                     }
+                    else {
+                        WebRTC.createAndSendOffer();
+                    }
                 });
 
                 $scope.showScreenText = 'Hide Screen';
