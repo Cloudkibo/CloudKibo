@@ -178,7 +178,7 @@ angular.module('cloudKiboApp')
                             alert('PermissionDeniedError: User denied to share content of his screen.');
                         }
 
-                        this.shareScreen(cb);
+                        shareScreen(cb);
 
                     });
                     return;
@@ -207,7 +207,7 @@ angular.module('cloudKiboApp')
 
                         pc.addStream(newStream);
 
-                        this.createAndSendOffer();
+                        createAndSendOffer();
 
                         cb(null);
 
@@ -255,7 +255,7 @@ angular.module('cloudKiboApp')
             hideScreen: function () {
                 localStreamScreen.stop();
                 pc.removeStream(localStreamScreen);
-                this.createAndSendOffer();
+                createAndSendOffer();
             },
 
             getLocalStream: function () {
