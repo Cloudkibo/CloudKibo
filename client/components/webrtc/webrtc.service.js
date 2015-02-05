@@ -176,12 +176,13 @@ angular.module('cloudKiboApp')
                         // if exception occurred or access denied
                         if (error && error == 'PermissionDeniedError') {
                             alert('PermissionDeniedError: User denied to share content of his screen.');
+                            return;
                         }
 
                         //WebRTC.shareScreen(cb);
 
                     });
-                    return;
+                    //return;
                 }
 
                 console.log('Chrome Media Source');
