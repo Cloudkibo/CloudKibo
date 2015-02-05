@@ -1443,7 +1443,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.hasOtherPartySharedScreen = function () {
-            return WebRTC.getScreenShared();
+            return true;
         }
 
         $scope.screenSharedLocal = false;
@@ -2071,7 +2071,7 @@ angular.module('cloudKiboApp')
             }
 
             //console.log('Chrome Media Source');
-            console.log(DetectRTC.screen.chromeMediaSource);
+            //console.log(DetectRTC.screen.chromeMediaSource);
 
             // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
             if (DetectRTC.screen.chromeMediaSource == 'desktop') {
@@ -2113,11 +2113,13 @@ angular.module('cloudKiboApp')
 
             DetectRTC.screen = {
                 chromeMediaSource: 'screen',
+
                 getSourceId: function (callback) {
                     if (!callback) throw '"callback" parameter is mandatory.';
                     screenCallback = callback;
                     window.postMessage('get-sourceId', '*');
                 },
+
                 isChromeExtensionAvailable: function (callback) {
                     if (!callback) return;
 
@@ -2133,7 +2135,7 @@ angular.module('cloudKiboApp')
                     }, 2000);
                 },
                 onMessageCallback: function (data) {
-                    console.log('chrome message', data);
+                    //console.log('chrome message', data);
 
                     // "cancel" button is clicked
                     if (data == 'PermissionDeniedError') {
