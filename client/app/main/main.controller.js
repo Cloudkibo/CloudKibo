@@ -1397,7 +1397,7 @@ angular.module('cloudKiboApp')
         $scope.extensionAvailable = false;
 
         $scope.showExtension = function () {
-            return WebRTC.getExtensionAvailable();
+            return WebRTC.isExtensionAvailable();
         }
 
         $scope.localCameraCaptured = function () {
@@ -1740,7 +1740,7 @@ angular.module('cloudKiboApp')
             }
 
             if (message === 'got user media') {
-                if (!WebRTC.getInitiator() && !WebRTC.getStarted()) {
+                if (!WebRTC.getInitiator() && !WebRTC.getIsStarted()) {
                     $scope.receiveCalling();
                 }
             }
@@ -1808,24 +1808,24 @@ angular.module('cloudKiboApp')
 
             }
             else if (message.type === 'offer') {
-                if (WebRTC.getInitiator() && !WebRTC.getStarted()) {
+                if (WebRTC.getInitiator() && !WebRTC.getIsStarted()) {
                     maybeStart();
                 }
                 WebRTC.setRemoteDescription(message);
                 WebRTC.createAndSendAnswer();
-            } else if (message.type === 'answer' && WebRTC.getStarted()) {
+            } else if (message.type === 'answer' && WebRTC.getIsStarted()) {
                 WebRTC.setRemoteDescription(message);
-            } else if (message.type === 'candidate' && WebRTC.getStarted()) {
+            } else if (message.type === 'candidate' && WebRTC.getIsStarted()) {
                 WebRTC.addIceCandidate(message);
             }
         });
 
         function maybeStart() {
-            if (!WebRTC.getStarted() && typeof WebRTC.getLocalStream() != 'undefined') {
+            if (!WebRTC.getIsStarted() && typeof WebRTC.getLocalStream() != 'undefined') {
 
                 WebRTC.createPeerConnection();
 
-                WebRTC.setStarted(true);
+                WebRTC.setIsStarted(true);
 
                 if (!WebRTC.getInitiator()) {
                     WebRTC.createAndSendOffer();
@@ -2012,75 +2012,23 @@ angular.module('cloudKiboApp')
         // Screen Sharing Logic                                                               //
         ///////////////////////////////////////////////////////////////////////////////////////
 
-
-        function captureUserMedia(onStreamApproved) {
-            // this statement defines getUserMedia constraints
-            // that will be used to capture content of screen
-            var screen_constraints = {
-                mandatory: {
-                    chromeMediaSource: DetectRTC.screen.chromeMediaSource,
-                    maxWidth: 1920,
-                    maxHeight: 1080,
-                    minAspectRatio: 1.77
-                },
-                optional: []
-            };
-
-            // this statement verifies chrome extension availability
-            // if installed and available then it will invoke extension API
-            // otherwise it will fallback to command-line based screen capturing API
-            if (DetectRTC.screen.chromeMediaSource == 'desktop' && !DetectRTC.screen.sourceId) {
-                DetectRTC.screen.getSourceId(function (error) {
-                    // if exception occurred or access denied
-                    if (error && error == 'PermissionDeniedError') {
-                        alert('PermissionDeniedError: User denied to share content of his screen.');
-                    }
-
-                    captureUserMedia(onStreamApproved);
-                });
-                return;
-            }
-
-            console.log(DetectRTC.screen.chromeMediaSource)
-
-            // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
-            if (DetectRTC.screen.chromeMediaSource == 'desktop') {
-                screen_constraints.mandatory.chromeMediaSourceId = DetectRTC.screen.sourceId;
-            }
-
-            // it is the session that we want to be captured
-            // audio must be false
-            var session = {
-                audio: false,
-                video: screen_constraints
-            };
-
-            // now invoking native getUserMedia API
-            navigator.webkitGetUserMedia(session, onStreamApproved, OnStreamDenied);
-
-        }
-
-
-        //--------//
-
-        //var screen_constraints = {video: { mandatory: { chromeMediaSource: 'screen' } }};
-
         $scope.showScreenText = 'Share Screen';
 
         $scope.showScreen = function () {
 
             if ($scope.showScreenText == 'Share Screen') {
-                //getUserMedia(screen_constraints, handleUserMediaShowScreen, handleUserMediaErrorShowScreen)
-                captureUserMedia(onStreamApproved);
+
+                WebRTC.shareScreen(function (err) {
+                    if(err) {
+                        $scope.addAlertCallStart('danger', error);
+                    }
+                });
+
                 $scope.showScreenText = 'Hide Screen';
                 $scope.screenSharedLocal = true;
             }
             else {
-                if ($scope.localStreamScreen) {
-                    $scope.localStreamScreen.stop();
-                    pc.removeStream($scope.localStreamScreen);
-                    doCall();
-                }
+                WebRTC.hideScreen();
 
                 $scope.showScreenText = 'Share Screen';
                 $scope.screenSharedLocal = false;
@@ -2088,29 +2036,6 @@ angular.module('cloudKiboApp')
 
         }
 
-        function onStreamApproved(newStream) {
-
-            //if(localStream){
-            //	localStream.stop();
-            //	pc.removeStream(localStream);
-            //}
-
-            var localvideoscreen = document.getElementById("localvideoscreen");
-            localvideoscreen.src = URL.createObjectURL(newStream);
-            $scope.localStreamScreen = newStream;
-            pc.addStream($scope.localStreamScreen);
-            $scope.localCameraOn = true;
-
-            doCall();
-
-        }
-
-        function OnStreamDenied(error) {
-            //alert(error);
-            console.log(error)
-            $scope.addAlertCallStart('danger', error);
-
-        }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // INSTALLATION OF EXTENSION                                                                                           //
