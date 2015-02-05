@@ -75,6 +75,14 @@ angular.module('cloudKiboApp')
 
         var extensionAvailable;
 
+        // todo need to check exact chrome browser because opera also uses chromium framework
+        //noinspection UnreachableCodeJS
+        var isChrome = !!navigator.webkitGetUserMedia;
+
+        // DetectRTC.js - https://github.com/muaz-khan/WebRTC-Experiment/tree/master/DetectRTC
+        // Below code is taken from RTCMultiConnection-v1.8.js (http://www.rtcmulticonnection.org/changes-log/#v1.8)
+        var DetectRTC = {};
+
         return {
 
             /**
@@ -419,13 +427,7 @@ angular.module('cloudKiboApp')
         // Screen Sharing Extension and capturing code                                             //
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        // todo need to check exact chrome browser because opera also uses chromium framework
-        //noinspection UnreachableCodeJS
-        var isChrome = !!navigator.webkitGetUserMedia;
 
-        // DetectRTC.js - https://github.com/muaz-khan/WebRTC-Experiment/tree/master/DetectRTC
-        // Below code is taken from RTCMultiConnection-v1.8.js (http://www.rtcmulticonnection.org/changes-log/#v1.8)
-        var DetectRTC = {};
 
 
 
