@@ -178,7 +178,7 @@ angular.module('cloudKiboApp')
                             alert('PermissionDeniedError: User denied to share content of his screen.');
                         }
 
-                        //shareScreen(cb);
+                        WebRTC.shareScreen(cb);
 
                     });
                     return;
@@ -207,7 +207,7 @@ angular.module('cloudKiboApp')
 
                         pc.addStream(newStream);
 
-                        createAndSendOffer();
+                        WebRTC.createAndSendOffer();
 
                         cb(null);
 
