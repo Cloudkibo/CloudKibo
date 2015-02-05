@@ -2020,7 +2020,7 @@ angular.module('cloudKiboApp')
 
                 WebRTC.shareScreen(function (err) {
                     if(err) {
-                        $scope.addAlertCallStart('danger', error);
+                        $scope.addAlertCallStart('danger', err);
                     }
                 });
 
