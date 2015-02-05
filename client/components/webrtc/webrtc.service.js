@@ -73,6 +73,8 @@ angular.module('cloudKiboApp')
         var remoteVideo;
         var remoteVideoScreen;
 
+        var screenShared;
+
         return {
 
             /**
@@ -203,8 +205,8 @@ angular.module('cloudKiboApp')
                 return localStream;
             },
 
-            getRemoteStreamScreen: function () {
-                return remoteStreamScreen;
+            getScreenShared: function () {
+                return screenShared;
             },
 
             setInitiator: function (value) {
@@ -275,6 +277,7 @@ angular.module('cloudKiboApp')
             } else {
                 remoteVideoScreen.src = URL.createObjectURL(event.stream);
                 remoteStreamScreen = event.stream;
+                screenShared = true;
             }
         }
 
@@ -288,6 +291,7 @@ angular.module('cloudKiboApp')
             if(typeof remoteStreamScreen != 'undefined') {
                 remoteStreamScreen.stop();
                 remoteStreamScreen = null;
+                screenShared = false;
             }
             else {
                 remoteStreamScreen.stop();

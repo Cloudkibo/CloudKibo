@@ -1443,7 +1443,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.hasOtherPartySharedScreen = function () {
-            return (WebRTC.getRemoteStreamScreen() != null);
+            return WebRTC.getScreenShared();
         }
 
         $scope.screenSharedLocal = false;
@@ -1719,7 +1719,7 @@ angular.module('cloudKiboApp')
         ///////////////////////////////////////////////////////////////////////////////////////
 
         socket.on('message', function (message) {
-            console.log('Client received message: ');
+            //console.log('Client received message: ');
             //console.log(message)
 
             try {
