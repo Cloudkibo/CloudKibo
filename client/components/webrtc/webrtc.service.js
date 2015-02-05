@@ -73,9 +73,6 @@ angular.module('cloudKiboApp')
         var remoteVideo;
         var remoteVideoScreen;
 
-        var extensionAvailable;
-        var DetectRTC;
-
         return {
 
             /**
@@ -86,12 +83,11 @@ angular.module('cloudKiboApp')
              * @param remotevideo Video Element to hold remote peer's webcam video
              * @param remotevideoscreen Video Element to hold remote peer's screen
              */
-            initialize: function (localvideo, localvideoscreen, remotevideo, remotevideoscreen, detectrtc) {
+            initialize: function (localvideo, localvideoscreen, remotevideo, remotevideoscreen) {
                 localVideo = localvideo;
                 localVideoScreen = localvideoscreen;
                 remoteVideo = remotevideo;
                 remoteVideoScreen = remotevideoscreen;
-                DetectRTC = detectrtc;
             },
 
             /**
@@ -225,10 +221,6 @@ angular.module('cloudKiboApp')
 
             getIsStarted: function () {
                 return isStarted;
-            },
-
-            isExtensionAvailable: function () {
-                return extensionAvailable;
             }
         };
 

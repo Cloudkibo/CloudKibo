@@ -1443,7 +1443,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.hasOtherPartySharedScreen = function () {
-            return (typeof WebRTC.getRemoteStreamScreen() == 'undefined');
+            return (WebRTC.getRemoteStreamScreen() != null);
         }
 
         $scope.screenSharedLocal = false;
@@ -1551,7 +1551,7 @@ angular.module('cloudKiboApp')
             var localvideo = document.getElementById("localvideo");
             var localvideoscreen = document.getElementById("localvideoscreen");
 
-            WebRTC.initialize(localvideo, localvideoscreen, remotevideo, remotevideoscreen, DetectRTC);
+            WebRTC.initialize(localvideo, localvideoscreen, remotevideo, remotevideoscreen);
 
         }
 
@@ -1719,7 +1719,7 @@ angular.module('cloudKiboApp')
         ///////////////////////////////////////////////////////////////////////////////////////
 
         socket.on('message', function (message) {
-            //console.log('Client received message: ');
+            console.log('Client received message: ');
             //console.log(message)
 
             try {
@@ -1832,11 +1832,6 @@ angular.module('cloudKiboApp')
                 }
             }
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // WebRTC logic                                                                       //
-        ///////////////////////////////////////////////////////////////////////////////////////
-
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // Media Stream Logic                                                                 //
