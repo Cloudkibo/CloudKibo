@@ -1,92 +1,73 @@
 /**
- * Created by sojharo on 2/3/2015.
+ * Created by sojharo on 2/6/2015.
  */
 
 'use strict';
 
 angular.module('cloudKiboApp')
-    .factory('pc_config', function () {
-        /*
-         return pc_config = {'iceServers': [createIceServer('stun:stun.l.google.com:19302', null, null),
-         createIceServer('stun:stun.anyfirewall.com:3478', null, null),
-         createIceServer('turn:turn.bistri.com:80?transport=udp', 'homeo', 'homeo'),
-         createIceServer('turn:turn.bistri.com:80?transport=tcp', 'homeo', 'homeo'),
-         createIceServer('turn:turn.anyfirewall.com:443?transport=tcp', 'webrtc', 'webrtc')
-         ]};
-         */
+    .factory('RTCConference', function RTCConference($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
 
-        return {
-            'iceServers': [{
-                url: 'turn:cloudkibo@162.243.217.34:3478?transport=udp', username: 'cloudkibo',
-                credential: 'cloudkibo'
-            },
-                {url: 'stun:stun.l.google.com:19302', username: null, credential: null},
-                {url: 'stun:stun.anyfirewall.com:3478', username: null, credential: null},
-                {url: 'turn:turn.bistri.com:80?transport=udp', username: 'homeo', credential: 'homeo'},
-                {url: 'turn:turn.bistri.com:80?transport=tcp', username: 'homeo', credential: 'homeo'},
-                {url: 'turn:turn.anyfirewall.com:443?transport=tcp', username: 'webrtc', credential: 'webrtc'}
-            ]
-        };
+        var pcIndex = 0;
+        var pcLength = 4;
 
-        /*
-         {url: 'turn:cloudkibo@162.243.217.34:3478?transport=udp', username: 'cloudkibo',
-         credential: 'cloudkibo'}
-         */
-    })
-
-    .factory('pc_constraints', function () {
-        return {'optional': [{'DtlsSrtpKeyAgreement': true}, {'RtpDataChannels': true}]};
-    })
-
-    .factory('sdpConstraints', function () {
-        return {
-            'mandatory': {
-                'OfferToReceiveAudio': true,
-                'OfferToReceiveVideo': true
-            }
-        };
-    })
-
-    .factory('video_constraints', function () {
-        return {video: true, audio: true};
-    })
-
-    .factory('WebRTC', function WebRTC($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
-
+        var isChannelReady;
         var isInitiator = false;
         var isStarted = false;
+
+        var sendChannel = new Array(pcLength);
+        var receiveChannel;
 
         var localStream;
         var localStreamScreen;
 
-        var pc;
+        var pc = new Array(pcLength);
 
-        var remoteStream = null;
-        var remoteStreamScreen = null;
+        var remoteStream1;
+        var remoteStream2;
+        var remoteStream3;
+        var remoteStream4;
 
-        var localVideo;
-        var localVideoScreen;
+        var remoteStreamScreen;
 
-        var remoteVideo;
+        var remotevideo1;
+        var remotevideo2;
+        var remotevideo3;
+        var remotevideo4;
+
         var remoteVideoScreen;
 
-        var screenShared;
+        var localvideo;
+        var localvideoscreen;
+
+        var iJoinLate = false;
+
+        var toUserName = '';
+
+        var screenSharePCIndex = 0;
+
+        var turnReady;
 
         return {
 
             /**
              * Initialize the media elements
              *
-             * @param localvideo Video Element to hold local peer's webcam video
-             * @param localvideoscreen Video Element to hold local peer's screen
-             * @param remotevideo Video Element to hold remote peer's webcam video
-             * @param remotevideoscreen Video Element to hold remote peer's screen
+             * @param remVid1
+             * @param remVid2
+             * @param remVid3
+             * @param remVid4
+             * @param remVidScr
+             * @param locVid
+             * @param locVidScr
              */
-            initialize: function (localvideo, localvideoscreen, remotevideo, remotevideoscreen) {
-                localVideo = localvideo;
-                localVideoScreen = localvideoscreen;
-                remoteVideo = remotevideo;
-                remoteVideoScreen = remotevideoscreen;
+            initialize: function (remVid1, remVid2, remVid3, remVid4, remVidScr, locVid, locVidScr) {
+                remotevideo1 = remVid1;
+                remotevideo2 = remVid2;
+                remotevideo3 = remVid3;
+                remotevideo4 = remVid4;
+                remoteVideoScreen = remVidScr;
+                localvideo = locVid;
+                localvideoscreen = locVidScr;
             },
 
             /**
@@ -220,6 +201,30 @@ angular.module('cloudKiboApp')
 
             getIsStarted: function () {
                 return isStarted;
+            },
+
+            increasePCIndex: function () {
+                pcIndex++;
+            },
+
+            setIsChannelReady: function (value) {
+                isChannelReady = value;
+            },
+
+            getIsChannelReady: function () {
+                return isChannelReady;
+            },
+
+            setIJoinLate: function (value) {
+                iJoinLate = value;
+            },
+
+            getIJoinLate: function () {
+                return iJoinLate;
+            },
+
+            stopLocalStream: function () {
+                localStream.stop();
             }
         };
 

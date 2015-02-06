@@ -33,13 +33,7 @@ angular.module('cloudKiboApp')
 
     })
 
-    .controller('FileSharingController', function ($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location) {
-
-        var sendChannel_DC;
-        var receiveChannel_DC;
-        var pc_DC;
-
-        var isStarted = false;
+    .controller('FileSharingController', function ($scope, $http, socket, Signalling, FileTransfer, $timeout, $location) {
 
         $scope.openFileView = false;
 
@@ -51,109 +45,27 @@ angular.module('cloudKiboApp')
 
             $scope.openFileView = !$scope.openFileView;
 
-            if (!isStarted) {
+            if (!FileTransfer.getIsStarted()) {
 
-                $scope.createDataChannelConnection();
-                isStarted = true;
+                FileTransfer.createPeerConnection(function (err) {
+                    if(err){
+                        alert('Failed to create connection. Make sure you are using latest browser.');
+                        $scope.openFileView = !$scope.openFileView;
+                    } else {
 
-                doCall_DC();
-
-            }
-        }
-
-        $scope.createDataChannelConnection = function () {
-            try {
-                //
-                //Different URL way for FireFox
-                //
-                pc_DC = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
-                pc_DC.onicecandidate = handleIceCandidate_DC;
-
-                //if (!$scope.isInitiator_DC) {
-                try {
-                    // Reliable Data Channels not yet supported in Chrome
-                    try {
-                        sendChannel_DC = pc_DC.createDataChannel("sendDataChannel", {reliable: true});
+                        Signalling.initialize($scope.otherUser.username, $scope.user.username, 'globalchatroom');
+                        
+                        FileTransfer.setIsStarted(true);
+                        FileTransfer.createAndSendOffer();
                     }
-                    catch (e) {
-                        console.log('UNRELIABLE DATA CHANNEL')
-                        sendChannel_DC = pc_DC.createDataChannel("sendDataChannel", {reliable: false});
-                    }
-                    sendChannel_DC.onmessage = handleMessage_DC;
-                    trace('Created send data channel');
-                } catch (e) {
-                    alert('Failed to create data channel. ' +
-                    'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
-                    trace('createDataChannel() failed with exception: ' + e.message);
-                }
-                sendChannel_DC.onopen = handleSendChannelStateChange_DC;
-                sendChannel_DC.onclose = handleSendChannelStateChange_DC;
-                //} else {
-                pc_DC.ondatachannel = gotReceiveChannel_DC;
-                //}
-            } catch (e) {
-                console.log('Failed to create PeerConnection, exception: ' + e.message);
-                alert('Cannot create RTCPeerConnection object.');
+                })
 
             }
         }
 
-        function handleIceCandidate_DC(event) {
-            if (event.candidate) {
-                sendMessage_DC({
-                    type: 'candidate',
-                    label: event.candidate.sdpMLineIndex,
-                    id: event.candidate.sdpMid,
-                    candidate: event.candidate.candidate
-                });
-            } else {
-                console.log('End of candidates.');
-            }
-        }
+        $scope.$on('dataChannelMessageReceived', function() {
 
-        function handleCreateOfferError_DC(event) {
-            console.log('createOffer() error: ', e);
-        }
-
-        function doCall_DC() {
-            console.log('Sending offer to peer');
-            pc_DC.createOffer(setLocalAndSendMessage_DC, handleCreateOfferError_DC);
-        }
-
-        function doAnswer_DC() {
-            console.log('Sending answer to peer.');
-            pc_DC.createAnswer(setLocalAndSendMessage_DC, function (error) {
-                console.log(error)
-            }, sdpConstraints);
-        }
-
-        function setLocalAndSendMessage_DC(sessionDescription) {
-            // Set Opus as the preferred codec in SDP if Opus is present.
-            pc_DC.setLocalDescription(sessionDescription);
-            //console.log('setLocalAndSendMessage sending message' , sessionDescription);
-            sendMessage_DC(sessionDescription);
-        }
-
-        $scope.sendData = function () {
-            console.log('SENDING THE MESSAGE')
-            sendChannel_DC.send('' + $scope.user.username);
-            /*
-             var data = $scope.dataChannelSend;
-             sendChannel.send(''+ $scope.user.username +': '+ data);
-             //trace('Sent data: ' + data);
-             $scope.userMessages.push('Me: '+ data)
-             $scope.dataChannelSend = '';
-
-             var chatBox = document.getElementById('chatBox');
-             chatBox.scrollTop = 300 + 8 + ($scope.userMessages.length * 240);
-             */
-        }
-
-        function handleMessage_DC(event) {
-            trace('MESSAGE GOT: ' + event.data);
-            //document.getElementById("dataChannelReceive").value = event.data;
-
-            var message = event.data;
+            var message = FileTransfer.getMessage();
 
             if (message.byteLength) {
                 process_binary(0, message, 0);
@@ -164,57 +76,8 @@ angular.module('cloudKiboApp')
                     $scope.openFileView = true;
                 })
             }
-            /*  else {
-             $scope.$apply(function(){
 
-             $scope.userMessages.push(event.data)
-
-             })
-             var chatBox = document.getElementById('chatBox');
-             //chatBox.scrollTop = 300 + 8 + ($scope.userMessages.length * 240);
-             }*/
-        }
-
-        function handleSendChannelStateChange_DC() {
-            var readyState = sendChannel_DC.readyState;
-            //trace('Send channel state is: ' + readyState);
-            enableMessageInterface(readyState == "open");
-        }
-
-        function gotReceiveChannel_DC(event) {
-            //trace('Receive Channel Callback');
-            sendChannel_DC = event.channel;
-            sendChannel_DC.onmessage = handleMessage_DC;
-            sendChannel_DC.onopen = handleReceiveChannelStateChange_DC;
-            sendChannel_DC.onclose = handleReceiveChannelStateChange_DC;
-        }
-
-        function handleReceiveChannelStateChange_DC() {
-            var readyState = sendChannel_DC.readyState;
-            //trace('Receive channel state is: ' + readyState);
-            enableMessageInterface(readyState == "open");
-        }
-
-        function enableMessageInterface(shouldEnable) {
-            if (shouldEnable) {
-                //dataChannelSend.disabled = false;
-                //dataChannelSend.focus();
-                //dataChannelSend.placeholder = "";
-                //sendButton.disabled = false;
-            } else {
-                //dataChannelSend.disabled = true;
-                //sendButton.disabled = true;
-            }
-        }
-
-        function sendMessage_DC(message) {
-            message = {msg: message};
-            message.to = $scope.otherUser.username;
-            message.room = 'globalchatroom';
-            message.from = $scope.user.username;
-            console.log('DATACHANNEL: Client sending message: ', message);
-            socket.emit('messagefordatachannel', message);
-        }
+        });
 
         socket.on('messagefordatachannel', function (message) {
             console.log('Client received message: ' + message);
@@ -223,39 +86,36 @@ angular.module('cloudKiboApp')
             //$scope.openFileView = true;
 
             if (message === 'bye') {
-                isStarted = false;
-
-                if (pc_DC != null) {
-                    pc_DC.close();
-                    pc_DC = null;
-                }
-
+                FileTransfer.endConnection();
             }
             else if (message === 'hangup') {
-                isStarted = false;
-
-                if (pc_DC != null) {
-                    pc_DC.close();
-                    pc_DC = null;
-                }
+                FileTransfer.endConnection();
             }
             else if (message.type === 'offer') {
-                if (!isStarted) {
-                    $scope.createDataChannelConnection();
-                    isStarted = true;
+                if (!FileTransfer.getIsStarted()) {
+
+                    FileTransfer.createPeerConnection(function (err) {
+                        if(err){
+                            alert('Failed to create connection. Make sure you are using latest browser.');
+                            $scope.openFileView = !$scope.openFileView;
+                        } else {
+
+                            Signalling.initialize($scope.otherUser.username, $scope.user.username, 'globalchatroom');
+
+                            FileTransfer.setIsStarted(true);
+
+                        }
+                    })
+
                 }
-                pc_DC.setRemoteDescription(new RTCSessionDescription(message));
-                doAnswer_DC();
-            } else if (message.type === 'answer' && isStarted) {
-                pc_DC.setRemoteDescription(new RTCSessionDescription(message));
-            } else if (message.type === 'candidate' && isStarted) {
-                var candidate = new RTCIceCandidate({
-                    sdpMLineIndex: message.label,
-                    candidate: message.candidate
-                });
-                pc_DC.addIceCandidate(candidate);
+                FileTransfer.setRemoteDescription(message);
+                FileTransfer.createAndSendAnswer();
+            } else if (message.type === 'answer' && FileTransfer.getIsStarted()) {
+                FileTransfer.setRemoteDescription(message);
+            } else if (message.type === 'candidate' && FileTransfer.getIsStarted()) {
+                FileTransfer.addIceCandidate(message);
             } else if (message === 'bye' && isStarted) {
-                handleRemoteHangup();
+                FileTransfer.endConnection();
             }
 
         });
@@ -294,11 +154,7 @@ angular.module('cloudKiboApp')
         var FSdebug = false;
         var chunksPerACK = 16; // 16k * 16 = 256k (buffer size in Chrome & seems to work 100% of the time)
 
-        function get_chunk_size(me, peer) {
 
-            return 16000;//64000;//36000;
-
-        }
 
         // Used in Chrome to handle larger files (and firefox with idb.filesystem.js)
         window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
@@ -373,7 +229,7 @@ angular.module('cloudKiboApp')
                             }
                         };
 
-                        writer.onerror = FSerrorHandler;
+                        writer.onerror = FileTransfer.FSerrorHandler;
 
                         // build the blob based on the binary array this.recievedChunks[user_id]
                         var builder = new Blob(recievedChunks[user_id], [recieved_meta[user_id].type]);
@@ -383,13 +239,13 @@ angular.module('cloudKiboApp')
                             console.log("DEBUG: writing chunk2 " + recievedChunksWritePointer[user_id]);
                             for (var i = 0; i < chunksPerACK; i++) {
                                 if (recievedChunks[user_id][i]) {
-                                    console.log('recived: ' + CryptoJS.SHA256(_arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
+                                    console.log('recived: ' + CryptoJS.SHA256(FileTransfer._arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
                                 }
                             }
                         }
 
                         /// write the blob to the file, this can only be called once! Will fail silently if called while writing! We avoid this by only writing once per ack.
-                        var seek = recievedChunksWritePointer[user_id] * get_chunk_size('chrome', recieved_meta[user_id].browser); //don't hardcode
+                        var seek = recievedChunksWritePointer[user_id] * FileTransfer.getChunkSize('chrome', recieved_meta[user_id].browser); //don't hardcode
                         writer.seek(seek);
                         writer.write(builder);
                         recievedChunksWritePointer[user_id] += chunksPerACK;
@@ -416,8 +272,8 @@ angular.module('cloudKiboApp')
                             }
                             //}
                         }
-                    }, FSerrorHandler);
-                }, FSerrorHandler);
+                    }, FileTransfer.FSerrorHandler);
+                }, FileTransfer.FSerrorHandler);
         }
 
         // process local inbound files
@@ -432,7 +288,7 @@ angular.module('cloudKiboApp')
             //console.log(meta);
 
             send_meta();
-            sendChannel_DC.send("You have received a file. Download and Save it.");
+            FileTransfer.sendData("You have received a file. Download and Save it.");
             // user 0 is this user!
             create_upload_stop_link(file_to_upload.name, 0);//, username);
         }
@@ -488,8 +344,8 @@ angular.module('cloudKiboApp')
 
                 // if it contains file_meta, must be meta data!
                 recieved_meta[0] = data.file_meta;
-                recieved_meta[0].numOfChunksInFile = Math.ceil(recieved_meta[0].size / get_chunk_size(recieved_meta[0].browser, 'chrome'));// Don't hardcode
-                recieved_meta[0].name = sanitize(recieved_meta[0].name);
+                recieved_meta[0].numOfChunksInFile = Math.ceil(recieved_meta[0].size / FileTransfer.getChunkSize(recieved_meta[0].browser, 'chrome'));// Don't hardcode
+                recieved_meta[0].name = FileTransfer.sanitize(recieved_meta[0].name);
 
                 /// we are not downloading anymore if we just got meta data from a user
                 // call to create_pre_file_link is reliant on this to not display [c] button on new file information
@@ -539,24 +395,6 @@ angular.module('cloudKiboApp')
             }
         }
 
-        // Use this to avoid xss
-        // recommended escaped char's found here - https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet#RULE_.231_-_HTML_Escape_Before_Inserting_Untrusted_Data_into_HTML_Element_Content
-
-        function sanitize(msg) {
-            msg = msg.toString();
-            return msg.replace(/[\<\>"'\/]/g, function (c) {
-                var sanitize_replace = {
-                    "<": "&lt;",
-                    ">": "&gt;",
-                    '"': "&quot;",
-                    "'": "&#x27;",
-                    "/": "&#x2F;"
-                }
-                return sanitize_replace[c];
-            });
-        }
-
-
         // request chunk # chunk_num from id, at this point just used to request the first chunk
         function request_chunk(id, chunk_num, hash) {
             if (FSdebug) {
@@ -565,7 +403,7 @@ angular.module('cloudKiboApp')
 
             //console.log('Function which actually asks for chunk')
 
-            sendChannel_DC.send(JSON.stringify({ //id, JSON.stringify({
+            FileTransfer.sendData(JSON.stringify({ //id, JSON.stringify({
                 "eventName": "request_chunk",
                 "data": {
                     "chunk": chunk_num,
@@ -573,12 +411,6 @@ angular.module('cloudKiboApp')
                 }
             }));
 
-        }
-
-        // bootstrap alerts!
-        function boot_alert(text) {
-            console.log('Boot_alert: ', text);
-            //$("#alerts").append('<div class="alert alert-danger alert-dismissable">'+text+'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>');
         }
 
         // request id's file by sending request for block 0
@@ -591,7 +423,7 @@ angular.module('cloudKiboApp')
 
             if (filesysteminuse) {
                 //console.log('Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.')
-                boot_alert("Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.");
+                FileTransfer.bootAlert("Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.");
                 return;
             }
 
@@ -617,8 +449,8 @@ angular.module('cloudKiboApp')
                 fs[user_id].root.getFile(recieved_meta[user_id].name, {create: false}, function (fileEntry) {
                     fileEntry.remove(function () {
                         console.log('File removed.');
-                    }, FSerrorHandler);
-                }, FSerrorHandler);
+                    }, FileTransfer.FSerrorHandler);
+                }, FileTransfer.FSerrorHandler);
             }
         }
 
@@ -636,7 +468,6 @@ angular.module('cloudKiboApp')
         function create_or_clear_container(id) {
             var filelist = document.getElementById('filelist_cointainer');
             var filecontainer = document.getElementById(id);
-            //username = sanitize(username);
 
             // if the user is downloading something from this person, we should only clear the inside span to save the cancel button
             if (downloading[id] == true) {
@@ -724,7 +555,7 @@ angular.module('cloudKiboApp')
             a.download = meta.name;
             a.id = id + '-download';
             a.href = 'javascript:void(0);';
-            a.textContent = 'Download : ' + meta.name + ' ' + getReadableFileSizeString(meta.size);
+            a.textContent = 'Download : ' + meta.name + ' ' + FileTransfer.getReadableFileSizeString(meta.size);
             a.draggable = true;
 
             //append link!
@@ -732,7 +563,7 @@ angular.module('cloudKiboApp')
             filecontainer.appendChild(a);
 
             //append to chat
-            sendMessage_DC($scope.user.username + " is now offering file " + meta.name);
+            Signalling.sendMessageForDataChannel($scope.user.username + " is now offering file " + meta.name);
         }
 
         // update a file container with a DL %
@@ -743,20 +574,9 @@ angular.module('cloudKiboApp')
 
             // create file % based on chunk # downloaded
             var percentage = (chunk_num / chunk_total) * 100;
-            span.innerHTML = percentage.toFixed(1) + "% of " + getReadableFileSizeString(total_size) + ' ';
+            span.innerHTML = percentage.toFixed(1) + "% of " + FileTransfer.getReadableFileSizeString(total_size) + ' ';
 
         }
-
-        // -h
-        function getReadableFileSizeString(fileSizeInBytes) {
-            var i = -1;
-            var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
-            do {
-                fileSizeInBytes = fileSizeInBytes / 1024;
-                i++;
-            } while (fileSizeInBytes > 1024);
-            return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
-        };
 
         // create a link to this file
         function create_file_link(meta, id, fileEntry) {
@@ -806,18 +626,14 @@ angular.module('cloudKiboApp')
             filecontainer.appendChild(can);
 
             //append to chat
-            sendMessage_DC("File " + meta.name + " is ready to save locally");
+            Signalling.sendMessageForDataChannel("File " + meta.name + " is ready to save locally");
         }
 
 
         // send out meta data, allow for id to be empty = broadcast
         function send_meta(id) {
 
-
-            //console.log("sending meta data");
-            //console.log(meta);
-
-            sendChannel_DC.send(JSON.stringify({
+            FileTransfer.sendData(JSON.stringify({
                 eventName: "data_msg",
                 data: {
                     file_meta: meta
@@ -832,26 +648,23 @@ angular.module('cloudKiboApp')
             // uncomment the following lines and set breakpoints on them to simulate an impaired connection
 
             var reader = new FileReader;
-            var upper_limit = (chunk_num + 1) * get_chunk_size(other_browser, 'chrome'); //don't hardcode
+            var upper_limit = (chunk_num + 1) * FileTransfer.getChunkSize(other_browser, 'chrome'); //don't hardcode
             if (upper_limit > meta.size) {
                 upper_limit = meta.size;
             }
 
-            var seek = chunk_num * get_chunk_size(other_browser, 'chrome'); //don't hardcode
+            var seek = chunk_num * FileTransfer.getChunkSize(other_browser, 'chrome'); //don't hardcode
             var blob = file_to_upload.slice(seek, upper_limit);
             reader.onload = function (event) {
                 if (reader.readyState == FileReader.DONE) {
 
-                    //if (encryption_type != "NONE") {
-                    //	file_encrypt_and_send(id, event.target.result, rand, chunk_num);
-                    //} else {
                     if (FSdebug) {
                         console.log("DEBUG: sending chunk " + chunk_num);
-                        console.log('sending: ' + CryptoJS.SHA256(_arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
+                        console.log('sending: ' + CryptoJS.SHA256(FileTransfer._arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
                     }
 
-                    sendChannel_DC.send(event.target.result);//id, event.target.result);
-                    //}
+                    FileTransfer.sendData(event.target.result);//id, event.target.result);
+
                 }
 
 
@@ -861,58 +674,14 @@ angular.module('cloudKiboApp')
 
         // ideally we would check the SCTP queue here to see if we could send, doesn't seem to work right now though...
         function send_chunk_if_queue_empty(id, chunk_num, other_browser, rand, hash) {
-            //if (encryption_type != "NONE") {
-            //	if ( chunk_num > Math.ceil(file_to_upload.size / get_chunk_size($.browser.name, other_browser))) { /// allow numOfChunksInFile+1 in for last encrpytion hash verification
-            //		return;
-            //	}
-            //} else {
-            if (chunk_num >= Math.ceil(file_to_upload.size / get_chunk_size('chrome', other_browser))) { //don't hardcode
+
+            if (chunk_num >= Math.ceil(file_to_upload.size / FileTransfer.getChunkSize('chrome', other_browser))) { //don't hardcode
                 return;
             }
-            //}
+
 
             sendchunk(id, chunk_num, other_browser, rand, hash);
         }
-
-        //////***** File System Errors /////////
-        //credit - http://www.html5rocks.com/en/tutorials/file/filesystem/
-        function FSerrorHandler(e) {
-            var msg = '';
-            switch (e.code) {
-                case FileError.QUOTA_EXCEEDED_ERR:
-                    msg = 'QUOTA_EXCEEDED_ERR';
-                    break;
-                case FileError.NOT_FOUND_ERR:
-                    msg = 'NOT_FOUND_ERR';
-                    break;
-                case FileError.SECURITY_ERR:
-                    msg = 'SECURITY_ERR';
-                    break;
-                case FileError.INVALID_MODIFICATION_ERR:
-                    msg = 'INVALID_MODIFICATION_ERR';
-                    break;
-                case FileError.INVALID_STATE_ERR:
-                    msg = 'INVALID_STATE_ERR';
-                    break;
-                default:
-                    msg = 'Unknown Error';
-                    break;
-            }
-            ;
-            console.error('Error: ' + msg);
-        }
-
-        //used for debugging - credit - http://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
-        function _arrayBufferToBase64(buffer) {
-            var binary = ''
-            var bytes = new Uint8Array(buffer)
-            var len = bytes.byteLength;
-            for (var i = 0; i < len; i++) {
-                binary += String.fromCharCode(bytes[i])
-            }
-            return window.btoa(binary);
-        }
-
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // File Sharing Logic End                                                              //
@@ -1443,7 +1212,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.hasOtherPartySharedScreen = function () {
-            return !WebRTC.getScreenShared();
+            return WebRTC.getScreenShared();
         }
 
         $scope.screenSharedLocal = false;
