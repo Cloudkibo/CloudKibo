@@ -1869,6 +1869,17 @@ angular.module('cloudKiboApp')
         // Talking to extension                                                                 //
         //////////////////////////////////////////////////////////////////////////////////////////
 
+        window.addEventListener('message', function (event) {
+            if (event.origin != window.location.origin) {
+                return;
+            }
+
+            console.log('THIS IS THE EVENT')
+            console.log(event)
+
+            ScreenShare.onMessageCallback(event.data);
+        });
+
         ScreenShare.initialize();
 
         ScreenShare.isChromeExtensionAvailable(function (status){

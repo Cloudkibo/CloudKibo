@@ -47,39 +47,28 @@ angular.module('cloudKiboApp')
                     } else callback(true);
                 }, 2000);
 
+            },
+
+            onMessageCallback: function (data) {
+                //console.log('chrome message', data);
+
+                // "cancel" button is clicked
+                if (data == 'PermissionDeniedError') {
+                    chromeMediaSource = 'PermissionDeniedError';
+                    if (screenCallback) return screenCallback('PermissionDeniedError');
+                    else throw new Error('PermissionDeniedError');
+                }
+
+                // extension notified its presence
+                if (data == 'kiboconnection-extension-loaded') {
+                    chromeMediaSource = 'desktop';
+                }
+
+                // extension shared temp sourceId
+                if (data.sourceId) {
+                    if (screenCallback) screenCallback(data.sourceId);
+                }
             }
         };
-
-        function onMessageCallback(data) {
-            //console.log('chrome message', data);
-
-            // "cancel" button is clicked
-            if (data == 'PermissionDeniedError') {
-                chromeMediaSource = 'PermissionDeniedError';
-                if (screenCallback) return screenCallback('PermissionDeniedError');
-                else throw new Error('PermissionDeniedError');
-            }
-
-            // extension notified its presence
-            if (data == 'kiboconnection-extension-loaded') {
-                chromeMediaSource = 'desktop';
-            }
-
-            // extension shared temp sourceId
-            if (data.sourceId) {
-                if (screenCallback) screenCallback(data.sourceId);
-            }
-        }
-
-        $window.addEventListener('message', function (event) {
-            if (event.origin != window.location.origin) {
-                return;
-            }
-
-            console.log('THIS IS THE EVENT')
-            console.log(event)
-
-            onMessageCallback(event.data);
-        });
 
     });
