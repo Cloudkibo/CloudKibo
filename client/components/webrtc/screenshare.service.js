@@ -30,7 +30,7 @@ angular.module('cloudKiboApp')
             getSourceId: function (callback) {
                 if (!callback) throw '"callback" parameter is mandatory.';
                 screenCallback = callback;
-                window.postMessage('get-sourceId', '*');
+                $window.postMessage('get-sourceId', '*');
             },
 
             isChromeExtensionAvailable: function (callback) {
@@ -39,7 +39,7 @@ angular.module('cloudKiboApp')
                 if (chromeMediaSource == 'desktop') callback(true);
 
                 // ask extension if it is available
-                window.postMessage('are-you-there', '*');
+                $window.postMessage('are-you-there', '*');
 
                 setTimeout(function () {
                     if (chromeMediaSource == 'screen') {
