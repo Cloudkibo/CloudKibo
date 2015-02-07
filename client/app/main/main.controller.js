@@ -54,7 +54,7 @@ angular.module('cloudKiboApp')
                     } else {
 
                         Signalling.initialize($scope.otherUser.username, $scope.user.username, 'globalchatroom');
-                        
+
                         FileTransfer.setIsStarted(true);
                         FileTransfer.createAndSendOffer();
                     }
@@ -690,7 +690,7 @@ angular.module('cloudKiboApp')
 
     })
 
-    .controller('HomeController', function ($scope, $http, socket, $timeout, $location, Sound, WebRTC, Signalling) {
+    .controller('HomeController', function ($scope, $http, socket, $timeout, $location, Sound, WebRTC, Signalling, ScreenShare) {
 
         $scope.user = $scope.getCurrentUser();
 
@@ -1869,7 +1869,13 @@ angular.module('cloudKiboApp')
         // Talking to extension                                                                 //
         //////////////////////////////////////////////////////////////////////////////////////////
 
+        ScreenShare.initialize();
 
+        ScreenShare.isChromeExtensionAvailable(function (status){
+            console.log(status);
+        });
+
+/*
         // todo need to check exact chrome browser because opera also uses chromium framework
         var isChrome = !!navigator.webkitGetUserMedia;
 
@@ -1944,8 +1950,7 @@ angular.module('cloudKiboApp')
 
             DetectRTC.screen.onMessageCallback(event.data);
         });
-
-
+*/
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // INSTALLATION OF EXTENSION                                                                                           //
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

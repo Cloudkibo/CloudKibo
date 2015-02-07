@@ -196,6 +196,7 @@ angular.module('cloudKiboApp')
                 localVideoScreen.src = URL.createObjectURL(stream);
 
                 pc.addStream(stream);
+
             },
 
             getLocalStream: function () {

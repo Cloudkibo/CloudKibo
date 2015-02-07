@@ -134,7 +134,7 @@ angular.module('cloudKiboApp')
             },
 
             /**
-             * Use this to avoid xss
+             * Use this to avoid xss attack
              * recommended escaped char's found here - https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet#RULE_.231_-_HTML_Escape_Before_Inserting_Untrusted_Data_into_HTML_Element_Content
              *
              * @param msg
@@ -270,7 +270,7 @@ angular.module('cloudKiboApp')
         }
 
         function handleMessage(event) {
-            trace('MESSAGE GOT: ' + event.data);
+            //trace('MESSAGE GOT: ' + event.data);
             //document.getElementById("dataChannelReceive").value = event.data;
 
             message = event.data;

@@ -41,8 +41,6 @@ angular.module('cloudKiboApp')
 
         var iJoinLate = false;
 
-        var toUserName = '';
-
         var screenSharePCIndex = 0;
 
         var turnReady;
@@ -75,11 +73,43 @@ angular.module('cloudKiboApp')
              *
              */
             createPeerConnection: function () {
-                pc = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
-                pc.onicecandidate = handleIceCandidate;
-                pc.onaddstream = handleRemoteStreamAdded;
-                pc.onremovestream = handleRemoteStreamRemoved;
-                pc.addStream(localStream);
+                try {
+                    //
+                    //Different URL way for FireFox
+                    //
+                    pc[pcIndex] = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
+                    pc[pcIndex].onicecandidate = handleIceCandidate;
+                    pc[pcIndex].onaddstream = handleRemoteStreamAdded;
+                    pc[pcIndex].onremovestream = handleRemoteStreamRemoved;
+
+                    //if (isInitiator) {
+                    try {
+                        // Reliable Data Channels not yet supported in Chrome
+                        try {
+                            sendChannel[pcIndex] = pc[pcIndex].createDataChannel("sendDataChannel", {reliable: true});
+                        }
+                        catch (e) {
+                            console.log('UNRELIABLE DATA CHANNEL')
+                            sendChannel[pcIndex] = pc[pcIndex].createDataChannel("sendDataChannel", {reliable: false});
+                        }
+                        sendChannel[pcIndex].onmessage = handleMessage;
+                        trace('Created send data channel');
+                    } catch (e) {
+                        alert('Failed to create data channel. ' +
+                        'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
+                        trace('createDataChannel() failed with exception: ' + e.message);
+                    }
+                    sendChannel[pcIndex].onopen = handleSendChannelStateChange;
+                    sendChannel[pcIndex].onclose = handleSendChannelStateChange;
+                    // } else {
+                    pc[pcIndex].ondatachannel = gotReceiveChannel;
+                    pc.addStream(localStream);
+                    // }
+                } catch (e) {
+                    console.log('Failed to create PeerConnection, exception: ' + e.message);
+                    alert('Cannot create RTCPeerConnection object.');
+                    return;
+                }
             },
 
             /**
@@ -207,6 +237,10 @@ angular.module('cloudKiboApp')
                 pcIndex++;
             },
 
+            getPcIndex: function () {
+                return pcIndex;
+            },
+
             setIsChannelReady: function (value) {
                 isChannelReady = value;
             },
@@ -302,6 +336,34 @@ angular.module('cloudKiboApp')
                 remoteStreamScreen = null;
                 remoteStream = null;
             }
+        }
+
+        function handleMessage(event) {
+            //trace('MESSAGE GOT: ' + event.data);
+            //document.getElementById("dataChannelReceive").value = event.data;
+
+            message = event.data;
+
+            $rootScope.$broadcast("dataChannelMessageReceived");
+
+        }
+
+        function handleSendChannelStateChange() {
+            var readyState = sendChannel.readyState;
+            //trace('Send channel state is: ' + readyState);
+        }
+
+        function gotReceiveChannel(event) {
+            //trace('Receive Channel Callback');
+            sendChannel = event.channel;
+            sendChannel.onmessage = handleMessage;
+            sendChannel.onopen = handleReceiveChannelStateChange;
+            sendChannel.onclose = handleReceiveChannelStateChange;
+        }
+
+        function handleReceiveChannelStateChange() {
+            var readyState = sendChannel.readyState;
+            //trace('Receive channel state is: ' + readyState);
         }
 
 
