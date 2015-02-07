@@ -76,8 +76,8 @@ angular.module('cloudKiboApp')
                 return;
             }
 
-            //console.log('THIS IS THE EVENT')
-            //console.log(event)
+            console.log('THIS IS THE EVENT')
+            console.log(event)
 
             onMessageCallback(event.data);
         });
