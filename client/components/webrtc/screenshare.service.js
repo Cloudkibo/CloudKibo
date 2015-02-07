@@ -18,6 +18,28 @@ angular.module('cloudKiboApp')
 
         var chromeMediaSource;
 
+        // this statement defines getUserMedia constraints
+        // that will be used to capture content of screen
+        var screen_constraints = {
+            mandatory: {
+                chromeMediaSource: chromeMediaSource,
+                maxWidth: 1920,
+                maxHeight: 1080,
+                minAspectRatio: 1.77
+            },
+            optional: []
+        };
+
+
+        // it is the session that we want to be captured
+        // audio must be false
+        var session = {
+            audio: false,
+            video: screen_constraints
+        };
+
+        var sourceId;
+
         return {
 
             initialize: function () {
@@ -66,9 +88,31 @@ angular.module('cloudKiboApp')
 
                 // extension shared temp sourceId
                 if (data.sourceId) {
+                    sourceId = data.sourceId;
                     if (screenCallback) screenCallback(data.sourceId);
                 }
+            },
+
+            screen_constraints: function () {
+                return screen_constraints;
+            },
+
+            session: function () {
+                return session;
+            },
+
+            getChromeMediaSource: function () {
+                return chromeMediaSource;
+            },
+
+            getSourceIdValue: function () {
+                return sourceId;
+            },
+
+            setSourceIdInConstraints: function () {
+                screen_constraints.mandatory.chromeMediaSource = sourceId;
             }
+
         };
 
     });
