@@ -9,7 +9,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-    .factory('ScreenShare', function ScreenShare($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
+    .factory('ScreenShare', function ScreenShare($rootScope, $window, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
 
         // todo need to check exact chrome browser because opera also uses chromium framework
         var isChrome;
