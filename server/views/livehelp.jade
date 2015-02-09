@@ -70,6 +70,8 @@ html(ng-app='cloudKiboApp')
     script(src='/app/cloudKiboApp.js')
     
     script(src='/app/main/main.js')
+
+    script(src='/components/webrtc/rtcconfig.service.js')
     
     
     // New Boilerplate
@@ -130,7 +132,7 @@ html(ng-app='cloudKiboApp')
       div(class='header-navigation pull-right font-transform-inherit')
               ul
                 li
-                  a(href='/')
+                  a.btn.btn-account.btn-send(ng-click='closeWindow()')
                     | Leave Conference
    .fullBodyPane(class='animate-show')
     .main

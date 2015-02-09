@@ -1712,7 +1712,7 @@ angular.module('cloudKiboApp')
 
 
 
-    .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
+    .controller('LiveHelpController', function($scope, $http, $window, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
 
         var roomid = '';
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -1722,6 +1722,10 @@ angular.module('cloudKiboApp')
         if(window.location.pathname.replace('/', '') != 'home'){
             roomid = window.location.pathname.replace('/', '');
             roomid = roomid.split('/')[1];
+        }
+
+        $scope.closeWindow = function(){
+            window.location.assign("/")
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
