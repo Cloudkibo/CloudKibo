@@ -282,17 +282,17 @@ exports.saveUsernameRoute = function(req, res, next) {
 	User.count({username: req.body.username}, function(err, countUsername){
 
 		if(countUsername > 0){
-			req.json({status : 'danger', msg: 'This username is already taken'});
+			res.json({status : 'danger', msg: 'This username is already taken'});
 		}
 		else{
 			User.count({email: req.body.email}, function(err, countEmail){
 				if(countEmail > 0){
-					req.json({status : 'danger', msg: 'This email address is already taken'});
+					res.json({status : 'danger', msg: 'This email address is already taken'});
 				}
 				else{
 					User.count({phone: req.body.phone}, function(err, countPhone){
 						if(countPhone > 0){
-							req.json({status : 'danger', msg: 'This contact number is already taken'});
+							res.json({status : 'danger', msg: 'This contact number is already taken'});
 						}else{
 
 							User.find({_id : req.body._id}, function(err, gotUser){
@@ -302,12 +302,12 @@ exports.saveUsernameRoute = function(req, res, next) {
 								gotUser.phone = req.body.phone;
 
 								gotUser.save(function(err2){
-									if(err2) return req.json({status:'danger', msg:'Some error occurred on CloudKibo. Please contact us.'})
+									if(err2) return res.json({status:'danger', msg:'Some error occurred on CloudKibo. Please contact us.'})
 
 									User.find({_id : req.body._id}, function(err3, gotUser1){
 										if(err3) return console.log(err3);
 
-										req.json({status: 'success', msg: gotUser1});
+										res.json({status: 'success', msg: gotUser1});
 									})
 
 								})
