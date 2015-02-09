@@ -30,6 +30,10 @@ angular.module('cloudKiboApp')
             return $scope.getCurrentUser().role === 'admin';
         }
 
+        $scope.isUserNameDefined = function() {
+            return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
+        }
+
 
     })
 

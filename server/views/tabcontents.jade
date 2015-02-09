@@ -8,7 +8,8 @@ block bodycontent
         | #{title}
       a(href='javascript:void(0);', class='mobi-toggler')
         i(class='fa fa-bars')
-      div(class='header-navigation pull-right font-transform-inherit')
+      div(ng-show='isUserNameDefined()')
+        div(class='header-navigation pull-right font-transform-inherit')
               ul
                 li
                   a(href='', ng-click='openMeeting()', ng-if='!isMeetingSelected()')
@@ -42,6 +43,7 @@ block bodycontent
   .fullBodyPane(class='animate-show')
    .main
     .container
+     div(ng-show='isUserNameDefined()')
       div(class='row margin-bottom-40')
         div(ng-show='testingDefined()', class='well well-lg modalBox')
           .animate-show
