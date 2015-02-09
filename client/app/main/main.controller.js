@@ -34,6 +34,32 @@ angular.module('cloudKiboApp')
             return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
         }
 
+        $scope.saveNewUserName = function () {
+
+            $http.post('/api/users/saveusername', $scope.user)
+                .success(function (data) {
+                    if(data.status == 'success') {
+                        $scope.user = data.user;
+                        Auth.setUser(data.user);
+                    }
+                    else{
+                        $scope.addAlertSaveUserName(data.status, data.msg);
+                    }
+
+                })
+
+        }
+
+        $scope.alertsSaveUserName = [];
+
+        $scope.addAlertSaveUserName = function(newtype, newMsg) {
+            $scope.alertsSaveUserName.push({type: newtype, msg: newMsg});
+        };
+
+        $scope.closeAlertSaveUserName = function(index) {
+            $scope.alertsSaveUserName.splice(index, 1);
+        };
+
 
     })
 

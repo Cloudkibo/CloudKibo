@@ -9,6 +9,10 @@ angular.module('cloudKiboApp')
 
     return {
 
+      setUser: function(user) {
+        currentUser = user;
+      },
+
       /**
        * Authenticate user and save token
        *
