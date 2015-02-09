@@ -295,7 +295,10 @@ exports.saveUsernameRoute = function(req, res, next) {
 							res.json({status : 'danger', msg: 'This contact number is already taken'});
 						}else{
 
-							User.find({_id : req.body._id}, function(err, gotUser){
+							console.log(req.body)
+							User.findById(req.body._id, function(err, gotUser){
+
+								console.log(gotUser);
 
 								gotUser.username = req.body.username;
 								gotUser.email = req.body.email;

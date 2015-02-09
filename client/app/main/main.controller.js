@@ -28,36 +28,37 @@ angular.module('cloudKiboApp')
 
         $scope.isUserAdmin = function () {
             return $scope.getCurrentUser().role === 'admin';
-        }
+        };
 
         $scope.isUserNameDefined = function() {
             return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
-        }
+        };
 
-        $scope.saveNewUserName = function () {
+        $scope.showError = function(){
+            return $scope.isError;
+        };
 
-            $http.post('/api/users/saveusername', $scope.userTemp)
+        $scope.isError = false;
+
+        $scope.saveNewUserName = function (tempUser) {
+
+            tempUser._id = $scope.user._id;
+            $http.post('/api/users/saveusername', tempUser)
                 .success(function (data) {
                     if(data.status == 'success') {
-                        $scope.user = data.user;
-                        Auth.setUser(data.user);
+                        $scope.user = data.msg;
+                        Auth.setUser(data.msg);
+                        $scope.isError = false;
                     }
                     else{
-                        $scope.addAlertSaveUserName(data.status, data.msg);
+
+                        $scope.errorMessage = data.msg;
+                        $scope.isError = true;
+
                     }
 
                 })
 
-        }
-
-        $scope.alertsSaveUserName = [];
-
-        $scope.addAlertSaveUserName = function(newtype, newMsg) {
-            $scope.alertsSaveUserName.push({type: newtype, msg: newMsg});
-        };
-
-        $scope.closeAlertSaveUserName = function(index) {
-            $scope.alertsSaveUserName.splice(index, 1);
         };
 
 

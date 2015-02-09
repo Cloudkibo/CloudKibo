@@ -47,7 +47,7 @@ block bodycontent
        div(class='row margin-bottom-40')
          div(class='well well-lg modalBox')
            .animate-show
-             form(role='form', novalidate, name='form', class='css-form form-horizontal', enctype='multipart/form-data', ng-submit='saveNewUserName()')
+             form(role='form', novalidate, name='form', class='css-form form-horizontal', enctype='multipart/form-data', ng-submit='saveNewUserName(userTemp)')
                fieldset
                  legend Completing your registration now...
                  .form-group
@@ -92,8 +92,8 @@ block bodycontent
                  div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
                    button.btn.btn-account.btn-send(type='submit', ng-disabled="form.$invalid || isUnchanged(user)") Submit
                .row
-                 div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
-                   alert(ng-repeat='alert in alertsSaveUserName', type='alert.type', close='closeAlertSaveUserName($index)')
+                 div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20 usernameerror', ng-show='showError()')
+                   h5 {{errorMessage}}
 
      div(ng-show='isUserNameDefined()')
       div(class='row margin-bottom-40')
