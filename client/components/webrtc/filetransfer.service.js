@@ -1,11 +1,3 @@
-/**
- * Created by sojharo on 2/6/2015.
- */
-
-/**
- * Created by sojharo on 2/3/2015.
- */
-
 'use strict';
 
 angular.module('cloudKiboApp')

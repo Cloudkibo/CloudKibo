@@ -1,25 +1,31 @@
-/**
- * Created by sojharo on 2/7/2015.
- */
-
-/**
- * Created by sojharo on 2/3/2015.
- */
-
 'use strict';
 
+/**
+ * This service is used to communicate with screen sharing extension on behalf of application. Application
+ * must use the extension code provided by our library to use when creating its own extension. It will
+ * check if the extension is installed or not. It will also ask for the sourceId from the extension to know
+ * which window user wants to share. It can also tell the application if the user denied the access to screen.
+ *
+ * todo: this service should also contain the code to install the extension in-line
+ *
+ * NOTE: Following code was taken from the example of Muaz Khan, it has been converted from plain javascript to
+ * angularjs code
+ */
 angular.module('cloudKiboApp')
     .factory('ScreenShare', function ScreenShare($rootScope, $window, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
 
         // todo need to check exact chrome browser because opera also uses chromium framework
         var isChrome;
 
-        var screenCallback;
+        var screenCallback;             /* Hold the callback function for a while as extension reply may take some time */
 
-        var chromeMediaSource;
+        var chromeMediaSource;          /* chromeMediaSource holds what screen user wants to share */
 
-        // this statement defines getUserMedia constraints
-        // that will be used to capture content of screen
+        /**
+         * this statement defines getUserMedia constraints that will be used to capture content of screen
+         *
+         * @type {{mandatory: {chromeMediaSource: *, maxWidth: number, maxHeight: number, minAspectRatio: number}, optional: Array}}
+         */
         var screen_constraints = {
             mandatory: {
                 chromeMediaSource: chromeMediaSource,
@@ -30,18 +36,23 @@ angular.module('cloudKiboApp')
             optional: []
         };
 
-
-        // it is the session that we want to be captured
-        // audio must be false
+        /**
+         * it is the session that we want to be captured audio must be false
+         *
+         * @type {{audio: boolean, video: {mandatory: {chromeMediaSource: *, maxWidth: number, maxHeight: number, minAspectRatio: number}, optional: Array}}}
+         */
         var session = {
             audio: false,
             video: screen_constraints
         };
 
-        var sourceId;
+        var sourceId;                   /* Screen object that user wants to share */
 
         return {
 
+            /**
+             * Application must initialize the service before using it for screen sharing
+             */
             initialize: function () {
                 // todo need to check exact chrome browser because opera also uses chromium framework
                 isChrome = !!navigator.webkitGetUserMedia;
@@ -49,12 +60,27 @@ angular.module('cloudKiboApp')
                 chromeMediaSource = 'screen';
             },
 
+            /**
+             * This function communicates with extension to get the screen source id. When user wants to share screen
+             * he/she is asked if he/she wants to share full screen or just one of the open windows. Source Id is
+             * to recognize which window user has chosen to share
+             *
+             * @param callback returns the source-id or PermissionDeniedError
+             */
             getSourceId: function (callback) {
                 if (!callback) throw '"callback" parameter is mandatory.';
                 screenCallback = callback;
                 $window.postMessage('get-sourceId', '*');
             },
 
+            /**
+             * This function tries to communicate with the extension to know its availability. It sends the message
+             * "are-you-there" to extension and waits for 2 seconds and if there is no reply it assumes that extension
+             * is not installed. Application is responsible for showing the option to install the extension if this
+             * function returns false
+             *
+             * @param callback
+             */
             isChromeExtensionAvailable: function (callback) {
                 if (!callback) return;
 
@@ -71,48 +97,86 @@ angular.module('cloudKiboApp')
 
             },
 
-            onMessageCallback: function (data) {
-                //console.log('chrome message', data);
+            subscribeMessages: function () {
+                window.addEventListener('message', function (event) {
+                    if (event.origin != window.location.origin) {
+                        return;
+                    }
 
-                // "cancel" button is clicked
-                if (data == 'PermissionDeniedError') {
-                    chromeMediaSource = 'PermissionDeniedError';
-                    if (screenCallback) return screenCallback('PermissionDeniedError');
-                    else throw new Error('PermissionDeniedError');
-                }
+                    //console.log('THIS IS THE EVENT')
+                    //console.log(event.data)
 
-                // extension notified its presence
-                if (data == 'kiboconnection-extension-loaded') {
-                    chromeMediaSource = 'desktop';
-                }
-
-                // extension shared temp sourceId
-                if (data.sourceId) {
-                    sourceId = data.sourceId;
-                    if (screenCallback) screenCallback(data.sourceId);
-                }
+                    onMessageCallback(event.data);
+                });
             },
 
+            /**
+             * Returns the object of screen_constraints
+             *
+             * @returns {{mandatory?: {chromeMediaSource: *, maxWidth: number, maxHeight: number, minAspectRatio: number}, : Array}}
+             */
             screen_constraints: function () {
                 return screen_constraints;
             },
 
+            /**
+             * Returns the the object of session. Audio should be false for screen sharing
+             *
+             * @returns {{audio: boolean, video: {mandatory?: {chromeMediaSource: *, maxWidth: number, maxHeight: number, minAspectRatio: number}, : Array}}}
+             */
             session: function () {
                 return session;
             },
 
+            /**
+             * If the returns "screen" it means extension is not installed, if it returns "Desktop" it means it is
+             * installed
+             *
+             * @returns {*}
+             */
             getChromeMediaSource: function () {
                 return chromeMediaSource;
             },
 
+            /**
+             * Returns the source id of the screen object which is to be shared
+             *
+             * @returns {*}
+             */
             getSourceIdValue: function () {
                 return sourceId;
             },
 
+            /**
+             * It sets the source id in screen_constraints which is used by geUserMedia() Element
+             */
             setSourceIdInConstraints: function () {
                 screen_constraints.mandatory.chromeMediaSource = sourceId;
             }
 
         };
+
+        function onMessageCallback (data) {
+            //console.log('chrome message', data);
+
+            // "cancel" button is clicked
+            if (data == 'PermissionDeniedError') {
+                chromeMediaSource = 'PermissionDeniedError';
+                if (screenCallback) return screenCallback('PermissionDeniedError');
+                else throw new Error('PermissionDeniedError');
+            }
+
+            // extension notified its presence
+            if (data == 'kiboconnection-extension-loaded') {
+                chromeMediaSource = 'desktop';
+            }
+
+            // extension shared temp sourceId
+            if (data.sourceId) {
+                sourceId = data.sourceId;
+                if (screenCallback) screenCallback(data.sourceId);
+            }
+        }
+
 
     });
