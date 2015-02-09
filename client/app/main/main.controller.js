@@ -36,7 +36,7 @@ angular.module('cloudKiboApp')
 
         $scope.saveNewUserName = function () {
 
-            $http.post('/api/users/saveusername', $scope.user)
+            $http.post('/api/users/saveusername', $scope.userTemp)
                 .success(function (data) {
                     if(data.status == 'success') {
                         $scope.user = data.user;
