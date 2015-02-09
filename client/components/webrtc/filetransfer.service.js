@@ -1,24 +1,32 @@
 'use strict';
 
+/**
+ * This is the core File Transfer service. It is independent of the video call service. It depends on Signalling service
+ * for doing Signalling. Furthermore, it uses services from configuration too. To use this, one should follow the WebRTC
+ * call procedure. Here it is mostly same as standard procedure of a WebRTC call, but this service hides much of the
+ * details from application.
+ */
 angular.module('cloudKiboApp')
     .factory('FileTransfer', function FileTransfer($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
 
-        var isInitiator = false;
-        var isStarted = false;
+        var isInitiator = false;            /* It indicates which peer is the initiator of the call */
+        var isStarted = false;              /* It indicates whether the WebRTC session is started or not */
 
-        var sendChannel;
-        var receiveChannel;
+        var sendChannel;                    /* Channel to send the data to other peer */
+        var receiveChannel;                 /* Channel to receive the date from other peer */
 
-        var pc;
+        var pc;                             /* Peer Connection object */
 
-        var message;
+        var message;                        /* message by other peer is hold here for application to pick */
 
         return {
 
 
             /**
-             * Create Peer Connection
-             *
+             * Creates Peer Connection and opens the data channel. Application must call this function when
+             * peer wants to send the file to other peer. We try to open the data channel on reliable protocol,
+             * if failed we fall back to unreliable. Furthermore, service attaches some private callback functions
+             * to some WebRTC connection events. Application doesn't need to care about them.             *
              */
             createPeerConnection: function (cb) {
                 try {
@@ -56,12 +64,20 @@ angular.module('cloudKiboApp')
                 }
             },
 
+            /**
+             * Send data or message to other peer using WebRTC Data Channel.
+             *
+             * @param data data or message which should be sent to other peer
+             */
             sendData: function (data) {
                 sendChannel.send(data);
             },
 
             /**
-             * Create and Send Offer
+             * Create and Send Offer to other peer. When initiator has got the camera access and has subsequently
+             * made the peer connection object using createPeerConnection(), it must call this function now to send
+             * the offer to other party. This function uses two private functions as callback to set local description
+             * and handle the create offer error. Application doesn't need to care about these functions.
              *
              */
             createAndSendOffer: function () {
@@ -69,7 +85,11 @@ angular.module('cloudKiboApp')
             },
 
             /**
-             * Create and Send Answer
+             * Create and Send Answer to the peer who made the offer. When peer receives offer from the initiator,
+             * it must call this function after setting the remote description. It uses the sdbConstraints from the
+             * configurations. It has the callback functions to set local description and handle create answer error.
+             * Application is responsible for listening the "message" socket.io event and then check if type is offer.
+             * Subsequently, application must call this function to send answer.
              *
              */
             createAndSendAnswer: function () {
@@ -78,10 +98,24 @@ angular.module('cloudKiboApp')
                 }, sdpConstraints);
             },
 
+            /**
+             * On receiving remote description from other peer with offer or answer message, application must call this
+             * function to set the remote description to peer connection object.
+             *
+             * @param message It is the remote description sent to the local peer
+             */
             setRemoteDescription: function (message) {
                 pc.setRemoteDescription(new RTCSessionDescription(message));
             },
 
+            /**
+             * On receiving ice candidate from other peer, application must call this function to add this candidate
+             * to local peer connection object. Application is responsible for listening the "message" socket.io event
+             * and then check if type is candidate. Subsequently, appliction must call this function to set the remote
+             * candidates.
+             *
+             * @param message It is the remote candidate sent to the local peer
+             */
             addIceCandidate: function (message) {
                 var candidate = new RTCIceCandidate({
                     sdpMLineIndex: message.label,
@@ -91,7 +125,9 @@ angular.module('cloudKiboApp')
             },
 
             /**
-             * Gracefully Ends the WebRTC Peer Connection
+             * Gracefully Ends the WebRTC Peer Connection. When any peer wants to end the connection, it must call this function.
+             * It is the responsibility of application to inform other peer about ending of the connection. Application would
+             * clean or change the UI itself. Both the peers should call this function to end the connection.
              *
              */
             endConnection: function () {
@@ -105,22 +141,51 @@ angular.module('cloudKiboApp')
 
             },
 
+            /**
+             * Whenever data is received from other peer using data channel, it is stored in the "message" variable
+             * which can be retrieved by application using this function.
+             *
+             * @returns {*}
+             */
             getMessage: function () {
                 return message;
             },
 
+            /**
+             * Application can set this to true for the peer who is the initiator of the call. Service must know
+             * who is the initiator of the call. Initiator is the one who sends the offer to other peer.
+             *
+             * @param value Boolean variable to set the value for isInitiator
+             */
             setInitiator: function (value) {
                 isInitiator = value;
             },
 
+            /**
+             * Application can check if the peer is set as initiator or not by using this function. Initiator is
+             * the one who sends the offer to other peer.
+             * @returns {boolean}
+             */
             getInitiator: function () {
                 return isInitiator;
             },
 
+            /**
+             * Application can set this to true if the call or signalling has been started. This can be used to
+             * put some controls i.e. do not send the candidates until the call is started
+             *
+             * @param value
+             */
             setIsStarted: function (value) {
                 isStarted = value;
             },
 
+            /**
+             * Application can check if the call or signalling has started or not. This can be used to put some controls.
+             * i.e. do not send the candidates until the call is started
+             *
+             * @returns {boolean}
+             */
             getIsStarted: function () {
                 return isStarted;
             },
@@ -190,6 +255,13 @@ angular.module('cloudKiboApp')
                 console.error('Error: ' + msg);
             },
 
+            /**
+             * File size is often given to us in bytes. We need to convert them to MBs or GBs for user
+             * readability.
+             *
+             * @param fileSizeInBytes file size in bytes
+             * @returns {string} File Size with appropriate unit
+             */
             getReadableFileSizeString: function (fileSizeInBytes) {
                 var i = -1;
                 var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -217,15 +289,27 @@ angular.module('cloudKiboApp')
                 return window.btoa(binary);
             },
 
+            /**
+             * This is the chunk size limit for data to be sent or received using data channel. It might increase
+             * if browser supports in future.
+             *
+             * @param me
+             * @param peer
+             * @returns {number}
+             */
             getChunkSize: function (me, peer) {
                 return 16000;//64000;//36000;
             }
         };
 
         /**
-         * Handle Ice Candidates
+         * Handle Ice Candidate and send it to other peer. This callback is called from within the peer connection object
+         * whenever there are candidates available. We need to send each candidate to remote peer. For this, we use
+         * signalling service of this library. Refer to the Signalling Service for more information on signalling.
          *
-         * @param event
+         * This function is not exposed to application and is handled by library itself.
+         *
+         * @param event holds the candidate
          */
         function handleIceCandidate(event) {
             if (event.candidate) {
@@ -241,9 +325,12 @@ angular.module('cloudKiboApp')
         }
 
         /**
-         * Set Local Description and send it to other peer
+         * Set Local Description and send it to other peer. This callback function is called by createOffer()
+         * function of the peer connection object. We need to set the Local Description in peer connection object
+         * and then send it to the other peer too. Signalling service is used to send it to other peer. Refer to
+         * Signalling service for more information on it.
          *
-         * @param sessionDescription
+         * @param sessionDescription description about the session
          */
         function setLocalAndSendMessage(sessionDescription) {
             // Set Opus as the preferred codec in SDP if Opus is present.
@@ -253,14 +340,21 @@ angular.module('cloudKiboApp')
         }
 
         /**
-         * Handle the Create Offer Error
+         * Handle the Create Offer Error. This callback function is called by createOffer() function of the
+         * peer connection object whenever there is an error while creating the offer.
          *
-         * @param error
+         * @param error information about the error which occurred while creating offer
          */
         function handleCreateOfferError(error) {
             console.log('createOffer() error: ', error);
         }
 
+        /**
+         * This callback function is used to handle the message sent by other peer. The message is sent using data channel
+         * of WebRTC. It broadcasts this message to the application so that application can use the message.
+         *
+         * @param event contains the data sent by other peer
+         */
         function handleMessage(event) {
             //trace('MESSAGE GOT: ' + event.data);
             //document.getElementById("dataChannelReceive").value = event.data;
@@ -271,11 +365,22 @@ angular.module('cloudKiboApp')
 
         }
 
+        /**
+         * This callback function is used to handle the sendChannel's state whether it is opened or closed.
+         *
+         * todo: look for more documentation of this from WebRTC
+         */
         function handleSendChannelStateChange() {
             var readyState = sendChannel.readyState;
             //trace('Send channel state is: ' + readyState);
         }
 
+        /**
+         * This callback function is called by WebRTC whenever the receiving channel is opened. This receiving channel
+         * is the channel through which data travels.
+         *
+         * @param event holds the channel
+         */
         function gotReceiveChannel(event) {
             //trace('Receive Channel Callback');
             sendChannel = event.channel;
@@ -284,6 +389,12 @@ angular.module('cloudKiboApp')
             sendChannel.onclose = handleReceiveChannelStateChange;
         }
 
+        /**
+         * This is used to handle the situation when receive channel is opened or closed. Application should
+         * modify the UI depending on whether the data channel is opened or not.
+         *
+         * todo: notify the change to application using a broadcast
+         */
         function handleReceiveChannelStateChange() {
             var readyState = sendChannel.readyState;
             //trace('Receive channel state is: ' + readyState);

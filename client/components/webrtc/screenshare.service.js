@@ -7,6 +7,7 @@
  * which window user wants to share. It can also tell the application if the user denied the access to screen.
  *
  * todo: this service should also contain the code to install the extension in-line
+ * todo: this service should not be used by application directly, other webrtc service must depend on it
  *
  * NOTE: Following code was taken from the example of Muaz Khan, it has been converted from plain javascript to
  * angularjs code
@@ -51,13 +52,28 @@ angular.module('cloudKiboApp')
         return {
 
             /**
-             * Application must initialize the service before using it for screen sharing
+             * Application must initialize the service before using it for screen sharing.
+             *
+             * This function also listens to the messages sent to us by ScreenSharing Extension. It should be called by
+             * the application at beginning with initialize() function.
              */
             initialize: function () {
                 // todo need to check exact chrome browser because opera also uses chromium framework
                 isChrome = !!navigator.webkitGetUserMedia;
 
                 chromeMediaSource = 'screen';
+
+                // listening to messages sent to us be Screen Sharing Extension.
+                window.addEventListener('message', function (event) {
+                    if (event.origin != window.location.origin) {
+                        return;
+                    }
+
+                    //console.log('THIS IS THE EVENT')
+                    //console.log(event.data)
+
+                    onMessageCallback(event.data);
+                });
             },
 
             /**
@@ -95,19 +111,6 @@ angular.module('cloudKiboApp')
                     } else callback(true);
                 }, 2000);
 
-            },
-
-            subscribeMessages: function () {
-                window.addEventListener('message', function (event) {
-                    if (event.origin != window.location.origin) {
-                        return;
-                    }
-
-                    //console.log('THIS IS THE EVENT')
-                    //console.log(event.data)
-
-                    onMessageCallback(event.data);
-                });
             },
 
             /**
@@ -156,6 +159,15 @@ angular.module('cloudKiboApp')
 
         };
 
+        /**
+         * It handles the messages sent from the screen sharing extension. Extension
+         * can send 3 types of messages: PermissionDeniedError (user denies to share screen),
+         * kiboconnection-extension-loaded (extension informs its availability) and sourceId
+         * (the screen object user has selected to share)
+         *
+         * @param data message sent by screen share extension
+         * @returns {*}
+         */
         function onMessageCallback (data) {
             //console.log('chrome message', data);
 

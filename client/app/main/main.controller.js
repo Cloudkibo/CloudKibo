@@ -1848,14 +1848,9 @@ angular.module('cloudKiboApp')
         // Talking to extension                                                                 //
         //////////////////////////////////////////////////////////////////////////////////////////
 
-
-
         ScreenShare.initialize();
 
-        ScreenShare.subscribeMessages();
-
         ScreenShare.isChromeExtensionAvailable(function (status){
-            console.info(status);
             $scope.extensionAvailable = !status;
         });
 
