@@ -30,36 +30,7 @@ angular.module('cloudKiboApp')
             return $scope.getCurrentUser().role === 'admin';
         };
 
-        $scope.isUserNameDefined = function() {
-            return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
-        };
 
-        $scope.showError = function(){
-            return $scope.isError;
-        };
-
-        $scope.isError = false;
-
-        $scope.saveNewUserName = function (tempUser) {
-
-            tempUser._id = $scope.user._id;
-            $http.post('/api/users/saveusername', tempUser)
-                .success(function (data) {
-                    if(data.status == 'success') {
-                        $scope.user = data.msg;
-                        Auth.setUser(data.msg);
-                        $scope.isError = false;
-                    }
-                    else{
-
-                        $scope.errorMessage = data.msg;
-                        $scope.isError = true;
-
-                    }
-
-                })
-
-        };
 
 
     })
@@ -722,6 +693,37 @@ angular.module('cloudKiboApp')
     })
 
     .controller('HomeController', function ($scope, $http, socket, $timeout, $location, Sound, WebRTC, Signalling, ScreenShare) {
+
+        $scope.isUserNameDefined = function() {
+            return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
+        };
+
+        $scope.showError = function(){
+            return $scope.isError;
+        };
+
+        $scope.isError = false;
+
+        $scope.saveNewUserName = function (tempUser) {
+
+            tempUser._id = $scope.user._id;
+            $http.post('/api/users/saveusername', tempUser)
+                .success(function (data) {
+                    if(data.status == 'success') {
+                        $scope.user = data.msg;
+                        Auth.setUser(data.msg);
+                        $scope.isError = false;
+                    }
+                    else{
+
+                        $scope.errorMessage = data.msg;
+                        $scope.isError = true;
+
+                    }
+
+                })
+
+        };
 
         $scope.user = $scope.getCurrentUser();
 
