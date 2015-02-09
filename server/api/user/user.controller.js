@@ -307,7 +307,7 @@ exports.saveUsernameRoute = function(req, res, next) {
 								gotUser.save(function(err2){
 									if(err2) return res.json({status:'danger', msg:'Some error occurred on CloudKibo. Please contact us.'})
 
-									User.find({_id : req.body._id}, function(err3, gotUser1){
+									User.findOne({_id : req.body._id}, function(err3, gotUser1){
 										if(err3) return console.log(err3);
 
 										res.json({status: 'success', msg: gotUser1});
