@@ -16,16 +16,32 @@ exports.setup = function (User, config) {
           return done(err);
         }
         if (!user) {
-          user = new User({
-            firstname : profile.name.givenName,
-		        lastname : profile.name.familyName,
-            email: profile.emails[0].value,
-            role: 'user',
-            windows_photo: profile.photos[0].value,
-            username: profile.emails[0].value.split('@')[0],
-            provider: 'windowslive',
-            windowslive: profile._json
-          });
+
+          User.count({$or: [{username: profile.emails[0].value.split('@')[0]}, {email: profile.emails[0].value}]}, function(err, count){
+            if(count>0){
+              user = new User({
+                firstname : profile.name.givenName,
+                lastname : profile.name.familyName,
+                role: 'user',
+                windows_photo: profile.photos[0].value,
+                provider: 'windowslive',
+                windowslive: profile._json
+              });
+            }else{
+              user = new User({
+                firstname : profile.name.givenName,
+                lastname : profile.name.familyName,
+                email: profile.emails[0].value,
+                role: 'user',
+                windows_photo: profile.photos[0].value,
+                username: profile.emails[0].value.split('@')[0],
+                provider: 'windowslive',
+                windowslive: profile._json
+              });
+            }
+          })
+
+
           user.save(function(err) {
             if (err) done(err);
             return done(err, user);

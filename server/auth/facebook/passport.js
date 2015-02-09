@@ -16,19 +16,36 @@ exports.setup = function (User, config) {
           return done(err);
         }
         if (!user) {
-          user = new User({
-            firstname : profile.name.givenName,
-		    lastname : profile.name.familyName,
-            email: profile.emails[0].value,
-            role: 'user',
-            username: profile.username,
-            provider: 'facebook',
-            fb_photo: 'https://graph.facebook.com/'+ profile.id +'/picture?width=140&height=110',
-            facebook: profile._json
-          });
-          user.save(function(err) {
-            if (err) done(err);
-            return done(err, user);
+
+          User.count({$or: [{username: profile.username}, {email: profile.emails[0].value}]}, function(err, count){
+            if(count > 0) {
+              user = new User({
+                firstname : profile.name.givenName,
+                lastname : profile.name.familyName,
+                role: 'user',
+                provider: 'facebook',
+                fb_photo: 'https://graph.facebook.com/'+ profile.id +'/picture?width=140&height=110',
+                facebook: profile._json
+              });
+            }
+            else {
+              user = new User({
+                firstname : profile.name.givenName,
+                lastname : profile.name.familyName,
+                email: profile.emails[0].value,
+                role: 'user',
+                username: profile.username,
+                provider: 'facebook',
+                fb_photo: 'https://graph.facebook.com/'+ profile.id +'/picture?width=140&height=110',
+                facebook: profile._json
+              });
+            }
+
+            user.save(function(err) {
+              if (err) done(err);
+              return done(err, user);
+            });
+
           });
         } else {
           return done(err, user);
