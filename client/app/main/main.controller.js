@@ -1877,25 +1877,26 @@ angular.module('cloudKiboApp')
                     console.log(error)
                     //shareScreen(cb);
 
+                    // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
+                    if (ScreenShare.getChromeMediaSource() == 'desktop') {
+                        ScreenShare.setSourceIdInConstraints();
+                    }
+
+                    console.log(ScreenShare.session())
+                    // now invoking native getUserMedia API
+                    navigator.webkitGetUserMedia(ScreenShare.session(),
+                        function (newStream) {
+
+                            cb(null, newStream);
+
+                        }, function (err) {
+                            cb(err);
+                        });
+
                 });
                 //return;
             }
 
-            // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
-            if (ScreenShare.getChromeMediaSource() == 'desktop') {
-                ScreenShare.setSourceIdInConstraints();
-            }
-
-            console.log(ScreenShare.session())
-            // now invoking native getUserMedia API
-            navigator.webkitGetUserMedia(ScreenShare.session(),
-                function (newStream) {
-
-                    cb(null, newStream);
-
-                }, function (err) {
-                    cb(err);
-                });
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////
