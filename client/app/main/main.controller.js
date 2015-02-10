@@ -1883,6 +1883,7 @@ angular.module('cloudKiboApp')
                 ScreenShare.setSourceIdInConstraints();
             }
 
+            console.log(ScreenShare.session())
             // now invoking native getUserMedia API
             navigator.webkitGetUserMedia(ScreenShare.session(),
                 function (newStream) {

@@ -69,9 +69,6 @@ angular.module('cloudKiboApp')
                         return;
                     }
 
-                    console.log('THIS IS THE EVENT')
-                    console.log(event.data)
-
                     onMessageCallback(event.data);
                 });
             },
@@ -155,8 +152,7 @@ angular.module('cloudKiboApp')
              */
             setSourceIdInConstraints: function () {
                 screen_constraints.mandatory.chromeMediaSource = sourceId;
-                console.log('Screen Constraints')
-                console.log(screen_constraints);
+                session.video = screen_constraints;
             }
 
         };
@@ -188,8 +184,6 @@ angular.module('cloudKiboApp')
             // extension shared temp sourceId
             if (data.sourceId) {
                 sourceId = data.sourceId;
-                console.log('SourceID')
-                console.log(sourceId)
                 if (screenCallback) screenCallback(data.sourceId);
             }
         }
