@@ -1875,10 +1875,10 @@ angular.module('cloudKiboApp')
 
                     console.log('Inside getSourceID callback')
                     console.log(error)
-                    shareScreen(cb);
+                    //shareScreen(cb);
 
                 });
-                return;
+                //return;
             }
 
             // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
