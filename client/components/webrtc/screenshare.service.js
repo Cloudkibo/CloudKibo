@@ -105,7 +105,10 @@ angular.module('cloudKiboApp')
                 setTimeout(function () {
                     if (chromeMediaSource == 'screen') {
                         callback(false);
-                    } else callback(true);
+                    } else {
+                        callback(true);
+                        screen_constraints.mandatory.chromeMediaSource = 'desktop';
+                    }
                 }, 2000);
 
             },
@@ -151,7 +154,7 @@ angular.module('cloudKiboApp')
              * It sets the source id in screen_constraints which is used by geUserMedia() Element
              */
             setSourceIdInConstraints: function () {
-                screen_constraints.mandatory.chromeMediaSource = sourceId;
+                screen_constraints.mandatory.chromeMediaSourceId = sourceId;
                 session.video = screen_constraints;
             }
 
