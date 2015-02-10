@@ -29,23 +29,26 @@
  */
 
 angular.module('cloudKiboApp')
-    .factory('WebRTC', function WebRTC($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
+    .factory('WebRTC', function WebRTC($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, audio_constraints, Signalling) {
 
         var isInitiator = false;            /* It indicates which peer is the initiator of the call */
         var isStarted = false;              /* It indicates whether the WebRTC session is started or not */
 
-        var localStream;                    /* It holds local camera and audio stream */
+        var localVideoStream;               /* It holds local camera stream */
+        var localAudioStream;               /* It holds local audio stream */
         var localStreamScreen;              /* It holds local screen sharing stream */
 
         var pc;                             /* Peer Connection object */
 
-        var remoteStream = null;            /* It holds the other peer's camera and audio stream */
+        var remoteVideoStream = null;       /* It holds the other peer's camera stream */
+        var remoteAudioStream = null;       /* It holds the other peer's audio stream */
         var remoteStreamScreen = null;      /* It holds the other peer's screen sharing stream */
 
         var localVideo;                     /* It is the HTML5 video element to hold local peer's video */
         var localVideoScreen;               /* It is the HTML5 video element to hold local screen sharing video */
 
         var remoteVideo;                    /* It is the HTML5 video element to hold other peer's video */
+        var remoteAudio;                    /* It is the HTML5 audio element to hold other peer's audio */
         var remoteVideoScreen;              /* It is the HTML5 video element to hold other peer's screen sharing video */
 
         var screenShared;                   /* This boolean variable indicates if the other party has shared the screen */
@@ -59,14 +62,17 @@ angular.module('cloudKiboApp')
              * the reference of these elements and pass them as parameters.
              *
              * @param localvideo Video Element to hold local peer's webcam video
+             * @param localaudio Audio Element to hold local peer's audio
              * @param localvideoscreen Video Element to hold local peer's screen
              * @param remotevideo Video Element to hold remote peer's webcam video
+             * @param remoteaudio Audio Element to hold remote peer's audio
              * @param remotevideoscreen Video Element to hold remote peer's screen
              */
-            initialize: function (localvideo, localvideoscreen, remotevideo, remotevideoscreen) {
+            initialize: function (localvideo, localvideoscreen, remotevideo, remoteaudio, remotevideoscreen) {
                 localVideo = localvideo;
                 localVideoScreen = localvideoscreen;
                 remoteVideo = remotevideo;
+                remoteAudio = remoteaudio;
                 remoteVideoScreen = remotevideoscreen;
             },
 
@@ -83,7 +89,9 @@ angular.module('cloudKiboApp')
                 pc.onicecandidate = handleIceCandidate;
                 pc.onaddstream = handleRemoteStreamAdded;
                 pc.onremovestream = handleRemoteStreamRemoved;
-                pc.addStream(localStream);
+                pc.addStream(localAudioStream);
+                if(localVideoStream)
+                    pc.addStream(localVideoStream);
             },
 
             /**
@@ -142,14 +150,29 @@ angular.module('cloudKiboApp')
              * uses video_constraints from the configurations. It sets the callback with null on success and err
              * on error. It attaches the local media stream to video element for the application.
              *
+             * @param streamType Type of the stream to be captured. Possible values are "audio" or "video"
              * @param cb It is the callback which should be called with err if there was an error in accessing the media
              */
-            captureUserMedia: function (cb) {
-                getUserMedia(video_constraints,
+            captureUserMedia: function (streamType, cb) {
+                var constraints;
+
+                if (streamType == 'audio')
+                    constraints = audio_constraints;
+                else if (streamType == 'video')
+                    constraints = video_constraints;
+                else
+                    return cb('Invalid stream type. Must be "audio" or "video"');
+
+                getUserMedia(constraints,
                     function (newStream) {
 
-                        localStream = newStream;
-                        localVideo.src = URL.createObjectURL(newStream);
+                        if (streamType == 'audio') {
+                            localAudioStream = newStream;
+                        }
+                        else if (streamType == 'video') {
+                            localVideoStream = newStream;
+                            localVideo.src = URL.createObjectURL(newStream);
+                        }
 
                         cb(null);
                     },
@@ -166,25 +189,31 @@ angular.module('cloudKiboApp')
              * This function cleans many variables and also stop all the local streams so that camera and screen media
              * (if accessed) would be stopped. Finally, it closes the peer connection.
              *
-             * todo: localStream.stop() does not release the camera, it must be fixed
-             *
              */
             endConnection: function () {
                 isStarted = false;
                 isInitiator = false;
 
-                console.log(localStream);
+                //console.log(localStream);
 
-                if (localStream) {
-                    localStream.stop();
+                if (localVideoStream) {
+                    localVideoStream.stop();
+                }
+                if(localAudioStream){
+                    localAudioStream.stop();
                 }
                 if (localStreamScreen) {
                     localStreamScreen.stop();
                 }
-                if (remoteStream) {
-                    remoteStream.stop();
+                if (remoteVideoStream) {
+                    remoteVideoStream.stop();
                     remoteVideo.src = null;
-                    remoteStream = null;
+                    remoteVideoStream = null;
+                }
+                if (remoteAudioStream) {
+                    remoteAudioStream.stop();
+                    remoteAudio.src = null;
+                    remoteAudioStream = null;
                 }
                 if (remoteStreamScreen) {
                     remoteStreamScreen.stop();
@@ -192,7 +221,7 @@ angular.module('cloudKiboApp')
                     remoteStreamScreen = null;
                 }
 
-                console.log(localStream);
+                //console.log(localStream);
 
                 try {
                     pc.close();
@@ -250,8 +279,8 @@ angular.module('cloudKiboApp')
              *
              * @returns {*}
              */
-            getLocalStream: function () {
-                return localStream;
+            getLocalAudioStream: function () {
+                return localAudioStream;
             },
 
             /**
@@ -353,19 +382,26 @@ angular.module('cloudKiboApp')
 
         /**
          * Handle the remote stream. This call back function is used to handle the streams sent by the remote peer.
-         * Currently, we have two types of streams to hold: video+audio stream and screen sharing stream. This
-         * function takes care of handling both stream and assigning them to correct video element
+         * Currently, we have two types of streams to hold: video streams, audio stream and screen sharing stream. This
+         * function takes care of handling of all stream and assigning them to correct video or audio element
          *
          * @param event holds the stream sent by the remote peer
          */
         function handleRemoteStreamAdded(event) {
-            if (!remoteStream) {
-                remoteVideo.src = URL.createObjectURL(event.stream);
-                remoteStream = event.stream;
-            } else {
-                remoteVideoScreen.src = URL.createObjectURL(event.stream);
-                remoteStreamScreen = event.stream;
-                screenShared = true;
+            if(event.stream.getAudioTracks().length){
+                remoteAudio.src = URL.createObjectURL(event.stream);
+                remoteAudioStream = event.stream;
+            }
+
+            if(event.stream.getVideoTracks().length){
+                if (!remoteVideoStream) {
+                    remoteVideo.src = URL.createObjectURL(event.stream);
+                    remoteVideoStream = event.stream;
+                } else {
+                    remoteVideoScreen.src = URL.createObjectURL(event.stream);
+                    remoteStreamScreen = event.stream;
+                    screenShared = true;
+                }
             }
         }
 
@@ -385,10 +421,10 @@ angular.module('cloudKiboApp')
             }
             else {
                 remoteStreamScreen.stop();
-                remoteStream.stop();
+                remoteVideoStream.stop();
 
                 remoteStreamScreen = null;
-                remoteStream = null;
+                remoteVideoStream = null;
             }
         }
 

@@ -69,12 +69,21 @@ angular.module('cloudKiboApp')
     })
 
 /**
- * Video Constraints for getUserMedia() of WebRTC API. Application may change it to use audio only, video
- * only or both audio and video.
+ * Video Constraints for getUserMedia() of WebRTC API
  *
  * todo: add the function setVideoConstraints
  */
 
     .factory('video_constraints', function () {
-        return {video: true, audio: true};
+        return {video: true, audio: false};
+    })
+
+/**
+ * Audio Constraints for getUserMedia() of WebRTC API
+ *
+ * todo: add the function setVideoConstraints
+ */
+
+    .factory('audio_constraints', function () {
+        return {video: false, audio: true};
     });

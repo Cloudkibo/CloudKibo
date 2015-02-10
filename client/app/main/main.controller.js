@@ -1352,8 +1352,9 @@ angular.module('cloudKiboApp')
             var remotevideoscreen = document.getElementById("remotevideoscreen");
             var localvideo = document.getElementById("localvideo");
             var localvideoscreen = document.getElementById("localvideoscreen");
+            var remoteaudio = document.getElementById('remoteaudio');
 
-            WebRTC.initialize(localvideo, localvideoscreen, remotevideo, remotevideoscreen);
+            WebRTC.initialize(localvideo, localvideoscreen, remotevideo, remoteaudio, remotevideoscreen);
 
         }
 
@@ -1623,7 +1624,7 @@ angular.module('cloudKiboApp')
         });
 
         function maybeStart() {
-            if (!WebRTC.getIsStarted() && typeof WebRTC.getLocalStream() != 'undefined') {
+            if (!WebRTC.getIsStarted() && typeof WebRTC.getLocalAudioStream() != 'undefined') {
 
                 WebRTC.createPeerConnection();
 
@@ -1640,7 +1641,7 @@ angular.module('cloudKiboApp')
         ///////////////////////////////////////////////////////////////////////////////////////
 
         function getMedia () {
-            WebRTC.captureUserMedia(function (err) {
+            WebRTC.captureUserMedia('audio', function (err) {
 
                 if (err) {
                     $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.')
@@ -1653,15 +1654,31 @@ angular.module('cloudKiboApp')
 
                 } else {
 
-                    $scope.localCameraOn = true;
+                    WebRTC.captureUserMedia('video', function (err) {
 
-                    Signalling.sendMessage('got user media');
+                        if (err) {
+                            $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.')
 
-                    if (!WebRTC.getInitiator()) {
+                            $scope.ringing = false;
+                            $scope.amInCall = false;
+                            $scope.amInCallWith = '';
 
-                        maybeStart();
+                            WebRTC.endConnection();
+                        }
+                        else {
+                            $scope.localCameraOn = true;
 
-                    }
+                            Signalling.sendMessage('got user media');
+
+                            if (!WebRTC.getInitiator()) {
+
+                                maybeStart();
+
+                            }
+                        }
+
+                    })
+
                 }
 
             });
