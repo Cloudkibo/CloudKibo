@@ -12,6 +12,10 @@ angular.module('cloudKiboApp')
 
         roomid = $location.url().split('/')[2];
 
+        $scope.isUserNameDefined = function() {
+            return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
+        };
+
         ////////////////////////////////////////////////////////////////////////////////////////
         // WebRTC User Interface Logic                                                        //
         ////////////////////////////////////////////////////////////////////////////////////////
