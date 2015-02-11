@@ -1,9 +1,13 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-    .controller('MeetingController', function ($scope, $http, socket, $timeout, $location, Signalling, RTCConference) {
+    .controller('MeetingController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location){
 
         $scope.user = $scope.getCurrentUser();
+
+        $scope.isUserNameDefined = function() {
+            return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
+        };
 
         var roomid;
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -11,9 +15,6 @@ angular.module('cloudKiboApp')
         ////////////////////////////////////////////////////////////////////////////////////////
 
         roomid = $location.url().split('/')[2];
-
-        var otherPeers;
-        var toUserName = '';
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // WebRTC User Interface Logic                                                        //
@@ -35,19 +36,7 @@ angular.module('cloudKiboApp')
             return $scope.callEnded;
         };
 
-        $scope.connectTimeOut = function () {
-
-            var remotevideo1 = document.getElementById("remotevideo1");
-            var remotevideo2 = document.getElementById("remotevideo2");
-            var remotevideo3 = document.getElementById("remotevideo3");
-            var remotevideo4 = document.getElementById("remotevideo4");
-            var remoteVideoScreen = document.getElementById("remoteVideoScreen");
-            var localvideo = document.getElementById("localvideo");
-            var localvideoscreen = document.getElementById("localvideoscreen");
-
-            RTCConference.initialize(remotevideo1, remotevideo2, remotevideo3, remotevideo4,
-                remoteVideoScreen, localvideo, localvideoscreen);
-
+        $scope.connectTimeOut = function(){
             $scope.roomname = roomid;
             $scope.createOrJoinMeeting();
             $scope.connected = true;
@@ -57,19 +46,19 @@ angular.module('cloudKiboApp')
 
         $scope.alertsCallStart = [];
 
-        $scope.addAlertCallStart = function (newtype, newMsg) {
-            $scope.$apply(function () {
+        $scope.addAlertCallStart = function(newtype, newMsg) {
+            $scope.$apply(function(){
                 $scope.alertsCallStart.push({type: newtype, msg: newMsg});
             })
         };
 
-        $scope.closeAlertCallStart = function (index) {
+        $scope.closeAlertCallStart = function(index) {
             $scope.alertsCallStart.splice(index, 1);
         };
 
         $scope.extensionAvailable = false;
 
-        $scope.showExtension = function () {
+        $scope.showExtension = function(){
             return $scope.extensionAvailable;
         };
 
@@ -79,37 +68,37 @@ angular.module('cloudKiboApp')
 
         $scope.peer2Joined = false;
 
-        $scope.hasPeer2Joined = function () {
+        $scope.hasPeer2Joined = function(){
             return $scope.peer2Joined;
         }
 
         $scope.peer3Joined = false;
 
-        $scope.hasPeer3Joined = function () {
+        $scope.hasPeer3Joined = function(){
             return $scope.peer3Joined;
         }
 
         $scope.peer4Joined = false;
 
-        $scope.hasPeer4Joined = function () {
+        $scope.hasPeer4Joined = function(){
             return $scope.peer4Joined;
         }
 
         $scope.peerSharedScreen = false;
 
-        $scope.hasPeerSharedScreen = function () {
+        $scope.hasPeerSharedScreen = function(){
             return $scope.peerSharedScreen;
         }
 
         $scope.screenSharedLocal = false;
 
-        $scope.isLocalScreenShared = function () {
+        $scope.isLocalScreenShared = function(){
             return $scope.screenSharedLocal;
         }
 
         $scope.meetingData = {};
 
-        $scope.recordMeetingData = function () {
+        $scope.recordMeetingData = function(){
             $http.post('/recordMeetingData', JSON.stringify($scope.meetingData))
         };
 
@@ -117,20 +106,17 @@ angular.module('cloudKiboApp')
         // Signaling Logic                                                                    //
         ///////////////////////////////////////////////////////////////////////////////////////
 
-        $scope.createOrJoinMeeting = function () {
+        $scope.createOrJoinMeeting = function(){
             console.log('Create or join room', {room: roomid, username: $scope.user.username});
             socket.emit('create or join meeting', {room: roomid, username: $scope.user.username});
-
-            Signalling.initialize('', $scope.user.username, roomid);
-
         }
 
-        $scope.LeaveRoom = function () {
+        $scope.LeaveRoom = function(){
             console.log('Leave room', {room: roomid, username: $scope.user.username});
             socket.emit('leave', {room: roomid, username: $scope.user.username});
         }
 
-        socket.on('created', function (room) {
+        socket.on('created', function (room){
             console.log('Created room ' + room);
 
             $scope.meetingData.creator = $scope.user.username;
@@ -138,36 +124,37 @@ angular.module('cloudKiboApp')
             var startTime = new Date();
             $scope.meetingData.StartTime = startTime.toUTCString();
 
-            RTCConference.setInitiator(true);
+            isInitiator = true;
         });
 
-        socket.on('full', function (room) {
+        socket.on('full', function (room){
             console.log('Room ' + room + ' is full');
         });
 
-        socket.on('join', function (room) {
+        socket.on('join', function (room){
             //console.log('Another peer made a request to join room ' + room);
             //console.log('This peer is the initiator of room ' + room + '!');
-            if (RTCConference.getIsStarted()) {
-                RTCConference.increasePCIndex();
+            if(isStarted)
+            {
+                pcIndex++;
             }
 
             $scope.meetingData.members = room.otherClients.slice();
             otherPeers = room.otherClients.slice();
 
-            $scope.meetingData.members.splice($scope.meetingData.members.indexOf($scope.user.username), 1);
-            otherPeers.splice(otherPeers.indexOf($scope.user.username), 1);
+            $scope.meetingData.members.splice( $scope.meetingData.members.indexOf($scope.user.username), 1 );
+            otherPeers.splice( otherPeers.indexOf($scope.user.username), 1 );
 
-            RTCConference.setIsChannelReady(true);
-
+            isChannelReady = true;
         });
 
-        socket.on('joined', function (room) {
+        socket.on('joined', function (room){
             //console.log('This peer has joined room ' + room.room + ' '+ room.username +' '+ room.otherClients);
-            RTCConference.setIsChannelReady(true);
+            isChannelReady = true;
 
-            if (room.otherClients.length > 1) {
-                RTCConference.setIJoinLate(true);
+            if(room.otherClients.length > 1)
+            {
+                iJoinLate = true;
                 otherPeers = room.otherClients.slice();
                 //console.log(otherPeers)
             }
@@ -175,27 +162,77 @@ angular.module('cloudKiboApp')
             $scope.startCalling();
         });
 
-        socket.on('log', function (array) {
+        socket.on('log', function (array){
             console.log.apply(console, array);
         });
 
-        $scope.$on('$locationChangeStart', function (event) {
+        $scope.$on('$locationChangeStart', function(event) {
             var endTime = new Date();
             $scope.meetingData.EndTime = endTime.toUTCString();
             $scope.recordMeetingData();
-            Signalling.sendMessageForMeeting({msg: 'bye', FromUser: $scope.user.username});
+            sendMessage({msg: 'bye', FromUser : $scope.user.username});
             $scope.LeaveRoom();
-            RTCConference.stopLocalStream();
+            localStream.stop();
         });
 
-        window.onbeforeunload = function (e) {
-           /* var endTime = new Date();
+        window.onbeforeunload = function(e){
+            var endTime = new Date();
             $scope.meetingData.EndTime = endTime.toUTCString();
             $scope.recordMeetingData();
-            sendMessage({msg: 'bye', FromUser: $scope.user.username});
+            sendMessage({msg: 'bye', FromUser : $scope.user.username});
             $scope.LeaveRoom();
-            RTCConference.stopLocalStream();*/
+            localStream.stop();
         }
+
+        function sendMessage(message){
+            message = {msg:message};
+            message.room = roomid;
+            message.username = $scope.user.username;
+            //console.log('Client sending message: ', message);
+            socket.emit('messageformeeting', message);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        // Variables for WebRTC Session                                                       //
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        var pcIndex = 0;
+        var pcLength = 4;
+        var isChannelReady;
+        var isInitiator = false;
+        var isStarted = false;
+        var sendChannel = new Array(pcLength);
+        var receiveChannel;
+        var localStream;
+        var localStreamScreen;
+        var pc = new Array(pcLength);
+        var remoteStream1;
+        var remoteStream2;
+        var remoteStream3;
+        var remoteStream4;
+        var remoteStreamScreen;
+        var iJoinLate = false;
+        var otherPeers;
+        var toUserName = '';
+        var screenSharePCIndex = 0;
+        var turnReady;
+        var bell = new Audio('/sounds/bells_simple.mp3');
+        bell.loop = true;
+
+        var remotevideo1 = document.getElementById("remotevideo1");
+        remotevideo1.src = null;
+
+        var remotevideo2 = document.getElementById("remotevideo2");
+        remotevideo2.src = null;
+
+        var remotevideo3 = document.getElementById("remotevideo3");
+        remotevideo3.src = null;
+
+        var remotevideo4 = document.getElementById("remotevideo4");
+        remotevideo4.src = null;
+
+        var remoteVideoScreen = document.getElementById("remoteVideoScreen");
+        remoteVideoScreen.src = null;
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // WebRTC using sigaling logic                                                        //
@@ -210,23 +247,22 @@ angular.module('cloudKiboApp')
                     $scope.startCalling();//maybeStart();
                 }
             }
-            else if (message.msg === 'got screen' && message.ToUser == $scope.user.username) {
+            else if (message.msg === 'got screen' && message.ToUser == $scope.user.username){
 
                 screenSharePCIndex++;
-                if (screenSharePCIndex < pc.length) {
-                    if (typeof pc[screenSharePCIndex] != 'undefined') {
+                if(screenSharePCIndex < pc.length){
+                    if(typeof pc[screenSharePCIndex] != 'undefined'){
                         pc[screenSharePCIndex].addStream(localStreamScreen);
-                        pc[screenSharePCIndex].createOffer(function (sessionDescription) {
+                        pc[screenSharePCIndex].createOffer(function(sessionDescription){
                             sessionDescription.FromUser = $scope.user.username;
-                            sessionDescription.ToUser = otherPeers[screenSharePCIndex];
-
+                            sessionDescription.ToUser = otherPeers[screenSharePCIndex];;
                             //console.log('INSIDE CONDITION SCREEN SHARE OPEN')
 
-                            if ($scope.closingScreenShare == false) {
+                            if($scope.closingScreenShare == false){
                                 sessionDescription.sharingScreen = 'open';
                                 console.log('SHARING THE SCREEN')
                             }
-                            else {
+                            else{
                                 sessionDescription.sharingScreen = 'close';
                                 console.log('CLOSING THE SCREEN')
                                 $scope.screenSharedLocal = false;
@@ -242,23 +278,22 @@ angular.module('cloudKiboApp')
                 }
 
             }
-            else if (message.msg === 'screen close' && message.ToUser == $scope.user.username) {
+            else if (message.msg === 'screen close' && message.ToUser == $scope.user.username){
 
                 screenSharePCIndex++;
-                if (screenSharePCIndex < pc.length) {
-                    if (typeof pc[screenSharePCIndex] != 'undefined') {
+                if(screenSharePCIndex < pc.length){
+                    if(typeof pc[screenSharePCIndex] != 'undefined'){
                         pc[screenSharePCIndex].removeStream(localStreamScreen);
-                        pc[screenSharePCIndex].createOffer(function (sessionDescription) {
+                        pc[screenSharePCIndex].createOffer(function(sessionDescription){
                             sessionDescription.FromUser = $scope.user.username;
-                            sessionDescription.ToUser = otherPeers[screenSharePCIndex];
-
+                            sessionDescription.ToUser = otherPeers[screenSharePCIndex];;
                             //console.log('INSIDE CONDITION SCREEN SHARE CLOSE')
 
-                            if ($scope.closingScreenShare == false) {
+                            if($scope.closingScreenShare == false){
                                 sessionDescription.sharingScreen = 'open';
                                 console.log('SHARING THE SCREEN')
                             }
-                            else {
+                            else{
                                 sessionDescription.sharingScreen = 'close';
                                 console.log('CLOSING THE SCREEN')
                                 $scope.screenSharedLocal = false;
@@ -276,16 +311,16 @@ angular.module('cloudKiboApp')
             }
             else if (message.type === 'offer') {
                 toUserName = message.FromUser;
-                if (!iJoinLate && !isStarted) {
+                if(!iJoinLate && !isStarted){
                     if (!isInitiator && !isStarted) {
                         maybeStart();
                     }
                     pc[pcIndex].setRemoteDescription(new RTCSessionDescription(message));
                     doAnswer();
                 }
-                else if (message.sharingScreen === 'open') {
+                else if(message.sharingScreen === 'open') {
                     toUserName = message.FromUser;
-                    if (message.ToUser == $scope.user.username) {
+                    if(message.ToUser == $scope.user.username){
                         pc[otherPeers.indexOf(message.FromUser)].setRemoteDescription(new RTCSessionDescription(message));
 
                         console.log('I am in the open condition and offerer number is ', otherPeers.indexOf(message.FromUser));
@@ -296,7 +331,7 @@ angular.module('cloudKiboApp')
                         var showScreenButton = document.getElementById("showScreenButton");
                         showScreenButton.disabled = true;
 
-                        pc[otherPeers.indexOf(message.FromUser)].createAnswer(function (sessionDescription) {
+                        pc[otherPeers.indexOf(message.FromUser)].createAnswer(function(sessionDescription){
 
                                 sessionDescription.FromUser = $scope.user.username;
                                 sessionDescription.ToUser = toUserName;
@@ -308,14 +343,12 @@ angular.module('cloudKiboApp')
                                 console.log('I have answered the screen share offer')
 
                             },
-                            function (error) {
-                                console.log(error)
-                            }, sdpConstraints);
+                            function (error){console.log(error)}, sdpConstraints);
                     }
                 }
-                else if (message.sharingScreen === 'close') {
+                else if(message.sharingScreen === 'close') {
                     toUserName = message.FromUser;
-                    if (message.ToUser == $scope.user.username) {
+                    if(message.ToUser == $scope.user.username){
                         pc[otherPeers.indexOf(message.FromUser)].setRemoteDescription(new RTCSessionDescription(message));
 
                         console.log('I am in the close condition and offerer number is ', otherPeers.indexOf(message.FromUser));
@@ -325,7 +358,7 @@ angular.module('cloudKiboApp')
                         var showScreenButton = document.getElementById("showScreenButton");
                         showScreenButton.disabled = false;
 
-                        pc[otherPeers.indexOf(message.FromUser)].createAnswer(function (sessionDescription) {
+                        pc[otherPeers.indexOf(message.FromUser)].createAnswer(function(sessionDescription){
 
                                 sessionDescription.FromUser = $scope.user.username;
                                 sessionDescription.ToUser = toUserName;
@@ -337,15 +370,13 @@ angular.module('cloudKiboApp')
                                 console.log('I have answered the screen close offer')
 
                             },
-                            function (error) {
-                                console.log(error)
-                            }, sdpConstraints);
+                            function (error){console.log(error)}, sdpConstraints);
 
                         $timeout($scope.screenCloseTimeOut, 3000);
                     }
                 }
-                else if (!iJoinLate && isStarted) {
-                    if (message.ToUser == $scope.user.username) {
+                else if(!iJoinLate && isStarted){
+                    if(message.ToUser == $scope.user.username){
                         createPeerConnection();
                         pc[pcIndex].addStream(localStream);
                         //console.log('I GOT OFFER FROM '+ toUserName)
@@ -355,13 +386,13 @@ angular.module('cloudKiboApp')
                 }
             } else if (message.type === 'answer' && isStarted) {
                 toUserName = message.FromUser;
-                if (message.ToUser == $scope.user.username) {
+                if(message.ToUser == $scope.user.username){
                     //console.log('I RECEIVED ANSWER FROM '+ message.FromUser)
                     pc[pcIndex].setRemoteDescription(new RTCSessionDescription(message));
                 }
             } else if (message.type === 'candidate' && isStarted) {
                 toUserName = message.FromUser;
-                if (message.ToUser == $scope.user.username) {//(message.FromUser != $scope.user.username){
+                if(message.ToUser == $scope.user.username){//(message.FromUser != $scope.user.username){
                     var candidate = new RTCIceCandidate({
                         sdpMLineIndex: message.label,
                         candidate: message.candidate
@@ -370,40 +401,40 @@ angular.module('cloudKiboApp')
                 }
             } else if (message.msg === 'bye' && isStarted) {
 
-                if (otherPeers.indexOf(message.FromUser) == 0) {
+                if(otherPeers.indexOf(message.FromUser) == 0){
                     $scope.firstVideoAdded = false;
                     remoteStream1 = null;
                     remotevideo1.src = null;
                 }
-                else if (otherPeers.indexOf(message.FromUser) == 1) {
+                else if(otherPeers.indexOf(message.FromUser) == 1){
                     $scope.secondVideoAdded = false;
                     remoteStream2 = null;
                     remotevideo2.src = null;
 
-                    $scope.$apply(function () {
+                    $scope.$apply(function(){
                         $scope.peer2Joined = false;
                     })
                 }
-                else if (otherPeers.indexOf(message.FromUser) == 2) {
+                else if(otherPeers.indexOf(message.FromUser) == 2){
                     $scope.thirdVideoAdded = false;
                     remoteStream3 = null;
                     remotevideo3.src = null;
 
-                    $scope.$apply(function () {
+                    $scope.$apply(function(){
                         $scope.peer3Joined = false;
                     })
                 }
-                else if (otherPeers.indexOf(message.FromUser) == 3) {
+                else if(otherPeers.indexOf(message.FromUser) == 3){
                     $scope.forthVideoAdded = false;
                     remoteStream4 = null;
                     remotevideo4.src = null;
 
-                    $scope.$apply(function () {
+                    $scope.$apply(function(){
                         $scope.peer4Joined = false;
                     })
                 }
 
-                if (!$scope.firstVideoAdded && !$scope.secondVideoAdded && !$scope.thirdVideoAdded && !$scope.forthVideoAdded) {
+                if(!$scope.firstVideoAdded && !$scope.secondVideoAdded && !$scope.thirdVideoAdded && !$scope.forthVideoAdded){
                     localStream.stop();
                     $scope.localCameraOn = false;
                     $scope.callEnded = true;
@@ -412,8 +443,8 @@ angular.module('cloudKiboApp')
 
                 pcIndex--;
 
-                pc.splice(pc.indexOf(message.FromUser), 1);
-                sendChannel.splice(sendChannel.indexOf(message.FromUser), 1);
+                pc.splice( pc.indexOf(message.FromUser), 1 );
+                sendChannel.splice( sendChannel.indexOf(message.FromUser), 1 );
 
             }
         });
@@ -430,7 +461,7 @@ angular.module('cloudKiboApp')
                     doCall();
                 }
             }
-            else if (iJoinLate) {
+            else if(iJoinLate){
                 createPeerConnection();
                 pc[pcIndex].addStream(localStream);
                 isStarted = true;
@@ -440,13 +471,52 @@ angular.module('cloudKiboApp')
             }
         }
 
-        $scope.screenCloseTimeOut = function () {
-            sendMessage({msg: 'screen close', FromUser: $scope.user.username, ToUser: toUserName});
+        $scope.screenCloseTimeOut = function(){
+            sendMessage({msg: 'screen close', FromUser : $scope.user.username, ToUser : toUserName});
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // WebRTC logic                                                                       //
         ///////////////////////////////////////////////////////////////////////////////////////
+
+        function createPeerConnection() {
+            try {
+                //
+                //Different URL way for FireFox
+                //
+                pc[pcIndex] = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
+                pc[pcIndex].onicecandidate = handleIceCandidate;
+                pc[pcIndex].onaddstream = handleRemoteStreamAdded;
+                pc[pcIndex].onremovestream = handleRemoteStreamRemoved;
+
+                //if (isInitiator) {
+                try {
+                    // Reliable Data Channels not yet supported in Chrome
+                    try{
+                        sendChannel[pcIndex] = pc[pcIndex].createDataChannel("sendDataChannel", {reliable: true});
+                    }
+                    catch(e){
+                        console.log('UNRELIABLE DATA CHANNEL')
+                        sendChannel[pcIndex] = pc[pcIndex].createDataChannel("sendDataChannel", {reliable: false});
+                    }
+                    sendChannel[pcIndex].onmessage = handleMessage;
+                    trace('Created send data channel');
+                } catch (e) {
+                    alert('Failed to create data channel. ' +
+                    'You need Chrome M25 or later with RtpDataChannel enabled : '+ e.message );
+                    trace('createDataChannel() failed with exception: ' + e.message);
+                }
+                sendChannel[pcIndex].onopen = handleSendChannelStateChange;
+                sendChannel[pcIndex].onclose = handleSendChannelStateChange;
+                // } else {
+                pc[pcIndex].ondatachannel = gotReceiveChannel;
+                // }
+            } catch (e) {
+                console.log('Failed to create PeerConnection, exception: ' + e.message);
+                alert('Cannot create RTCPeerConnection object.');
+                return;
+            }
+        }
 
         function handleIceCandidate(event) {
             if (event.candidate) {
@@ -457,33 +527,45 @@ angular.module('cloudKiboApp')
                     id: event.candidate.sdpMid,
                     candidate: event.candidate.candidate,
                     FromUser: $scope.user.username,
-                    ToUser: toUserName
-                });
+                    ToUser : toUserName});
             } else {
                 console.log('End of candidates.');
             }
         }
 
+        function handleCreateOfferError(event){
+            console.log('createOffer() error: ', e);
+        }
+
         $scope.closingScreenShare = false;
+        function doCall() {
+            console.log('Sending offer to peer');
+            pc[pcIndex].createOffer(setLocalAndSendMessage, handleCreateOfferError);
+        }
+
+        function doAnswer() {
+            console.log('Sending answer to peer.');
+            pc[pcIndex].createAnswer(setLocalAndSendMessage, function (error){console.log(error)}, sdpConstraints);
+        }
 
         function setLocalAndSendMessage(sessionDescription) {
 
-            if ($scope.screenSharedLocal == false) {
+            if($scope.screenSharedLocal == false){
                 sessionDescription.FromUser = $scope.user.username;
                 sessionDescription.ToUser = toUserName;
                 // Set Opus as the preferred codec in SDP if Opus is present.
                 pc[pcIndex].setLocalDescription(sessionDescription);
             }
-            else {
+            else{
                 sessionDescription.FromUser = $scope.user.username;
 
                 //console.log('INSIDE CONDITION SCREEN SHARE')
 
-                if ($scope.closingScreenShare == false) {
+                if($scope.closingScreenShare == false){
                     sessionDescription.sharingScreen = 'open';
                     console.log('SHARING THE SCREEN')
                 }
-                else {
+                else{
                     sessionDescription.sharingScreen = 'close';
                     console.log('CLOSING THE SCREEN')
                     $scope.screenSharedLocal = false;
@@ -499,8 +581,8 @@ angular.module('cloudKiboApp')
             sendMessage(sessionDescription);
         }
 
-        $scope.screenTimeOut = function () {
-            sendMessage({msg: 'got screen', FromUser: $scope.user.username, ToUser: toUserName});
+        $scope.screenTimeOut = function(){
+            sendMessage({msg: 'got screen', FromUser : $scope.user.username, ToUser : toUserName});
         }
 
         $scope.meetingRemoteVideoWidth = '100%';
@@ -512,23 +594,23 @@ angular.module('cloudKiboApp')
         function handleRemoteStreamAdded(event) {
             console.log('Remote stream added. ');//, event);
 
-            if ($scope.switchingScreenShare == true) {
+            if($scope.switchingScreenShare == true){
                 remoteVideoScreen.src = URL.createObjectURL(event.stream);
                 remoteStreamScreen = event.stream;
                 $scope.switchingScreenShare = false;
 
                 $timeout($scope.screenTimeOut, 4000);
 
-                return;
+                return ;
             }
 
-            if ($scope.firstVideoAdded == false) {
+            if($scope.firstVideoAdded == false){
                 remotevideo1.src = URL.createObjectURL(event.stream);
                 remoteStream1 = event.stream;
                 $scope.firstVideoAdded = true;
             }
-            else if ($scope.firstVideoAdded == true && $scope.secondVideoAdded == false) {
-                $scope.$apply(function () {
+            else if($scope.firstVideoAdded == true && $scope.secondVideoAdded == false){
+                $scope.$apply(function(){
                     $scope.peer2Joined = true;
                 })
 
@@ -538,8 +620,8 @@ angular.module('cloudKiboApp')
                 remoteStream2 = event.stream;
                 $scope.secondVideoAdded = true;
             }
-            else if ($scope.firstVideoAdded == true && $scope.secondVideoAdded == true && $scope.thirdVideoAdded == false) {
-                $scope.$apply(function () {
+            else if($scope.firstVideoAdded == true && $scope.secondVideoAdded == true && $scope.thirdVideoAdded == false){
+                $scope.$apply(function(){
                     $scope.peer3Joined = true;
                 })
 
@@ -549,8 +631,8 @@ angular.module('cloudKiboApp')
                 remoteStream3 = event.stream;
                 $scope.thirdVideoAdded = true;
             }
-            else if ($scope.firstVideoAdded == true && $scope.secondVideoAdded == true && $scope.thirdVideoAdded == true && $scope.forthVideoAdded == false) {
-                $scope.$apply(function () {
+            else if($scope.firstVideoAdded == true && $scope.secondVideoAdded == true && $scope.thirdVideoAdded == true && $scope.forthVideoAdded == false){
+                $scope.$apply(function(){
                     $scope.peer4Joined = true;
                 })
 
@@ -564,7 +646,7 @@ angular.module('cloudKiboApp')
 
         function handleRemoteStreamRemoved(event) {
             console.log('Remote stream removed.');// Event: ', event);
-            $scope.$apply(function () {
+            $scope.$apply(function(){
                 $scope.screenSharedByPeer = false;
             })
         }
@@ -573,32 +655,34 @@ angular.module('cloudKiboApp')
         // Media Stream Logic                                                                 //
         ///////////////////////////////////////////////////////////////////////////////////////
 
-        $scope.startCalling = function () {
+        var localPeerConnection, remotePeerConnection;
 
-            RTCConference.captureUserMedia(function (err) {
+        function handleUserMedia(newStream){
 
-                if (err) {
-                    $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.')
+            var localvideo = document.getElementById("localvideo");
+            localvideo.src = URL.createObjectURL(newStream);
+            localStream = newStream;
+            $scope.localCameraOn = true;
 
-                    RTCConference.endConnection();
+            sendMessage({msg: 'got user media', FromUser : $scope.user.username});
 
-                } else {
+            if (isInitiator) {
+                maybeStart();
+            }
+            else if(pcIndex < otherPeers.length && iJoinLate && !isStarted){
+                toUserName = otherPeers[pcIndex];
+                maybeStart();
+            }
+        }
 
-                    $scope.localCameraOn = true;
+        function handleUserMediaError(error){
+            //console.log(error);
+        }
 
-                    Signalling.sendMessage({msg: 'got user media', FromUser: $scope.user.username});
+        var video_constraints = {video: true, audio: true};
 
-                    if (RTCConference.getInitiator()) {
-                        maybeStart();
-                    }
-                    else if (RTCConference.getPcIndex() < otherPeers.length && RTCConference.getIJoinLate()
-                        && !RTCConference.getIsStarted()) {
-                        toUserName = otherPeers[RTCConference.getPcIndex()];
-                        maybeStart();
-                    }
-                }
-
-            });
+        $scope.startCalling = function(){
+            getUserMedia(video_constraints, handleUserMedia, handleUserMediaError);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -661,7 +745,7 @@ angular.module('cloudKiboApp')
 
             // check if desktop-capture extension installed.
             if (window.postMessage && isChrome) {
-                DetectRTC.screen.isChromeExtensionAvailable(function (status) {
+                DetectRTC.screen.isChromeExtensionAvailable(function(status){
                     $scope.extensionAvailable = !status;
                 });
             }
@@ -730,31 +814,31 @@ angular.module('cloudKiboApp')
 
         $scope.showScreenText = 'Share Screen';
 
-        $scope.showScreen = function () {
+        $scope.showScreen = function(){
 
-            if ($scope.showScreenText == 'Share Screen') {
+            if($scope.showScreenText == 'Share Screen'){
                 //getUserMedia(screen_constraints, handleUserMediaShowScreen, handleUserMediaErrorShowScreen)
                 captureUserMedia(onStreamApproved);
             }
-            else {
-                if (localStreamScreen) {
+            else{
+                if(localStreamScreen){
                     localStreamScreen.stop();
 
                     $scope.closingScreenShare = true;
 
                     screenSharePCIndex = 0;
-                    if (typeof pc[screenSharePCIndex] != 'undefined') {
+                    if(typeof pc[screenSharePCIndex] != 'undefined'){
                         pc[screenSharePCIndex].removeStream(localStreamScreen);
-                        pc[screenSharePCIndex].createOffer(function (sessionDescription) {
+                        pc[screenSharePCIndex].createOffer(function(sessionDescription){
                             sessionDescription.FromUser = $scope.user.username;
                             sessionDescription.ToUser = otherPeers[screenSharePCIndex];
                             //console.log('INSIDE CONDITION SCREEN SHARE')
 
-                            if ($scope.closingScreenShare == false) {
+                            if($scope.closingScreenShare == false){
                                 sessionDescription.sharingScreen = 'open';
                                 console.log('SHARING THE SCREEN')
                             }
-                            else {
+                            else{
                                 sessionDescription.sharingScreen = 'close';
                                 console.log('CLOSING THE SCREEN')
                                 $scope.screenSharedLocal = false;
@@ -776,7 +860,7 @@ angular.module('cloudKiboApp')
 
         }
 
-        function onStreamApproved(newStream) {
+        function onStreamApproved(newStream){
 
             var localvideoscreen = document.getElementById("localvideoscreen");
             localvideoscreen.src = URL.createObjectURL(newStream);
@@ -789,18 +873,18 @@ angular.module('cloudKiboApp')
             $scope.localCameraOn = true;
 
             screenSharePCIndex = 0;
-            if (typeof pc[screenSharePCIndex] != 'undefined') {
+            if(typeof pc[screenSharePCIndex] != 'undefined'){
                 pc[screenSharePCIndex].addStream(localStreamScreen);
-                pc[screenSharePCIndex].createOffer(function (sessionDescription) {
+                pc[screenSharePCIndex].createOffer(function(sessionDescription){
                     sessionDescription.FromUser = $scope.user.username;
                     sessionDescription.ToUser = otherPeers[screenSharePCIndex];
                     //console.log('INSIDE CONDITION SCREEN SHARE')
 
-                    if ($scope.closingScreenShare == false) {
+                    if($scope.closingScreenShare == false){
                         sessionDescription.sharingScreen = 'open';
                         console.log('SHARING THE SCREEN')
                     }
-                    else {
+                    else{
                         sessionDescription.sharingScreen = 'close';
                         console.log('CLOSING THE SCREEN')
                         $scope.screenSharedLocal = false;
@@ -817,14 +901,14 @@ angular.module('cloudKiboApp')
 
         }
 
-        function OnStreamDenied(error) {
+        function OnStreamDenied(error){
             //console.log(error);
             $scope.addAlertCallStart('danger', error);
 
         }
 
 
-        $scope.installExtension = function () {
+        $scope.installExtension= function(){
 
             !!navigator.webkitGetUserMedia
             && !!window.chrome
@@ -841,7 +925,6 @@ angular.module('cloudKiboApp')
         function successInstallCallback() {
             location.reload();
         }
-
         function failureInstallCallback(error) {
             alert(error);
         }
@@ -852,18 +935,18 @@ angular.module('cloudKiboApp')
 
         $scope.userMessages = [];
 
-        $scope.sendData = function () {
+        $scope.sendData = function() {
 
             var data = $scope.dataChannelSend;
 
             var i = 0;
-            for (i = 0; i < pc.length; i++) {
-                if (typeof pc[i] != 'undefined') {
-                    sendChannel[i].send('' + $scope.user.username + ': ' + data);
+            for(i=0; i<pc.length; i++){
+                if(typeof pc[i] != 'undefined'){
+                    sendChannel[i].send(''+ $scope.user.username +': '+ data);
                 }
             }
 
-            $scope.userMessages.push('Me: ' + data)
+            $scope.userMessages.push('Me: '+ data)
             $scope.dataChannelSend = '';
 
             var chatBox = document.getElementById('chatBox');
@@ -877,14 +960,14 @@ angular.module('cloudKiboApp')
 
             var message = event.data;
 
-            if (message.byteLength) {
-                process_binary(0, message, 0);
+            if(message.byteLength) {
+                process_binary(0,message,0);
             }
-            else if (message.charAt(0) == '{' && message.charAt(message.length - 1) == '}') {
+            else if (message.charAt(0) == '{' && message.charAt(message.length-1) == '}') {
                 process_data(message);
             }
             else {
-                $scope.$apply(function () {
+                $scope.$apply(function(){
 
                     $scope.userMessages.push(event.data)
 
@@ -907,13 +990,13 @@ angular.module('cloudKiboApp')
             sendChannel[pcIndex].onopen = handleReceiveChannelStateChange;
             sendChannel[pcIndex].onclose = handleReceiveChannelStateChange;
 
-            if (iJoinLate && isStarted) {
+            if(iJoinLate && isStarted){
                 pcIndex++;
-                if (pcIndex < otherPeers.length) {
+                if(pcIndex < otherPeers.length){
                     toUserName = otherPeers[pcIndex];
                     maybeStart();
                 }
-                else {
+                else{
                     iJoinLate = false;
                     pcIndex--;
                 }
@@ -946,11 +1029,12 @@ angular.module('cloudKiboApp')
         window.URL = window.URL || window.webkitURL;
         accept_inbound_files();
 
-        /* event delegation 
+        /* event delegation
          * -we need to do this to form a chrome app - see https://developer.chrome.com/extensions/contentSecurityPolicy#H2-3
-         * -huge thanks to http://stackoverflow.com/questions/13142664/are-multiple-elements-each-with-an-addeventlistener-allowed 
+         * -huge thanks to http://stackoverflow.com/questions/13142664/are-multiple-elements-each-with-an-addeventlistener-allowed
          */
-        function fileEventHandler(e) {
+        function fileEventHandler(e)
+        {
             e = e || window.event;
             var target = e.target || e.srcElement;
             if (target.id.search('-download') != -1) {
@@ -961,16 +1045,14 @@ angular.module('cloudKiboApp')
                 upload_stop();
             }
         }
-
-        document.body.addEventListener('click', fileEventHandler, false);
+        document.body.addEventListener('click',fileEventHandler,false);
 
         /* sending functionality, only allow 1 file to be sent out at a time */
         var chunks = {};
         var meta = {};
         var filesysteminuse = false;
         var FSdebug = false;
-        var chunksPerACK = 16;
-        /* 16k * 16 = 256k (buffer size in Chrome & seems to work 100% of the time) */
+        var chunksPerACK = 16; /* 16k * 16 = 256k (buffer size in Chrome & seems to work 100% of the time) */
 
         function get_chunk_size(me, peer) {
 
@@ -980,26 +1062,17 @@ angular.module('cloudKiboApp')
 
         /* Used in Chrome to handle larger files (and firefox with idb.filesystem.js) */
         window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-        var file_to_upload;
-        /* "pointer" to external file */
+        var file_to_upload;    /* "pointer" to external file */
 
         /* recieving functionality, values stored per user id */
-        var fs = [];
-        /* hold our filesystems for download files */
-        var saved_fileEntry = [];
-        /* holds temporary fileEntry's during last encryption hash check */
-        var downloading = [];
-        /* downloading or not */
-        var recieved_meta = [];
-        /* the file meta data other users send over */
-        var recievedChunks = [];
-        /* store the chunks in memory before writing them to filesystem */
-        var recievedChunksWritePointer = [];
-        /* stores the # of the next chunk to be written to the filesystem */
-        var createdChunksWritePointer = [];
-        /* true if the file has been created*/
-        var requestedChunksWritePointer = [];
-        /* stores the value of the next chunk to be requested */
+        var fs = [];  /* hold our filesystems for download files */
+        var saved_fileEntry = []; /* holds temporary fileEntry's during last encryption hash check */
+        var downloading = []; /* downloading or not */
+        var recieved_meta = []; /* the file meta data other users send over */
+        var recievedChunks = []; /* store the chunks in memory before writing them to filesystem */
+        var recievedChunksWritePointer = []; /* stores the # of the next chunk to be written to the filesystem */
+        var createdChunksWritePointer = []; /* true if the file has been created*/
+        var requestedChunksWritePointer = []; /* stores the value of the next chunk to be requested */
 
         /* stop the uploading! */
         function upload_stop() {
@@ -1011,7 +1084,7 @@ angular.module('cloudKiboApp')
             create_or_clear_container(0);
 
             /* firefox and chrome specific I think, but clear the file input */
-            document.getElementById('file').value = '';
+            document.getElementById('file').value='';
         }
 
         /* write a peice of a file to a file on the filesystem... allows for unlimited file size!
@@ -1025,7 +1098,7 @@ angular.module('cloudKiboApp')
             recievedChunks[user_id][chunk_num % chunksPerACK] = chunk_data;
 
             /* once done recieving all chunks for this ack, start writing to memory */
-            if (chunk_num % chunksPerACK == (chunksPerACK - 1) || recieved_meta[user_id].numOfChunksInFile == (chunk_num + 1)) {
+            if (chunk_num %chunksPerACK == (chunksPerACK-1) || recieved_meta[user_id].numOfChunksInFile == (chunk_num+1)) {
                 store_in_fs(user_id, hash);
             }
         }
@@ -1035,21 +1108,21 @@ angular.module('cloudKiboApp')
 
             /* massive thanks to http://stackoverflow.com/questions/10720704/filesystem-api-upload-from-local-drive-to-local-filesystem */
             if (createdChunksWritePointer[user_id] == false) {
-                options = {create: true};
+                options = { create: true };
                 createdChunksWritePointer[user_id] = true;
             } else {
-                options = {create: false};
+                options = { create: false };
             }
 
             fs[user_id].root.getFile(
                 recieved_meta[user_id].name,
                 options,
-                function (fileEntry) {
+                function(fileEntry) {
                     /* create a writer that can put data in the file */
-                    fileEntry.createWriter(function (writer) {
+                    fileEntry.createWriter(function(writer) {
 
                         /* once we have written all chunks per ack */
-                        writer.onwriteend = function () {
+                        writer.onwriteend = function() {
 
                             /* request the next chunk */
                             recievedChunks[user_id] = [];
@@ -1067,10 +1140,10 @@ angular.module('cloudKiboApp')
 
                         /* debug */
                         if (FSdebug) {
-                            console.log("DEBUG: writing chunk2 " + recievedChunksWritePointer[user_id]);
-                            for (i = 0; i < chunksPerACK; i++) {
+                            console.log("DEBUG: writing chunk2 "+ recievedChunksWritePointer[user_id]);
+                            for (i=0;i<chunksPerACK;i++) {
                                 if (recievedChunks[user_id][i]) {
-                                    console.log('recived: ' + CryptoJS.SHA256(_arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
+                                    console.log('recived: '+CryptoJS.SHA256(_arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
                                 }
                             }
                         }
@@ -1094,12 +1167,11 @@ angular.module('cloudKiboApp')
                             //request_chunk(user_id, recievedChunksWritePointer[user_id], hash); /* this chunk doesn't exist, but we need the hash of the last chunk to be verified */
                             //} else {
                             if (webrtcDetectedBrowser == "chrome") {
-                                create_file_link(recieved_meta[user_id], user_id, fileEntry);
+                                create_file_link (recieved_meta[user_id], user_id, fileEntry);
                             } else {
                                 /* one little idb.filesystem.js quirk */
-                                fileEntry.file(function (file) {
-                                    create_file_link(recieved_meta[user_id], user_id, file);
-                                    /* <-- file, not fileEntry */
+                                fileEntry.file(function(file) {
+                                    create_file_link (recieved_meta[user_id], user_id, file); /* <-- file, not fileEntry */
                                 });
                             }
                             //}
@@ -1121,8 +1193,8 @@ angular.module('cloudKiboApp')
 
             send_meta();
             var i = 0;
-            for (i = 0; i < pc.length; i++)
-                if (typeof pc[i] != 'undefined')
+            for(i=0; i<pc.length; i++)
+                if(typeof pc[i] != 'undefined')
                     sendChannel[i].send("You have received a file. Download and Save it.");
             /* user 0 is this user! */
             create_upload_stop_link(file_to_upload.name, 0);//, username);
@@ -1131,7 +1203,7 @@ angular.module('cloudKiboApp')
         /* Document bind's to accept files copied. Don't accept until we have a connection */
         function accept_inbound_files() {
 
-            document.getElementById('file').addEventListener('change', function (e) {
+            document.getElementById('file').addEventListener('change', function(e) {
                 if (e.target.files.length == 1) {
                     var file = e.target.files[0];
 
@@ -1143,7 +1215,7 @@ angular.module('cloudKiboApp')
         /* inbound - recieve binary data (from a file)
          * we are going to have an expectation that these packets arrive in order (requires reliable datachannel)
          */
-        function process_binary(id, message, hash) {
+        function process_binary(id,message,hash) {
             if (!downloading[id]) {
                 return;
             }
@@ -1214,12 +1286,11 @@ angular.module('cloudKiboApp')
                 /* if we recieve an ok to download message from other host, our last file hash checks out and we can now offer the file up to the user */
 
                 if (is_chrome) {
-                    create_file_link(recieved_meta[0], 0, saved_fileEntry[0]);
+                    create_file_link (recieved_meta[0], 0, saved_fileEntry[0]);
                 } else {
                     /* one little idb.filesystem.js quirk */
-                    saved_fileEntry[0].file(function (file) {
-                        create_file_link(recieved_meta[0], 0, file);
-                        /* <-- file, not fileEntry */
+                    saved_fileEntry[0].file(function(file) {
+                        create_file_link (recieved_meta[0], 0, file); /* <-- file, not fileEntry */
                     });
                 }
             } else {
@@ -1228,7 +1299,7 @@ angular.module('cloudKiboApp')
 
                 /* Otherwise, we are going to assume that if we have reached here, this is a request to download our file */
                 if (data.chunk % chunksPerACK == 0) {
-                    for (i = 0; i < chunksPerACK; i++) {
+                    for (i=0;i<chunksPerACK;i++) {
                         send_chunk_if_queue_empty(0, data.chunk + i, data.browser, data.rand, data.hash);
                     }
                 }
@@ -1240,16 +1311,14 @@ angular.module('cloudKiboApp')
          */
         function sanitize(msg) {
             msg = msg.toString();
-            return msg.replace(/[\<\>"'\/]/g, function (c) {
-                var sanitize_replace = {
-                    "<": "&lt;",
-                    ">": "&gt;",
-                    '"': "&quot;",
-                    "'": "&#x27;",
-                    "/": "&#x2F;"
-                }
-                return sanitize_replace[c];
-            });
+            return msg.replace(/[\<\>"'\/]/g,function(c) {  var sanitize_replace = {
+                "<" : "&lt;",
+                ">" : "&gt;",
+                '"' : "&quot;",
+                "'" : "&#x27;",
+                "/" : "&#x2F;"
+            }
+                return sanitize_replace[c]; });
         }
 
 
@@ -1262,8 +1331,8 @@ angular.module('cloudKiboApp')
             console.log('Function which actually asks for chunk')
 
             var i = 0;
-            for (i = 0; i < pc.length; i++)
-                if (typeof pc[i] != 'undefined')
+            for(i=0; i<pc.length; i++)
+                if(typeof pc[i] != 'undefined')
                     sendChannel[i].send(JSON.stringify({ //id, JSON.stringify({
                         "eventName": "request_chunk",
                         "data": {
@@ -1298,11 +1367,10 @@ angular.module('cloudKiboApp')
                 return;
             }
 
-            window.requestFileSystem(window.TEMPORARY, recieved_meta[id].size, function (filesystem) {
+            window.requestFileSystem(window.TEMPORARY, recieved_meta[id].size, function(filesystem) {
                 fs[id] = filesystem;
                 filesysteminuse = true;
-                downloading[id] = true;
-                /* accept file info from user */
+                downloading[id] = true; /* accept file info from user */
                 console.log('File System given to the program')
                 request_chunk(id, 0, 0);
             });
@@ -1321,8 +1389,8 @@ angular.module('cloudKiboApp')
         function delete_file(user_id) {
             if (fs[user_id]) {
                 filesysteminuse = false;
-                fs[user_id].root.getFile(recieved_meta[user_id].name, {create: false}, function (fileEntry) {
-                    fileEntry.remove(function () {
+                fs[user_id].root.getFile(recieved_meta[user_id].name, {create: false}, function(fileEntry) {
+                    fileEntry.remove(function() {
                         console.log('File removed.');
                     }, FSerrorHandler);
                 }, FSerrorHandler);
@@ -1331,8 +1399,7 @@ angular.module('cloudKiboApp')
 
         /* cancel incoming file */
         function cancel_file(id) {
-            downloading[id] = false;
-            /* deny file info from user */
+            downloading[id] = false; /* deny file info from user */
             delete_file(id);
             recieved_meta[id].chunks_recieved = 0;
             /* create a new download link */
@@ -1350,7 +1417,7 @@ angular.module('cloudKiboApp')
             if (downloading[id] == true) {
                 var span = document.getElementById(id + "-span");
                 if (!span) {
-                    filecontainer.innerHTML = '<span id="' + id + '-span"></span>';
+                    filecontainer.innerHTML = '<span id="'+id+'-span"></span>';
                     /* add cancel button */
                     var a = document.createElement('a');
                     a.download = meta.name;
@@ -1362,11 +1429,11 @@ angular.module('cloudKiboApp')
                     //append link!
                     filecontainer.appendChild(a);
                 } else {
-                    span.innerHTML = "";
+                    span.innerHTML="";
                 }
                 return;
             }
-            var username = ''; // temporary
+            var username=''; // temporary
             if (!filecontainer) {
                 /* if filecontainer doesn't exist, create it */
                 var fs = '<div id="' + id + '">' + username + '</div>';
@@ -1393,7 +1460,7 @@ angular.module('cloudKiboApp')
         // TODO Will see this later, commenting for now
         /////////////
         /* create a link that will let the user start the download */
-        function create_upload_stop_link(filename, id) {//, username) {
+        function create_upload_stop_link(filename, id){//, username) {
 
             //create a place to store this if it does not already
             create_or_clear_container(id);//, username);
@@ -1401,7 +1468,7 @@ angular.module('cloudKiboApp')
 
             //create the link
             var span = document.createElement('span');
-            span.textContent = '' + filename + ' ';
+            span.textContent = ''+filename + ' ';
 
             var a = document.createElement('a');
             a.download = meta.name;
@@ -1440,14 +1507,14 @@ angular.module('cloudKiboApp')
             filecontainer.appendChild(a);
 
             //append to chat
-            sendMessage($scope.user.username + " is now offering file " + meta.name);
+            sendMessage($scope.user.username +" is now offering file " + meta.name);
         }
 
         /* update a file container with a DL % */
         function update_container_percentage(id, chunk_num, chunk_total, total_size) {
 
             create_or_clear_container(id);
-            var span = document.getElementById(id + '-span');
+            var span = document.getElementById(id+'-span');
 
             /* create file % based on chunk # downloaded */
             var percentage = (chunk_num / chunk_total) * 100;
@@ -1467,7 +1534,7 @@ angular.module('cloudKiboApp')
         };
 
         /* create a link to this file */
-        function create_file_link(meta, id, fileEntry) {
+        function create_file_link (meta, id, fileEntry) {
             //grab the file type, should probably use a pattern match...
             var remove_base = meta.filetype.split(";");
             var remove_data = remove_base[0].split(":");
@@ -1501,7 +1568,7 @@ angular.module('cloudKiboApp')
             filecontainer.appendChild(a);
 
             /* make delete button */
-            filecontainer.innerHTML = filecontainer.innerHTML + " ";
+            filecontainer.innerHTML = filecontainer.innerHTML+ " ";
             /* add cancel button */
             var can = document.createElement('a');
             can.download = meta.name;
@@ -1528,8 +1595,8 @@ angular.module('cloudKiboApp')
             //console.log(meta);
 
             var i = 0;
-            for (i = 0; i < pc.length; i++)
-                if (typeof pc[i] != 'undefined')
+            for(i=0; i<pc.length; i++)
+                if(typeof pc[i] != 'undefined')
                     sendChannel[i].send(JSON.stringify({
                         eventName: "data_msg",
                         data: {
@@ -1548,28 +1615,26 @@ angular.module('cloudKiboApp')
 
             var reader = new FileReader;
             var upper_limit = (chunk_num + 1) * get_chunk_size(other_browser, 'chrome'); //don't hardcode
-            if (upper_limit > meta.size) {
-                upper_limit = meta.size;
-            }
+            if (upper_limit > meta.size) { upper_limit = meta.size; }
 
             var seek = chunk_num * get_chunk_size(other_browser, 'chrome'); //don't hardcode
             var blob;
-            if (typeof file_to_upload != 'undefined') {
+            if(typeof file_to_upload != 'undefined'){
                 blob = file_to_upload.slice(seek, upper_limit);
             }
-            reader.onload = function (event) {
+            reader.onload = function(event) {
                 if (reader.readyState == FileReader.DONE) {
 
                     //if (encryption_type != "NONE") {
                     //	file_encrypt_and_send(id, event.target.result, rand, chunk_num);
                     //} else {
                     if (FSdebug) {
-                        console.log("DEBUG: sending chunk " + chunk_num);
-                        console.log('sending: ' + CryptoJS.SHA256(_arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
+                        console.log("DEBUG: sending chunk "+ chunk_num);
+                        console.log('sending: '+CryptoJS.SHA256(_arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
                     }
                     var i = 0;
-                    for (i = 0; i < pc.length; i++)
-                        if (typeof pc[i] != 'undefined')
+                    for(i=0; i<pc.length; i++)
+                        if(typeof pc[i] != 'undefined')
                             sendChannel[i].send(event.target.result);//id, event.target.result);
                     //}
                 }
@@ -1586,8 +1651,8 @@ angular.module('cloudKiboApp')
             //		return;
             //	}
             //} else {
-            if (typeof file_to_upload != 'undefined') {
-                if (chunk_num >= Math.ceil(file_to_upload.size / get_chunk_size('chrome', other_browser))) { //don't hardcode
+            if(typeof file_to_upload != 'undefined'){
+                if ( chunk_num >= Math.ceil(file_to_upload.size / get_chunk_size('chrome', other_browser))) { //don't hardcode
                     return;
                 }
             }
@@ -1619,21 +1684,21 @@ angular.module('cloudKiboApp')
                 default:
                     msg = 'Unknown Error';
                     break;
-            }
-            ;
+            };
             console.error('Error: ' + msg);
         }
 
         //used for debugging - credit - http://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
-        function _arrayBufferToBase64(buffer) {
+        function _arrayBufferToBase64( buffer ) {
             var binary = ''
-            var bytes = new Uint8Array(buffer)
+            var bytes = new Uint8Array( buffer )
             var len = bytes.byteLength;
             for (var i = 0; i < len; i++) {
-                binary += String.fromCharCode(bytes[i])
+                binary += String.fromCharCode( bytes[ i ] )
             }
-            return window.btoa(binary);
+            return window.btoa( binary );
         }
+
 
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -1643,14 +1708,22 @@ angular.module('cloudKiboApp')
     })
 
 
-    .controller('LiveHelpController', function ($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout) {
+
+
+
+
+
+
+
+
+    .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
 
         var roomid = '';
         ////////////////////////////////////////////////////////////////////////////////////////
         // Create or Join Room Logic                                                          //
         ////////////////////////////////////////////////////////////////////////////////////////
 
-        if (window.location.pathname.replace('/', '') != 'home') {
+        if(window.location.pathname.replace('/', '') != 'home'){
             roomid = window.location.pathname.replace('/', '');
             roomid = roomid.split('/')[1];
         }
@@ -1673,7 +1746,7 @@ angular.module('cloudKiboApp')
             return $scope.callEnded;
         };
 
-        $scope.connectTimeOut = function () {
+        $scope.connectTimeOut = function(){
             $scope.roomname = roomid;
             $scope.createOrJoinMeeting();
             $scope.connected = true;
@@ -1683,13 +1756,13 @@ angular.module('cloudKiboApp')
 
         $scope.alertsCallStart = [];
 
-        $scope.addAlertCallStart = function (newtype, newMsg) {
-            $scope.$apply(function () {
+        $scope.addAlertCallStart = function(newtype, newMsg) {
+            $scope.$apply(function(){
                 $scope.alertsCallStart.push({type: newtype, msg: newMsg});
             })
         };
 
-        $scope.closeAlertCallStart = function (index) {
+        $scope.closeAlertCallStart = function(index) {
             $scope.alertsCallStart.splice(index, 1);
         };
 
@@ -1699,19 +1772,19 @@ angular.module('cloudKiboApp')
 
         $scope.peerSharedScreen = false;
 
-        $scope.hasPeerSharedScreen = function () {
+        $scope.hasPeerSharedScreen = function(){
             return $scope.peerSharedScreen;
         }
 
         $scope.extensionAvailable = false;
 
-        $scope.showExtension = function () {
+        $scope.showExtension = function(){
             return $scope.extensionAvailable;
         };
 
         $scope.screenSharedLocal = false;
 
-        $scope.isLocalScreenShared = function () {
+        $scope.isLocalScreenShared = function(){
             return $scope.screenSharedLocal;
         }
 
@@ -1719,35 +1792,35 @@ angular.module('cloudKiboApp')
         // Signaling Logic                                                                    //
         ///////////////////////////////////////////////////////////////////////////////////////
 
-        $scope.createOrJoinMeeting = function () {
+        $scope.createOrJoinMeeting = function(){
             socket.emit('create or join livehelp', {room: roomid});
         }
 
-        $scope.LeaveRoom = function () {
+        $scope.LeaveRoom = function(){
             console.log('Leave room', {room: roomid});
             $scope.callEnded = true;
             socket.emit('leave', {room: roomid});
         }
 
-        socket.on('created', function (room) {
+        socket.on('created', function (room){
             console.log('Created room ' + room);
 
             isInitiator = true;
         });
 
-        socket.on('full', function (room) {
+        socket.on('full', function (room){
             console.log('Room ' + room + ' is full');
         });
 
-        socket.on('left', function (room) {
+        socket.on('left', function (room){
             $scope.callEnded = true;
-            if (remoteStream1)
+            if(remoteStream1)
                 remoteStream1.stop();
-            if (localStream)
+            if(localStream)
                 localStream.stop();
-            if (localStreamScreen)
+            if(localStreamScreen)
                 localStreamScreen.stop();
-            if (remoteStreamScreen)
+            if(remoteStreamScreen)
                 remoteStreamScreen.stop();
             pc.close();
             pc = null;
@@ -1756,30 +1829,30 @@ angular.module('cloudKiboApp')
             remoteaudio1.src = null;
         });
 
-        socket.on('join', function (room) {
+        socket.on('join', function (room){
             //console.log('Another peer made a request to join room ' + room);
             //console.log('This peer is the initiator of room ' + room + '!');
 
             isChannelReady = true;
         });
 
-        socket.on('joined', function (room) {
+        socket.on('joined', function (room){
             //console.log('This peer has joined room ' + room.room + ' '+ room.username +' '+ room.otherClients);
             isChannelReady = true;
 
             $scope.startCalling();
         });
 
-        socket.on('log', function (array) {
+        socket.on('log', function (array){
             console.log.apply(console, array);
         });
 
-        window.onbeforeunload = function (e) {
+        window.onbeforeunload = function(e){
             $scope.LeaveRoom();
         }
 
-        function sendMessage(message) {
-            message = {msg: message};
+        function sendMessage(message){
+            message = {msg:message};
             message.room = roomid;
             //console.log('Client sending message: ', message);
             socket.emit('messageformeeting', message);
@@ -1824,21 +1897,21 @@ angular.module('cloudKiboApp')
             }
             else if (message.type === 'offer') {
 
-                if (!isStarted) {
+                if(!isStarted){
                     if (!isInitiator && !isStarted) {
                         maybeStart();
                     }
                     pc.setRemoteDescription(new RTCSessionDescription(message));
                     doAnswer();
                 }
-                else if (message.sharingScreen === 'open') {
+                else if(message.sharingScreen === 'open') {
 
                     pc.setRemoteDescription(new RTCSessionDescription(message));
 
                     $scope.switchingScreenShare = true;
                     $scope.peerSharedScreen = true;
 
-                    pc.createAnswer(function (sessionDescription) {
+                    pc.createAnswer(function(sessionDescription){
 
                             // Set Opus as the preferred codec in SDP if Opus is present.
                             pc.setLocalDescription(sessionDescription);
@@ -1846,17 +1919,15 @@ angular.module('cloudKiboApp')
                             sendMessage(sessionDescription);
 
                         },
-                        function (error) {
-                            console.log(error)
-                        }, sdpConstraints);
+                        function (error){console.log(error)}, sdpConstraints);
 
                 }
-                else if (message.sharingScreen === 'close') {
+                else if(message.sharingScreen === 'close') {
                     pc.setRemoteDescription(new RTCSessionDescription(message));
 
                     $scope.peerSharedScreen = false;
 
-                    pc.createAnswer(function (sessionDescription) {
+                    pc.createAnswer(function(sessionDescription){
 
                             // Set Opus as the preferred codec in SDP if Opus is present.
                             pc.setLocalDescription(sessionDescription);
@@ -1864,9 +1935,7 @@ angular.module('cloudKiboApp')
                             sendMessage(sessionDescription);
 
                         },
-                        function (error) {
-                            console.log(error)
-                        }, sdpConstraints);
+                        function (error){console.log(error)}, sdpConstraints);
 
                 }
             } else if (message.type === 'answer' && isStarted) {
@@ -1911,10 +1980,10 @@ angular.module('cloudKiboApp')
                 //if (isInitiator) {
                 try {
                     // Reliable Data Channels not yet supported in Chrome
-                    try {
+                    try{
                         sendChannel = pc.createDataChannel("sendDataChannel", {reliable: true});
                     }
-                    catch (e) {
+                    catch(e){
                         console.log('UNRELIABLE DATA CHANNEL')
                         sendChannel = pc.createDataChannel("sendDataChannel", {reliable: false});
                     }
@@ -1922,7 +1991,7 @@ angular.module('cloudKiboApp')
                     trace('Created send data channel');
                 } catch (e) {
                     alert('Failed to create data channel. ' +
-                    'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
+                    'You need Chrome M25 or later with RtpDataChannel enabled : '+ e.message );
                     trace('createDataChannel() failed with exception: ' + e.message);
                 }
                 sendChannel.onopen = handleSendChannelStateChange;
@@ -1951,7 +2020,7 @@ angular.module('cloudKiboApp')
             }
         }
 
-        function handleCreateOfferError(event) {
+        function handleCreateOfferError(event){
             console.log('createOffer() error: ', e);
         }
 
@@ -1962,26 +2031,24 @@ angular.module('cloudKiboApp')
 
         function doAnswer() {
             console.log('Sending answer to peer.');
-            pc.createAnswer(setLocalAndSendMessage, function (error) {
-                console.log(error)
-            }, sdpConstraints);
+            pc.createAnswer(setLocalAndSendMessage, function (error){console.log(error)}, sdpConstraints);
         }
 
         function setLocalAndSendMessage(sessionDescription) {
 
-            if ($scope.screenSharedLocal == false) {
+            if($scope.screenSharedLocal == false){
                 // Set Opus as the preferred codec in SDP if Opus is present.
                 pc.setLocalDescription(sessionDescription);
             }
-            else {
+            else{
 
                 //console.log('INSIDE CONDITION SCREEN SHARE')
 
-                if ($scope.closingScreenShare == false) {
+                if($scope.closingScreenShare == false){
                     sessionDescription.sharingScreen = 'open';
                     console.log('SHARING THE SCREEN')
                 }
-                else {
+                else{
                     sessionDescription.sharingScreen = 'close';
                     console.log('CLOSING THE SCREEN')
                     $scope.screenSharedLocal = false;
@@ -2001,12 +2068,12 @@ angular.module('cloudKiboApp')
         $scope.switchingScreenShare = false;
         function handleRemoteStreamAdded(event) {
 
-            if ($scope.switchingScreenShare == true) {
+            if($scope.switchingScreenShare == true){
                 remotevideo1.src = URL.createObjectURL(event.stream);
                 remoteStreamScreen = event.stream;
                 $scope.switchingScreenShare = false;
 
-                return;
+                return ;
             }
 
             remoteaudio1.src = URL.createObjectURL(event.stream);
@@ -2018,7 +2085,7 @@ angular.module('cloudKiboApp')
 
             //remotevideo1.src = null;
 
-            $scope.$apply(function () {
+            $scope.$apply(function(){
                 $scope.screenSharedByPeer = false;
             })
         }
@@ -2029,7 +2096,7 @@ angular.module('cloudKiboApp')
 
         var localPeerConnection, remotePeerConnection;
 
-        function handleUserMedia(newStream) {
+        function handleUserMedia(newStream){
 
             localStream = newStream;
             $scope.localCameraOn = true;
@@ -2041,13 +2108,13 @@ angular.module('cloudKiboApp')
             }
         }
 
-        function handleUserMediaError(error) {
+        function handleUserMediaError(error){
             //console.log(error);
         }
 
         var video_constraints = {video: false, audio: true};
 
-        $scope.startCalling = function () {
+        $scope.startCalling = function(){
             getUserMedia(video_constraints, handleUserMedia, handleUserMediaError);
         }
 
@@ -2111,7 +2178,7 @@ angular.module('cloudKiboApp')
 
             // check if desktop-capture extension installed.
             if (window.postMessage && isChrome) {
-                DetectRTC.screen.isChromeExtensionAvailable(function (status) {
+                DetectRTC.screen.isChromeExtensionAvailable(function(status){
                     $scope.extensionAvailable = !status;
                 });
             }
@@ -2185,28 +2252,28 @@ angular.module('cloudKiboApp')
 
         $scope.showScreenText = 'Share Screen';
 
-        $scope.showScreen = function () {
+        $scope.showScreen = function(){
 
-            if ($scope.showScreenText == 'Share Screen') {
+            if($scope.showScreenText == 'Share Screen'){
                 //getUserMedia(screen_constraints, handleUserMediaShowScreen, handleUserMediaErrorShowScreen)
                 captureUserMedia(onStreamApproved);
             }
-            else {
-                if (localStreamScreen) {
+            else{
+                if(localStreamScreen){
                     localStreamScreen.stop();
 
                     $scope.closingScreenShare = true;
 
-                    if (typeof pc != 'undefined') {
+                    if(typeof pc != 'undefined'){
                         pc.removeStream(localStreamScreen);
-                        pc.createOffer(function (sessionDescription) {
+                        pc.createOffer(function(sessionDescription){
                             //console.log('INSIDE CONDITION SCREEN SHARE')
 
-                            if ($scope.closingScreenShare == false) {
+                            if($scope.closingScreenShare == false){
                                 sessionDescription.sharingScreen = 'open';
                                 console.log('SHARING THE SCREEN')
                             }
-                            else {
+                            else{
                                 sessionDescription.sharingScreen = 'close';
                                 console.log('CLOSING THE SCREEN')
                                 $scope.screenSharedLocal = false;
@@ -2228,7 +2295,7 @@ angular.module('cloudKiboApp')
 
         }
 
-        function onStreamApproved(newStream) {
+        function onStreamApproved(newStream){
 
             localStreamScreen = newStream;
 
@@ -2239,17 +2306,17 @@ angular.module('cloudKiboApp')
             $scope.localCameraOn = true;
 
             screenSharePCIndex = 0;
-            if (typeof pc != 'undefined') {
+            if(typeof pc != 'undefined'){
                 pc.addStream(localStreamScreen);
-                pc.createOffer(function (sessionDescription) {
+                pc.createOffer(function(sessionDescription){
 
                     //console.log('INSIDE CONDITION SCREEN SHARE')
 
-                    if ($scope.closingScreenShare == false) {
+                    if($scope.closingScreenShare == false){
                         sessionDescription.sharingScreen = 'open';
                         console.log('SHARING THE SCREEN')
                     }
-                    else {
+                    else{
                         sessionDescription.sharingScreen = 'close';
                         console.log('CLOSING THE SCREEN')
                         $scope.screenSharedLocal = false;
@@ -2266,14 +2333,14 @@ angular.module('cloudKiboApp')
 
         }
 
-        function OnStreamDenied(error) {
+        function OnStreamDenied(error){
             //console.log(error);
             $scope.addAlertCallStart('danger', error);
 
         }
 
 
-        $scope.installExtension = function () {
+        $scope.installExtension= function(){
 
             !!navigator.webkitGetUserMedia
             && !!window.chrome
@@ -2290,7 +2357,6 @@ angular.module('cloudKiboApp')
         function successInstallCallback() {
             location.reload();
         }
-
         function failureInstallCallback(error) {
             alert(error);
         }
@@ -2302,15 +2368,15 @@ angular.module('cloudKiboApp')
 
         $scope.userMessages = [];
 
-        $scope.sendData = function () {
+        $scope.sendData = function() {
 
             var data = $scope.dataChannelSend;
 
-            if (typeof pc != 'undefined') {
-                sendChannel.send('Agent: ' + data);
+            if(typeof pc != 'undefined'){
+                sendChannel.send('Agent: '+ data);
             }
 
-            $scope.userMessages.push('Me: ' + data)
+            $scope.userMessages.push('Me: '+ data)
             $scope.dataChannelSend = '';
 
             var chatBox = document.getElementById('chatBox');
@@ -2324,14 +2390,14 @@ angular.module('cloudKiboApp')
 
             var message = event.data;
 
-            if (message.byteLength) {
-                process_binary(0, message, 0);
+            if(message.byteLength) {
+                process_binary(0,message,0);
             }
-            else if (message.charAt(0) == '{' && message.charAt(message.length - 1) == '}') {
+            else if (message.charAt(0) == '{' && message.charAt(message.length-1) == '}') {
                 process_data(message);
             }
             else {
-                $scope.$apply(function () {
+                $scope.$apply(function(){
 
                     $scope.userMessages.push(event.data)
 
@@ -2354,7 +2420,7 @@ angular.module('cloudKiboApp')
             sendChannel.onopen = handleReceiveChannelStateChange;
             sendChannel.onclose = handleReceiveChannelStateChange;
 
-            if (isStarted) {
+            if(isStarted){
                 maybeStart();
             }
         }
@@ -2385,12 +2451,13 @@ angular.module('cloudKiboApp')
         window.URL = window.URL || window.webkitURL;
         accept_inbound_files();
 
-        /* event delegation 
+        /* event delegation
          * -we need to do this to form a chrome app - see https://developer.chrome.com/extensions/contentSecurityPolicy#H2-3
-         * -huge thanks to http://stackoverflow.com/questions/13142664/are-multiple-elements-each-with-an-addeventlistener-allowed 
+         * -huge thanks to http://stackoverflow.com/questions/13142664/are-multiple-elements-each-with-an-addeventlistener-allowed
          */
 
-        function fileEventHandler(e) {
+        function fileEventHandler(e)
+        {
             e = e || window.event;
             var target = e.target || e.srcElement;
             if (target.id.search('-download') != -1) {
@@ -2401,16 +2468,14 @@ angular.module('cloudKiboApp')
                 upload_stop();
             }
         }
-
-        document.body.addEventListener('click', fileEventHandler, false);
+        document.body.addEventListener('click',fileEventHandler,false);
 
         /* sending functionality, only allow 1 file to be sent out at a time */
         var chunks = {};
         var meta = {};
         var filesysteminuse = false;
         var FSdebug = false;
-        var chunksPerACK = 16;
-        /* 16k * 16 = 256k (buffer size in Chrome & seems to work 100% of the time) */
+        var chunksPerACK = 16; /* 16k * 16 = 256k (buffer size in Chrome & seems to work 100% of the time) */
 
         function get_chunk_size(me, peer) {
 
@@ -2420,26 +2485,17 @@ angular.module('cloudKiboApp')
 
         /* Used in Chrome to handle larger files (and firefox with idb.filesystem.js) */
         window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-        var file_to_upload;
-        /* "pointer" to external file */
+        var file_to_upload;    /* "pointer" to external file */
 
         /* recieving functionality, values stored per user id */
-        var fs = [];
-        /* hold our filesystems for download files */
-        var saved_fileEntry = [];
-        /* holds temporary fileEntry's during last encryption hash check */
-        var downloading = [];
-        /* downloading or not */
-        var recieved_meta = [];
-        /* the file meta data other users send over */
-        var recievedChunks = [];
-        /* store the chunks in memory before writing them to filesystem */
-        var recievedChunksWritePointer = [];
-        /* stores the # of the next chunk to be written to the filesystem */
-        var createdChunksWritePointer = [];
-        /* true if the file has been created*/
-        var requestedChunksWritePointer = [];
-        /* stores the value of the next chunk to be requested */
+        var fs = [];  /* hold our filesystems for download files */
+        var saved_fileEntry = []; /* holds temporary fileEntry's during last encryption hash check */
+        var downloading = []; /* downloading or not */
+        var recieved_meta = []; /* the file meta data other users send over */
+        var recievedChunks = []; /* store the chunks in memory before writing them to filesystem */
+        var recievedChunksWritePointer = []; /* stores the # of the next chunk to be written to the filesystem */
+        var createdChunksWritePointer = []; /* true if the file has been created*/
+        var requestedChunksWritePointer = []; /* stores the value of the next chunk to be requested */
 
         /* stop the uploading! */
         function upload_stop() {
@@ -2451,7 +2507,7 @@ angular.module('cloudKiboApp')
             create_or_clear_container(0);
 
             /* firefox and chrome specific I think, but clear the file input */
-            document.getElementById('file').value = '';
+            document.getElementById('file').value='';
         }
 
         /* write a peice of a file to a file on the filesystem... allows for unlimited file size!
@@ -2465,7 +2521,7 @@ angular.module('cloudKiboApp')
             recievedChunks[user_id][chunk_num % chunksPerACK] = chunk_data;
 
             /* once done recieving all chunks for this ack, start writing to memory */
-            if (chunk_num % chunksPerACK == (chunksPerACK - 1) || recieved_meta[user_id].numOfChunksInFile == (chunk_num + 1)) {
+            if (chunk_num %chunksPerACK == (chunksPerACK-1) || recieved_meta[user_id].numOfChunksInFile == (chunk_num+1)) {
                 store_in_fs(user_id, hash);
             }
         }
@@ -2475,21 +2531,21 @@ angular.module('cloudKiboApp')
 
             /* massive thanks to http://stackoverflow.com/questions/10720704/filesystem-api-upload-from-local-drive-to-local-filesystem */
             if (createdChunksWritePointer[user_id] == false) {
-                options = {create: true};
+                options = { create: true };
                 createdChunksWritePointer[user_id] = true;
             } else {
-                options = {create: false};
+                options = { create: false };
             }
 
             fs[user_id].root.getFile(
                 recieved_meta[user_id].name,
                 options,
-                function (fileEntry) {
+                function(fileEntry) {
                     /* create a writer that can put data in the file */
-                    fileEntry.createWriter(function (writer) {
+                    fileEntry.createWriter(function(writer) {
 
                         /* once we have written all chunks per ack */
-                        writer.onwriteend = function () {
+                        writer.onwriteend = function() {
 
                             /* request the next chunk */
                             recievedChunks[user_id] = [];
@@ -2507,10 +2563,10 @@ angular.module('cloudKiboApp')
 
                         /* debug */
                         if (FSdebug) {
-                            console.log("DEBUG: writing chunk2 " + recievedChunksWritePointer[user_id]);
-                            for (i = 0; i < chunksPerACK; i++) {
+                            console.log("DEBUG: writing chunk2 "+ recievedChunksWritePointer[user_id]);
+                            for (i=0;i<chunksPerACK;i++) {
                                 if (recievedChunks[user_id][i]) {
-                                    console.log('recived: ' + CryptoJS.SHA256(_arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
+                                    console.log('recived: '+CryptoJS.SHA256(_arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
                                 }
                             }
                         }
@@ -2534,12 +2590,11 @@ angular.module('cloudKiboApp')
                             //request_chunk(user_id, recievedChunksWritePointer[user_id], hash); /* this chunk doesn't exist, but we need the hash of the last chunk to be verified */
                             //} else {
                             if (webrtcDetectedBrowser == "chrome") {
-                                create_file_link(recieved_meta[user_id], user_id, fileEntry);
+                                create_file_link (recieved_meta[user_id], user_id, fileEntry);
                             } else {
                                 /* one little idb.filesystem.js quirk */
-                                fileEntry.file(function (file) {
-                                    create_file_link(recieved_meta[user_id], user_id, file);
-                                    /* <-- file, not fileEntry */
+                                fileEntry.file(function(file) {
+                                    create_file_link (recieved_meta[user_id], user_id, file); /* <-- file, not fileEntry */
                                 });
                             }
                             //}
@@ -2569,7 +2624,7 @@ angular.module('cloudKiboApp')
         /* Document bind's to accept files copied. Don't accept until we have a connection */
         function accept_inbound_files() {
 
-            document.getElementById('file').addEventListener('change', function (e) {
+            document.getElementById('file').addEventListener('change', function(e) {
                 if (e.target.files.length == 1) {
                     var file = e.target.files[0];
 
@@ -2581,7 +2636,7 @@ angular.module('cloudKiboApp')
         /* inbound - recieve binary data (from a file)
          * we are going to have an expectation that these packets arrive in order (requires reliable datachannel)
          */
-        function process_binary(id, message, hash) {
+        function process_binary(id,message,hash) {
             if (!downloading[id]) {
                 return;
             }
@@ -2652,12 +2707,11 @@ angular.module('cloudKiboApp')
                 /* if we recieve an ok to download message from other host, our last file hash checks out and we can now offer the file up to the user */
 
                 if (is_chrome) {
-                    create_file_link(recieved_meta[0], 0, saved_fileEntry[0]);
+                    create_file_link (recieved_meta[0], 0, saved_fileEntry[0]);
                 } else {
                     /* one little idb.filesystem.js quirk */
-                    saved_fileEntry[0].file(function (file) {
-                        create_file_link(recieved_meta[0], 0, file);
-                        /* <-- file, not fileEntry */
+                    saved_fileEntry[0].file(function(file) {
+                        create_file_link (recieved_meta[0], 0, file); /* <-- file, not fileEntry */
                     });
                 }
             } else {
@@ -2666,7 +2720,7 @@ angular.module('cloudKiboApp')
 
                 /* Otherwise, we are going to assume that if we have reached here, this is a request to download our file */
                 if (data.chunk % chunksPerACK == 0) {
-                    for (i = 0; i < chunksPerACK; i++) {
+                    for (i=0;i<chunksPerACK;i++) {
                         send_chunk_if_queue_empty(0, data.chunk + i, data.browser, data.rand, data.hash);
                     }
                 }
@@ -2678,16 +2732,14 @@ angular.module('cloudKiboApp')
          */
         function sanitize(msg) {
             msg = msg.toString();
-            return msg.replace(/[\<\>"'\/]/g, function (c) {
-                var sanitize_replace = {
-                    "<": "&lt;",
-                    ">": "&gt;",
-                    '"': "&quot;",
-                    "'": "&#x27;",
-                    "/": "&#x2F;"
-                }
-                return sanitize_replace[c];
-            });
+            return msg.replace(/[\<\>"'\/]/g,function(c) {  var sanitize_replace = {
+                "<" : "&lt;",
+                ">" : "&gt;",
+                '"' : "&quot;",
+                "'" : "&#x27;",
+                "/" : "&#x2F;"
+            }
+                return sanitize_replace[c]; });
         }
 
 
@@ -2733,11 +2785,10 @@ angular.module('cloudKiboApp')
                 return;
             }
 
-            window.requestFileSystem(window.TEMPORARY, recieved_meta[id].size, function (filesystem) {
+            window.requestFileSystem(window.TEMPORARY, recieved_meta[id].size, function(filesystem) {
                 fs[id] = filesystem;
                 filesysteminuse = true;
-                downloading[id] = true;
-                /* accept file info from user */
+                downloading[id] = true; /* accept file info from user */
                 console.log('File System given to the program')
                 request_chunk(id, 0, 0);
             });
@@ -2756,8 +2807,8 @@ angular.module('cloudKiboApp')
         function delete_file(user_id) {
             if (fs[user_id]) {
                 filesysteminuse = false;
-                fs[user_id].root.getFile(recieved_meta[user_id].name, {create: false}, function (fileEntry) {
-                    fileEntry.remove(function () {
+                fs[user_id].root.getFile(recieved_meta[user_id].name, {create: false}, function(fileEntry) {
+                    fileEntry.remove(function() {
                         console.log('File removed.');
                     }, FSerrorHandler);
                 }, FSerrorHandler);
@@ -2766,8 +2817,7 @@ angular.module('cloudKiboApp')
 
         /* cancel incoming file */
         function cancel_file(id) {
-            downloading[id] = false;
-            /* deny file info from user */
+            downloading[id] = false; /* deny file info from user */
             delete_file(id);
             recieved_meta[id].chunks_recieved = 0;
             /* create a new download link */
@@ -2785,7 +2835,7 @@ angular.module('cloudKiboApp')
             if (downloading[id] == true) {
                 var span = document.getElementById(id + "-span");
                 if (!span) {
-                    filecontainer.innerHTML = '<span id="' + id + '-span"></span>';
+                    filecontainer.innerHTML = '<span id="'+id+'-span"></span>';
                     /* add cancel button */
                     var a = document.createElement('a');
                     a.download = meta.name;
@@ -2797,11 +2847,11 @@ angular.module('cloudKiboApp')
                     //append link!
                     filecontainer.appendChild(a);
                 } else {
-                    span.innerHTML = "";
+                    span.innerHTML="";
                 }
                 return;
             }
-            var username = ''; // temporary
+            var username=''; // temporary
             if (!filecontainer) {
                 /* if filecontainer doesn't exist, create it */
                 var fs = '<div id="' + id + '">' + username + '</div>';
@@ -2828,7 +2878,7 @@ angular.module('cloudKiboApp')
         // TODO Will see this later, commenting for now
         /////////////
         /* create a link that will let the user start the download */
-        function create_upload_stop_link(filename, id) {//, username) {
+        function create_upload_stop_link(filename, id){//, username) {
 
             //create a place to store this if it does not already
             create_or_clear_container(id);//, username);
@@ -2836,7 +2886,7 @@ angular.module('cloudKiboApp')
 
             //create the link
             var span = document.createElement('span');
-            span.textContent = '' + filename + ' ';
+            span.textContent = ''+filename + ' ';
 
             var a = document.createElement('a');
             a.download = meta.name;
@@ -2882,7 +2932,7 @@ angular.module('cloudKiboApp')
         function update_container_percentage(id, chunk_num, chunk_total, total_size) {
 
             create_or_clear_container(id);
-            var span = document.getElementById(id + '-span');
+            var span = document.getElementById(id+'-span');
 
             /* create file % based on chunk # downloaded */
             var percentage = (chunk_num / chunk_total) * 100;
@@ -2902,7 +2952,7 @@ angular.module('cloudKiboApp')
         };
 
         /* create a link to this file */
-        function create_file_link(meta, id, fileEntry) {
+        function create_file_link (meta, id, fileEntry) {
             //grab the file type, should probably use a pattern match...
             var remove_base = meta.filetype.split(";");
             var remove_data = remove_base[0].split(":");
@@ -2936,7 +2986,7 @@ angular.module('cloudKiboApp')
             filecontainer.appendChild(a);
 
             /* make delete button */
-            filecontainer.innerHTML = filecontainer.innerHTML + " ";
+            filecontainer.innerHTML = filecontainer.innerHTML+ " ";
             /* add cancel button */
             var can = document.createElement('a');
             can.download = meta.name;
@@ -2980,24 +3030,22 @@ angular.module('cloudKiboApp')
 
             var reader = new FileReader;
             var upper_limit = (chunk_num + 1) * get_chunk_size(other_browser, 'chrome'); //don't hardcode
-            if (upper_limit > meta.size) {
-                upper_limit = meta.size;
-            }
+            if (upper_limit > meta.size) { upper_limit = meta.size; }
 
             var seek = chunk_num * get_chunk_size(other_browser, 'chrome'); //don't hardcode
             var blob;
-            if (typeof file_to_upload != 'undefined') {
+            if(typeof file_to_upload != 'undefined'){
                 blob = file_to_upload.slice(seek, upper_limit);
             }
-            reader.onload = function (event) {
+            reader.onload = function(event) {
                 if (reader.readyState == FileReader.DONE) {
 
                     //if (encryption_type != "NONE") {
                     //	file_encrypt_and_send(id, event.target.result, rand, chunk_num);
                     //} else {
                     if (FSdebug) {
-                        console.log("DEBUG: sending chunk " + chunk_num);
-                        console.log('sending: ' + CryptoJS.SHA256(_arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
+                        console.log("DEBUG: sending chunk "+ chunk_num);
+                        console.log('sending: '+CryptoJS.SHA256(_arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
                     }
                     sendChannel.send(event.target.result);//id, event.target.result);
                     //}
@@ -3015,8 +3063,8 @@ angular.module('cloudKiboApp')
             //		return;
             //	}
             //} else {
-            if (typeof file_to_upload != 'undefined') {
-                if (chunk_num >= Math.ceil(file_to_upload.size / get_chunk_size('chrome', other_browser))) { //don't hardcode
+            if(typeof file_to_upload != 'undefined'){
+                if ( chunk_num >= Math.ceil(file_to_upload.size / get_chunk_size('chrome', other_browser))) { //don't hardcode
                     return;
                 }
             }
@@ -3048,21 +3096,21 @@ angular.module('cloudKiboApp')
                 default:
                     msg = 'Unknown Error';
                     break;
-            }
-            ;
+            };
             console.error('Error: ' + msg);
         }
 
         //used for debugging - credit - http://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
-        function _arrayBufferToBase64(buffer) {
+        function _arrayBufferToBase64( buffer ) {
             var binary = ''
-            var bytes = new Uint8Array(buffer)
+            var bytes = new Uint8Array( buffer )
             var len = bytes.byteLength;
             for (var i = 0; i < len; i++) {
-                binary += String.fromCharCode(bytes[i])
+                binary += String.fromCharCode( bytes[ i ] )
             }
-            return window.btoa(binary);
+            return window.btoa( binary );
         }
+
 
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -3073,14 +3121,21 @@ angular.module('cloudKiboApp')
     })
 
 
-    .controller('VideoCallController', function ($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout) {
+
+
+
+
+
+
+
+    .controller('VideoCallController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
 
         var roomid = '';
         ////////////////////////////////////////////////////////////////////////////////////////
         // Create or Join Room Logic                                                          //
         ////////////////////////////////////////////////////////////////////////////////////////
 
-        if (window.location.pathname.replace('/', '') != 'home') {
+        if(window.location.pathname.replace('/', '') != 'home'){
             roomid = window.location.pathname.replace('/', '');
             roomid = roomid.split('/')[1];
         }
@@ -3103,7 +3158,7 @@ angular.module('cloudKiboApp')
             return $scope.callEnded;
         };
 
-        $scope.connectTimeOut = function () {
+        $scope.connectTimeOut = function(){
             $scope.roomname = roomid;
             $scope.createOrJoinMeeting();
             $scope.connected = true;
@@ -3113,19 +3168,19 @@ angular.module('cloudKiboApp')
 
         $scope.alertsCallStart = [];
 
-        $scope.addAlertCallStart = function (newtype, newMsg) {
-            $scope.$apply(function () {
+        $scope.addAlertCallStart = function(newtype, newMsg) {
+            $scope.$apply(function(){
                 $scope.alertsCallStart.push({type: newtype, msg: newMsg});
             })
         };
 
-        $scope.closeAlertCallStart = function (index) {
+        $scope.closeAlertCallStart = function(index) {
             $scope.alertsCallStart.splice(index, 1);
         };
 
         $scope.extensionAvailable = false;
 
-        $scope.showExtension = function () {
+        $scope.showExtension = function(){
             return $scope.extensionAvailable;
         }
 
@@ -3138,35 +3193,35 @@ angular.module('cloudKiboApp')
         // Signaling Logic                                                                    //
         ///////////////////////////////////////////////////////////////////////////////////////
 
-        $scope.createOrJoinMeeting = function () {
+        $scope.createOrJoinMeeting = function(){
             socket.emit('create or join livehelp', {room: roomid, username: 'abc'});
         }
 
-        $scope.LeaveRoom = function () {
+        $scope.LeaveRoom = function(){
             console.log('Leave room', {room: roomid});
             $scope.callEnded = true;
             socket.emit('leave', {room: roomid});
         }
 
-        socket.on('created', function (room) {
+        socket.on('created', function (room){
             console.log('Created room ' + room);
 
             isInitiator = true;
         });
 
-        socket.on('full', function (room) {
+        socket.on('full', function (room){
             console.log('Room ' + room + ' is full');
         });
 
-        socket.on('left', function (room) {
+        socket.on('left', function (room){
             $scope.callEnded = true;
-            if (remoteStream1)
+            if(remoteStream1)
                 remoteStream1.stop();
-            if (localStream)
+            if(localStream)
                 localStream.stop();
-            if (localStreamScreen)
+            if(localStreamScreen)
                 localStreamScreen.stop();
-            if (remoteStreamScreen)
+            if(remoteStreamScreen)
                 remoteStreamScreen.stop();
             pc.close();
             pc = null;
@@ -3175,30 +3230,30 @@ angular.module('cloudKiboApp')
             remoteaudio1.src = null;
         });
 
-        socket.on('join', function (room) {
+        socket.on('join', function (room){
             //console.log('Another peer made a request to join room ' + room);
             //console.log('This peer is the initiator of room ' + room + '!');
 
             isChannelReady = true;
         });
 
-        socket.on('joined', function (room) {
+        socket.on('joined', function (room){
             //console.log('This peer has joined room ' + room.room + ' '+ room.username +' '+ room.otherClients);
             isChannelReady = true;
 
             $scope.startCalling();
         });
 
-        socket.on('log', function (array) {
+        socket.on('log', function (array){
             console.log.apply(console, array);
         });
 
-        window.onbeforeunload = function (e) {
+        window.onbeforeunload = function(e){
             $scope.LeaveRoom();
         }
 
-        function sendMessage(message) {
-            message = {msg: message};
+        function sendMessage(message){
+            message = {msg:message};
             message.room = roomid;
             //message.username = $scope.user.username;
             //console.log('Client sending message: ', message);
@@ -3240,7 +3295,7 @@ angular.module('cloudKiboApp')
             }
             else if (message.type === 'offer') {
 
-                if (!isStarted) {
+                if(!isStarted){
                     if (!isInitiator && !isStarted) {
                         maybeStart();
                     }
@@ -3309,7 +3364,7 @@ angular.module('cloudKiboApp')
             }
         }
 
-        function handleCreateOfferError(event) {
+        function handleCreateOfferError(event){
             console.log('createOffer() error: ', e);
         }
 
@@ -3320,9 +3375,7 @@ angular.module('cloudKiboApp')
 
         function doAnswer() {
             console.log('Sending answer to peer.');
-            pc.createAnswer(setLocalAndSendMessage, function (error) {
-                console.log(error)
-            }, sdpConstraints);
+            pc.createAnswer(setLocalAndSendMessage, function (error){console.log(error)}, sdpConstraints);
         }
 
         function setLocalAndSendMessage(sessionDescription) {
@@ -3351,7 +3404,7 @@ angular.module('cloudKiboApp')
 
             remotevideo1.src = null;
 
-            $scope.$apply(function () {
+            $scope.$apply(function(){
                 //		$scope.screenSharedByPeer = false;
             })
         }
@@ -3362,7 +3415,7 @@ angular.module('cloudKiboApp')
 
         var localPeerConnection, remotePeerConnection;
 
-        function handleUserMedia(newStream) {
+        function handleUserMedia(newStream){
 
             localStream = newStream;
             $scope.localCameraOn = true;
@@ -3374,13 +3427,13 @@ angular.module('cloudKiboApp')
             }
         }
 
-        function handleUserMediaError(error) {
+        function handleUserMediaError(error){
             //console.log(error);
         }
 
         var video_constraints = {video: true, audio: true};
 
-        $scope.startCalling = function () {
+        $scope.startCalling = function(){
 
             getUserMedia(video_constraints, handleUserMedia, handleUserMediaError);
 
