@@ -393,7 +393,7 @@ angular.module('cloudKiboApp')
                 } else {
                     remoteVideoScreen.src = URL.createObjectURL(event.stream);
                     remoteStreamScreen = event.stream;
-                    $rootScope.broadcast('screenShared');
+                    $rootScope.$broadcast('screenShared');
                 }
             }
         }
