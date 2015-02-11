@@ -113,7 +113,7 @@ angular.module('cloudKiboApp')
              *
              */
             createAndSendOffer: function () {
-                pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+                pc[pcIndex].createOffer(setLocalAndSendMessage, handleCreateOfferError);
             },
 
             /**
@@ -121,7 +121,7 @@ angular.module('cloudKiboApp')
              *
              */
             createAndSendAnswer: function () {
-                pc.createAnswer(setLocalAndSendMessage, function (error) {
+                pc[pcIndex].createAnswer(setLocalAndSendMessage, function (error) {
                     console.log(error)
                 }, sdpConstraints);
             },
