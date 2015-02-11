@@ -413,7 +413,7 @@ angular.module('cloudKiboApp')
             if (typeof remoteStreamScreen != 'undefined') {
                 remoteStreamScreen.stop();
                 remoteStreamScreen = null;
-                $rootScope.broadcast('screenRemoved');
+                $rootScope.$broadcast('screenRemoved');
             }
             else {
                 remoteStreamScreen.stop();
