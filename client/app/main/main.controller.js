@@ -1244,15 +1244,25 @@ angular.module('cloudKiboApp')
             return $scope.otherPeersBusyStatus;
         }
 
+        $scope.otherScreenShared = false;
+
         $scope.hasOtherPartySharedScreen = function () {
-            return WebRTC.getScreenShared();
-        }
+            return $scope.otherScreenShared;
+        };
+
+        $scope.on('screenShared', function(){
+           $scope.otherScreenShared = true;
+        });
+
+        $scope.on('screenRemoved', function(){
+            $scope.otherScreenShared = false;
+        })
 
         $scope.screenSharedLocal = false;
 
         $scope.isLocalScreenShared = function () {
             return $scope.screenSharedLocal;
-        }
+        };
 
         $scope.callThisPerson = function (calleeusername) {
 

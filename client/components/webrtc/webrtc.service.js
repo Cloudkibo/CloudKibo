@@ -284,16 +284,6 @@ angular.module('cloudKiboApp')
             },
 
             /**
-             * Application can check if the remote peer has shared the screen. Application can change
-             * the user interface to display or hide the video element which handles remote screen video
-             *
-             * @returns {*}
-             */
-            getScreenShared: function () {
-                return screenShared;
-            },
-
-            /**
              * Application can set this to true for the peer who is the initiator of the call. Service must know
              * who is the initiator of the call. Initiator is the one who sends the offer to other peer.
              *
@@ -383,7 +373,10 @@ angular.module('cloudKiboApp')
         /**
          * Handle the remote stream. This call back function is used to handle the streams sent by the remote peer.
          * Currently, we have two types of streams to hold: video streams, audio stream and screen sharing stream. This
-         * function takes care of handling of all stream and assigning them to correct video or audio element
+         * function takes care of handling of all stream and assigning them to correct video or audio element.
+         *
+         * When screen is shared it broadcasts 'screenShared' to the application. Application is responsible
+         * to listen to that message and change the UI accordingly i.e. show video element
          *
          * @param event holds the stream sent by the remote peer
          */
@@ -400,10 +393,7 @@ angular.module('cloudKiboApp')
                 } else {
                     remoteVideoScreen.src = URL.createObjectURL(event.stream);
                     remoteStreamScreen = event.stream;
-
-                    $rootScope.apply(function(){
-                        screenShared = true;
-                    })
+                    $rootScope.broadcast('screenShared');
                 }
             }
         }
@@ -413,6 +403,9 @@ angular.module('cloudKiboApp')
          * peer removes any stream i.e. stops screen sharing. This function takes care of knowing which stream has
          * been removed.
          *
+         * When screen is removed it broadcasts 'screenShared' to the application. Application is responsible
+         * to listen to that message and change the UI accordingly i.e. hide video element
+         *
          * @param event
          */
         function handleRemoteStreamRemoved(event) {
@@ -420,7 +413,7 @@ angular.module('cloudKiboApp')
             if (typeof remoteStreamScreen != 'undefined') {
                 remoteStreamScreen.stop();
                 remoteStreamScreen = null;
-                screenShared = false;
+                $rootScope.broadcast('screenRemoved');
             }
             else {
                 remoteStreamScreen.stop();
