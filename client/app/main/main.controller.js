@@ -1250,11 +1250,11 @@ angular.module('cloudKiboApp')
             return $scope.otherScreenShared;
         };
 
-        $scope.on('screenShared', function(){
+        $scope.$on('screenShared', function(){
            $scope.otherScreenShared = true;
         });
 
-        $scope.on('screenRemoved', function(){
+        $scope.$on('screenRemoved', function(){
             $scope.otherScreenShared = false;
         })
 
