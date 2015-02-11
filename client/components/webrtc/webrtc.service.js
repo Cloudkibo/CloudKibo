@@ -388,16 +388,22 @@ angular.module('cloudKiboApp')
          * @param event holds the stream sent by the remote peer
          */
         function handleRemoteStreamAdded(event) {
+            console.log("Inside handle remote stream function")
+            console.log(event.stream);
             if(event.stream.getAudioTracks().length){
                 remoteAudio.src = URL.createObjectURL(event.stream);
                 remoteAudioStream = event.stream;
+                console.log('inside audio')
             }
 
             if(event.stream.getVideoTracks().length){
+                console.log('inside video')
                 if (!remoteVideoStream) {
+                    console.log('inside first video')
                     remoteVideo.src = URL.createObjectURL(event.stream);
                     remoteVideoStream = event.stream;
                 } else {
+                    console.log('inside second video')
                     remoteVideoScreen.src = URL.createObjectURL(event.stream);
                     remoteStreamScreen = event.stream;
                     screenShared = true;
