@@ -698,6 +698,10 @@ angular.module('cloudKiboApp')
             return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
         };
 
+        $scope.isMeetingPage = function(){
+            return false;
+        }
+
         $scope.showError = function(){
             return $scope.isError;
         };

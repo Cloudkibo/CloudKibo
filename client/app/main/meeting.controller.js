@@ -9,6 +9,10 @@ angular.module('cloudKiboApp')
             return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
         };
 
+        $scope.isMeetingPage = function(){
+            return true;
+        }
+
         var roomid;
         ////////////////////////////////////////////////////////////////////////////////////////
         // Create or Join Room Logic                                                          //
