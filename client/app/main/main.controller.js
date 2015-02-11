@@ -1251,11 +1251,19 @@ angular.module('cloudKiboApp')
         };
 
         $scope.$on('screenShared', function(){
-           $scope.otherScreenShared = true;
+
+            $scope.$apply(function(){
+                $scope.otherScreenShared = true;
+            })
+
         });
 
         $scope.$on('screenRemoved', function(){
-            $scope.otherScreenShared = false;
+
+            $scope.$apply(function(){
+                $scope.otherScreenShared = false;
+            })
+
         })
 
         $scope.screenSharedLocal = false;
