@@ -4,7 +4,8 @@ angular.module('cloudKiboApp', [
   'ngSanitize',
   'ngRoute',
   'btford.socket-io',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'kiboRtc'
 ])
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
