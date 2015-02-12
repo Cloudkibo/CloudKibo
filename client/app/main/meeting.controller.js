@@ -1831,6 +1831,9 @@ angular.module('cloudKiboApp')
             $scope.localCameraOn = false;
             remotevideo1.src = null;
             remoteaudio1.src = null;
+            $timeout(function () {
+                location.reload();
+            }, 2000)
         });
 
         socket.on('join', function (room){
