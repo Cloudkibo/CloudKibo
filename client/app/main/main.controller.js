@@ -1988,6 +1988,41 @@ angular.module('cloudKiboApp')
             return route === $location.path();
         };
 
+        // slider code
+
+        // Set of Photos
+        $scope.photos = [
+            {src: '/images/sd1.png', desc: 'Image 01'},
+            {src: '/images/sd2.png', desc: 'Image 02'},
+            {src: '/images/sd3.png', desc: 'Image 03'},
+            {src: '/images/sd4.png', desc: 'Image 04'},
+            {src: '/images/sd5.png', desc: 'Image 05'},
+            {src: '/images/sd6.png', desc: 'Image 06'}
+        ];
+
+        // initial image index
+        $scope._Index = 0;
+
+        // if a current image is the same as requested image
+        $scope.isActive = function (index) {
+            return $scope._Index === index;
+        };
+
+        // show prev image
+        $scope.showPrev = function () {
+            $scope._Index = ($scope._Index > 0) ? --$scope._Index : $scope.photos.length - 1;
+        };
+
+        // show next image
+        $scope.showNext = function () {
+            $scope._Index = ($scope._Index < $scope.photos.length - 1) ? ++$scope._Index : 0;
+        };
+
+        // show a certain image
+        $scope.showPhoto = function (index) {
+            $scope._Index = index;
+        };
+
     })
 
     .controller('ContactsListController', function ($scope) {
