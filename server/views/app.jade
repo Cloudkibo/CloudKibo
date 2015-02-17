@@ -148,7 +148,7 @@ html
 
 
 
-        div(controller='SliderController')
+        div
           .container.slider
             // enumerate all photos
             img.slides(ng-repeat='photo in photos', ng-swipe-right='showPrev()', ng-swipe-left='showNext()', ng-show='isActive($index)', ng-src='{{photo.src}}')
