@@ -1959,7 +1959,7 @@ angular.module('cloudKiboApp')
     .controller('AddRequestsController', function ($scope) {
     })
 
-    .controller('IndexController', function ($scope, $location, Auth, $http, socket) {
+    .controller('IndexController', function ($scope, $location, Auth, $http, socket, $interval) {
 
         $scope.isCollapsed = true;
         $scope.isLoggedIn = Auth.isLoggedIn;
@@ -2004,7 +2004,7 @@ angular.module('cloudKiboApp')
         $scope._Index = 0;
 
         // if a current image is the same as requested image
-        $scope.isActive = function (index) {
+        $scope.isActiveImg = function (index) {
             return $scope._Index === index;
         };
 
@@ -2022,6 +2022,8 @@ angular.module('cloudKiboApp')
         $scope.showPhoto = function (index) {
             $scope._Index = index;
         };
+
+        $interval($scope.showNext, 6000);
 
     })
 
