@@ -1959,7 +1959,7 @@ angular.module('cloudKiboApp')
     .controller('AddRequestsController', function ($scope) {
     })
 
-    .controller('IndexController', function ($scope, $location, Auth, $http, socket, $interval) {
+    .controller('IndexController', function ($scope, $location, Auth, $http, socket, $interval, $timeout) {
 
         $scope.isCollapsed = true;
         $scope.isLoggedIn = Auth.isLoggedIn;
@@ -2024,6 +2024,9 @@ angular.module('cloudKiboApp')
         };
 
         $interval($scope.showNext, 6000);
+
+        $timeout(function(){Layout.initOWL();}, 1000)
+
 
     })
 

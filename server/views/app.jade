@@ -49,7 +49,23 @@ html
         
         div(ng-view='', ng-controller='TabsController')
 
+        // Theme Files
 
+        script(src='/global/plugins/jquery-1.11.0.min.js')
+        script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
+        script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
+        script(src='/frontend/layout/scripts/back-to-top.js')
+
+        script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
+        script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
+
+        script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
+        script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
+        script(src='/frontend/pages/scripts/revo-slider-init.js')
+
+        script(src='/frontend/layout/scripts/layout.js')
+
+        // AngularJS Resources
         
         //script(src='/javascripts/lib/angular-file-upload-shim.min.js')
         
@@ -73,8 +89,6 @@ html
         script(src='/javascripts/lib/idb.filesystem.min.js')
 
         script(src='/javascripts/lib/angular-touch.min.js')
-
-        script(src='/javascripts/lib/jquery-2.1.3.min.js')
         
         script(src='/socket.io/socket.io.js')
         
@@ -134,28 +148,14 @@ html
         // New Boilerplate ends
         
         script(src='https://www.kibosupport.com/javascripts/widget/widget.js')
-        
-        script(src='/global/plugins/jquery-1.11.0.min.js')
-        script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
-        script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
-        script(src='/frontend/layout/scripts/back-to-top.js')
-     
-        script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
-        script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
-     
-        script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
-        script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
-        script(src='/frontend/pages/scripts/revo-slider-init.js')
-     
-        script(src='/frontend/layout/scripts/layout.js')
      
         script(type='text/javascript').
             jQuery(document).ready(function() {
                 Layout.init();    
                 Layout.initOWL();
                 //RevosliderInit.initRevoSlider();
-                Layout.initTwitter();
+                //Layout.initTwitter();
                 //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
-                //Layout.initNavScrolling(); 
+                //Layout.initNavScrolling();
             });
     
