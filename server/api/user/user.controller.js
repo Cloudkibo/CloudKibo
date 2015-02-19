@@ -415,7 +415,7 @@ exports.resetpasswordrequest = function(req, res, next){
 		  text:     'Password Reset'
 		});
 		
-		email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to change your password <br><br> http://www.cloudkibo.com/resetpassword/'+ tokenString);
+		email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to change your password <br><br> http://www.cloudkibo.com/#resetpassword/'+ tokenString);
 		
 		sendgrid.send(email, function(err, json) {
 		  if (err) { return console.error(err); }
