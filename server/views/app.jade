@@ -47,380 +47,25 @@ html
    
    
         
-     div(ng-view='', ng-controller='TabsController')
-        
-        
-        
-        
-     div(ng-controller='IndexController')   
-      div(ng-if='getlocation() == "/"')   
-        .pre-header(ng-show='isLoggedIn()')
-         .container
-           .row
-             div(class='col-md-6 col-sm-6 additional-shop-info')
-               ul(class='list-unstyled list-inline')
-                 li
-                   i(class='fa fa-phone')
-                   span
-                     | 1-425-890-9414
-                 li
-                   i(class='fa fa-envelope-o')
-                   a(ng-href='/contact')
-                     span
-                       | support@cloudkibo.com
-                 li
-                   i(class='fa')
-                     button(onclick='loadKiboWidget("cd89f71715f2014725163952")')
-                       | Live Help
-             div(class='col-md-6 col-sm-6 additional-nav')
-               ul(class='list-unstyled list-inline pull-right')
-                 li(ng-show='isActive("/")')
-                   a(href='/app')
-                     b Go To Application
-                 li
-                   a(href='#', ng-click='logout()')
-                     | Log Out
-        .pre-header(ng-hide='isLoggedIn()')
-         .container
-           .row
-             div(class='col-md-6 col-sm-6 additional-shop-info')
-               ul(class='list-unstyled list-inline')
-                 li
-                   i(class='fa fa-phone')
-                   span
-                     | 1-425-890-9414
-                 li
-                   i(class='fa fa-envelope-o')
-                   a(ng-href='/contact')
-                     span
-                       | support@cloudkibo.com
-                 li
-                   i(class='fa')
-                     button(onclick='loadKiboWidget("cd89f71715f2014725163952")')
-                       | Live Help
-             div(class='col-md-6 col-sm-6 additional-nav')
-               ul(class='list-unstyled list-inline pull-right')
-                 li
-                   a(href='/login')
-                     | Log In
-                 li
-                   a(href='/register')
-                     | Registration
-        .header(ng-hide='isLoggedIn()')
-         .container
-          a(class='site-logo', href='/')
-            if(title == 'CloudKibo')
-              img(src='/images/logo_small.png')
-              | #{title}
-            else
-              img(src='/images/logo.jpg', width='38%', height='38%')
-          a(href='javascript:void(0);', class='mobi-toggler')
-            i(class='fa fa-bars')
-          div(class='header-navigation pull-right font-transform-inherit')
-            ul
-              li
-                a(ng-href='/')
-                  | Home
-              li
-                a(ng-href='/aboutus')
-                  | About Us
-              li
-                a(ng-href='/features')
-                  | Features
-              li
-                a(ng-href='/contact')
-                  | Contact
-        .header(ng-show='isLoggedIn()')
-         .container
-          a(class='site-logo', href='/')
-            if(title == 'CloudKibo')
-              img(src='/images/logo_small.png')
-              | #{title}
-            else
-              img(src='/images/logo.jpg', width='38%', height='38%')
-           a(href='javascript:void(0);', class='mobi-toggler')
-            i(class='fa fa-bars')
-          div(class='header-navigation pull-right font-transform-inherit')
-            ul
-              li
-                a(ng-href='/app')
-                  | Application Home
-       
-        div(class='page-slider margin-bottom-40')
-         div(class='fullwidthbanner-container revolution-slider')
-          .fullwidthabnner
-           ul(id='revolutionul')
-             
-             li(data-transition='fade', data-slotamount='8', data-masterspeed='700', data-delay='9400', data-thumb='/frontend/pages/img/revolutionslider/thumbs/thumb2.jpg')
-               img(src='/frontend/pages/img/revolutionslider/bg9.jpg', alt='')
-               div(class='caption lft slide_title_white slide_item_left', data-x='30', data-y='90', data-speed='400', data-start='1500', data-easing='easeOutExpo')
-                 | Explore the Power
-                 br
-                 span(class='slide_title_white_bold')
-                   if(title == 'CloudKibo')
-                     | of CloudKibo
-                   else
-                     | of Synaps3WebRTC
-               div(class='caption lft slide_subtitle_white slide_item_left', data-x='87', data-y='245', data-speed='400', data-start='2000', data-easing='easeOutExpo')
-                 | Collaboration Made Easy
-               a(class='caption lft btn dark slide_btn slide_item_left', href='/features', data-x='187', data-y='315', data-speed='400', data-start='3000', data-easing='easeOutExpo')
-                 | Take a tour
-               div(class='caption lfb', data-x='640', data-y='0', data-speed='700', data-start='1000', data-easing='easeOutBack')
-                 img(src='/frontend/pages/img/revolutionslider/lady.png', alt='Image 1')
-             
-             li(data-transition='fade', data-slotamount='8', data-masterspeed='700', data-delay='9400', data-thumb='/frontend/pages/img/revolutionslider/thumbs/thumb2.jpg')
-               img(src='/frontend/pages/img/revolutionslider/bg1.jpg', alt='')
-               div(class='caption lft slide_title slide_item_left', data-x='30', data-y='105', data-speed='400', data-start='1500', data-easing='easeOutExpo')
-                 | Video Collaboration
-               div(class='caption lft slide_subtitle slide_item_left', data-x='30', data-y='180', data-speed='400', data-start='2000', data-easing='easeOutExpo')
-                 | Connect in Seconds
-               div(class='caption lft slide_desc slide_item_left', data-x='30', data-y='220', data-speed='400', data-start='2500', data-easing='easeOutExpo')
-                 | A Complete Video Conferencing Solution
-                 br
-                 | in a Web Application
-               a(class='caption lft btn green slide_btn slide_item_left', href='/features', data-x='30', data-y='290', data-speed='400', data-start='3000', data-easing='easeOutExpo')
-                 | Find out more
-               div(class='caption lfb', data-x='640', data-y='55', data-speed='700', data-start='1000', data-easing='easeOutBack')
-                 img(src='/frontend/pages/img/revolutionslider/man-winner.png', alt='Image 1')
-             
-             li(data-transition='fade', data-slotamount='7', data-masterspeed='300', data-delay='9400', data-thumb='/frontend/pages/img/revolutionslider/thumbs/thumb2.jpg')
-               img(src='/frontend/pages/img/revolutionslider/bg2.jpg', alt='')
-               div(class='caption lfl slide_title slide_item_left', data-x='30', data-y='125', data-speed='400', data-start='3500', data-easing='easeOutExpo')
-                 | Screen Sharing
-               div(class='caption lfl slide_subtitle slide_item_left', data-x='30', data-y='200', data-speed='400', data-start='4000', data-easing='easeOutExpo')
-                 | Inside your browser
-               div(class='caption lfl slide_desc slide_item_left', data-x='30', data-y='245', data-speed='400', data-start='4500', data-easing='easeOutExpo')
-                 | You can share your screen with your partner in a Call.
-                 br
-                 | Screen can also be shared in a Video Conference.
-               div(class='caption lfr slide_item_right', data-x='635', data-y='105', data-speed='1200', data-start='1500', data-easing='easeOutBack')
-                 img(src='/frontend/pages/img/revolutionslider/mac.png', alt='Image 1')
-               div(class='caption lfr slide_item_right', data-x='580', data-y='245', data-speed='1200', data-start='2000', data-easing='easeOutBack')
-                 img(src='/frontend/pages/img/revolutionslider/ipad.png', alt='Image 1')
-               div(class='caption lfr slide_item_right', data-x='735', data-y='290', data-speed='1200', data-start='2500', data-easing='easeOutBack')
-                 img(src='/frontend/pages/img/revolutionslider/iphone.png', alt='Image 1')
-               div(class='caption lfr slide_item_right', data-x='835', data-y='230', data-speed='1200', data-start='3000', data-easing='easeOutBack')
-                 img(src='/frontend/pages/img/revolutionslider/macbook.png', alt='Image 1')
-               div(class='caption lfr slide_item_right', data-x='865', data-y='45', data-speed='500', data-start='5000', data-easing='easeOutBack')
-                 img(src='/frontend/pages/img/revolutionslider/hint1-red.png', alt='Image 1')
-               div(class='caption lfr slide_item_right', data-x='355', data-y='355', data-speed='500', data-start='5500', data-easing='easeOutBack')
-                 img(src='/frontend/pages/img/revolutionslider/hint2-red.png', alt='Image 1')
-             
-             li(data-transition='fade', data-slotamount='8', data-masterspeed='700', data-delay='9400', data-thumb='/frontend/pages/img/revolutionslider/thumbs/thumb2.jpg')
-               img(src='/frontend/pages/img/revolutionslider/bg3.jpg', alt='')
-               div(class='caption lfl slide_item_left', data-x='30', data-y='95', data-speed='400', data-start='1500', data-easing='easeOutBack')
-                 img(src='/frontend/pages/img/revolutionslider/mac.png', alt='Image 1')
-               div(class='caption lfr slide_title', data-x='470', data-y='100', data-speed='400', data-start='2000', data-easing='easeOutExpo')
-                 | No Downloads
-               div(class='caption lfr slide_subtitle', data-x='470', data-y='170', data-speed='400', data-start='2500', data-easing='easeOutExpo')
-                 | Just Click and Call
-               div(class='caption lfr slide_desc', data-x='470', data-y='220', data-speed='400', data-start='3000', data-easing='easeOutExpo')
-                 | You do not need to download any plugin
-                 br
-                 | or client side application. All you need is a browser.
-                 
-             
-             li(data-transition='fade', data-slotamount='8', data-masterspeed='700', data-delay='9400', data-thumb='/frontend/pages/img/revolutionslider/thumbs/thumb2.jpg')
-               img(src='/frontend/pages/img/revolutionslider/bg4.jpg', alt='')
-               div(class='caption lft slide_title', data-x='30', data-y='105', data-speed='400', data-start='1500', data-easing='easeOutExpo')
-                 | File Transfer
-               div(class='caption lft slide_subtitle', data-x='30', data-y='180', data-speed='400', data-start='2000', data-easing='easeOutExpo')
-                 | No Size Limit
-               div(class='caption lft slide_desc', data-x='30', data-y='225', data-speed='400', data-start='2500', data-easing='easeOutExpo')
-                 | You can transfer your files with your partner in a Call.
-                 br
-                 | There is no file size limit. Transfer Big Files!
-               div(class='caption lft start', data-x='670', data-y='55', data-speed='400', data-start='2000', data-easing='easeOutBack')
-                 img(src='/frontend/pages/img/revolutionslider/iphone_left.png', alt='Image 1')
-               div(class='caption lft start', data-x='850', data-y='55', data-speed='400', data-start='2400', data-easing='easeOutBack')
-                 img(src='/frontend/pages/img/revolutionslider/iphone_right.png', alt='Image 1')
-             
-             li(data-transition='fade', data-slotamount='8', data-masterspeed='700', data-delay='9400', data-thumb='/frontend/pages/img/revolutionslider/thumbs/thumb2.jpg')
-               img(src='/frontend/pages/img/revolutionslider/bg1.jpg', alt='')
-               div(class='caption lft slide_title slide_item_left', data-x='30', data-y='105', data-speed='400', data-start='1500', data-easing='easeOutExpo')
-                 if(title =='CloudKibo')
-                   | CloudKibo
-                 else
-                   | Synaps3WebRTC
-                 br
-                 | Collaboration 
-                 br
-                 | Made Easy
-               //div(class='caption lft slide_subtitle slide_item_left', data-x='30', data-y='180', data-speed='400', data-start='2000', data-easing='easeOutExpo')
-                 | Connect in Seconds
-               //div(class='caption lft slide_desc slide_item_left', data-x='30', data-y='220', data-speed='400', data-start='2500', data-easing='easeOutExpo')
-                 | An Interactive Learning System
-                 br
-                 | with Communication
-               a(class='caption lft btn green slide_btn slide_item_left', href='/features', data-x='30', data-y='290', data-speed='400', data-start='3000', data-easing='easeOutExpo')
-                 | Take a tour
-               div(class='caption lfb', data-x='640', data-y='55', data-speed='700', data-start='1000', data-easing='easeOutBack')
-                 img(src='/frontend/pages/img/revolutionslider/devices.png', alt='Image 1', width='60%', height='60%')
-           
-           div(class='tp-bannertimer tp-bottom')
-             
-        .main
-         .container
-          div(class='row service-box margin-bottom-40')
-           div(class='col-md-4 col-sm-4')
-             .service-box-heading
-               em
-                 i(class='fa fa-video-camera blue')
-               span Video/Audio Chat
-             if(title == 'CloudKibo')
-               p CloudKibo lets you invite your friend with a click of a button into a call. Don’t get tied down to a clumsy keypad and cryptic codes to control and manage your calls.
-             else
-               p Synaps3WebRTC lets you invite your friend with a click of a button into a call. Don’t get tied down to a clumsy keypad and cryptic codes to control and manage your calls.
-           div(class='col-md-4 col-sm-4')
-             .service-box-heading
-               em
-                 i(class='fa fa-desktop blue')
-               span Screen Sharing
-             if(title == 'CloudKibo')
-               p CloudKibo lets you share your weekly project status, share your weekly sales slides, collect feedback on the latest design rendering, and makes sharing a screen easy as clicking the “Share Screen” button.
-             else
-               p Synaps3WebRTC lets you share your weekly project status, share your weekly sales slides, collect feedback on the latest design rendering, and makes sharing a screen easy as clicking the “Share Screen” button.
-           div(class='col-md-4 col-sm-4')
-             .service-box-heading
-               em
-                 i(class='fa fa-share blue')
-               span File Transferring
-             if(title == 'CloudKibo')
-               p CloudKibo makes it simple for you or anyone in your call to instantly share notes, documents, videos, or any other file. File transfer is highly secured. All file transfers are peer to peer with 128 Bit encryption.
-             else
-               p Synaps3WebRTC makes it simple for you or anyone in your call to instantly share notes, documents, videos, or any other file. File transfer is highly secured. All file transfers are peer to peer with 128 Bit encryption.
-           div(class='col-md-4 col-sm-4')
-             .service-box-heading
-               em
-                 i(class='fa fa-envelope blue')
-               span Instant Messaging
-             if(title == 'CloudKibo')
-               p Somethings are just better to write and send. With CloudKibo, use our chat messaging system to send your messages to your dear ones.
-             else
-               p Somethings are just better to write and send. With Synaps3WebRTC, use our chat messaging system to send your messages to your dear ones.
-           div(class='col-md-4 col-sm-4')
-             .service-box-heading
-               em
-                 i(class='fa fa-users blue')
-               span Video Conference
-             if(title == 'CloudKibo')
-               p CloudKibo also allows you to invite multiple people to join the Web meeting without installing any complex software. All they need to do is visit a URL and join the meeting.
-             else
-               p Synaps3WebRTC also allows you to invite multiple people to join the Web meeting without installing any complex software. All they need to do is visit a URL and join the meeting.
-           div(class='col-md-4 col-sm-4')
-             .service-box-heading
-               em
-                 i(class='fa fa-book blue')
-               if(title == 'CloudKibo')
-                 span CloudKibo School
-               else
-                 span Synaps3WebRTC School
-             if(title == 'CloudKibo')
-               p With CloudKibo School, you can enroll or create classes. Learn in a real-time classroom environment having facilities of video conferencing for devilivering lectures.
-             else
-               p With Synaps3WebRTC School, you can enroll or create classes. Learn in a real-time classroom environment having facilities of video conferencing for devilivering lectures.
-          div(class='row quote-v1 margin-bottom-30')
-           .col-md-9
-             span
-               | Make Your FREE Account Now!
-           div(class='col-md-3 text-right')
-             a(class='btn-transparent', href='/register')
-               i(class='fa fa-check margin-right-10')
-               | Register
-          div(class='row recent-work margin-bottom-40')
-           .col-md-3
-             h2 Diverse Platforms
-             if(title == 'CloudKibo')
-               p With CloudKibo, you can connect from anywhere using any device. CloudKibo can be used on any device with Google Chrome installed. Moreover, CloudKibo also offers you to download native Android and IPhone Apps.
-             else
-               p With Synaps3WebRTC, you can connect from anywhere using any device. Synaps3WebRTC can be used on any device with Google Chrome installed. Moreover, Synaps3WebRTC also offers you to download native Android and IPhone Apps.
-           .col-md-9
-             div(class='owl-carousel owl-carousel3')
-               .recent-work-item
-                 em
-                   img(src='/frontend/pages/img/works/img1.jpg', class='img-responsive')
-                 a(class='recent-work-description')
-                   strong Web App
-                   b On Tablet PC
-               .recent-work-item
-                 em
-                   img(src='/frontend/pages/img/works/img5.jpg', class='img-responsive')
-                 a(class='recent-work-description')
-                   strong Android App
-                   b On Smart Phone
-               .recent-work-item
-                 em
-                   img(src='/frontend/pages/img/works/img2.jpg', class='img-responsive')
-                 a(class='recent-work-description')
-                   strong Web App
-                   b On Desktop Computer
-               .recent-work-item
-                 em
-                   img(src='/frontend/pages/img/works/img4.jpg', class='img-responsive')
-                 a(class='recent-work-description')
-                   strong Android App
-                   b On Tablet PC
-               .recent-work-item
-                 em
-                   img(src='/frontend/pages/img/works/img3.jpg', class='img-responsive')
-                 a(class='recent-work-description')
-                   strong Web App
-                   b On Smart Phone
-               .recent-work-item
-                 em
-                   img(src='/frontend/pages/img/works/img6.jpg', class='img-responsive')
-                 a(class='recent-work-description')
-                   strong Web App
-                   b On Macintosh Computer
-          div(class='row margin-bottom-40 front-steps-wrapper front-steps-count-3')
-           div(class='col-md-4 col-sm-4 front-step-col')
-             div(class='front-step front-step1')
-               h2 Create Room
-               p It is as easy to make a conference room of your own as just giving it a name.
-           div(class='col-md-4 col-sm-4 front-step-col')
-             div(class='front-step front-step2')
-               h2 Invite People
-               p You can easily invite people to join your meeting room by just sending them the conference room URL.
-           div(class='col-md-4 col-sm-4 front-step-col')
-             div(class='front-step front-step3')
-               h2 Start Video Conference
-               if(title == 'CloudKibo')
-                 p Once people join your room, CloudKibo Video Conference will begin providing you robust functionalities.
-               else
-                 p Once people join your room, Synaps3WebRTC Video Conference will begin providing you robust functionalities.
-       
-        .footer
-         .container
-          .row
-            div(class='col-md-6 col-sm-6 padding-top-10')
-              if(title == 'CloudKibo')
-                | CloudKibo &copy; (Beta Version) All Rights Reserved
-              else
-                | Synaps3WebRTC &copy; (Beta Version) All Rights Reserved
-            div(class='col-md-6 col-sm-6')
-              ul(class='social-footer list-unstyled list-inline pull-right')
-                    li
-                      a(href='#')
-                        i(class='fa fa-facebook')
-                    li
-                      a(href='#')
-                        i(class='fa fa-google-plus')
-                    li
-                      a(href='#')
-                        i(class='fa fa-linkedin')
-                    li
-                      a(href='#')
-                        i(class='fa fa-twitter')
-                    li
-                      a(href='#')
-                        i(class='fa fa-youtube')
-    
-       
-       
-       
-       
-        
-        
+        div(ng-view='', ng-controller='TabsController')
+
+        // Theme Files
+
+        script(src='/global/plugins/jquery-1.11.0.min.js')
+        script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
+        script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
+        script(src='/frontend/layout/scripts/back-to-top.js')
+
+        script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
+        script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
+
+        script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
+        script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
+        script(src='/frontend/pages/scripts/revo-slider-init.js')
+
+        script(src='/frontend/layout/scripts/layout.js')
+
+        // AngularJS Resources
         
         //script(src='/javascripts/lib/angular-file-upload-shim.min.js')
         
@@ -431,7 +76,7 @@ html
         
         //script(src='/javascripts/lib/angular-file-upload.js')
         
-        script(src='/javascripts/lib/angular-animate.js')
+        script(src='/javascripts/lib/angular-animate.min.js')
         
         script(src='/javascripts/lib/angular-resource.js')
         
@@ -442,6 +87,8 @@ html
         script(src='/javascripts/lib/angular-socket.io.js')
         
         script(src='/javascripts/lib/idb.filesystem.min.js')
+
+        script(src='/javascripts/lib/angular-touch.min.js')
         
         script(src='/socket.io/socket.io.js')
         
@@ -454,7 +101,7 @@ html
         script(src='/app/main/main.js')
         
         
-        // New Boilerplate
+        // N3ew Boilerplate
         
         script(src='/app/account/account.js')
         
@@ -477,7 +124,23 @@ html
         script(src='/components/auth/auth.service.js')
         
         script(src='/components/auth/user.service.js')
-        
+
+        script(src='/components/sound/sound.service.js')
+
+        script(src='/components/webrtc/KiboRTC.js')
+
+        //script(src='/components/webrtc/signalling.service.js')
+
+        //script(src='/components/webrtc/webrtc.service.js')
+
+        //script(src='/components/webrtc/rtcconference.service.js')
+
+        //script(src='/components/webrtc/filetransfer.service.js')
+
+        //script(src='/components/webrtc/screenshare.service.js')
+
+        //script(src='/components/webrtc/rtcconfig.service.js')
+
         //script(src='/components/modal/modal.service.js')
         
         //script(src='/components/mongoose-error/mongoose-error.directive.js')
@@ -485,28 +148,14 @@ html
         // New Boilerplate ends
         
         script(src='https://www.kibosupport.com/javascripts/widget/widget.js')
-        
-        script(src='/global/plugins/jquery-1.11.0.min.js')
-        script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
-        script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
-        script(src='/frontend/layout/scripts/back-to-top.js')
-     
-        script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
-        script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
-     
-        script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
-        script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
-        script(src='/frontend/pages/scripts/revo-slider-init.js')
-     
-        script(src='/frontend/layout/scripts/layout.js')
      
         script(type='text/javascript').
             jQuery(document).ready(function() {
                 Layout.init();    
                 Layout.initOWL();
-                RevosliderInit.initRevoSlider();
-                Layout.initTwitter();
+                //RevosliderInit.initRevoSlider();
+                //Layout.initTwitter();
                 //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
-                //Layout.initNavScrolling(); 
+                //Layout.initNavScrolling();
             });
     
