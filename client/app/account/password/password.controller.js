@@ -43,7 +43,7 @@ angular.module('cloudKiboApp')
                 password : $scope.user1.password
             };
 
-            $http.post('/api/users/changepassword', JSON.stringify(dataToSend))
+            $http.post(RestApi.user.changeUserPassword, JSON.stringify(dataToSend))
                 .success(function(data) {
                     $scope.user.message = data;
                     $scope.sentData = true;
