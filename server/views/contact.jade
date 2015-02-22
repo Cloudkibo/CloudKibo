@@ -15,15 +15,21 @@ block bodycontent
                 p
                   | Send your feedback 
                 // BEGIN FORM
-                form(action='#', role='form')
+                form(role='form', ng-submit='save()', novalidate, class='css-form form-horizontal form-without-legend', name='form')
                   .form-group
                     label(for='contacts-name') Name
+                        span(class='require')
+                            | *
                     input#contacts-name.form-control(type='text')
                   .form-group
                     label(for='contacts-email') Email
+                        span(class='require')
+                            | *
                     input#contacts-email.form-control(type='email')
                   .form-group
                     label(for='contacts-message') Message
+                        span(class='require')
+                            | *
                     textarea#contacts-message.form-control(rows='5')
                   button.btn.btn-primary(type='submit')
                     i.icon-ok
