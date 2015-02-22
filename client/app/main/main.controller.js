@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-    .controller('TabsController', function ($scope, $location, Auth, $http, socket) {
+    .controller('TabsController', function ($scope, $location, Auth, $http, socket, RestApi) {
 
         $scope.isCollapsed = true;
         $scope.isLoggedIn = Auth.isLoggedIn;
@@ -35,7 +35,7 @@ angular.module('cloudKiboApp')
 
     })
 
-    .controller('FileSharingController', function ($scope, $http, socket, Signalling, FileTransfer, $timeout, $location) {
+    .controller('FileSharingController', function ($scope, $http, socket, Signalling, FileTransfer, $timeout, $location, RestApi) {
 
         $scope.openFileView = false;
 
@@ -1959,7 +1959,7 @@ angular.module('cloudKiboApp')
     .controller('AddRequestsController', function ($scope) {
     })
 
-    .controller('IndexController', function ($scope, $location, Auth, $http, socket, $interval, $timeout) {
+    .controller('IndexController', function ($scope, $location, Auth, $http, socket, $interval, $timeout, RestApi) {
 
         $scope.isCollapsed = true;
         $scope.isLoggedIn = Auth.isLoggedIn;
