@@ -24,97 +24,97 @@ angular.module('cloudKiboApp')
                  * Deletes the user
                  *
                  */
-                deleteUsers: '/api/user/:id',
+                deleteUsers: '/api/users/:id',
 
                 /**
                  * Get user profile
                  *
                  */
-                getListOfUser: '/api/user/me',
+                getListOfUser: '/api/users/me',
 
                 /**
                  * Changes user's password
                  *
                  */
-                changeUserPassword: '/api/user/:id/password',
+                changeUserPassword: '/api/users/:id/password',
 
                 /**
                  * Get single user
                  *
                  */
-                getSingleUser: '/api/user/:id',
+                getSingleUser: '/api/users/:id',
 
                 /**
                  * Create new user
                  *
                  */
-                newUser: '/api/user/',
+                newUser: '/api/users/',
 
                 /**
                  * Update user image
                  *
                  */
-                imageUpdate: '/api/user/userimage/update',
+                imageUpdate: '/api/users/userimage/update',
 
                 /**
                  * Get user image
                  *
                  */
-                getUserImage: '/api/user/userimage/:image',
+                getUserImage: '/api/users/userimage/:image',
 
                 /**
                  * Change user profile
                  *
                  */
-                changeUserProfile: '/api/user/update',
+                changeUserProfile: '/api/users/update',
 
                 /**
                  * Search by user name
                  *
                  */
-                searchByUsername: '/api/user/searchbyusername',
+                searchByUsername: '/api/users/searchbyusername',
 
                 /**
                  * Search by user email
                  *
                  */
-                searchByUserEmail: '/api/user/searchbyuseremail',
+                searchByUserEmail: '/api/users/searchbyuseremail',
 
                 /**
                  * Invite by email
                  *
                  */
-                inviteContactByEmail: '/api/user/invitebyemail',
+                inviteContactByEmail: '/api/users/invitebyemail',
 
                 /**
                  * Initial testing of webcam and webRTC support is done here
                  *
                  */
-                initialTesting: '/api/user/initialtestingdone',
+                initialTesting: '/api/users/initialtestingdone',
 
                 /**
                  * Sets the status message of user
                  *
                  */
-                statusMessage: '/api/user/setstatusmessage',
+                statusMessage: '/api/users/setstatusmessage',
 
                 /**
                  * Password reset route
                  *
                  */
-                resetPasswordRequest: '/api/user/resetpasswordrequest',
+                resetPasswordRequest: '/api/users/resetpasswordrequest',
 
                 /**
                  * When user gives new password
                  *
                  */
-                newPassword: '/api/user/changepassword',
+                newPassword: '/api/users/changepassword',
 
                 /**
                  * Save username, email and phone number for Federated authenticated user
                  *
                  */
-                saveUserDetailForFedreatedAuthentiaation: '/api/user/saveusername'
+                saveUserDetailForFedreatedAuthentiaation: '/api/users/saveusername'
 
             },
 
