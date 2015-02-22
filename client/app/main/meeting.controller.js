@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-    .controller('MeetingController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location){
+    .controller('MeetingController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location, RestApi){
 
         $scope.user = $scope.getCurrentUser();
 
@@ -1714,7 +1714,17 @@ angular.module('cloudKiboApp')
 
 
 
+<<<<<<< HEAD
     .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
+=======
+
+
+
+
+
+
+    .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi){
+>>>>>>> 369fffea9cd239cf484eb56e2016b47e6652adb6
 
         var roomid = '';
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -3124,7 +3134,16 @@ angular.module('cloudKiboApp')
 
 
 
+<<<<<<< HEAD
     .controller('VideoCallController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
+=======
+
+
+
+
+
+    .controller('VideoCallController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi){
+>>>>>>> 369fffea9cd239cf484eb56e2016b47e6652adb6
 
         var roomid = '';
         ////////////////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-    .controller('ForgotPasswordController', function($scope, $http){
+    .controller('ForgotPasswordController', function($scope, $http, RestApi){
 
         $scope.isCollapsed = true;
 
@@ -12,6 +12,7 @@ angular.module('cloudKiboApp')
 
             $http.post(RestApi.user.resetPasswordRequest, JSON.stringify(dataToSend))
                 .success(function(data) {
+                    console.log(data)
                     $scope.addAlert(data.status, data.msg)
                     if(data.status == 'success')
                         $scope.sentData = true;
@@ -43,7 +44,7 @@ angular.module('cloudKiboApp')
                 password : $scope.user1.password
             };
 
-            $http.post('/api/users/changepassword', JSON.stringify(dataToSend))
+            $http.post(RestApi.user.newPassword, JSON.stringify(dataToSend))
                 .success(function(data) {
                     $scope.user.message = data;
                     $scope.sentData = true;

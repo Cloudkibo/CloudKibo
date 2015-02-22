@@ -70,7 +70,7 @@ block appbodycontent
                                     br
                                     small
                                       i {{otherUser.status}}
-                                  #userViewOptions
+                                  #userViewOptions(ng-if='hasSharedDetails()')
                                     span
                                       button.btn.btn-send(ng-click='callThisPerson(otherUser.username)') Make a Call
                                     span

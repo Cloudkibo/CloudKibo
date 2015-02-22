@@ -202,7 +202,7 @@ block bodycontent
                   textarea.form-control(rows=8, cols=40, name="smessage", ng-model='inviteemail.shortmessage', ng-focus)
                 br
                 div
-                  button.btn.btn-send(type='submit', ng-disabled="form.$invalid") Invite
+                  button.btn.btn-send(type='submit', ng-disabled="form6.$invalid") Invite
               br
               alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
         
@@ -545,7 +545,7 @@ block bodycontent
       .row
         div(class='col-md-6 col-sm-6 padding-top-10')
           | CloudKibo &copy; (Beta Version) All Rights Reserved
-        div(class='col-md-6 col-sm-6')
+        //div(class='col-md-6 col-sm-6')
           ul(class='social-footer list-unstyled list-inline pull-right')
                 li
                   a(href='#')
