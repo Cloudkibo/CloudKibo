@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-    .controller('MeetingController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location){
+    .controller('MeetingController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location, RestApi){
 
         $scope.user = $scope.getCurrentUser();
 
@@ -1720,7 +1720,7 @@ angular.module('cloudKiboApp')
 
 
 
-    .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
+    .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi){
 
         var roomid = '';
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -3135,7 +3135,7 @@ angular.module('cloudKiboApp')
 
 
 
-    .controller('VideoCallController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
+    .controller('VideoCallController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi){
 
         var roomid = '';
         ////////////////////////////////////////////////////////////////////////////////////////
