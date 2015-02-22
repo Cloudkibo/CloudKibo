@@ -1714,6 +1714,9 @@ angular.module('cloudKiboApp')
 
 
 
+<<<<<<< HEAD
+    .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
+=======
 
 
 
@@ -1721,6 +1724,7 @@ angular.module('cloudKiboApp')
 
 
     .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi){
+>>>>>>> 369fffea9cd239cf484eb56e2016b47e6652adb6
 
         var roomid = '';
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -3130,12 +3134,16 @@ angular.module('cloudKiboApp')
 
 
 
+<<<<<<< HEAD
+    .controller('VideoCallController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
+=======
 
 
 
 
 
     .controller('VideoCallController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi){
+>>>>>>> 369fffea9cd239cf484eb56e2016b47e6652adb6
 
         var roomid = '';
         ////////////////////////////////////////////////////////////////////////////////////////
