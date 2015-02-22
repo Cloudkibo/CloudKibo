@@ -127,7 +127,7 @@ exports.liveHelpRoute = function (req, res) {
 	else if(req.get('host') == 'www.synaps3webrtc.com')
 		title = 'Synaps3WebRTC';
 
-		res.render('livehelp', { title: title, meetingroom : req.params[0]});
+		res.render('livehelp', { title: title, meetingroom : req.params[0], role : req.query['role']});
   };
 
 exports.videoCallRoute = function (req, res) {

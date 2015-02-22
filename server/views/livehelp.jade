@@ -74,6 +74,8 @@ html(ng-app='cloudKiboApp')
     script(src='/app/main/main.js')
 
     script(src='/components/webrtc/rtcconfig.service.js')
+
+    script(src='/components/rest/rest.service.js')
     
     
     // New Boilerplate
@@ -126,7 +128,7 @@ html(ng-app='cloudKiboApp')
 
     
  body(ng-controller='LiveHelpController')
-   .header
+   .header(ng-init='role=#{JSON.stringify(role)}')
     .container
       a(class='site-logo', href='/')
         img(src='/images/logo_small.png')
@@ -162,6 +164,8 @@ html(ng-app='cloudKiboApp')
               div(style='text-align: center;')
                 span
                   div(ng-show='hasPeerSharedScreen()')
+                    div(ng-if='role=="visitor"')
+                        video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
                     video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
                     audio(id='remoteaudio1', autoplay='true')
                   div(ng-show='!hasPeerSharedScreen()')
@@ -176,7 +180,11 @@ html(ng-app='cloudKiboApp')
                 br
           .sidePane(class='col-md-3 col-sm-3 blog-sidebar')
             div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
+              div(ng-if='role=="agent"')
+                video(id='localvideo', autoplay='true', width='100%', class='videoelement')
               button(id='showScreenButton', ng-click='showScreen()') {{showScreenText}}
+              br
+              br
               div(ng-show='showExtension()')
                 button(ng-click='installExtension()', style='padding: 0;background: none;height: 61px;vertical-align: middle;cursor:pointer;')
                   | Add Chrome Screen Sharing Extension
