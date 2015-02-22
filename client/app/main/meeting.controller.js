@@ -1714,12 +1714,6 @@ angular.module('cloudKiboApp')
 
 
 
-
-
-
-
-
-
     .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout){
 
         var roomid = '';
@@ -3126,11 +3120,6 @@ angular.module('cloudKiboApp')
 
 
     })
-
-
-
-
-
 
 
 
