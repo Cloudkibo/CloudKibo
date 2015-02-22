@@ -124,42 +124,42 @@ angular.module('cloudKiboApp')
                  * Returns contact list of user
                  *
                  */
-                contactListOfUser: '/api/contactlist/',
+                contactListOfUser: '/api/contactslist/',
 
                 /**
                  * Retrun list of pending add request
                  *
                  */
-                pendingAddRequest: '/api/contactlist/pendingcontacts',
+                pendingAddRequest: '/api/contactslist/pendingcontacts',
 
                 /**
                  * Add contact with cloudkibo username
                  *
                  */
-                addContactByName: '/api/contactlist/addbyusername',
+                addContactByName: '/api/contactslist/addbyusername',
 
                 /**
                  * Add contact with email address
                  *
                  */
-                addContactByEmail: '/api/contactlist/addbyemail',
+                addContactByEmail: '/api/contactslist/addbyemail',
 
                 /**
                  * Accepts the contact add request
                  *
                  */
-                acceptContactRequest: '/api/contactlist/approvefriendrequest',
+                acceptContactRequest: '/api/contactslist/approvefriendrequest',
 
                 /**
                  * Reject the contact add request
                  *
                  */
-                rejectContactRequest: '/api/contactlist/rejectfriendrequest',
+                rejectContactRequest: '/api/contactslist/rejectfriendrequest',
                 /**
                  * Remove contact from contact list
                  *
                  */
-                removeFromContactList: '/api/contactlist/removefriend'
+                removeFromContactList: '/api/contactslist/removefriend'
             },
 
             userchat : {
