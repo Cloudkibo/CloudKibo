@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
+  .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q, RestApi) {
     var currentUser = {};
     if($cookieStore.get('token')) {
       currentUser = User.get();
@@ -24,7 +24,7 @@ angular.module('cloudKiboApp')
         var cb = callback || angular.noop;
         var deferred = $q.defer();
 
-        $http.post('/auth/local', {
+        $http.post(RestApi.auth.local, {
           username: user.username,
           password: user.password
         }).

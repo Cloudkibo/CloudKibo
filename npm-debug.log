@@ -89,469 +89,469 @@
 6 verbose install     'should' ] ]
 7 info preinstall cloud-kibo@1.0.0
 8 verbose readDependencies using package.json deps
-9 verbose already installed skipping passport-local@~0.1.6 E:\CloudKibo
-10 verbose cache add [ 'passport-facebook@latest', null ]
-11 verbose cache add name=undefined spec="passport-facebook@latest" args=["passport-facebook@latest",null]
-12 verbose parsed url { protocol: null,
-12 verbose parsed url   slashes: null,
-12 verbose parsed url   auth: null,
-12 verbose parsed url   host: null,
-12 verbose parsed url   port: null,
-12 verbose parsed url   hostname: null,
-12 verbose parsed url   hash: null,
-12 verbose parsed url   search: null,
-12 verbose parsed url   query: null,
-12 verbose parsed url   pathname: 'passport-facebook@latest',
-12 verbose parsed url   path: 'passport-facebook@latest',
-12 verbose parsed url   href: 'passport-facebook@latest' }
-13 verbose cache add [ 'passport-twitter@latest', null ]
-14 verbose cache add name=undefined spec="passport-twitter@latest" args=["passport-twitter@latest",null]
-15 verbose parsed url { protocol: null,
-15 verbose parsed url   slashes: null,
-15 verbose parsed url   auth: null,
-15 verbose parsed url   host: null,
-15 verbose parsed url   port: null,
-15 verbose parsed url   hostname: null,
-15 verbose parsed url   hash: null,
-15 verbose parsed url   search: null,
-15 verbose parsed url   query: null,
-15 verbose parsed url   pathname: 'passport-twitter@latest',
-15 verbose parsed url   path: 'passport-twitter@latest',
-15 verbose parsed url   href: 'passport-twitter@latest' }
-16 verbose cache add [ 'passport-google-oauth@latest', null ]
-17 verbose cache add name=undefined spec="passport-google-oauth@latest" args=["passport-google-oauth@latest",null]
-18 verbose parsed url { protocol: null,
-18 verbose parsed url   slashes: null,
-18 verbose parsed url   auth: null,
-18 verbose parsed url   host: null,
-18 verbose parsed url   port: null,
-18 verbose parsed url   hostname: null,
-18 verbose parsed url   hash: null,
-18 verbose parsed url   search: null,
-18 verbose parsed url   query: null,
-18 verbose parsed url   pathname: 'passport-google-oauth@latest',
-18 verbose parsed url   path: 'passport-google-oauth@latest',
-18 verbose parsed url   href: 'passport-google-oauth@latest' }
-19 verbose cache add [ 'passport-windowslive@latest', null ]
-20 verbose cache add name=undefined spec="passport-windowslive@latest" args=["passport-windowslive@latest",null]
-21 verbose parsed url { protocol: null,
-21 verbose parsed url   slashes: null,
-21 verbose parsed url   auth: null,
-21 verbose parsed url   host: null,
-21 verbose parsed url   port: null,
-21 verbose parsed url   hostname: null,
-21 verbose parsed url   hash: null,
-21 verbose parsed url   search: null,
-21 verbose parsed url   query: null,
-21 verbose parsed url   pathname: 'passport-windowslive@latest',
-21 verbose parsed url   path: 'passport-windowslive@latest',
-21 verbose parsed url   href: 'passport-windowslive@latest' }
-22 verbose already installed skipping composable-middleware@^0.3.0 E:\CloudKibo
-23 verbose already installed skipping socket.io@0.9.14 E:\CloudKibo
-24 verbose already installed skipping socket.io-client@^1.0.6 E:\CloudKibo
-25 verbose already installed skipping socketio-jwt@^2.0.2 E:\CloudKibo
-26 verbose already installed skipping sendgrid@1.0.1 E:\CloudKibo
-27 verbose already installed skipping grunt@~0.4.4 E:\CloudKibo
-28 verbose already installed skipping grunt-autoprefixer@~0.7.2 E:\CloudKibo
-29 verbose already installed skipping grunt-wiredep@~1.8.0 E:\CloudKibo
-30 verbose already installed skipping grunt-concurrent@~0.5.0 E:\CloudKibo
-31 verbose already installed skipping grunt-contrib-clean@~0.5.0 E:\CloudKibo
-32 verbose already installed skipping grunt-contrib-concat@~0.4.0 E:\CloudKibo
-33 verbose cache add name="passport-facebook" spec="latest" args=["passport-facebook","latest"]
-34 verbose parsed url { protocol: null,
-34 verbose parsed url   slashes: null,
-34 verbose parsed url   auth: null,
-34 verbose parsed url   host: null,
-34 verbose parsed url   port: null,
-34 verbose parsed url   hostname: null,
-34 verbose parsed url   hash: null,
-34 verbose parsed url   search: null,
-34 verbose parsed url   query: null,
-34 verbose parsed url   pathname: 'latest',
-34 verbose parsed url   path: 'latest',
-34 verbose parsed url   href: 'latest' }
-35 verbose addNamed [ 'passport-facebook', 'latest' ]
-36 verbose addNamed [ null, null ]
-37 verbose cache add name="passport-twitter" spec="latest" args=["passport-twitter","latest"]
-38 verbose parsed url { protocol: null,
-38 verbose parsed url   slashes: null,
-38 verbose parsed url   auth: null,
-38 verbose parsed url   host: null,
-38 verbose parsed url   port: null,
-38 verbose parsed url   hostname: null,
-38 verbose parsed url   hash: null,
-38 verbose parsed url   search: null,
-38 verbose parsed url   query: null,
-38 verbose parsed url   pathname: 'latest',
-38 verbose parsed url   path: 'latest',
-38 verbose parsed url   href: 'latest' }
-39 verbose addNamed [ 'passport-twitter', 'latest' ]
-40 verbose addNamed [ null, null ]
-41 verbose cache add name="passport-google-oauth" spec="latest" args=["passport-google-oauth","latest"]
-42 verbose parsed url { protocol: null,
-42 verbose parsed url   slashes: null,
-42 verbose parsed url   auth: null,
-42 verbose parsed url   host: null,
-42 verbose parsed url   port: null,
-42 verbose parsed url   hostname: null,
-42 verbose parsed url   hash: null,
-42 verbose parsed url   search: null,
-42 verbose parsed url   query: null,
-42 verbose parsed url   pathname: 'latest',
-42 verbose parsed url   path: 'latest',
-42 verbose parsed url   href: 'latest' }
-43 verbose addNamed [ 'passport-google-oauth', 'latest' ]
-44 verbose addNamed [ null, null ]
-45 verbose cache add name="passport-windowslive" spec="latest" args=["passport-windowslive","latest"]
-46 verbose parsed url { protocol: null,
-46 verbose parsed url   slashes: null,
-46 verbose parsed url   auth: null,
-46 verbose parsed url   host: null,
-46 verbose parsed url   port: null,
-46 verbose parsed url   hostname: null,
-46 verbose parsed url   hash: null,
-46 verbose parsed url   search: null,
-46 verbose parsed url   query: null,
-46 verbose parsed url   pathname: 'latest',
-46 verbose parsed url   path: 'latest',
-46 verbose parsed url   href: 'latest' }
-47 verbose addNamed [ 'passport-windowslive', 'latest' ]
-48 verbose addNamed [ null, null ]
-49 silly lockFile 82ca5952-passport-facebook-latest passport-facebook@latest
-50 verbose lock passport-facebook@latest C:\Users\Saba\AppData\Roaming\npm-cache\82ca5952-passport-facebook-latest.lock
-51 silly lockFile d5de964c-passport-twitter-latest passport-twitter@latest
-52 verbose lock passport-twitter@latest C:\Users\Saba\AppData\Roaming\npm-cache\d5de964c-passport-twitter-latest.lock
-53 silly lockFile 2c491da3-passport-google-oauth-latest passport-google-oauth@latest
-54 verbose lock passport-google-oauth@latest C:\Users\Saba\AppData\Roaming\npm-cache\2c491da3-passport-google-oauth-latest.lock
-55 silly lockFile 8cf4c363-passport-windowslive-latest passport-windowslive@latest
-56 verbose lock passport-windowslive@latest C:\Users\Saba\AppData\Roaming\npm-cache\8cf4c363-passport-windowslive-latest.lock
-57 verbose already installed skipping grunt-contrib-copy@~0.5.0 E:\CloudKibo
-58 verbose already installed skipping grunt-contrib-cssmin@~0.9.0 E:\CloudKibo
-59 verbose already installed skipping grunt-contrib-htmlmin@~0.2.0 E:\CloudKibo
-60 verbose already installed skipping grunt-contrib-imagemin@~0.7.1 E:\CloudKibo
-61 verbose already installed skipping grunt-contrib-jshint@~0.10.0 E:\CloudKibo
-62 verbose already installed skipping grunt-contrib-uglify@~0.4.0 E:\CloudKibo
-63 verbose already installed skipping grunt-contrib-watch@~0.6.1 E:\CloudKibo
-64 verbose already installed skipping grunt-contrib-jade@^0.11.0 E:\CloudKibo
-65 verbose already installed skipping grunt-google-cdn@~0.4.0 E:\CloudKibo
-66 verbose already installed skipping grunt-newer@~0.7.0 E:\CloudKibo
-67 verbose already installed skipping grunt-ng-annotate@^0.2.3 E:\CloudKibo
-68 verbose already installed skipping grunt-rev@~0.1.0 E:\CloudKibo
-69 verbose already installed skipping grunt-svgmin@~0.4.0 E:\CloudKibo
-70 verbose already installed skipping grunt-usemin@~2.1.1 E:\CloudKibo
-71 verbose already installed skipping grunt-env@~0.4.1 E:\CloudKibo
-72 verbose already installed skipping grunt-node-inspector@~0.1.5 E:\CloudKibo
-73 info addNameTag [ 'passport-facebook', 'latest' ]
-74 info addNameTag [ 'passport-twitter', 'latest' ]
-75 info addNameTag [ 'passport-google-oauth', 'latest' ]
-76 info addNameTag [ 'passport-windowslive', 'latest' ]
-77 verbose request where is /passport-facebook
-78 verbose request registry https://registry.npmjs.org/
-79 verbose request id 0a91d9b85a232530
-80 verbose url raw /passport-facebook
-81 verbose url resolving [ 'https://registry.npmjs.org/', './passport-facebook' ]
-82 verbose url resolved https://registry.npmjs.org/passport-facebook
-83 verbose request where is https://registry.npmjs.org/passport-facebook
-84 info trying registry request attempt 1 at 00:52:38
-85 verbose etag "4EPUH85ES8FY9NWGTTSRTNE8E"
-86 http GET https://registry.npmjs.org/passport-facebook
-87 verbose already installed skipping grunt-nodemon@~0.2.0 E:\CloudKibo
-88 verbose already installed skipping grunt-angular-templates@^0.5.4 E:\CloudKibo
-89 verbose already installed skipping grunt-dom-munger@^3.4.0 E:\CloudKibo
-90 verbose already installed skipping grunt-protractor-runner@^1.1.0 E:\CloudKibo
-91 verbose already installed skipping grunt-asset-injector@^0.1.0 E:\CloudKibo
-92 verbose already installed skipping grunt-karma@~0.8.2 E:\CloudKibo
-93 verbose cache add [ 'grunt-build-control@git+https://github.com/DaftMonk/grunt-build-control',
-93 verbose cache add   null ]
-94 verbose cache add name=undefined spec="grunt-build-control@git+https://github.com/DaftMonk/grunt-build-control" args=["grunt-build-control@git+https://github.com/DaftMonk/grunt-build-control",null]
-95 verbose parsed url { protocol: null,
-95 verbose parsed url   slashes: null,
-95 verbose parsed url   auth: null,
-95 verbose parsed url   host: null,
-95 verbose parsed url   port: null,
-95 verbose parsed url   hostname: null,
-95 verbose parsed url   hash: null,
-95 verbose parsed url   search: null,
-95 verbose parsed url   query: null,
-95 verbose parsed url   pathname: 'grunt-build-control@git+https://github.com/DaftMonk/grunt-build-control',
-95 verbose parsed url   path: 'grunt-build-control@git+https://github.com/DaftMonk/grunt-build-control',
-95 verbose parsed url   href: 'grunt-build-control@git+https://github.com/DaftMonk/grunt-build-control' }
-96 verbose already installed skipping grunt-mocha-test@~0.10.2 E:\CloudKibo
-97 verbose cache add [ 'grunt-contrib-stylus@latest', null ]
-98 verbose cache add name=undefined spec="grunt-contrib-stylus@latest" args=["grunt-contrib-stylus@latest",null]
-99 verbose parsed url { protocol: null,
-99 verbose parsed url   slashes: null,
-99 verbose parsed url   auth: null,
-99 verbose parsed url   host: null,
-99 verbose parsed url   port: null,
-99 verbose parsed url   hostname: null,
-99 verbose parsed url   hash: null,
-99 verbose parsed url   search: null,
-99 verbose parsed url   query: null,
-99 verbose parsed url   pathname: 'grunt-contrib-stylus@latest',
-99 verbose parsed url   path: 'grunt-contrib-stylus@latest',
-99 verbose parsed url   href: 'grunt-contrib-stylus@latest' }
-100 verbose already installed skipping jit-grunt@^0.5.0 E:\CloudKibo
-101 verbose already installed skipping time-grunt@~0.3.1 E:\CloudKibo
-102 verbose already installed skipping grunt-express-server@~0.4.17 E:\CloudKibo
-103 verbose already installed skipping grunt-open@~0.2.3 E:\CloudKibo
-104 verbose already installed skipping open@~0.0.4 E:\CloudKibo
-105 verbose already installed skipping jshint-stylish@~0.1.5 E:\CloudKibo
-106 verbose already installed skipping connect-livereload@~0.4.0 E:\CloudKibo
-107 verbose already installed skipping karma-ng-scenario@~0.1.0 E:\CloudKibo
-108 verbose already installed skipping karma-firefox-launcher@~0.1.3 E:\CloudKibo
-109 verbose already installed skipping karma-script-launcher@~0.1.0 E:\CloudKibo
-110 verbose already installed skipping karma-html2js-preprocessor@~0.1.0 E:\CloudKibo
-111 verbose already installed skipping karma-ng-jade2js-preprocessor@^0.1.2 E:\CloudKibo
-112 verbose already installed skipping karma-jasmine@~0.1.5 E:\CloudKibo
-113 verbose already installed skipping karma-chrome-launcher@~0.1.3 E:\CloudKibo
-114 verbose already installed skipping requirejs@~2.1.11 E:\CloudKibo
-115 verbose already installed skipping karma-requirejs@~0.2.1 E:\CloudKibo
-116 verbose already installed skipping karma-coffee-preprocessor@~0.2.1 E:\CloudKibo
-117 verbose already installed skipping karma-jade-preprocessor@0.0.11 E:\CloudKibo
-118 verbose already installed skipping karma-phantomjs-launcher@~0.1.4 E:\CloudKibo
-119 verbose already installed skipping karma@~0.12.9 E:\CloudKibo
-120 verbose already installed skipping karma-ng-html2js-preprocessor@~0.1.0 E:\CloudKibo
-121 verbose already installed skipping supertest@~0.11.0 E:\CloudKibo
-122 verbose already installed skipping should@~3.3.1 E:\CloudKibo
-123 verbose request where is /passport-twitter
-124 verbose request registry https://registry.npmjs.org/
-125 verbose url raw /passport-twitter
-126 verbose url resolving [ 'https://registry.npmjs.org/', './passport-twitter' ]
-127 verbose url resolved https://registry.npmjs.org/passport-twitter
-128 verbose request where is https://registry.npmjs.org/passport-twitter
-129 info trying registry request attempt 1 at 00:52:38
-130 verbose etag "B794P42MSNI7QXNNC1SMX2J1A"
-131 http GET https://registry.npmjs.org/passport-twitter
-132 verbose request where is /passport-google-oauth
-133 verbose request registry https://registry.npmjs.org/
-134 verbose url raw /passport-google-oauth
-135 verbose url resolving [ 'https://registry.npmjs.org/', './passport-google-oauth' ]
-136 verbose url resolved https://registry.npmjs.org/passport-google-oauth
-137 verbose request where is https://registry.npmjs.org/passport-google-oauth
-138 info trying registry request attempt 1 at 00:52:38
-139 verbose etag "A964W5XMB8WQ5RATJSO9HNRQ4"
-140 http GET https://registry.npmjs.org/passport-google-oauth
-141 verbose cache add name="grunt-build-control" spec="git+https://github.com/DaftMonk/grunt-build-control" args=["grunt-build-control","git+https://github.com/DaftMonk/grunt-build-control"]
-142 verbose parsed url { protocol: 'git+https:',
-142 verbose parsed url   slashes: true,
-142 verbose parsed url   auth: null,
-142 verbose parsed url   host: 'github.com',
-142 verbose parsed url   port: null,
-142 verbose parsed url   hostname: 'github.com',
-142 verbose parsed url   hash: null,
-142 verbose parsed url   search: null,
-142 verbose parsed url   query: null,
-142 verbose parsed url   pathname: '/DaftMonk/grunt-build-control',
-142 verbose parsed url   path: '/DaftMonk/grunt-build-control',
-142 verbose parsed url   href: 'git+https://github.com/DaftMonk/grunt-build-control' }
-143 silly lockFile 7e4d577b-com-DaftMonk-grunt-build-control https://github.com/DaftMonk/grunt-build-control
-144 verbose lock https://github.com/DaftMonk/grunt-build-control C:\Users\Saba\AppData\Roaming\npm-cache\7e4d577b-com-DaftMonk-grunt-build-control.lock
-145 verbose cache add name="grunt-contrib-stylus" spec="latest" args=["grunt-contrib-stylus","latest"]
-146 verbose parsed url { protocol: null,
-146 verbose parsed url   slashes: null,
-146 verbose parsed url   auth: null,
-146 verbose parsed url   host: null,
-146 verbose parsed url   port: null,
-146 verbose parsed url   hostname: null,
-146 verbose parsed url   hash: null,
-146 verbose parsed url   search: null,
-146 verbose parsed url   query: null,
-146 verbose parsed url   pathname: 'latest',
-146 verbose parsed url   path: 'latest',
-146 verbose parsed url   href: 'latest' }
-147 verbose addNamed [ 'grunt-contrib-stylus', 'latest' ]
-148 verbose addNamed [ null, null ]
-149 silly lockFile 13e2f9ac-grunt-contrib-stylus-latest grunt-contrib-stylus@latest
-150 verbose lock grunt-contrib-stylus@latest C:\Users\Saba\AppData\Roaming\npm-cache\13e2f9ac-grunt-contrib-stylus-latest.lock
-151 verbose already installed skipping express@~4.0.0 E:\CloudKibo
-152 verbose already installed skipping morgan@~1.0.0 E:\CloudKibo
-153 verbose already installed skipping body-parser@~1.5.0 E:\CloudKibo
-154 verbose already installed skipping method-override@~1.0.0 E:\CloudKibo
-155 verbose already installed skipping serve-favicon@~2.0.1 E:\CloudKibo
-156 verbose already installed skipping cookie-parser@~1.0.1 E:\CloudKibo
-157 verbose already installed skipping express-session@~1.0.2 E:\CloudKibo
-158 verbose already installed skipping errorhandler@~1.0.0 E:\CloudKibo
-159 verbose already installed skipping compression@~1.0.1 E:\CloudKibo
-160 verbose already installed skipping lodash@~2.4.1 E:\CloudKibo
-161 verbose already installed skipping jade@~1.2.0 E:\CloudKibo
-162 verbose already installed skipping mongoose@~3.8.8 E:\CloudKibo
-163 verbose already installed skipping mongodb@~1.4.19 E:\CloudKibo
-164 verbose already installed skipping jsonwebtoken@^0.3.0 E:\CloudKibo
-165 verbose already installed skipping express-jwt@^0.1.3 E:\CloudKibo
-166 verbose addRemoteGit [ 'https://github.com/DaftMonk/grunt-build-control', 'master' ]
-167 info addNameTag [ 'grunt-contrib-stylus', 'latest' ]
-168 verbose request where is /passport-windowslive
-169 verbose request registry https://registry.npmjs.org/
-170 verbose url raw /passport-windowslive
-171 verbose url resolving [ 'https://registry.npmjs.org/', './passport-windowslive' ]
-172 verbose url resolved https://registry.npmjs.org/passport-windowslive
-173 verbose request where is https://registry.npmjs.org/passport-windowslive
-174 info trying registry request attempt 1 at 00:52:38
-175 verbose etag "4S2UA8Z4JERS9WW9WGS531VSQ"
-176 http GET https://registry.npmjs.org/passport-windowslive
-177 verbose already installed skipping passport@~0.2.0 E:\CloudKibo
-178 verbose request where is /grunt-contrib-stylus
-179 verbose request registry https://registry.npmjs.org/
-180 verbose url raw /grunt-contrib-stylus
-181 verbose url resolving [ 'https://registry.npmjs.org/', './grunt-contrib-stylus' ]
-182 verbose url resolved https://registry.npmjs.org/grunt-contrib-stylus
-183 verbose request where is https://registry.npmjs.org/grunt-contrib-stylus
-184 info trying registry request attempt 1 at 00:52:38
-185 verbose etag "9SILLC15EFYH9QMDWVU0WY7KP"
-186 http GET https://registry.npmjs.org/grunt-contrib-stylus
+9 verbose cache add [ 'passport-facebook@latest', null ]
+10 verbose cache add name=undefined spec="passport-facebook@latest" args=["passport-facebook@latest",null]
+11 verbose parsed url { protocol: null,
+11 verbose parsed url   slashes: null,
+11 verbose parsed url   auth: null,
+11 verbose parsed url   host: null,
+11 verbose parsed url   port: null,
+11 verbose parsed url   hostname: null,
+11 verbose parsed url   hash: null,
+11 verbose parsed url   search: null,
+11 verbose parsed url   query: null,
+11 verbose parsed url   pathname: 'passport-facebook@latest',
+11 verbose parsed url   path: 'passport-facebook@latest',
+11 verbose parsed url   href: 'passport-facebook@latest' }
+12 verbose cache add [ 'passport-twitter@latest', null ]
+13 verbose cache add name=undefined spec="passport-twitter@latest" args=["passport-twitter@latest",null]
+14 verbose parsed url { protocol: null,
+14 verbose parsed url   slashes: null,
+14 verbose parsed url   auth: null,
+14 verbose parsed url   host: null,
+14 verbose parsed url   port: null,
+14 verbose parsed url   hostname: null,
+14 verbose parsed url   hash: null,
+14 verbose parsed url   search: null,
+14 verbose parsed url   query: null,
+14 verbose parsed url   pathname: 'passport-twitter@latest',
+14 verbose parsed url   path: 'passport-twitter@latest',
+14 verbose parsed url   href: 'passport-twitter@latest' }
+15 verbose cache add [ 'passport-google-oauth@latest', null ]
+16 verbose cache add name=undefined spec="passport-google-oauth@latest" args=["passport-google-oauth@latest",null]
+17 verbose parsed url { protocol: null,
+17 verbose parsed url   slashes: null,
+17 verbose parsed url   auth: null,
+17 verbose parsed url   host: null,
+17 verbose parsed url   port: null,
+17 verbose parsed url   hostname: null,
+17 verbose parsed url   hash: null,
+17 verbose parsed url   search: null,
+17 verbose parsed url   query: null,
+17 verbose parsed url   pathname: 'passport-google-oauth@latest',
+17 verbose parsed url   path: 'passport-google-oauth@latest',
+17 verbose parsed url   href: 'passport-google-oauth@latest' }
+18 verbose cache add [ 'passport-windowslive@latest', null ]
+19 verbose cache add name=undefined spec="passport-windowslive@latest" args=["passport-windowslive@latest",null]
+20 verbose parsed url { protocol: null,
+20 verbose parsed url   slashes: null,
+20 verbose parsed url   auth: null,
+20 verbose parsed url   host: null,
+20 verbose parsed url   port: null,
+20 verbose parsed url   hostname: null,
+20 verbose parsed url   hash: null,
+20 verbose parsed url   search: null,
+20 verbose parsed url   query: null,
+20 verbose parsed url   pathname: 'passport-windowslive@latest',
+20 verbose parsed url   path: 'passport-windowslive@latest',
+20 verbose parsed url   href: 'passport-windowslive@latest' }
+21 verbose already installed skipping composable-middleware@^0.3.0 E:\CloudKibo
+22 verbose already installed skipping socket.io@0.9.14 E:\CloudKibo
+23 verbose already installed skipping socket.io-client@^1.0.6 E:\CloudKibo
+24 verbose already installed skipping socketio-jwt@^2.0.2 E:\CloudKibo
+25 verbose already installed skipping sendgrid@1.0.1 E:\CloudKibo
+26 verbose already installed skipping grunt@~0.4.4 E:\CloudKibo
+27 verbose already installed skipping grunt-autoprefixer@~0.7.2 E:\CloudKibo
+28 verbose already installed skipping grunt-wiredep@~1.8.0 E:\CloudKibo
+29 verbose already installed skipping grunt-concurrent@~0.5.0 E:\CloudKibo
+30 verbose already installed skipping grunt-contrib-clean@~0.5.0 E:\CloudKibo
+31 verbose already installed skipping grunt-contrib-concat@~0.4.0 E:\CloudKibo
+32 verbose cache add name="passport-facebook" spec="latest" args=["passport-facebook","latest"]
+33 verbose parsed url { protocol: null,
+33 verbose parsed url   slashes: null,
+33 verbose parsed url   auth: null,
+33 verbose parsed url   host: null,
+33 verbose parsed url   port: null,
+33 verbose parsed url   hostname: null,
+33 verbose parsed url   hash: null,
+33 verbose parsed url   search: null,
+33 verbose parsed url   query: null,
+33 verbose parsed url   pathname: 'latest',
+33 verbose parsed url   path: 'latest',
+33 verbose parsed url   href: 'latest' }
+34 verbose addNamed [ 'passport-facebook', 'latest' ]
+35 verbose addNamed [ null, null ]
+36 verbose cache add name="passport-twitter" spec="latest" args=["passport-twitter","latest"]
+37 verbose parsed url { protocol: null,
+37 verbose parsed url   slashes: null,
+37 verbose parsed url   auth: null,
+37 verbose parsed url   host: null,
+37 verbose parsed url   port: null,
+37 verbose parsed url   hostname: null,
+37 verbose parsed url   hash: null,
+37 verbose parsed url   search: null,
+37 verbose parsed url   query: null,
+37 verbose parsed url   pathname: 'latest',
+37 verbose parsed url   path: 'latest',
+37 verbose parsed url   href: 'latest' }
+38 verbose addNamed [ 'passport-twitter', 'latest' ]
+39 verbose addNamed [ null, null ]
+40 verbose cache add name="passport-google-oauth" spec="latest" args=["passport-google-oauth","latest"]
+41 verbose parsed url { protocol: null,
+41 verbose parsed url   slashes: null,
+41 verbose parsed url   auth: null,
+41 verbose parsed url   host: null,
+41 verbose parsed url   port: null,
+41 verbose parsed url   hostname: null,
+41 verbose parsed url   hash: null,
+41 verbose parsed url   search: null,
+41 verbose parsed url   query: null,
+41 verbose parsed url   pathname: 'latest',
+41 verbose parsed url   path: 'latest',
+41 verbose parsed url   href: 'latest' }
+42 verbose addNamed [ 'passport-google-oauth', 'latest' ]
+43 verbose addNamed [ null, null ]
+44 verbose cache add name="passport-windowslive" spec="latest" args=["passport-windowslive","latest"]
+45 verbose parsed url { protocol: null,
+45 verbose parsed url   slashes: null,
+45 verbose parsed url   auth: null,
+45 verbose parsed url   host: null,
+45 verbose parsed url   port: null,
+45 verbose parsed url   hostname: null,
+45 verbose parsed url   hash: null,
+45 verbose parsed url   search: null,
+45 verbose parsed url   query: null,
+45 verbose parsed url   pathname: 'latest',
+45 verbose parsed url   path: 'latest',
+45 verbose parsed url   href: 'latest' }
+46 verbose addNamed [ 'passport-windowslive', 'latest' ]
+47 verbose addNamed [ null, null ]
+48 silly lockFile 82ca5952-passport-facebook-latest passport-facebook@latest
+49 verbose lock passport-facebook@latest C:\Users\Saba\AppData\Roaming\npm-cache\82ca5952-passport-facebook-latest.lock
+50 silly lockFile d5de964c-passport-twitter-latest passport-twitter@latest
+51 verbose lock passport-twitter@latest C:\Users\Saba\AppData\Roaming\npm-cache\d5de964c-passport-twitter-latest.lock
+52 silly lockFile 2c491da3-passport-google-oauth-latest passport-google-oauth@latest
+53 verbose lock passport-google-oauth@latest C:\Users\Saba\AppData\Roaming\npm-cache\2c491da3-passport-google-oauth-latest.lock
+54 silly lockFile 8cf4c363-passport-windowslive-latest passport-windowslive@latest
+55 verbose lock passport-windowslive@latest C:\Users\Saba\AppData\Roaming\npm-cache\8cf4c363-passport-windowslive-latest.lock
+56 info addNameTag [ 'passport-facebook', 'latest' ]
+57 info addNameTag [ 'passport-twitter', 'latest' ]
+58 info addNameTag [ 'passport-google-oauth', 'latest' ]
+59 info addNameTag [ 'passport-windowslive', 'latest' ]
+60 verbose request where is /passport-twitter
+61 verbose request registry https://registry.npmjs.org/
+62 verbose request id 51aa4010266f64f9
+63 verbose url raw /passport-twitter
+64 verbose url resolving [ 'https://registry.npmjs.org/', './passport-twitter' ]
+65 verbose url resolved https://registry.npmjs.org/passport-twitter
+66 verbose request where is https://registry.npmjs.org/passport-twitter
+67 info trying registry request attempt 1 at 14:25:57
+68 verbose etag "8AN8QXSCDE7B5N7JJZHA1G7YA"
+69 http GET https://registry.npmjs.org/passport-twitter
+70 verbose already installed skipping grunt-contrib-copy@~0.5.0 E:\CloudKibo
+71 verbose already installed skipping grunt-contrib-cssmin@~0.9.0 E:\CloudKibo
+72 verbose already installed skipping grunt-contrib-htmlmin@~0.2.0 E:\CloudKibo
+73 verbose already installed skipping grunt-contrib-imagemin@~0.7.1 E:\CloudKibo
+74 verbose already installed skipping grunt-contrib-jshint@~0.10.0 E:\CloudKibo
+75 verbose already installed skipping grunt-contrib-uglify@~0.4.0 E:\CloudKibo
+76 verbose already installed skipping grunt-contrib-watch@~0.6.1 E:\CloudKibo
+77 verbose already installed skipping grunt-contrib-jade@^0.11.0 E:\CloudKibo
+78 verbose already installed skipping grunt-google-cdn@~0.4.0 E:\CloudKibo
+79 verbose already installed skipping grunt-newer@~0.7.0 E:\CloudKibo
+80 verbose already installed skipping grunt-ng-annotate@^0.2.3 E:\CloudKibo
+81 verbose already installed skipping grunt-rev@~0.1.0 E:\CloudKibo
+82 verbose already installed skipping grunt-svgmin@~0.4.0 E:\CloudKibo
+83 verbose already installed skipping grunt-usemin@~2.1.1 E:\CloudKibo
+84 verbose already installed skipping grunt-env@~0.4.1 E:\CloudKibo
+85 verbose already installed skipping grunt-node-inspector@~0.1.5 E:\CloudKibo
+86 verbose already installed skipping grunt-nodemon@~0.2.0 E:\CloudKibo
+87 verbose already installed skipping grunt-angular-templates@^0.5.4 E:\CloudKibo
+88 verbose already installed skipping grunt-dom-munger@^3.4.0 E:\CloudKibo
+89 verbose already installed skipping grunt-protractor-runner@^1.1.0 E:\CloudKibo
+90 verbose already installed skipping grunt-asset-injector@^0.1.0 E:\CloudKibo
+91 verbose already installed skipping grunt-karma@~0.8.2 E:\CloudKibo
+92 verbose cache add [ 'grunt-build-control@git+https://github.com/DaftMonk/grunt-build-control',
+92 verbose cache add   null ]
+93 verbose cache add name=undefined spec="grunt-build-control@git+https://github.com/DaftMonk/grunt-build-control" args=["grunt-build-control@git+https://github.com/DaftMonk/grunt-build-control",null]
+94 verbose parsed url { protocol: null,
+94 verbose parsed url   slashes: null,
+94 verbose parsed url   auth: null,
+94 verbose parsed url   host: null,
+94 verbose parsed url   port: null,
+94 verbose parsed url   hostname: null,
+94 verbose parsed url   hash: null,
+94 verbose parsed url   search: null,
+94 verbose parsed url   query: null,
+94 verbose parsed url   pathname: 'grunt-build-control@git+https://github.com/DaftMonk/grunt-build-control',
+94 verbose parsed url   path: 'grunt-build-control@git+https://github.com/DaftMonk/grunt-build-control',
+94 verbose parsed url   href: 'grunt-build-control@git+https://github.com/DaftMonk/grunt-build-control' }
+95 verbose already installed skipping grunt-mocha-test@~0.10.2 E:\CloudKibo
+96 verbose cache add [ 'grunt-contrib-stylus@latest', null ]
+97 verbose cache add name=undefined spec="grunt-contrib-stylus@latest" args=["grunt-contrib-stylus@latest",null]
+98 verbose parsed url { protocol: null,
+98 verbose parsed url   slashes: null,
+98 verbose parsed url   auth: null,
+98 verbose parsed url   host: null,
+98 verbose parsed url   port: null,
+98 verbose parsed url   hostname: null,
+98 verbose parsed url   hash: null,
+98 verbose parsed url   search: null,
+98 verbose parsed url   query: null,
+98 verbose parsed url   pathname: 'grunt-contrib-stylus@latest',
+98 verbose parsed url   path: 'grunt-contrib-stylus@latest',
+98 verbose parsed url   href: 'grunt-contrib-stylus@latest' }
+99 verbose already installed skipping jit-grunt@^0.5.0 E:\CloudKibo
+100 verbose already installed skipping time-grunt@~0.3.1 E:\CloudKibo
+101 verbose already installed skipping grunt-express-server@~0.4.17 E:\CloudKibo
+102 verbose already installed skipping grunt-open@~0.2.3 E:\CloudKibo
+103 verbose already installed skipping open@~0.0.4 E:\CloudKibo
+104 verbose already installed skipping jshint-stylish@~0.1.5 E:\CloudKibo
+105 verbose already installed skipping connect-livereload@~0.4.0 E:\CloudKibo
+106 verbose request where is /passport-google-oauth
+107 verbose request registry https://registry.npmjs.org/
+108 verbose url raw /passport-google-oauth
+109 verbose url resolving [ 'https://registry.npmjs.org/', './passport-google-oauth' ]
+110 verbose url resolved https://registry.npmjs.org/passport-google-oauth
+111 verbose request where is https://registry.npmjs.org/passport-google-oauth
+112 info trying registry request attempt 1 at 14:25:57
+113 verbose etag "3AD36PY7JN7JEADRK6YWMRHRX"
+114 http GET https://registry.npmjs.org/passport-google-oauth
+115 verbose request where is /passport-facebook
+116 verbose request registry https://registry.npmjs.org/
+117 verbose url raw /passport-facebook
+118 verbose url resolving [ 'https://registry.npmjs.org/', './passport-facebook' ]
+119 verbose url resolved https://registry.npmjs.org/passport-facebook
+120 verbose request where is https://registry.npmjs.org/passport-facebook
+121 info trying registry request attempt 1 at 14:25:57
+122 verbose etag "DC1H0EDRX1RVM55U0PCZXGGY5"
+123 http GET https://registry.npmjs.org/passport-facebook
+124 verbose already installed skipping karma-ng-scenario@~0.1.0 E:\CloudKibo
+125 verbose already installed skipping karma-firefox-launcher@~0.1.3 E:\CloudKibo
+126 verbose already installed skipping karma-script-launcher@~0.1.0 E:\CloudKibo
+127 verbose already installed skipping karma-html2js-preprocessor@~0.1.0 E:\CloudKibo
+128 verbose already installed skipping karma-ng-jade2js-preprocessor@^0.1.2 E:\CloudKibo
+129 verbose already installed skipping karma-jasmine@~0.1.5 E:\CloudKibo
+130 verbose already installed skipping karma-chrome-launcher@~0.1.3 E:\CloudKibo
+131 verbose already installed skipping requirejs@~2.1.11 E:\CloudKibo
+132 verbose already installed skipping karma-requirejs@~0.2.1 E:\CloudKibo
+133 verbose already installed skipping karma-coffee-preprocessor@~0.2.1 E:\CloudKibo
+134 verbose already installed skipping karma-jade-preprocessor@0.0.11 E:\CloudKibo
+135 verbose already installed skipping karma-phantomjs-launcher@~0.1.4 E:\CloudKibo
+136 verbose already installed skipping karma@~0.12.9 E:\CloudKibo
+137 verbose already installed skipping karma-ng-html2js-preprocessor@~0.1.0 E:\CloudKibo
+138 verbose already installed skipping supertest@~0.11.0 E:\CloudKibo
+139 verbose cache add name="grunt-build-control" spec="git+https://github.com/DaftMonk/grunt-build-control" args=["grunt-build-control","git+https://github.com/DaftMonk/grunt-build-control"]
+140 verbose parsed url { protocol: 'git+https:',
+140 verbose parsed url   slashes: true,
+140 verbose parsed url   auth: null,
+140 verbose parsed url   host: 'github.com',
+140 verbose parsed url   port: null,
+140 verbose parsed url   hostname: 'github.com',
+140 verbose parsed url   hash: null,
+140 verbose parsed url   search: null,
+140 verbose parsed url   query: null,
+140 verbose parsed url   pathname: '/DaftMonk/grunt-build-control',
+140 verbose parsed url   path: '/DaftMonk/grunt-build-control',
+140 verbose parsed url   href: 'git+https://github.com/DaftMonk/grunt-build-control' }
+141 silly lockFile 7e4d577b-com-DaftMonk-grunt-build-control https://github.com/DaftMonk/grunt-build-control
+142 verbose lock https://github.com/DaftMonk/grunt-build-control C:\Users\Saba\AppData\Roaming\npm-cache\7e4d577b-com-DaftMonk-grunt-build-control.lock
+143 verbose cache add name="grunt-contrib-stylus" spec="latest" args=["grunt-contrib-stylus","latest"]
+144 verbose parsed url { protocol: null,
+144 verbose parsed url   slashes: null,
+144 verbose parsed url   auth: null,
+144 verbose parsed url   host: null,
+144 verbose parsed url   port: null,
+144 verbose parsed url   hostname: null,
+144 verbose parsed url   hash: null,
+144 verbose parsed url   search: null,
+144 verbose parsed url   query: null,
+144 verbose parsed url   pathname: 'latest',
+144 verbose parsed url   path: 'latest',
+144 verbose parsed url   href: 'latest' }
+145 verbose addNamed [ 'grunt-contrib-stylus', 'latest' ]
+146 verbose addNamed [ null, null ]
+147 silly lockFile 13e2f9ac-grunt-contrib-stylus-latest grunt-contrib-stylus@latest
+148 verbose lock grunt-contrib-stylus@latest C:\Users\Saba\AppData\Roaming\npm-cache\13e2f9ac-grunt-contrib-stylus-latest.lock
+149 verbose request where is /passport-windowslive
+150 verbose request registry https://registry.npmjs.org/
+151 verbose url raw /passport-windowslive
+152 verbose url resolving [ 'https://registry.npmjs.org/', './passport-windowslive' ]
+153 verbose url resolved https://registry.npmjs.org/passport-windowslive
+154 verbose request where is https://registry.npmjs.org/passport-windowslive
+155 info trying registry request attempt 1 at 14:25:57
+156 verbose etag "1N20ICJT5MIFDNJHF8FUWXN3V"
+157 http GET https://registry.npmjs.org/passport-windowslive
+158 verbose addRemoteGit [ 'https://github.com/DaftMonk/grunt-build-control', 'master' ]
+159 info addNameTag [ 'grunt-contrib-stylus', 'latest' ]
+160 verbose already installed skipping should@~3.3.1 E:\CloudKibo
+161 verbose request where is /grunt-contrib-stylus
+162 verbose request registry https://registry.npmjs.org/
+163 verbose url raw /grunt-contrib-stylus
+164 verbose url resolving [ 'https://registry.npmjs.org/', './grunt-contrib-stylus' ]
+165 verbose url resolved https://registry.npmjs.org/grunt-contrib-stylus
+166 verbose request where is https://registry.npmjs.org/grunt-contrib-stylus
+167 info trying registry request attempt 1 at 14:25:57
+168 verbose etag "7RGRFZ812BSG95J4DV5MNOQCQ"
+169 http GET https://registry.npmjs.org/grunt-contrib-stylus
+170 verbose already installed skipping express@~4.0.0 E:\CloudKibo
+171 verbose already installed skipping morgan@~1.0.0 E:\CloudKibo
+172 verbose already installed skipping body-parser@~1.5.0 E:\CloudKibo
+173 verbose already installed skipping method-override@~1.0.0 E:\CloudKibo
+174 verbose already installed skipping serve-favicon@~2.0.1 E:\CloudKibo
+175 verbose already installed skipping cookie-parser@~1.0.1 E:\CloudKibo
+176 verbose already installed skipping express-session@~1.0.2 E:\CloudKibo
+177 verbose already installed skipping errorhandler@~1.0.0 E:\CloudKibo
+178 verbose already installed skipping compression@~1.0.1 E:\CloudKibo
+179 verbose already installed skipping lodash@~2.4.1 E:\CloudKibo
+180 verbose already installed skipping jade@~1.2.0 E:\CloudKibo
+181 verbose already installed skipping mongoose@~3.8.8 E:\CloudKibo
+182 verbose already installed skipping mongodb@~1.4.19 E:\CloudKibo
+183 verbose already installed skipping jsonwebtoken@^0.3.0 E:\CloudKibo
+184 verbose already installed skipping express-jwt@^0.1.3 E:\CloudKibo
+185 verbose already installed skipping passport@~0.2.0 E:\CloudKibo
+186 verbose already installed skipping passport-local@~0.1.6 E:\CloudKibo
 187 verbose git remote.origin.url https://github.com/DaftMonk/grunt-build-control
 188 error git fetch -a origin (https://github.com/DaftMonk/grunt-build-control) fatal: Unable to find remote helper for 'https'
 189 silly lockFile 7e4d577b-com-DaftMonk-grunt-build-control https://github.com/DaftMonk/grunt-build-control
 190 silly lockFile 7e4d577b-com-DaftMonk-grunt-build-control https://github.com/DaftMonk/grunt-build-control
-191 http 200 https://registry.npmjs.org/passport-google-oauth
-192 silly registry.get cb [ 200,
-192 silly registry.get   { date: 'Mon, 02 Feb 2015 08:52:42 GMT',
-192 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-192 silly registry.get     etag: '"4P3IPQAO4CTQFY8VL8VWUOHQS"',
-192 silly registry.get     'content-type': 'application/json',
-192 silly registry.get     'cache-control': 'max-age=60',
-192 silly registry.get     'content-length': '12491',
-192 silly registry.get     'accept-ranges': 'bytes',
+191 http 304 https://registry.npmjs.org/grunt-contrib-stylus
+192 silly registry.get cb [ 304,
+192 silly registry.get   { date: 'Sat, 21 Feb 2015 09:26:14 GMT',
+192 silly registry.get     server: 'Apache',
 192 silly registry.get     via: '1.1 varnish',
+192 silly registry.get     'last-modified': 'Sat, 21 Feb 2015 09:26:14 GMT',
+192 silly registry.get     'cache-control': 'max-age=60',
+192 silly registry.get     etag: '"7RGRFZ812BSG95J4DV5MNOQCQ"',
 192 silly registry.get     age: '0',
-192 silly registry.get     'x-served-by': 'cache-fra1234-FRA',
-192 silly registry.get     'x-cache': 'HIT',
-192 silly registry.get     'x-cache-hits': '1',
-192 silly registry.get     'x-timer': 'S1422867162.169842,VS0,VE175',
+192 silly registry.get     'x-served-by': 'cache-lcy1135-LCY',
+192 silly registry.get     'x-cache': 'MISS',
+192 silly registry.get     'x-cache-hits': '0',
+192 silly registry.get     'x-timer': 'S1424510774.436328,VS0,VE88',
 192 silly registry.get     vary: 'Accept',
+192 silly registry.get     'content-length': '0',
 192 silly registry.get     'keep-alive': 'timeout=10, max=50',
 192 silly registry.get     connection: 'Keep-Alive' } ]
-193 verbose addNamed [ 'passport-google-oauth', '0.1.5' ]
-194 verbose addNamed [ '0.1.5', '0.1.5' ]
-195 silly lockFile 3fbba456-passport-google-oauth-0-1-5 passport-google-oauth@0.1.5
-196 verbose lock passport-google-oauth@0.1.5 C:\Users\Saba\AppData\Roaming\npm-cache\3fbba456-passport-google-oauth-0-1-5.lock
-197 silly lockFile 3fbba456-passport-google-oauth-0-1-5 passport-google-oauth@0.1.5
-198 silly lockFile 3fbba456-passport-google-oauth-0-1-5 passport-google-oauth@0.1.5
-199 silly lockFile 2c491da3-passport-google-oauth-latest passport-google-oauth@latest
-200 silly lockFile 2c491da3-passport-google-oauth-latest passport-google-oauth@latest
-201 info already installed passport-google-oauth@0.1.5
-202 http 200 https://registry.npmjs.org/passport-facebook
-203 silly registry.get cb [ 200,
-203 silly registry.get   { date: 'Mon, 02 Feb 2015 08:52:42 GMT',
-203 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-203 silly registry.get     etag: '"CFGQYTGRMLIVQDWKLR0U0437F"',
-203 silly registry.get     'content-type': 'application/json',
-203 silly registry.get     'cache-control': 'max-age=60',
-203 silly registry.get     'content-length': '19545',
-203 silly registry.get     'accept-ranges': 'bytes',
-203 silly registry.get     via: '1.1 varnish',
-203 silly registry.get     age: '0',
-203 silly registry.get     'x-served-by': 'cache-fra1226-FRA',
-203 silly registry.get     'x-cache': 'HIT',
-203 silly registry.get     'x-cache-hits': '1',
-203 silly registry.get     'x-timer': 'S1422867162.165667,VS0,VE415',
-203 silly registry.get     vary: 'Accept',
-203 silly registry.get     'keep-alive': 'timeout=10, max=50',
-203 silly registry.get     connection: 'Keep-Alive' } ]
-204 verbose addNamed [ 'passport-facebook', '1.0.3' ]
-205 verbose addNamed [ '1.0.3', '1.0.3' ]
-206 silly lockFile 3e2a96bb-passport-facebook-1-0-3 passport-facebook@1.0.3
-207 verbose lock passport-facebook@1.0.3 C:\Users\Saba\AppData\Roaming\npm-cache\3e2a96bb-passport-facebook-1-0-3.lock
-208 silly lockFile 3e2a96bb-passport-facebook-1-0-3 passport-facebook@1.0.3
-209 silly lockFile 3e2a96bb-passport-facebook-1-0-3 passport-facebook@1.0.3
-210 silly lockFile 82ca5952-passport-facebook-latest passport-facebook@latest
-211 silly lockFile 82ca5952-passport-facebook-latest passport-facebook@latest
-212 info already installed passport-facebook@1.0.3
-213 http 200 https://registry.npmjs.org/passport-windowslive
-214 silly registry.get cb [ 200,
-214 silly registry.get   { date: 'Mon, 02 Feb 2015 08:52:42 GMT',
-214 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-214 silly registry.get     etag: '"1N20ICJT5MIFDNJHF8FUWXN3V"',
-214 silly registry.get     'content-type': 'application/json',
-214 silly registry.get     'cache-control': 'max-age=60',
-214 silly registry.get     'content-length': '12599',
-214 silly registry.get     'accept-ranges': 'bytes',
-214 silly registry.get     via: '1.1 varnish',
-214 silly registry.get     age: '0',
-214 silly registry.get     'x-served-by': 'cache-fra1221-FRA',
-214 silly registry.get     'x-cache': 'MISS',
-214 silly registry.get     'x-cache-hits': '0',
-214 silly registry.get     'x-timer': 'S1422867162.520317,VS0,VE417',
-214 silly registry.get     vary: 'Accept',
-214 silly registry.get     'keep-alive': 'timeout=10, max=50',
-214 silly registry.get     connection: 'Keep-Alive' } ]
-215 verbose addNamed [ 'passport-windowslive', '1.0.1' ]
-216 verbose addNamed [ '1.0.1', '1.0.1' ]
-217 silly lockFile 2c7b9e6d-passport-windowslive-1-0-1 passport-windowslive@1.0.1
-218 verbose lock passport-windowslive@1.0.1 C:\Users\Saba\AppData\Roaming\npm-cache\2c7b9e6d-passport-windowslive-1-0-1.lock
-219 silly lockFile 2c7b9e6d-passport-windowslive-1-0-1 passport-windowslive@1.0.1
-220 silly lockFile 2c7b9e6d-passport-windowslive-1-0-1 passport-windowslive@1.0.1
-221 silly lockFile 8cf4c363-passport-windowslive-latest passport-windowslive@latest
-222 silly lockFile 8cf4c363-passport-windowslive-latest passport-windowslive@latest
-223 info already installed passport-windowslive@1.0.1
-224 http 200 https://registry.npmjs.org/grunt-contrib-stylus
-225 silly registry.get cb [ 200,
-225 silly registry.get   { date: 'Mon, 02 Feb 2015 08:52:42 GMT',
-225 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-225 silly registry.get     etag: '"35J1AM0O6L2WG0SSSV8QQ72M7"',
-225 silly registry.get     'content-type': 'application/json',
-225 silly registry.get     'cache-control': 'max-age=60',
-225 silly registry.get     'content-length': '55405',
-225 silly registry.get     'accept-ranges': 'bytes',
-225 silly registry.get     via: '1.1 varnish',
-225 silly registry.get     age: '0',
-225 silly registry.get     'x-served-by': 'cache-fra1239-FRA',
-225 silly registry.get     'x-cache': 'HIT',
-225 silly registry.get     'x-cache-hits': '1',
-225 silly registry.get     'x-timer': 'S1422867162.607259,VS0,VE187',
-225 silly registry.get     vary: 'Accept',
-225 silly registry.get     'keep-alive': 'timeout=10, max=50',
-225 silly registry.get     connection: 'Keep-Alive' } ]
-226 verbose addNamed [ 'grunt-contrib-stylus', '0.20.0' ]
-227 verbose addNamed [ '0.20.0', '0.20.0' ]
-228 silly lockFile acbc5348-grunt-contrib-stylus-0-20-0 grunt-contrib-stylus@0.20.0
-229 verbose lock grunt-contrib-stylus@0.20.0 C:\Users\Saba\AppData\Roaming\npm-cache\acbc5348-grunt-contrib-stylus-0-20-0.lock
-230 silly lockFile acbc5348-grunt-contrib-stylus-0-20-0 grunt-contrib-stylus@0.20.0
-231 silly lockFile acbc5348-grunt-contrib-stylus-0-20-0 grunt-contrib-stylus@0.20.0
-232 silly lockFile 13e2f9ac-grunt-contrib-stylus-latest grunt-contrib-stylus@latest
-233 silly lockFile 13e2f9ac-grunt-contrib-stylus-latest grunt-contrib-stylus@latest
-234 info already installed grunt-contrib-stylus@0.20.0
-235 http 200 https://registry.npmjs.org/passport-twitter
-236 silly registry.get cb [ 200,
-236 silly registry.get   { date: 'Mon, 02 Feb 2015 08:52:42 GMT',
-236 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-236 silly registry.get     etag: '"8AN8QXSCDE7B5N7JJZHA1G7YA"',
-236 silly registry.get     'content-type': 'application/json',
-236 silly registry.get     'cache-control': 'max-age=60',
-236 silly registry.get     'content-length': '24911',
-236 silly registry.get     'accept-ranges': 'bytes',
-236 silly registry.get     via: '1.1 varnish',
-236 silly registry.get     age: '0',
-236 silly registry.get     'x-served-by': 'cache-fra1240-FRA',
-236 silly registry.get     'x-cache': 'HIT',
-236 silly registry.get     'x-cache-hits': '1',
-236 silly registry.get     'x-timer': 'S1422867162.432819,VS0,VE100',
-236 silly registry.get     vary: 'Accept',
-236 silly registry.get     'keep-alive': 'timeout=10, max=50',
-236 silly registry.get     connection: 'Keep-Alive' } ]
-237 verbose addNamed [ 'passport-twitter', '1.0.2' ]
-238 verbose addNamed [ '1.0.2', '1.0.2' ]
-239 silly lockFile 50fcdf9c-passport-twitter-1-0-2 passport-twitter@1.0.2
-240 verbose lock passport-twitter@1.0.2 C:\Users\Saba\AppData\Roaming\npm-cache\50fcdf9c-passport-twitter-1-0-2.lock
-241 silly lockFile 50fcdf9c-passport-twitter-1-0-2 passport-twitter@1.0.2
-242 silly lockFile 50fcdf9c-passport-twitter-1-0-2 passport-twitter@1.0.2
-243 silly lockFile d5de964c-passport-twitter-latest passport-twitter@latest
-244 silly lockFile d5de964c-passport-twitter-latest passport-twitter@latest
-245 info already installed passport-twitter@1.0.2
-246 error Error: Command failed: fatal: Unable to find remote helper for 'https'
-246 error
-246 error     at ChildProcess.exithandler (child_process.js:658:15)
-246 error     at ChildProcess.emit (events.js:98:17)
-246 error     at maybeClose (child_process.js:766:16)
-246 error     at Process.ChildProcess._handle.onexit (child_process.js:833:5)
-247 error If you need help, you may report this *entire* log,
-247 error including the npm and node versions, at:
-247 error     <http://github.com/npm/npm/issues>
-248 error System Windows_NT 6.2.9200
-249 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install"
-250 error cwd E:\CloudKibo
-251 error node -v v0.10.35
-252 error npm -v 1.4.28
-253 error code 128
-254 verbose exit [ 1, true ]
+193 verbose etag https://registry.npmjs.org/grunt-contrib-stylus from cache
+194 verbose addNamed [ 'grunt-contrib-stylus', '0.20.0' ]
+195 verbose addNamed [ '0.20.0', '0.20.0' ]
+196 silly lockFile acbc5348-grunt-contrib-stylus-0-20-0 grunt-contrib-stylus@0.20.0
+197 verbose lock grunt-contrib-stylus@0.20.0 C:\Users\Saba\AppData\Roaming\npm-cache\acbc5348-grunt-contrib-stylus-0-20-0.lock
+198 silly lockFile acbc5348-grunt-contrib-stylus-0-20-0 grunt-contrib-stylus@0.20.0
+199 silly lockFile acbc5348-grunt-contrib-stylus-0-20-0 grunt-contrib-stylus@0.20.0
+200 silly lockFile 13e2f9ac-grunt-contrib-stylus-latest grunt-contrib-stylus@latest
+201 silly lockFile 13e2f9ac-grunt-contrib-stylus-latest grunt-contrib-stylus@latest
+202 info already installed grunt-contrib-stylus@0.20.0
+203 http 304 https://registry.npmjs.org/passport-twitter
+204 silly registry.get cb [ 304,
+204 silly registry.get   { date: 'Sat, 21 Feb 2015 09:26:14 GMT',
+204 silly registry.get     server: 'Apache',
+204 silly registry.get     via: '1.1 varnish',
+204 silly registry.get     'last-modified': 'Sat, 21 Feb 2015 09:26:14 GMT',
+204 silly registry.get     'cache-control': 'max-age=60',
+204 silly registry.get     etag: '"8AN8QXSCDE7B5N7JJZHA1G7YA"',
+204 silly registry.get     age: '0',
+204 silly registry.get     'x-served-by': 'cache-lcy1127-LCY',
+204 silly registry.get     'x-cache': 'MISS',
+204 silly registry.get     'x-cache-hits': '0',
+204 silly registry.get     'x-timer': 'S1424510774.440132,VS0,VE161',
+204 silly registry.get     vary: 'Accept',
+204 silly registry.get     'content-length': '0',
+204 silly registry.get     'keep-alive': 'timeout=10, max=50',
+204 silly registry.get     connection: 'Keep-Alive' } ]
+205 verbose etag https://registry.npmjs.org/passport-twitter from cache
+206 verbose addNamed [ 'passport-twitter', '1.0.2' ]
+207 verbose addNamed [ '1.0.2', '1.0.2' ]
+208 silly lockFile 50fcdf9c-passport-twitter-1-0-2 passport-twitter@1.0.2
+209 verbose lock passport-twitter@1.0.2 C:\Users\Saba\AppData\Roaming\npm-cache\50fcdf9c-passport-twitter-1-0-2.lock
+210 silly lockFile 50fcdf9c-passport-twitter-1-0-2 passport-twitter@1.0.2
+211 silly lockFile 50fcdf9c-passport-twitter-1-0-2 passport-twitter@1.0.2
+212 silly lockFile d5de964c-passport-twitter-latest passport-twitter@latest
+213 silly lockFile d5de964c-passport-twitter-latest passport-twitter@latest
+214 info already installed passport-twitter@1.0.2
+215 http 304 https://registry.npmjs.org/passport-google-oauth
+216 silly registry.get cb [ 304,
+216 silly registry.get   { date: 'Sat, 21 Feb 2015 09:26:14 GMT',
+216 silly registry.get     server: 'Apache',
+216 silly registry.get     via: '1.1 varnish',
+216 silly registry.get     'last-modified': 'Sat, 21 Feb 2015 09:26:14 GMT',
+216 silly registry.get     'cache-control': 'max-age=60',
+216 silly registry.get     etag: '"3AD36PY7JN7JEADRK6YWMRHRX"',
+216 silly registry.get     age: '0',
+216 silly registry.get     'x-served-by': 'cache-lcy1127-LCY',
+216 silly registry.get     'x-cache': 'HIT',
+216 silly registry.get     'x-cache-hits': '1',
+216 silly registry.get     'x-timer': 'S1424510774.442871,VS0,VE346',
+216 silly registry.get     vary: 'Accept',
+216 silly registry.get     'content-length': '0',
+216 silly registry.get     'keep-alive': 'timeout=10, max=50',
+216 silly registry.get     connection: 'Keep-Alive' } ]
+217 verbose etag https://registry.npmjs.org/passport-google-oauth from cache
+218 http 304 https://registry.npmjs.org/passport-windowslive
+219 silly registry.get cb [ 304,
+219 silly registry.get   { date: 'Sat, 21 Feb 2015 09:26:14 GMT',
+219 silly registry.get     server: 'Apache',
+219 silly registry.get     via: '1.1 varnish',
+219 silly registry.get     'last-modified': 'Sat, 21 Feb 2015 09:26:14 GMT',
+219 silly registry.get     'cache-control': 'max-age=60',
+219 silly registry.get     etag: '"1N20ICJT5MIFDNJHF8FUWXN3V"',
+219 silly registry.get     age: '0',
+219 silly registry.get     'x-served-by': 'cache-lcy1123-LCY',
+219 silly registry.get     'x-cache': 'MISS',
+219 silly registry.get     'x-cache-hits': '0',
+219 silly registry.get     'x-timer': 'S1424510774.438682,VS0,VE358',
+219 silly registry.get     vary: 'Accept',
+219 silly registry.get     'content-length': '0',
+219 silly registry.get     'keep-alive': 'timeout=10, max=50',
+219 silly registry.get     connection: 'Keep-Alive' } ]
+220 verbose etag https://registry.npmjs.org/passport-windowslive from cache
+221 verbose addNamed [ 'passport-google-oauth', '0.1.5' ]
+222 verbose addNamed [ '0.1.5', '0.1.5' ]
+223 silly lockFile 3fbba456-passport-google-oauth-0-1-5 passport-google-oauth@0.1.5
+224 verbose lock passport-google-oauth@0.1.5 C:\Users\Saba\AppData\Roaming\npm-cache\3fbba456-passport-google-oauth-0-1-5.lock
+225 silly lockFile 3fbba456-passport-google-oauth-0-1-5 passport-google-oauth@0.1.5
+226 silly lockFile 3fbba456-passport-google-oauth-0-1-5 passport-google-oauth@0.1.5
+227 silly lockFile 2c491da3-passport-google-oauth-latest passport-google-oauth@latest
+228 silly lockFile 2c491da3-passport-google-oauth-latest passport-google-oauth@latest
+229 verbose addNamed [ 'passport-windowslive', '1.0.1' ]
+230 verbose addNamed [ '1.0.1', '1.0.1' ]
+231 silly lockFile 2c7b9e6d-passport-windowslive-1-0-1 passport-windowslive@1.0.1
+232 verbose lock passport-windowslive@1.0.1 C:\Users\Saba\AppData\Roaming\npm-cache\2c7b9e6d-passport-windowslive-1-0-1.lock
+233 silly lockFile 2c7b9e6d-passport-windowslive-1-0-1 passport-windowslive@1.0.1
+234 silly lockFile 2c7b9e6d-passport-windowslive-1-0-1 passport-windowslive@1.0.1
+235 silly lockFile 8cf4c363-passport-windowslive-latest passport-windowslive@latest
+236 silly lockFile 8cf4c363-passport-windowslive-latest passport-windowslive@latest
+237 info already installed passport-google-oauth@0.1.5
+238 info already installed passport-windowslive@1.0.1
+239 http 304 https://registry.npmjs.org/passport-facebook
+240 silly registry.get cb [ 304,
+240 silly registry.get   { date: 'Sat, 21 Feb 2015 09:26:14 GMT',
+240 silly registry.get     server: 'Apache',
+240 silly registry.get     via: '1.1 varnish',
+240 silly registry.get     'last-modified': 'Sat, 21 Feb 2015 09:26:15 GMT',
+240 silly registry.get     'cache-control': 'max-age=60',
+240 silly registry.get     etag: '"DC1H0EDRX1RVM55U0PCZXGGY5"',
+240 silly registry.get     age: '0',
+240 silly registry.get     'x-served-by': 'cache-lcy1131-LCY',
+240 silly registry.get     'x-cache': 'MISS',
+240 silly registry.get     'x-cache-hits': '0',
+240 silly registry.get     'x-timer': 'S1424510774.442145,VS0,VE622',
+240 silly registry.get     vary: 'Accept',
+240 silly registry.get     'content-length': '0',
+240 silly registry.get     'keep-alive': 'timeout=10, max=50',
+240 silly registry.get     connection: 'Keep-Alive' } ]
+241 verbose etag https://registry.npmjs.org/passport-facebook from cache
+242 verbose addNamed [ 'passport-facebook', '1.0.3' ]
+243 verbose addNamed [ '1.0.3', '1.0.3' ]
+244 silly lockFile 3e2a96bb-passport-facebook-1-0-3 passport-facebook@1.0.3
+245 verbose lock passport-facebook@1.0.3 C:\Users\Saba\AppData\Roaming\npm-cache\3e2a96bb-passport-facebook-1-0-3.lock
+246 silly lockFile 3e2a96bb-passport-facebook-1-0-3 passport-facebook@1.0.3
+247 silly lockFile 3e2a96bb-passport-facebook-1-0-3 passport-facebook@1.0.3
+248 silly lockFile 82ca5952-passport-facebook-latest passport-facebook@latest
+249 silly lockFile 82ca5952-passport-facebook-latest passport-facebook@latest
+250 info already installed passport-facebook@1.0.3
+251 error Error: Command failed: fatal: Unable to find remote helper for 'https'
+251 error
+251 error     at ChildProcess.exithandler (child_process.js:658:15)
+251 error     at ChildProcess.emit (events.js:98:17)
+251 error     at maybeClose (child_process.js:766:16)
+251 error     at Process.ChildProcess._handle.onexit (child_process.js:833:5)
+252 error If you need help, you may report this *entire* log,
+252 error including the npm and node versions, at:
+252 error     <http://github.com/npm/npm/issues>
+253 error System Windows_NT 6.2.9200
+254 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install"
+255 error cwd E:\CloudKibo
+256 error node -v v0.10.35
+257 error npm -v 1.4.28
+258 error code 128
+259 verbose exit [ 1, true ]

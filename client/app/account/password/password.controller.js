@@ -10,7 +10,7 @@ angular.module('cloudKiboApp')
                 email : $scope.user3.email
             };
 
-            $http.post('/api/users/resetpasswordrequest', JSON.stringify(dataToSend))
+            $http.post(RestApi.user.resetPasswordRequest, JSON.stringify(dataToSend))
                 .success(function(data) {
                     $scope.addAlert(data.status, data.msg)
                     if(data.status == 'success')

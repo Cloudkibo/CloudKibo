@@ -692,7 +692,7 @@ angular.module('cloudKiboApp')
 
     })
 
-    .controller('HomeController', function ($scope, $http, Auth, socket, $timeout, $location, Sound, WebRTC, Signalling, ScreenShare) {
+    .controller('HomeController', function ($scope, $http, Auth, socket, $timeout, $location, Sound, WebRTC, Signalling, ScreenShare, RestApi) {
 
         $scope.isUserNameDefined = function() {
             return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
@@ -711,7 +711,7 @@ angular.module('cloudKiboApp')
         $scope.saveNewUserName = function (tempUser) {
 
             tempUser._id = $scope.user._id;
-            $http.post('/api/users/saveusername', tempUser)
+            $http.post(RestApi.user.saveUserDetailForFedreatedAuthentiaation, tempUser)
                 .success(function (data) {
                     if(data.status == 'success') {
                         $scope.user = data.msg;
@@ -736,7 +736,7 @@ angular.module('cloudKiboApp')
         $scope.otherUser = {};
 
         if ($location.url() != '/app') {
-            $http.post('/api/users/searchbyusername', {searchusername: $location.url().split('/')[2]})
+            $http.post(RestApi.user.searchByUsername, {searchusername: $location.url().split('/')[2]})
                 .success(function (data) {
                     $scope.otherUser = data;
 
@@ -788,7 +788,7 @@ angular.module('cloudKiboApp')
 
             localStreamTest.stop();
 
-            $http.post('/api/users/initialtestingdone', {initialTesting: 'Yes'})
+            $http.post(RestApi.user.initialTesting, {initialTesting: 'Yes'})
                 .success(function (data) {
                     console.log(data)
                     if (data.status == 'success') {
@@ -948,7 +948,7 @@ angular.module('cloudKiboApp')
         };
 
         $scope.emailInvite = function (inviteemail) {
-            $http.post('/api/users/invitebyemail', JSON.stringify(inviteemail))
+            $http.post(RestApi.user.inviteContactByEmail, JSON.stringify(inviteemail))
                 .success(function (data) {
                     if (data.status == 'success') {
                         $scope.addAlert(data.status, data.msg)
@@ -959,7 +959,7 @@ angular.module('cloudKiboApp')
         $scope.userFound = '';
 
         $scope.searchUserName = function () {
-            $http.post('/api/users/searchbyusername', JSON.stringify($scope.search))
+            $http.post(RestApi.user.searchByUsername, JSON.stringify($scope.search))
                 .success(function (data) {
                     if (data != 'null' && data != null && data != '') {
                         $scope.userFound = data;
@@ -975,7 +975,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.searchEmail = function () {
-            $http.post('/api/users/searchbyemail', JSON.stringify($scope.search))
+            $http.post(RestApi.user.searchByUserEmail, JSON.stringify($scope.search))
                 .success(function (data) {
                     if (data != 'null' && data != null && data != '') {
                         $scope.userFound = data;
@@ -993,7 +993,7 @@ angular.module('cloudKiboApp')
         $scope.contactslist = {};
 
         $scope.addUserName = function (add) {
-            $http.post('/api/contactslist/addbyusername', JSON.stringify(add))
+            $http.post(RestApi.contacts.addContactByName, JSON.stringify(add))
                 .success(function (data) {
                     if (data.status == 'success') {
                         if (data.msg != "null" && data.msg != null && data.msg != "") {
@@ -1023,7 +1023,7 @@ angular.module('cloudKiboApp')
         // todo Testing Required
 
         $scope.addEmail = function (add) {
-            $http.post('/api/contactslist/addbyemail', JSON.stringify(add))
+            $http.post(RestApi.contacts.addContactByEmail, JSON.stringify(add))
                 .success(function (data) {
                     if (data.status == 'success') {
                         if (data.msg != null) {
@@ -1051,7 +1051,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.updateProfile = function (gotUser) {
-            $http.put('/api/users/update', JSON.stringify(gotUser))
+            $http.put(RestApi.contacts.acceptContactRequest, JSON.stringify(gotUser))
                 .success(function (data) {
                     $scope.user = data;
                     $scope.openSettings();
@@ -1093,7 +1093,7 @@ angular.module('cloudKiboApp')
         $scope.supportedBrowser = webrtcDetectedBrowser == "chrome";
 
 
-        $http.get('/api/contactslist/').success(function (data) {
+        $http.get(RestApi.contacts.contactListOfUser).success(function (data) {
             $scope.contactslist = data;
             $scope.fetchChatNow();
         }).error(function (err) {
@@ -1102,7 +1102,7 @@ angular.module('cloudKiboApp')
 
         $scope.addRequestslist = {};
 
-        $http.get('/api/contactslist/pendingcontacts').success(function (data) {
+        $http.get(RestApi.contacts.pendingAddRequest).success(function (data) {
             $scope.addRequestslist = data;
         });
 
@@ -1111,7 +1111,7 @@ angular.module('cloudKiboApp')
         })
 
         $scope.approveFriendRequest = function (index) {
-            $http.post('/api/contactslist/approvefriendrequest', $scope.addRequestslist[index].userid)
+            $http.post(RestApi.contacts.acceptContactRequest, $scope.addRequestslist[index].userid)
                 .success(function (data) {
                     if (data.status == 'success') {
                         $scope.contactslist = data.msg;
@@ -1122,7 +1122,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.rejectFriendRequest = function (index) {
-            $http.post('/api/contactslist/rejectfriendrequest', $scope.addRequestslist[index].userid)
+            $http.post(RestApi.contacts.rejectContactRequest, $scope.addRequestslist[index].userid)
                 .success(function (data) {
                     if (data.status == 'success') {
                         $scope.addRequestslist.splice(index, 1);
@@ -1131,7 +1131,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.removeFriend = function (index) {
-            $http.post('/api/contactslist/removefriend', {contact: index})
+            $http.post(RestApi.contacts.removeFromContactList, {contact: index})
                 .success(function (data) {
                     console.log(data)
                     if (data.status == 'success') {
@@ -1141,7 +1141,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.removechathistory = function (index) {
-            $http.post('/api/userchat/removechathistory', {contact: index})
+            $http.post(RestApi.userchat.removeChatHistroy, {contact: index})
                 .success(function (data) {
                     console.log(data)
                     if (data.status == 'success') {
@@ -1229,7 +1229,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.feedBackForm = function () {
-            $http.post('/feedBackOnCall', JSON.stringify($scope.feedback))
+            $http.post(RestApi.feedback.feedbackByUser, JSON.stringify($scope.feedback))
                 .success(function (data) {
                     $scope.feedBackSent = true;
                 })
@@ -1353,7 +1353,7 @@ angular.module('cloudKiboApp')
         $scope.callData = {};
 
         $scope.recordCallData = function () {
-            $http.post('/recordCallData', JSON.stringify($scope.callData))
+            $http.post(RestApi.callrecord.getCallRecord, JSON.stringify($scope.callData))
         };
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -1412,7 +1412,7 @@ angular.module('cloudKiboApp')
 
                     socket.emit('status', {room: 'globalchatroom', user: $scope.user})
 
-                    $http.post('/api/users/setstatusmessage', $scope.user).success(function (data) {
+                    $http.post(RestApi.user.statusMessage, $scope.user).success(function (data) {
                     });
                 }
             }
@@ -1756,7 +1756,7 @@ angular.module('cloudKiboApp')
 
         $scope.fetchChatNow = function () {
             if (typeof $scope.otherUser != 'undefined') {
-                $http.post('/api/userchat/', {user1: $scope.user.username, user2: $scope.otherUser.username}).success(
+                $http.post(RestApi.userchat.userChats, {user1: $scope.user.username, user2: $scope.otherUser.username}).success(
                     function (data) {
                         if (data.status == 'success') {
 
@@ -1772,7 +1772,7 @@ angular.module('cloudKiboApp')
                 for (var i in $scope.contactslist) {
                     if ($scope.contactslist[i].contactid.username == $scope.otherUser.username) {
                         $scope.contactslist[i].unreadMessage = false;
-                        $http.post('/api/userchat/markasread', {
+                        $http.post(RestApi.userchat.markMessageAsRead, {
                             user1: $scope.user._id,
                             user2: $scope.otherUser._id
                         }).success();
@@ -1798,7 +1798,7 @@ angular.module('cloudKiboApp')
 
                     $scope.messages.push($scope.im);
 
-                    $http.post('/api/userchat/save', $scope.im).success(function (data) {
+                    $http.post(RestApi.userchat.saveChats, $scope.im).success(function (data) {
                     });
 
                     $scope.im = {};
@@ -1934,7 +1934,7 @@ angular.module('cloudKiboApp')
             && !!chrome.webstore
             && !!chrome.webstore.install &&
             chrome.webstore.install(
-                'https://chrome.google.com/webstore/detail/hjfejjmhpakdodimneibbmgfhfhjedod',
+                RestApi.extensionlink.screenSharingExtension,
                 successInstallCallback,
                 failureInstallCallback
             );
