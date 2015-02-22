@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-    .controller('ForgotPasswordController', function($scope, $http){
+    .controller('ForgotPasswordController', function($scope, $http, RestApi){
 
         $scope.isCollapsed = true;
 
