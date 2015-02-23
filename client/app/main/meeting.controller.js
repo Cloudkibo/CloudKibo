@@ -103,7 +103,7 @@ angular.module('cloudKiboApp')
         $scope.meetingData = {};
 
         $scope.recordMeetingData = function(){
-            $http.post('/recordMeetingData', JSON.stringify($scope.meetingData))
+            $http.post(RestApi.meetingrecord.setMeetingRecord, JSON.stringify($scope.meetingData))
         };
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -919,7 +919,7 @@ angular.module('cloudKiboApp')
             && !!chrome.webstore
             && !!chrome.webstore.install &&
             chrome.webstore.install(
-                'https://chrome.google.com/webstore/detail/hjfejjmhpakdodimneibbmgfhfhjedod',
+                RestApi.extensionlink.screenSharingExtension,
                 successInstallCallback,
                 failureInstallCallback
             );
@@ -1826,7 +1826,7 @@ angular.module('cloudKiboApp')
             remoteaudio1.src = null;
             $timeout(function () {
                 location.reload();
-            }, 2000)
+            }, 400)
         });
 
         socket.on('join', function (room){
@@ -1869,8 +1869,10 @@ angular.module('cloudKiboApp')
         var receiveChannel;
         var screenSharePCIndex;
         var localStream;
+        var localVideoStream;
         var localStreamScreen;
         var pc;
+        var remoteVideoStream;
         var remoteStream1;
         var remoteStreamScreen;
         var turnReady;
@@ -1882,6 +1884,12 @@ angular.module('cloudKiboApp')
 
         var remotevideo1 = document.getElementById("remotevideo1");
         remotevideo1.src = null;
+
+        var remotevideo2 = document.getElementById("remotevideo2");
+        remotevideo2.src = null;
+
+        var localvideo = document.getElementById("localvideo");
+        localvideo.src = null;
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // WebRTC using sigaling logic                                                        //
@@ -1949,12 +1957,18 @@ angular.module('cloudKiboApp')
             }
         });
 
+        var localVideoStream;
         function maybeStart() {
             //console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
             if (!isStarted && typeof localStream != 'undefined' && isChannelReady) {
 
                 createPeerConnection();
                 pc.addStream(localStream);
+
+                if($scope.role == 'agent'){
+                    pc.addStream(localVideoStream)
+                }
+
                 isStarted = true;
 
                 if (isInitiator) {
@@ -2075,9 +2089,25 @@ angular.module('cloudKiboApp')
 
                 return ;
             }
+            else{
+                if(event.stream.getAudioTracks().length){
+                    remoteaudio1.src = URL.createObjectURL(event.stream);
+                    remoteStream1 = event.stream;
+                }
 
-            remoteaudio1.src = URL.createObjectURL(event.stream);
-            remoteStream1 = event.stream;
+                console.log(event.stream);
+                if(event.stream.getVideoTracks().length){
+                    if (!remoteVideoStream) {
+
+                        $scope.$apply(function(){
+                            remotevideo2.src = URL.createObjectURL(event.stream);
+                            remoteVideoStream = event.stream;
+                        })
+
+                   }
+                }
+            }
+
 
         }
 
@@ -2094,11 +2124,35 @@ angular.module('cloudKiboApp')
         // Media Stream Logic                                                                 //
         ///////////////////////////////////////////////////////////////////////////////////////
 
+        var audio_constraints = {video: false, audio: true};
+        var video_constraints = {video: true, audio: false};
+
         var localPeerConnection, remotePeerConnection;
 
         function handleUserMedia(newStream){
 
             localStream = newStream;
+
+            if($scope.role == 'agent') {
+                getUserMedia(video_constraints, handleUserMediaVideo, handleUserMediaError);
+            }
+            else {
+                $scope.localCameraOn = true;
+
+                sendMessage({msg: 'got user media'});
+
+                if (isInitiator) {
+                    maybeStart();
+                }
+            }
+        }
+
+        function handleUserMediaVideo(newStream){
+
+            localVideoStream = newStream;
+
+            localvideo.src = URL.createObjectURL(localVideoStream);
+
             $scope.localCameraOn = true;
 
             sendMessage({msg: 'got user media'});
@@ -2112,10 +2166,10 @@ angular.module('cloudKiboApp')
             //console.log(error);
         }
 
-        var video_constraints = {video: false, audio: true};
+
 
         $scope.startCalling = function(){
-            getUserMedia(video_constraints, handleUserMedia, handleUserMediaError);
+            getUserMedia(audio_constraints, handleUserMedia, handleUserMediaError);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -2347,7 +2401,7 @@ angular.module('cloudKiboApp')
             && !!chrome.webstore
             && !!chrome.webstore.install &&
             chrome.webstore.install(
-                'https://chrome.google.com/webstore/detail/hjfejjmhpakdodimneibbmgfhfhjedod',
+                RestApi.extensionlink.screenSharingExtension,
                 successInstallCallback,
                 failureInstallCallback
             );
@@ -3123,316 +3177,316 @@ angular.module('cloudKiboApp')
 
 
 
-    .controller('VideoCallController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi){
+.controller('VideoCallController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi){
 
-        var roomid = '';
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // Create or Join Room Logic                                                          //
-        ////////////////////////////////////////////////////////////////////////////////////////
+    var roomid = '';
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // Create or Join Room Logic                                                          //
+    ////////////////////////////////////////////////////////////////////////////////////////
 
-        if(window.location.pathname.replace('/', '') != 'home'){
-            roomid = window.location.pathname.replace('/', '');
-            roomid = roomid.split('/')[1];
-        }
+    if(window.location.pathname.replace('/', '') != 'home'){
+        roomid = window.location.pathname.replace('/', '');
+        roomid = roomid.split('/')[1];
+    }
 
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // WebRTC User Interface Logic                                                        //
-        ////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // WebRTC User Interface Logic                                                        //
+    ////////////////////////////////////////////////////////////////////////////////////////
 
-        $scope.connected = false;
+    $scope.connected = false;
 
-        $scope.roomname = '';
+    $scope.roomname = '';
 
-        $scope.isConnected = function () {
-            return $scope.connected;
-        };
+    $scope.isConnected = function () {
+        return $scope.connected;
+    };
 
-        $scope.callEnded = false;
+    $scope.callEnded = false;
 
-        $scope.hasCallEnded = function () {
-            return $scope.callEnded;
-        };
+    $scope.hasCallEnded = function () {
+        return $scope.callEnded;
+    };
 
-        $scope.connectTimeOut = function(){
-            $scope.roomname = roomid;
-            $scope.createOrJoinMeeting();
-            $scope.connected = true;
-        }
+    $scope.connectTimeOut = function(){
+        $scope.roomname = roomid;
+        $scope.createOrJoinMeeting();
+        $scope.connected = true;
+    }
 
-        $timeout($scope.connectTimeOut, 500);
+    $timeout($scope.connectTimeOut, 500);
 
-        $scope.alertsCallStart = [];
+    $scope.alertsCallStart = [];
 
-        $scope.addAlertCallStart = function(newtype, newMsg) {
-            $scope.$apply(function(){
-                $scope.alertsCallStart.push({type: newtype, msg: newMsg});
-            })
-        };
+    $scope.addAlertCallStart = function(newtype, newMsg) {
+        $scope.$apply(function(){
+            $scope.alertsCallStart.push({type: newtype, msg: newMsg});
+        })
+    };
 
-        $scope.closeAlertCallStart = function(index) {
-            $scope.alertsCallStart.splice(index, 1);
-        };
+    $scope.closeAlertCallStart = function(index) {
+        $scope.alertsCallStart.splice(index, 1);
+    };
 
-        $scope.extensionAvailable = false;
+    $scope.extensionAvailable = false;
 
-        $scope.showExtension = function(){
-            return $scope.extensionAvailable;
-        }
+    $scope.showExtension = function(){
+        return $scope.extensionAvailable;
+    }
 
-        $scope.localCameraCaptured = function () {
-            return $scope.localCameraOn;
-        };
+    $scope.localCameraCaptured = function () {
+        return $scope.localCameraOn;
+    };
 
 
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // Signaling Logic                                                                    //
-        ///////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // Signaling Logic                                                                    //
+    ///////////////////////////////////////////////////////////////////////////////////////
 
-        $scope.createOrJoinMeeting = function(){
-            socket.emit('create or join livehelp', {room: roomid, username: 'abc'});
-        }
+    $scope.createOrJoinMeeting = function(){
+        socket.emit('create or join livehelp', {room: roomid, username: 'abc'});
+    }
 
-        $scope.LeaveRoom = function(){
-            console.log('Leave room', {room: roomid});
-            $scope.callEnded = true;
-            socket.emit('leave', {room: roomid});
-        }
+    $scope.LeaveRoom = function(){
+        console.log('Leave room', {room: roomid});
+        $scope.callEnded = true;
+        socket.emit('leave', {room: roomid});
+    }
 
-        socket.on('created', function (room){
-            console.log('Created room ' + room);
+    socket.on('created', function (room){
+        console.log('Created room ' + room);
 
-            isInitiator = true;
-        });
+        isInitiator = true;
+    });
 
-        socket.on('full', function (room){
-            console.log('Room ' + room + ' is full');
-        });
+    socket.on('full', function (room){
+        console.log('Room ' + room + ' is full');
+    });
 
-        socket.on('left', function (room){
-            $scope.callEnded = true;
-            if(remoteStream1)
-                remoteStream1.stop();
-            if(localStream)
-                localStream.stop();
-            if(localStreamScreen)
-                localStreamScreen.stop();
-            if(remoteStreamScreen)
-                remoteStreamScreen.stop();
-            pc.close();
-            pc = null;
-            $scope.localCameraOn = false;
-            remotevideo1.src = null;
-            remoteaudio1.src = null;
-        });
-
-        socket.on('join', function (room){
-            //console.log('Another peer made a request to join room ' + room);
-            //console.log('This peer is the initiator of room ' + room + '!');
-
-            isChannelReady = true;
-        });
-
-        socket.on('joined', function (room){
-            //console.log('This peer has joined room ' + room.room + ' '+ room.username +' '+ room.otherClients);
-            isChannelReady = true;
-
-            $scope.startCalling();
-        });
-
-        socket.on('log', function (array){
-            console.log.apply(console, array);
-        });
-
-        window.onbeforeunload = function(e){
-            $scope.LeaveRoom();
-        }
-
-        function sendMessage(message){
-            message = {msg:message};
-            message.room = roomid;
-            //message.username = $scope.user.username;
-            //console.log('Client sending message: ', message);
-            socket.emit('message', message);
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // Variables for WebRTC Session                                                       //
-        ///////////////////////////////////////////////////////////////////////////////////////
-
-        var isChannelReady;
-        var isInitiator = false;
-        var isStarted = false;
-        var sendChannel;
-        var receiveChannel;
-        var localStream;
-        var localStreamScreen;
-        var pc;
-        var remoteStream1;
-        var remoteStreamScreen;
-        var turnReady;
-        var bell = new Audio('/sounds/bells_simple.mp3');
-        bell.loop = true;
-
-        var remotevideo1 = document.getElementById("remotevideo1");
+    socket.on('left', function (room){
+        $scope.callEnded = true;
+        if(remoteStream1)
+            remoteStream1.stop();
+        if(localStream)
+            localStream.stop();
+        if(localStreamScreen)
+            localStreamScreen.stop();
+        if(remoteStreamScreen)
+            remoteStreamScreen.stop();
+        pc.close();
+        pc = null;
+        $scope.localCameraOn = false;
         remotevideo1.src = null;
+        remoteaudio1.src = null;
+    });
 
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // WebRTC using sigaling logic                                                        //
-        ///////////////////////////////////////////////////////////////////////////////////////
+    socket.on('join', function (room){
+        //console.log('Another peer made a request to join room ' + room);
+        //console.log('This peer is the initiator of room ' + room + '!');
 
-        socket.on('message', function (message) {
-            //console.log('Client received message: '+ JSON.stringify(message));
+        isChannelReady = true;
+    });
 
-            if (message.msg === 'got user media') {
-                if (isInitiator && !isStarted) {
-                    $scope.startCalling();//maybeStart();
-                }
+    socket.on('joined', function (room){
+        //console.log('This peer has joined room ' + room.room + ' '+ room.username +' '+ room.otherClients);
+        isChannelReady = true;
+
+        $scope.startCalling();
+    });
+
+    socket.on('log', function (array){
+        console.log.apply(console, array);
+    });
+
+    window.onbeforeunload = function(e){
+        $scope.LeaveRoom();
+    }
+
+    function sendMessage(message){
+        message = {msg:message};
+        message.room = roomid;
+        //message.username = $scope.user.username;
+        //console.log('Client sending message: ', message);
+        socket.emit('message', message);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // Variables for WebRTC Session                                                       //
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    var isChannelReady;
+    var isInitiator = false;
+    var isStarted = false;
+    var sendChannel;
+    var receiveChannel;
+    var localStream;
+    var localStreamScreen;
+    var pc;
+    var remoteStream1;
+    var remoteStreamScreen;
+    var turnReady;
+    var bell = new Audio('/sounds/bells_simple.mp3');
+    bell.loop = true;
+
+    var remotevideo1 = document.getElementById("remotevideo1");
+    remotevideo1.src = null;
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // WebRTC using sigaling logic                                                        //
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    socket.on('message', function (message) {
+        //console.log('Client received message: '+ JSON.stringify(message));
+
+        if (message.msg === 'got user media') {
+            if (isInitiator && !isStarted) {
+                $scope.startCalling();//maybeStart();
             }
-            else if (message.type === 'offer') {
+        }
+        else if (message.type === 'offer') {
 
-                if(!isStarted){
-                    if (!isInitiator && !isStarted) {
-                        maybeStart();
-                    }
-                    pc.setRemoteDescription(new RTCSessionDescription(message));
-                    doAnswer();
+            if(!isStarted){
+                if (!isInitiator && !isStarted) {
+                    maybeStart();
                 }
-
-            } else if (message.type === 'answer' && isStarted) {
                 pc.setRemoteDescription(new RTCSessionDescription(message));
-            } else if (message.type === 'candidate' && isStarted) {
-                var candidate = new RTCIceCandidate({
-                    sdpMLineIndex: message.label,
-                    candidate: message.candidate
-                });
-                pc.addIceCandidate(candidate);
+                doAnswer();
             }
-        });
 
-        function maybeStart() {
-            //console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
-            if (!isStarted && typeof localStream != 'undefined' && isChannelReady) {
-
-                createPeerConnection();
-                pc.addStream(localStream);
-                isStarted = true;
-
-                if (isInitiator) {
-                    doCall();
-                }
-            }
+        } else if (message.type === 'answer' && isStarted) {
+            pc.setRemoteDescription(new RTCSessionDescription(message));
+        } else if (message.type === 'candidate' && isStarted) {
+            var candidate = new RTCIceCandidate({
+                sdpMLineIndex: message.label,
+                candidate: message.candidate
+            });
+            pc.addIceCandidate(candidate);
         }
+    });
 
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // WebRTC logic                                                                       //
-        ///////////////////////////////////////////////////////////////////////////////////////
+    function maybeStart() {
+        //console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
+        if (!isStarted && typeof localStream != 'undefined' && isChannelReady) {
 
-        function createPeerConnection() {
-            try {
-                //
-                //Different URL way for FireFox
-                //
-                pc = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
-                pc.onicecandidate = handleIceCandidate;
-                pc.onaddstream = handleRemoteStreamAdded;
-                pc.onremovestream = handleRemoteStreamRemoved;
-
-            } catch (e) {
-                console.log('Failed to create PeerConnection, exception: ' + e.message);
-                alert('Cannot create RTCPeerConnection object.');
-                return;
-            }
-        }
-
-        function handleIceCandidate(event) {
-            if (event.candidate) {
-                console.log('I got candidate...')
-                console.log(event.candidate)
-                sendMessage({
-                    type: 'candidate',
-                    label: event.candidate.sdpMLineIndex,
-                    id: event.candidate.sdpMid,
-                    candidate: event.candidate.candidate
-                })
-            } else {
-                console.log('End of candidates.');
-            }
-        }
-
-        function handleCreateOfferError(event){
-            console.log('createOffer() error: ', e);
-        }
-
-        function doCall() {
-            console.log('Sending offer to peer');
-            pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
-        }
-
-        function doAnswer() {
-            console.log('Sending answer to peer.');
-            pc.createAnswer(setLocalAndSendMessage, function (error){console.log(error)}, sdpConstraints);
-        }
-
-        function setLocalAndSendMessage(sessionDescription) {
-
-
-            // Set Opus as the preferred codec in SDP if Opus is present.
-            pc.setLocalDescription(sessionDescription);
-
-
-            //console.log('setLocalAndSendMessage sending message' , sessionDescription);
-
-            //console.log(''+ sessionDescription.FromUser +' sending Offer or Answer to ', toUserName)
-            sendMessage(sessionDescription);
-        }
-
-        $scope.meetingRemoteVideoWidth = '100%';
-
-        function handleRemoteStreamAdded(event) {
-
-            remotevideo1.src = URL.createObjectURL(event.stream);
-            remoteStreamScreen = event.stream;
-
-        }
-
-        function handleRemoteStreamRemoved(event) {
-
-            remotevideo1.src = null;
-
-            $scope.$apply(function(){
-                //		$scope.screenSharedByPeer = false;
-            })
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // Media Stream Logic                                                                 //
-        ///////////////////////////////////////////////////////////////////////////////////////
-
-        var localPeerConnection, remotePeerConnection;
-
-        function handleUserMedia(newStream){
-
-            localStream = newStream;
-            $scope.localCameraOn = true;
-
-            sendMessage({msg: 'got user media'});
+            createPeerConnection();
+            pc.addStream(localStream);
+            isStarted = true;
 
             if (isInitiator) {
-                maybeStart();
+                doCall();
             }
         }
+    }
 
-        function handleUserMediaError(error){
-            //console.log(error);
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // WebRTC logic                                                                       //
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    function createPeerConnection() {
+        try {
+            //
+            //Different URL way for FireFox
+            //
+            pc = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
+            pc.onicecandidate = handleIceCandidate;
+            pc.onaddstream = handleRemoteStreamAdded;
+            pc.onremovestream = handleRemoteStreamRemoved;
+
+        } catch (e) {
+            console.log('Failed to create PeerConnection, exception: ' + e.message);
+            alert('Cannot create RTCPeerConnection object.');
+            return;
         }
+    }
 
-        var video_constraints = {video: true, audio: true};
-
-        $scope.startCalling = function(){
-
-            getUserMedia(video_constraints, handleUserMedia, handleUserMediaError);
-
+    function handleIceCandidate(event) {
+        if (event.candidate) {
+            console.log('I got candidate...')
+            console.log(event.candidate)
+            sendMessage({
+                type: 'candidate',
+                label: event.candidate.sdpMLineIndex,
+                id: event.candidate.sdpMid,
+                candidate: event.candidate.candidate
+            })
+        } else {
+            console.log('End of candidates.');
         }
+    }
+
+    function handleCreateOfferError(event){
+        console.log('createOffer() error: ', e);
+    }
+
+    function doCall() {
+        console.log('Sending offer to peer');
+        pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+    }
+
+    function doAnswer() {
+        console.log('Sending answer to peer.');
+        pc.createAnswer(setLocalAndSendMessage, function (error){console.log(error)}, sdpConstraints);
+    }
+
+    function setLocalAndSendMessage(sessionDescription) {
 
 
-    });
+        // Set Opus as the preferred codec in SDP if Opus is present.
+        pc.setLocalDescription(sessionDescription);
+
+
+        //console.log('setLocalAndSendMessage sending message' , sessionDescription);
+
+        //console.log(''+ sessionDescription.FromUser +' sending Offer or Answer to ', toUserName)
+        sendMessage(sessionDescription);
+    }
+
+    $scope.meetingRemoteVideoWidth = '100%';
+
+    function handleRemoteStreamAdded(event) {
+
+        remotevideo1.src = URL.createObjectURL(event.stream);
+        remoteStreamScreen = event.stream;
+
+    }
+
+    function handleRemoteStreamRemoved(event) {
+
+        remotevideo1.src = null;
+
+        $scope.$apply(function(){
+            //		$scope.screenSharedByPeer = false;
+        })
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // Media Stream Logic                                                                 //
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    var localPeerConnection, remotePeerConnection;
+
+    function handleUserMedia(newStream){
+
+        localStream = newStream;
+        $scope.localCameraOn = true;
+
+        sendMessage({msg: 'got user media'});
+
+        if (isInitiator) {
+            maybeStart();
+        }
+    }
+
+    function handleUserMediaError(error){
+        //console.log(error);
+    }
+
+    var video_constraints = {video: true, audio: true};
+
+    $scope.startCalling = function(){
+
+        getUserMedia(video_constraints, handleUserMedia, handleUserMediaError);
+
+    }
+
+
+});

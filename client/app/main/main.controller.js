@@ -711,7 +711,7 @@ angular.module('cloudKiboApp')
         $scope.saveNewUserName = function (tempUser) {
 
             tempUser._id = $scope.user._id;
-            $http.post(RestApi.user.saveUserDetailForFedreatedAuthentiaation, tempUser)
+            $http.post(RestApi.user.saveUserDetailForFedreatedAuthentication, tempUser)
                 .success(function (data) {
                     if(data.status == 'success') {
                         $scope.user = data.msg;
@@ -1353,7 +1353,7 @@ angular.module('cloudKiboApp')
         $scope.callData = {};
 
         $scope.recordCallData = function () {
-            $http.post(RestApi.callrecord.getCallRecord, JSON.stringify($scope.callData))
+            $http.post(RestApi.callrecord.setCallRecordData, JSON.stringify($scope.callData))
         };
 
         ////////////////////////////////////////////////////////////////////////////////////////
