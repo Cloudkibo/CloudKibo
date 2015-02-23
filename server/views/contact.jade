@@ -15,26 +15,38 @@ block bodycontent
                 p
                   | Send your feedback 
                 // BEGIN FORM
-                form(role='form', ng-submit='save()', novalidate, class='css-form form-horizontal form-without-legend', name='form')
+                form(role='form', ng-submit='sendFeedback(contact)', novalidate, class='css-form form-horizontal form-without-legend', name='form')
                   .form-group
-                    label(for='contacts-name') Name
-                        span(class='require')
-                            | *
-                    input#contacts-name.form-control(type='text')
+                    label Name
+                    input.form-control(type='text', name="name", placeholder='Enter Name ', required, ng-model='contact.name')
+                    div(ng-show="form.name.$dirty && !form.name.$focused")
+                      div(ng-show="form.name.$invalid")
+                        span(ng-show="form.name.$error.required")
+                          | Enter the name.
                   .form-group
-                    label(for='contacts-email') Email
-                        span(class='require')
-                            | *
-                    input#contacts-email.form-control(type='email')
+                    label Email
+                    input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='contact.email')
+                    div(ng-show="form.email.$dirty && !form.email.$focused")
+                      div(ng-show="form.email.$invalid")
+                        span(ng-show="form.email.$error.required")
+                          | Enter the email address.
+                        span(ng-show="form.email.$error.email")
+                          | This is not a valid email address.
                   .form-group
-                    label(for='contacts-message') Message
-                        span(class='require')
-                            | *
-                    textarea#contacts-message.form-control(rows='5')
-                  button.btn.btn-primary(type='submit')
+                    label Message
+                    textarea.form-control(rows='5', name="message", placeholder='Type your suggestions here', required, ng-model='contact.message')
+                    div(ng-show="form.message.$dirty && !form.message.$focused")
+                      div(ng-show="form.message.$invalid")
+                        span(ng-show="form.message.$error.required")
+                          | Enter the suggestion.
+                  button.btn.btn-primary(type='submit', ng-disabled="form.$invalid")
                     i.icon-ok
                     |  Send
-                  button.btn.btn-default(type='button') Cancel
+
+              .col-md-9.col-sm-9
+                br
+                br
+                alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
                 // END FORM
 
         // END CONTENT

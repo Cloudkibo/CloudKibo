@@ -258,10 +258,16 @@ angular.module('cloudKiboApp')
 
             feedback : {
                 /**
-                 * feedback from visitor/user
+                 * feedback from user after call
                  *
                  */
-                feedbackByUser: '/api/feedback/'
+                feedbackByUser: '/api/feedback/',
+
+                /**
+                 * feedback from any visitor from contacts page
+                 *
+                 */
+                feedbackByVisitor: '/api/feedback/visitor'
             },
 
             extensionlink : {

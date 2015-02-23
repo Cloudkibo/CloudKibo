@@ -2027,6 +2027,31 @@ angular.module('cloudKiboApp')
 
         $timeout(function(){Layout.initOWL();}, 1000)
 
+        $scope.sendFeedback = function (contact) {
+
+            $http.post(RestApi.feedback.feedbackByVisitor, contact)
+                .success(function (data) {
+                    if(data.status == 'success') {
+                        $scope.addAlert(data.status, data.msg)
+                    }
+                    else{
+
+                    }
+
+                })
+
+        };
+
+        $scope.alerts = [];
+
+        $scope.addAlert = function(newtype, newMsg) {
+            //console.log('Error', newtype, newMsg)
+            $scope.alerts.push({type: newtype, msg: newMsg});
+        };
+
+        $scope.closeAlert = function(index) {
+            $scope.alerts.splice(index, 1);
+        };
 
     })
 
