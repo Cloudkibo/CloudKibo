@@ -1051,7 +1051,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.updateProfile = function (gotUser) {
-            $http.put(RestApi.contacts.acceptContactRequest, JSON.stringify(gotUser))
+            $http.put(RestApi.user.changeUserProfile, JSON.stringify(gotUser))
                 .success(function (data) {
                     $scope.user = data;
                     $scope.openSettings();
