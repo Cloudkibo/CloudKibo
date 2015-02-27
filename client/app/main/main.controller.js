@@ -711,7 +711,7 @@ angular.module('cloudKiboApp')
         $scope.saveNewUserName = function (tempUser) {
 
             tempUser._id = $scope.user._id;
-            $http.post(RestApi.user.saveUserDetailForFedreatedAuthentiaation, tempUser)
+            $http.post(RestApi.user.saveUserDetailForFedreatedAuthentication, tempUser)
                 .success(function (data) {
                     if(data.status == 'success') {
                         $scope.user = data.msg;
@@ -1051,7 +1051,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.updateProfile = function (gotUser) {
-            $http.put(RestApi.contacts.acceptContactRequest, JSON.stringify(gotUser))
+            $http.put(RestApi.user.changeUserProfile, JSON.stringify(gotUser))
                 .success(function (data) {
                     $scope.user = data;
                     $scope.openSettings();
@@ -1353,7 +1353,7 @@ angular.module('cloudKiboApp')
         $scope.callData = {};
 
         $scope.recordCallData = function () {
-            $http.post(RestApi.callrecord.getCallRecord, JSON.stringify($scope.callData))
+            $http.post(RestApi.callrecord.setCallRecordData, JSON.stringify($scope.callData))
         };
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -2027,6 +2027,31 @@ angular.module('cloudKiboApp')
 
         $timeout(function(){Layout.initOWL();}, 1000)
 
+        $scope.sendFeedback = function (contact) {
+
+            $http.post(RestApi.feedback.feedbackByVisitor, contact)
+                .success(function (data) {
+                    if(data.status == 'success') {
+                        $scope.addAlert(data.status, data.msg)
+                    }
+                    else{
+
+                    }
+
+                })
+
+        };
+
+        $scope.alerts = [];
+
+        $scope.addAlert = function(newtype, newMsg) {
+            //console.log('Error', newtype, newMsg)
+            $scope.alerts.push({type: newtype, msg: newMsg});
+        };
+
+        $scope.closeAlert = function(index) {
+            $scope.alerts.splice(index, 1);
+        };
 
     })
 

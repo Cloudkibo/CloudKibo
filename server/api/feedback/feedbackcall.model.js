@@ -3,7 +3,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var feedback = new Schema({
+var feedbackcall = new Schema({
 		   userid : {type: Schema.ObjectId, ref: 'accounts'},
 		   audio : Number,
 		   video : Number,
@@ -13,4 +13,4 @@ var feedback = new Schema({
 		   datetime : {type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('feedback', feedback);
+module.exports = mongoose.model('feedbackcall', feedbackcall);

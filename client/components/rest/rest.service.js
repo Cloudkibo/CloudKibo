@@ -114,7 +114,7 @@ angular.module('cloudKiboApp')
                  * Save username, email and phone number for Federated authenticated user
                  *
                  */
-                saveUserDetailForFedreatedAuthentiaation: '/api/users/saveusername'
+                saveUserDetailForFedreatedAuthentication: '/api/users/saveusername'
 
             },
 
@@ -258,10 +258,16 @@ angular.module('cloudKiboApp')
 
             feedback : {
                 /**
-                 * feedback from visitor/user
+                 * feedback from user after call
                  *
                  */
-                feedbackByUser: '/api/feedback/'
+                feedbackByUser: '/api/feedback/',
+
+                /**
+                 * feedback from any visitor from contacts page
+                 *
+                 */
+                feedbackByVisitor: '/api/feedback/visitor'
             },
 
             extensionlink : {

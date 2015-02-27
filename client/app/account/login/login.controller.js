@@ -11,14 +11,16 @@ angular.module('cloudKiboApp')
 		//console.log('Error', newtype, newMsg)
 		$scope.alerts.push({type: newtype, msg: newMsg});
 	};
-	
+
+      $scope.closeAlert = function(index) {
+        $scope.alerts.splice(index, 1);
+      };
+
 	$scope.underProgress = function(){
 		return $scope.progressState;
 	}
 
-	$scope.closeAlert = function(index) {
-		$scope.alerts.splice(index, 1);
-	};
+
 
     $scope.login = function(form) {
       $scope.submitted = true;

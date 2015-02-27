@@ -163,9 +163,9 @@ html(ng-app='cloudKiboApp')
             div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
               div(style='text-align: center;')
                 span
-                  div(ng-show='hasPeerSharedScreen()')
-                    div(ng-if='role=="visitor"')
+                  div(ng-show='role=="visitor"')
                         video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                  div(ng-show='hasPeerSharedScreen()')
                     video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
                     audio(id='remoteaudio1', autoplay='true')
                   div(ng-show='!hasPeerSharedScreen()')
@@ -180,7 +180,7 @@ html(ng-app='cloudKiboApp')
                 br
           .sidePane(class='col-md-3 col-sm-3 blog-sidebar')
             div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
-              div(ng-if='role=="agent"')
+              div(ng-show='role=="agent"')
                 video(id='localvideo', autoplay='true', width='100%', class='videoelement')
               button(id='showScreenButton', ng-click='showScreen()') {{showScreenText}}
               br

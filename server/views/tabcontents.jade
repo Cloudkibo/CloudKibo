@@ -189,7 +189,7 @@ block bodycontent
               br
               form(role='form', method="post", novalidate, name='form6', class='css-form', ng-submit='emailInvite(inviteemail)')
                 .form-group
-                  input.form-control(type='email', name="email", placeholder='Enter Recipient\'s Email Address', required, ng-model='inviteemail.recipientEmail')
+                  input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='inviteemail.recipientEmail')
                 div(ng-show="form6.email.$dirty && !form6.email.$focused")
                   div(ng-show="form6.email.$invalid")
                     span(ng-show="form6.email.$error.required")
