@@ -1632,6 +1632,9 @@ angular.module('cloudKiboApp')
                 $scope.amInCallWith = '';
 
             }
+            else if(message.type == '__set_session_key') {
+                Signalling.setSessionKey(message.sessionKey);
+            }
             else if (message.type === 'offer') {
                 if (WebRTC.getInitiator() && !WebRTC.getIsStarted()) {
                     maybeStart();

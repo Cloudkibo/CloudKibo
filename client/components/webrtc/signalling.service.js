@@ -30,7 +30,13 @@ angular.module('cloudKiboApp')
         var username;       /* Username of this peer */
         var roomName;       /* Name of the socket.io room which peers join */
 
+        var sessionKey='124';                     /* Session key for webrtc call */
+
         return {
+
+            setSessionKey: function(key){
+                sessionKey = key;
+            },
 
             /**
              * Before starting any WebRTC call, application should give information about username of peers
@@ -57,6 +63,7 @@ angular.module('cloudKiboApp')
              * @param message WebRTC signalling message, i.e. offer object, answer object, candidate objects etc
              */
             sendMessage: function(message){
+                message.sessionKey = sessionKey;
                 message = {msg:message};
                 message.room = roomName;
                 message.to = peer;

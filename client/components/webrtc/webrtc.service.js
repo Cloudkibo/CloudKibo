@@ -51,7 +51,7 @@ angular.module('cloudKiboApp')
         var remoteAudio;                    /* It is the HTML5 audio element to hold other peer's audio */
         var remoteVideoScreen;              /* It is the HTML5 video element to hold other peer's screen sharing video */
 
-        var screenShared = false;                   /* This boolean variable indicates if the other party has shared the screen */
+        var screenShared = false;           /* This boolean variable indicates if the other party has shared the screen */
 
         return {
 
