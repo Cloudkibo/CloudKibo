@@ -16,7 +16,7 @@ function onDisconnect(socketio,socket) {
 	///////////////////////////////////////////////////////////
 	// PHONERTC EXAMPLE SIGNALLING
 	///////////////////////////////////////////////////////////
-	
+
 	try {
 		var index = _.findIndex(users, {socket: socket.id});
 		if (index !== -1) {
@@ -611,7 +611,7 @@ function onConnect(socketio, socket) {
 		var contact = _.find(users, { name: name });
 		if (!contact) { return; }
 
-		io.to(contact.socket)
+		socketio.to(contact.socket)
 			.emit('messageReceived', currentUser.name, message);
 	});
 
