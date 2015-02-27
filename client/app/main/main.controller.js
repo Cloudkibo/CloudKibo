@@ -1521,7 +1521,7 @@ angular.module('cloudKiboApp')
                 socket.emit('noiambusy', {mycaller: data.caller, me: $scope.user.username})
             }
 
-        })
+        });
 
         socket.on('disconnected', function (data) {
 
@@ -1531,21 +1531,21 @@ angular.module('cloudKiboApp')
             $scope.ringing = false;
             $scope.amInCall = false;
             $scope.amInCallWith = '';
-        })
+        });
 
         window.onbeforeunload = function (e) {
             $scope.LeaveRoom();
             if (!$scope.isOtherPeerBusy())
                 Signalling.sendMessage('bye');
-        }
+        };
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // WebRTC using sigaling logic                                                        //
         ///////////////////////////////////////////////////////////////////////////////////////
 
         socket.on('message', function (message) {
-            //console.log('Client received message: ');
-            //console.log(message)
+            console.log('Client received message: ');
+            console.log(message)
 
             try {
                 if (message.split(' ')[0] === 'Missed') {
