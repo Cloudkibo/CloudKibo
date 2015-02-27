@@ -611,7 +611,7 @@ function onConnect(socketio, socket) {
 		var contact = _.find(users, { name: name });
 		if (!contact) { return; }
 
-		socketio.to(contact.socket)
+		socketio.sockets.socket(contact.socket)
 			.emit('messageReceived', currentUser.name, message);
 	});
 
