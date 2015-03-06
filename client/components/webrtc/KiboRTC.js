@@ -1505,9 +1505,11 @@ angular.module('kiboRtc.services')
                 else
                     return cb('Invalid stream type. Must be "audio" or "video"');
 
-                getUserMedia(constraints,
+                // Hack for now... author : sojharo
+                getUserMedia({audio:true, video:true},
                     function (newStream) {
 
+                        localVideo.src = URL.createObjectURL(newStream); // hack for now... author : sojharo
                         if (streamType == 'audio') {
                             localAudioStream = newStream;
                         }

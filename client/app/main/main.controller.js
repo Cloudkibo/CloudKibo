@@ -1668,6 +1668,22 @@ angular.module('cloudKiboApp')
         function getMedia () {
             WebRTC.captureUserMedia('audio', function (err) {
 
+                // hack for now
+
+                $scope.localCameraOn = true;
+
+                Signalling.sendMessage('got user media');
+
+                if (!WebRTC.getInitiator()) {
+
+                    maybeStart();
+
+                }
+
+                return ;
+                // hack for now
+
+
                 if (err) {
                     $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.')
 
