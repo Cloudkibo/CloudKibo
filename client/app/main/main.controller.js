@@ -1547,6 +1547,11 @@ angular.module('cloudKiboApp')
             console.log('Client received message: ');
             console.log(message);
 
+            if(typeof message == 'string'){
+                console.log('CONVERTING TO JSON');
+                message = JSON.parse(message);
+            }
+
             try {
                 if (message.split(' ')[0] === 'Missed') {
                     $scope.IncomingCallStatement = message;
@@ -1635,7 +1640,7 @@ angular.module('cloudKiboApp')
             else if(message.type == '__set_session_key') {
                 Signalling.setSessionKey(message.sessionKey);
             }
-            else if (message.type == "offer") {
+            else if (message.type === 'offer') {
                 console.log('GOT AN OFFER '+ message.type)
                 if (WebRTC.getInitiator() && !WebRTC.getIsStarted()) {
                     console.log('GOING TO START MAYBESTART')
