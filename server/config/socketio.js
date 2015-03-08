@@ -110,6 +110,9 @@ function onConnect(socketio, socket) {
 				})
 			});
 			
+			console.log('THIS IS THE SOCKET_ID I M SENDING TO '+ socketid)
+			console.log('THIS IS THE NICK NAME GIVEN TO ME '+ message.to)
+			
 			if(socketid == ''){
 				//socket.emit('disconnected', message.mycaller);
 			}
