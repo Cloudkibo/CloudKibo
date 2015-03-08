@@ -1545,11 +1545,18 @@ angular.module('cloudKiboApp')
 
         socket.on('message', function (message) {
             console.log('Client received message: ');
-            console.log(message);
+
 
             if(typeof message == 'string'){
                 try {
+                    console.log(message);
                     message = JSON.parse(message);
+                }catch(e){}
+            }
+
+            if(typeof message != 'string'){
+                try {
+                    console.log(JSON.stringify(message))
                 }catch(e){}
             }
 
