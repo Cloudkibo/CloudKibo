@@ -1282,12 +1282,13 @@ angular.module('kiboRtc.services')
              * @param message WebRTC signalling message, i.e. offer object, answer object, candidate objects etc
              */
             sendMessage: function(message){
-                message.sessionKey = sessionKey;
+                //message.sessionKey = sessionKey;
                 message = {msg:message};
                 message.room = roomName;
                 message.to = peer;
                 message.username = username;
-                //console.log('Client sending message: ', message);
+                console.log('Client sending message: ');
+                console.log(message);
                 socket.emit('message', message);
             },
 
