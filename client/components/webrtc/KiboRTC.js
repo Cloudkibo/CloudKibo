@@ -1457,7 +1457,6 @@ angular.module('kiboRtc.services')
              *
              */
             createAndSendAnswer: function () {
-                console.log('SENDING THE ANSER ROM HERE .. CALLING THE SET LOCAL DESCRIPTION')
                 pc.createAnswer(setLocalAndSendMessage, function (error) {
                     console.log(error)
                 }, sdpConstraints);
@@ -1470,7 +1469,6 @@ angular.module('kiboRtc.services')
              * @param message It is the remote description sent to the local peer
              */
             setRemoteDescription: function (message) {
-                console.log('SETING SDP OF OTHER NOW')
                 pc.setRemoteDescription(new RTCSessionDescription(message));
             },
 
@@ -1701,10 +1699,6 @@ angular.module('kiboRtc.services')
          * @param sessionDescription description about the session
          */
         function setLocalAndSendMessage(sessionDescription) {
-
-            console.log("SESSION DESCRIPTION WHICH WE ARE SENDING");
-            console.log(sessionDescription);
-
             // Set Opus as the preferred codec in SDP if Opus is present.
             pc.setLocalDescription(sessionDescription);
             //console.log('setLocalAndSendMessage sending message' , sessionDescription);
@@ -1732,6 +1726,10 @@ angular.module('kiboRtc.services')
          * @param event holds the stream sent by the remote peer
          */
         function handleRemoteStreamAdded(event) {
+
+            console.log('GETTING THE STREAM FROM THE MOBILE SIDE')
+            console.log(event);
+
             if(event.stream.getAudioTracks().length){
                 remoteAudio.src = URL.createObjectURL(event.stream);
                 remoteAudioStream = event.stream;

@@ -1549,8 +1549,8 @@ angular.module('cloudKiboApp')
 
             if(typeof message == 'string'){
                 try {
-                    console.log(message);
                     message = JSON.parse(message);
+                    console.log(message);
                 }catch(e){}
             }
 
@@ -1652,7 +1652,6 @@ angular.module('cloudKiboApp')
                 if (WebRTC.getInitiator() && !WebRTC.getIsStarted()) {
                     maybeStart();
                 }
-                console.log('GOING TO SET REMOTE DESCRIPTION AND SEND ANSWER');
                 WebRTC.setRemoteDescription(message);
                 WebRTC.createAndSendAnswer();
             } else if (message.type === 'answer' && WebRTC.getIsStarted()) {
