@@ -1545,7 +1545,7 @@ angular.module('cloudKiboApp')
 
         socket.on('message', function (message) {
             console.log('Client received message: ');
-            console.log(message)
+            console.log(message.type);
 
             try {
                 if (message.split(' ')[0] === 'Missed') {
@@ -1651,6 +1651,7 @@ angular.module('cloudKiboApp')
         function maybeStart() {
             if (!WebRTC.getIsStarted() && typeof WebRTC.getLocalAudioStream() != 'undefined') {
 
+                console.log('INSIDE MAYBE START')
                 WebRTC.createPeerConnection();
 
                 WebRTC.setIsStarted(true);

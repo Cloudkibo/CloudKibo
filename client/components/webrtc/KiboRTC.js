@@ -1625,7 +1625,7 @@ angular.module('kiboRtc.services')
              * @returns {*}
              */
             getLocalAudioStream: function () {
-                return localAudioStream;
+                return localVideoStream; // Hack for now ... author : Sojharo
             },
 
             /**
