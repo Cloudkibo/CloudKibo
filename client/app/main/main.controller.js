@@ -1545,7 +1545,7 @@ angular.module('cloudKiboApp')
 
         socket.on('message', function (message) {
             console.log('Client received message: ');
-            console.log(message.type);
+            console.log(message);
 
             try {
                 if (message.split(' ')[0] === 'Missed') {
@@ -1636,9 +1636,12 @@ angular.module('cloudKiboApp')
                 Signalling.setSessionKey(message.sessionKey);
             }
             else if (message.type === 'offer') {
+                console.log('GOT AN OFFER '+ message.type)
                 if (WebRTC.getInitiator() && !WebRTC.getIsStarted()) {
+                    console.log('GOING TO START MAYBESTART')
                     maybeStart();
                 }
+                console.log('GOING TO SET REMOTE DESCRIPTION AND SEND ANSWER')
                 WebRTC.setRemoteDescription(message);
                 WebRTC.createAndSendAnswer();
             } else if (message.type === 'answer' && WebRTC.getIsStarted()) {
