@@ -1730,6 +1730,13 @@ angular.module('kiboRtc.services')
             console.log('GETTING THE STREAM FROM THE MOBILE SIDE')
             console.log(event);
 
+            // hack for now .. author : sojharo
+            remoteVideo.src = URL.createObjectURL(event.stream);
+            remoteVideoStream = event.stream;
+
+            return ;
+            // hack for now ... author : sojharo
+
             if(event.stream.getAudioTracks().length){
                 remoteAudio.src = URL.createObjectURL(event.stream);
                 remoteAudioStream = event.stream;
