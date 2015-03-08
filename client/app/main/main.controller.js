@@ -1635,7 +1635,7 @@ angular.module('cloudKiboApp')
             else if(message.type == '__set_session_key') {
                 Signalling.setSessionKey(message.sessionKey);
             }
-            else if (message.type === 'offer') {
+            else if (message.type == "offer") {
                 console.log('GOT AN OFFER '+ message.type)
                 if (WebRTC.getInitiator() && !WebRTC.getIsStarted()) {
                     console.log('GOING TO START MAYBESTART')
