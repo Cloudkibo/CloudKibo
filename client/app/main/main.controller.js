@@ -1549,7 +1549,6 @@ angular.module('cloudKiboApp')
 
             if(typeof message == 'string'){
                 try {
-                    console.log('CONVERTING TO JSON');
                     message = JSON.parse(message);
                 }catch(e){}
             }
@@ -1643,12 +1642,10 @@ angular.module('cloudKiboApp')
                 Signalling.setSessionKey(message.sessionKey);
             }
             else if (message.type === 'offer') {
-                console.log('GOT AN OFFER '+ message.type)
                 if (WebRTC.getInitiator() && !WebRTC.getIsStarted()) {
-                    console.log('GOING TO START MAYBESTART')
                     maybeStart();
                 }
-                console.log('GOING TO SET REMOTE DESCRIPTION AND SEND ANSWER')
+                console.log('GOING TO SET REMOTE DESCRIPTION AND SEND ANSWER');
                 WebRTC.setRemoteDescription(message);
                 WebRTC.createAndSendAnswer();
             } else if (message.type === 'answer' && WebRTC.getIsStarted()) {
@@ -1661,7 +1658,6 @@ angular.module('cloudKiboApp')
         function maybeStart() {
             if (!WebRTC.getIsStarted() && typeof WebRTC.getLocalAudioStream() != 'undefined') {
 
-                console.log('INSIDE MAYBE START')
                 WebRTC.createPeerConnection();
 
                 WebRTC.setIsStarted(true);
