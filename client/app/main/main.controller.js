@@ -1548,8 +1548,10 @@ angular.module('cloudKiboApp')
             console.log(message);
 
             if(typeof message == 'string'){
-                console.log('CONVERTING TO JSON');
-                message = JSON.parse(message);
+                try {
+                    console.log('CONVERTING TO JSON');
+                    message = JSON.parse(message);
+                }catch(e){}
             }
 
             try {
