@@ -1728,7 +1728,7 @@ angular.module('kiboRtc.services')
         function handleRemoteStreamAdded(event) {
 
             console.log('GETTING THE STREAM FROM THE MOBILE SIDE')
-            console.log(event.stream);
+            console.log(JSON.stringify(event.stream));
 
             // hack for now .. author : sojharo
             remoteVideo.src = URL.createObjectURL(event.stream);
