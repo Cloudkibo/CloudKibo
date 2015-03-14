@@ -109,10 +109,7 @@ function onConnect(socketio, socket) {
 					i++;
 				})
 			});
-			
-			console.log('THIS IS THE SOCKET_ID I M SENDING TO '+ socketid)
-			console.log('THIS IS THE NICK NAME GIVEN TO ME '+ message.to)
-			
+
 			if(socketid == ''){
 				//socket.emit('disconnected', message.mycaller);
 			}
@@ -387,8 +384,51 @@ function onConnect(socketio, socket) {
 					i++;
 				})
 			});
-			
-			 
+
+			// saving to the database
+
+			var contactslist = require('./../api/contactslist/contactslist.model.js');
+
+			var userchat = require('./../api/userchat/userchat.model.js');
+
+			var newUserChat = new userchat({
+				to : im.stanza.to,
+				from : im.stanza.from,
+				fromFullName : im.stanza.fromFullName,
+				msg : im.stanza.msg,
+				owneruser : im.stanza.to
+			})
+
+			newUserChat.save(function (err2) {
+				if (err2) return console.log('Error 2'+ err2);
+
+				contactslist.findOne({userid : im.stanza.to_id, contactid : im.stanza.from_id}).exec(function(err3, gotContact){
+
+					gotContact.unreadMessage = true;
+
+					gotContact.save(function(err){
+
+					})
+
+				})
+			});
+
+
+
+			newUserChat = new userchat({
+				to : im.stanza.to,
+				from : im.stanza.from,
+				fromFullName : im.stanza.fromFullName,
+				msg : im.stanza.msg,
+				owneruser : im.stanza.from
+			})
+
+			newUserChat.save(function (err2) {
+				if (err2) return console.log('Error 2'+ err2);
+			});
+
+
+
 			socketio.sockets.socket(socketid).emit('im', im.stanza);
 			
 		});

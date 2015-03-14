@@ -1830,8 +1830,9 @@ angular.module('cloudKiboApp')
 
                     $scope.messages.push($scope.im);
 
-                    $http.post(RestApi.userchat.saveChats, $scope.im).success(function (data) {
+                    /*$http.post(RestApi.userchat.saveChats, $scope.im).success(function (data) {
                     });
+                    */
 
                     $scope.im = {};
                 }
