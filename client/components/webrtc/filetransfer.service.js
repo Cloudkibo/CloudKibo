@@ -31,7 +31,7 @@ angular.module('cloudKiboApp')
             createPeerConnection: function (cb) {
                 try {
 
-                    pc = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
+                    pc = new RTCPeerConnection(pc_config, {'optional': [{'DtlsSrtpKeyAgreement': true}]});//pc_constraints);
                     pc.onicecandidate = handleIceCandidate;
 
                     //if (!$scope.isInitiator_DC) {

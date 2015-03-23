@@ -651,6 +651,7 @@ angular.module('cloudKiboApp')
 
             var reader = new FileReader;
             var upper_limit = (chunk_num + 1) * FileTransfer.getChunkSize(other_browser, 'chrome'); //don't hardcode
+
             if (upper_limit > meta.size) {
                 upper_limit = meta.size;
             }
@@ -668,7 +669,6 @@ angular.module('cloudKiboApp')
                     FileTransfer.sendData(event.target.result);//id, event.target.result);
 
                 }
-
 
             }
             reader.readAsArrayBuffer(blob);

@@ -85,7 +85,7 @@ angular.module('cloudKiboApp')
              *
              */
             createPeerConnection: function () {
-                pc = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
+                pc = new RTCPeerConnection(pc_config, {'optional': [{'DtlsSrtpKeyAgreement': true}]});//pc_constraints);
                 pc.onicecandidate = handleIceCandidate;
                 pc.onaddstream = handleRemoteStreamAdded;
                 pc.onremovestream = handleRemoteStreamRemoved;

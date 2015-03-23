@@ -1713,7 +1713,7 @@ angular.module('cloudKiboApp')
 
 
 
-    .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi){
+    .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi, $window){
 
         var roomid = '';
         ////////////////////////////////////////////////////////////////////////////////////////
