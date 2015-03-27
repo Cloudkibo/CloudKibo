@@ -1,26 +1,26 @@
 (function () {
 
-  // Create all modules and define dependencies to make sure they exist
-  // and are loaded in the correct order to satisfy dependency injection
-  // before all nested files are concatenated by Gulp
+    // Create all modules and define dependencies to make sure they exist
+    // and are loaded in the correct order to satisfy dependency injection
+    // before all nested files are concatenated by Gulp
 
-  // Config
-  angular.module('kiboRtc.config', [])
-      .value('kiboRtc.config', {
-          debug: true
-      });
+    // Config
+    angular.module('kiboRtc.config', [])
+        .value('kiboRtc.config', {
+            debug: true
+        });
 
-  // Modules
-  angular.module('kiboRtc.directives', []);
-  angular.module('kiboRtc.filters', []);
-  angular.module('kiboRtc.services', []);
-  angular.module('kiboRtc',
-      [
-          'kiboRtc.config',
-          'kiboRtc.directives',
-          'kiboRtc.filters',
-          'kiboRtc.services'
-      ]);
+    // Modules
+    angular.module('kiboRtc.directives', []);
+    angular.module('kiboRtc.filters', []);
+    angular.module('kiboRtc.services', []);
+    angular.module('kiboRtc',
+        [
+            'kiboRtc.config',
+            'kiboRtc.directives',
+            'kiboRtc.filters',
+            'kiboRtc.services'
+        ]);
 
 })();
 
@@ -57,7 +57,7 @@ angular.module('kiboRtc.services')
             createPeerConnection: function (cb) {
                 try {
 
-                    pc = new RTCPeerConnection(pc_config, {'optional': [{'DtlsSrtpKeyAgreement': true}]});//pc_constraints);
+                    pc = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
                     pc.onicecandidate = handleIceCandidate;
 
                     //if (!$scope.isInitiator_DC) {
@@ -1249,13 +1249,7 @@ angular.module('kiboRtc.services')
         var username;       /* Username of this peer */
         var roomName;       /* Name of the socket.io room which peers join */
 
-        var sessionKey='124';                     /* Session key for webrtc call */
-
         return {
-
-            setSessionKey: function(key){
-                sessionKey = key;
-            },
 
             /**
              * Before starting any WebRTC call, application should give information about username of peers
@@ -1282,13 +1276,11 @@ angular.module('kiboRtc.services')
              * @param message WebRTC signalling message, i.e. offer object, answer object, candidate objects etc
              */
             sendMessage: function(message){
-                //message.sessionKey = sessionKey;
                 message = {msg:message};
                 message.room = roomName;
                 message.to = peer;
                 message.username = username;
-                console.log('Client sending message: ');
-                console.log(message);
+                //console.log('Client sending message: ', message);
                 socket.emit('message', message);
             },
 
@@ -1428,7 +1420,7 @@ angular.module('kiboRtc.services')
              *
              */
             createPeerConnection: function () {
-                pc = new RTCPeerConnection(pc_config, {'optional': [{'DtlsSrtpKeyAgreement': true}]});//{optional: []});//pc_constraints);
+                pc = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
                 pc.onicecandidate = handleIceCandidate;
                 pc.onaddstream = handleRemoteStreamAdded;
                 pc.onremovestream = handleRemoteStreamRemoved;
@@ -1506,11 +1498,9 @@ angular.module('kiboRtc.services')
                 else
                     return cb('Invalid stream type. Must be "audio" or "video"');
 
-                // Hack for now... author : sojharo
-                getUserMedia({audio:true, video:true},
+                getUserMedia(constraints,
                     function (newStream) {
 
-                        localVideo.src = URL.createObjectURL(newStream); // hack for now... author : sojharo
                         if (streamType == 'audio') {
                             localAudioStream = newStream;
                         }
@@ -1726,17 +1716,6 @@ angular.module('kiboRtc.services')
          * @param event holds the stream sent by the remote peer
          */
         function handleRemoteStreamAdded(event) {
-
-            console.log('GETTING THE STREAM FROM THE MOBILE SIDE')
-            console.log(JSON.stringify(event.stream));
-
-            // hack for now .. author : sojharo
-            remoteVideo.src = URL.createObjectURL(event.stream);
-            remoteVideoStream = event.stream;
-
-            return ;
-            // hack for now ... author : sojharo
-
             if(event.stream.getAudioTracks().length){
                 remoteAudio.src = URL.createObjectURL(event.stream);
                 remoteAudioStream = event.stream;
