@@ -1,0 +1,666 @@
+.arrow
+  cursor pointer
+  display block
+  height 64px
+  margin-top -35px
+  outline medium none
+  position absolute
+  top 50%
+  width 64px
+  z-index 5
+  &.prev
+    background-image url("/images/prev.png")
+    left 20px
+    opacity 0.2
+    transition all 0.2s linear 0s
+    &:hover
+      opacity 1
+  &.next
+    background-image url("/images/next.png")
+    opacity 0.2
+    right 20px
+    transition all 0.2s linear 0s
+    &:hover
+      opacity 1
+
+.nav
+  bottom -4px
+  display block
+  height 48px
+  left 0
+  margin 0 auto
+  padding 1em 0 0.8em
+  position absolute
+  right 0
+  text-align center
+  width 100%
+  z-index 5
+  li
+    border 5px solid #AAAAAA
+    border-radius 5px
+    cursor pointer
+    display inline-block
+    height 30px
+    margin 0 8px
+    position relative
+    width 50px
+    &.active
+      border 5px solid #FFFFFF
+    img
+      width 100%
+
+.slider
+  border 15px solid #FFFFFF
+  border-radius 5px
+  height 500px
+  margin 20px auto
+  position relative
+  width 1260px
+  -webkit-perspective 1000px
+  -moz-perspective 1000px
+  -ms-perspective 1000px
+  -o-perspective 1000px
+  perspective 1000px
+  -webkit-transform-style preserve-3d
+  -moz-transform-style preserve-3d
+  -ms-transform-style preserve-3d
+  -o-transform-style preserve-3d
+  transform-style preserve-3d
+
+.slides
+  position absolute
+  top 0
+  left 0
+  &.ng-hide-add
+    opacity 1
+    -webkit-transition 1s linear all
+    -moz-transition 1s linear all
+    -o-transition 1s linear all
+    transition 1s linear all
+    -webkit-transform rotateX(50deg) rotateY(30deg)
+    -moz-transform rotateX(50deg) rotateY(30deg)
+    -ms-transform rotateX(50deg) rotateY(30deg)
+    -o-transform rotateX(50deg) rotateY(30deg)
+    transform rotateX(50deg) rotateY(30deg)
+    -webkit-transform-origin right top 0
+    -moz-transform-origin right top 0
+    -ms-transform-origin right top 0
+    -o-transform-origin right top 0
+    transform-origin right top 0
+    &.ng-hide-add-active
+      opacity 0
+  &.ng-hide-remove
+    -webkit-transition 1s linear all
+    -moz-transition 1s linear all
+    -o-transition 1s linear all
+    transition 1s linear all
+    display block!important
+    opacity 0
+
+.slides, .slides.ng-hide-remove.ng-hide-remove-active
+  opacity 1
+
+.contactsPaneContainer
+  position relative
+  width 100%
+  height 100%
+  background #fff
+  padding 5px
+
+#userNameBox
+  display inline-block
+  position relative
+  width 145px
+  left 15px
+  vertical-align top
+  #padding 5px 5px 5px 5px
+
+.userInfoBoxContainer
+  background #fffbbb
+
+.statusTextField
+  border 0px solid #a1a1a1
+  padding 0px 10px
+  background #ffffff
+  width 100%
+  text-align left
+  margin-bottom 8px
+  font-style oblique
+
+.contacts
+  overflow auto
+  height 400px
+  #background #fffbbb
+
+.contact
+  padding 5px
+
+#contactsPictureBox
+  display inline-block
+  position relative
+  left 0px
+  width 45px
+  text-align left
+
+.addNewContactOption
+  margin-top 10px
+  background #ffffff
+  text-align center
+
+.sidePane
+  #position relative
+  #width 320px
+  background #badfef
+  #float right
+  #padding 20px 20px 20px 20px
+  #margin 1em
+  border-radius 5px
+
+.mainBodyPane
+  #position relative
+  #width 650px
+  #float left
+  #padding 1px 1px 1px 1px
+  border-radius 5px
+  background #badfef
+  #margin-top 1em
+  #margin-bottom 1em
+  #margin-left 1em
+  #font-size 35px
+
+.MainNgView
+  overflow auto
+  height 400px
+
+.modalBox
+  #position fixed
+  overflow auto
+  height 350px
+  #width 80%
+  z-index 10
+  border 1px solid
+  -webkit-box-shadow 5px 7px 6px 5px rgba(250, 50, 50, 1.0)
+  -moz-box-shadow 5px 7px 6px 5px rgba(250, 50, 50, 1.0)
+  box-shadow 5px 7px 6px 5px rgba(250, 50, 50, 1.0)
+
+#inviteLinkBox
+  display inline-block
+  position relative
+  #left 0px
+  width auto
+
+#inviteEmailBox
+  #display inline-block
+  #position relative
+  #width auto
+  #left 0px
+  vertical-align top
+
+.viewClass
+  border 2px solid
+  box-shadow 10px 10px 5px #888888
+  border-radius 5px
+  background #ffffff
+  height 486px
+
+.chatArea
+  #background #FFF
+
+.chatBox
+  overflow auto
+  width 100%
+  height 300px
+  background #22DFFF
+  border 0.5px solid
+  padding 10px 10px 10px 10px
+
+.chatMessage
+  border 2px solid #a1a1a1
+  padding 2px 40px
+  background #ffffff
+  #width 70%
+  border-radius 25px
+  #box-shadow 5px 5px 2.5px #888888
+  text-align left
+  margin-bottom 8px
+
+.chatTextField
+  border 1px solid #a1a1a1
+  padding 10px 40px
+  background #ffffff
+  width 90%
+  border-radius 25px
+  #box-shadow 5px 5px 2.5px #888888
+  text-align left
+  margin-bottom 8px
+
+.chatControls
+  background #f5f5f5
+  height 70px
+  padding 15px
+  text-align center
+
+#pictureBox
+  display inline-block
+  position relative
+  left 0px
+  width 75px
+  text-align center
+  padding 5px 5px 5px 5px
+
+.friendInfoBoxContainer
+  background #fffbbb
+  height 112px
+  overflow auto
+
+#userNameBoxForFriend
+  display inline-block
+  position relative
+  #width 400px
+  left 5px
+  vertical-align middle
+  height 100%
+  #padding 5px 5px 5px 5px
+
+#pictureBoxForFriend
+  display inline-block
+  position relative
+  left 0px
+  vertical-align top
+  #width 75px
+  text-align center
+  padding 5px 5px 5px 5px
+
+#userInfoDetails
+  height 65%
+
+#userViewOptions
+  height 35%
+  display table
+  text-align left
+  #padding 5px 5px 5px 5px
+  span
+    vertical-align middle
+    display table-cell
+
+.addRequestLabelContainer
+  background #fffbbb
+  height 42px
+
+#formItemLeft
+  display inline-block
+  position relative
+  left 0px
+  width 45%
+  #border 1px solid
+
+#formItemRight
+  display inline-block
+  position relative
+  width 45%
+  left 10%
+  vertical-align top
+  #border 1px solid
+
+.course-sidepane
+  #display inline-block
+  position relative
+  #width 30%
+  background #7d7d7d
+  text-align center
+  color #FFFFFF
+
+.course-framepane
+  #width 100%
+
+.course-mainpane
+  #display inline-block
+  position relative
+  #width 60%
+  overflow auto
+  vertical-align top
+
+textarea
+  resize none
+
+.videoelement
+  border 5px solid #badfef
+  -webkit-border-bottom-right-radius 5px
+  -webkit-border-bottom-left-radius 5px
+  -moz-border-radius-bottomright 5px
+  -moz-border-radius-bottomleft 5px
+  border-bottom-right-radius 5px
+  border-bottom-left-radius 5px
+  -webkit-border-top-right-radius 5px
+  -webkit-border-top-left-radius 5px
+  -moz-border-radius-topright 5px
+  -moz-border-radius-topleft 5px
+  border-top-right-radius 5px
+  border-top-left-radius 5px
+
+#sidePanebox
+  width 180px
+  padding 6px
+  border 5px solid #7d6d7d
+  margin-left 45px
+
+.mainBodybox
+  #width 100%
+  border 3px solid #7d6d7d
+  background #22DFFF
+  -webkit-border-bottom-right-radius 5px
+  -webkit-border-bottom-left-radius 5px
+  -moz-border-radius-bottomright 5px
+  -moz-border-radius-bottomleft 5px
+  border-bottom-right-radius 5px
+  border-bottom-left-radius 5px
+  text-align center
+
+.mainBodyboxHeading
+  color #FFFFFF
+  padding 6px
+  #width 100%
+  background #7d6d7d
+  -webkit-border-top-right-radius 8px
+  -webkit-border-top-left-radius 8px
+  -moz-border-radius-topright 8px
+  -moz-border-radius-topleft 8px
+  border-top-right-radius 8px
+  border-top-left-radius 8px
+
+.divCourseScheduleMain
+  padding 3px
+  background #2bE8FF
+
+.divButtonWrapper
+  text-align right
+
+.divButton
+  display inline-block
+  padding 1.3em 3em
+  background #2aa6e0
+  -moz-transition opacity 0.25s ease-in-out
+  -webkit-transition opacity 0.25s ease-in-out
+  -o-transition opacity 0.25s ease-in-out
+  -ms-transition opacity 0.25s ease-in-out
+  transition opacity 0.25s ease-in-out
+  letter-spacing 0.20em
+  text-decoration none
+  text-transform uppercase
+  #font-weight 600
+  margin-left 23px
+  color #FFF
+  -webkit-border-bottom-right-radius 10px
+  -webkit-border-bottom-left-radius 10px
+  -webkit-border-top-right-radius 10px
+  -webkit-border-top-left-radius 10px
+  -moz-border-radius-bottomright 10px
+  -moz-border-radius-bottomleft 10px
+  -moz-border-radius-topright 10px
+  -moz-border-radius-topleft 10px
+  border-bottom-right-radius 10px
+  border-bottom-left-radius 10px
+  border-top-right-radius 10px
+  border-top-left-radius 10px
+
+.divButtonSwitch
+  display inline-block
+  padding 1.3em 3em
+  #width 100%
+  background #2aa6e0
+  color #FFF
+  -webkit-border-bottom-right-radius 10px
+  -webkit-border-bottom-left-radius 10px
+  -webkit-border-top-right-radius 10px
+  -webkit-border-top-left-radius 10px
+  -moz-border-radius-bottomright 10px
+  -moz-border-radius-bottomleft 10px
+  -moz-border-radius-topright 10px
+  -moz-border-radius-topleft 10px
+  border-bottom-right-radius 10px
+  border-bottom-left-radius 10px
+  border-top-right-radius 10px
+  border-top-left-radius 10px
+
+.courseStudent
+  display inline-block
+  padding 0.3em 2em
+  letter-spacing 0.20em
+  text-decoration none
+  text-transform uppercase
+  font-weight 600
+  margin-left 23px
+  text-align center
+  color #000000
+
+.img-frame
+  background transparent
+  padding 8px
+  border 1px solid #999999
+
+.css-form
+  input
+    &.ng-invalid
+      &.ng-dirty
+        background-color #FA787E
+    &.ng-valid
+      &.ng-dirty
+        background-color #78FA89
+
+#cssmenu-header-wrapper
+  background #7d6d7d
+  #width 100%
+
+#cssmenu
+  ul
+    margin 0
+    padding 7px 6px 0
+    background #7d7d7d repeat-x 0 -110px
+    line-height 100%
+    font normal 0.5333333333333333em Arial, Helvetica, sans-serif
+    #width 100%
+    ul
+      display none
+      margin 0
+      padding 0
+      width 185px
+      position absolute
+      top 40px
+      left 0
+      background repeat-x 0 0
+      a
+        &:hover
+          background #7d7d7d repeat-x 0 -100px !important
+          color #fff !important
+      li
+        float none
+        margin 0
+        padding 3px
+    &:after
+      content '.'
+      display block
+      clear both
+      visibility hidden
+      line-height 0
+      height 0
+  li
+    margin 0 5px
+    padding 0 0 8px
+    float left
+    position relative
+    list-style none
+    &:hover
+      & > ul
+        display block
+  a
+    &:hover
+      background #000
+      color #fff
+
+#cssmenu a,
+#cssmenu a:link
+  font-weight bold
+  font-size 13px
+  color #e7e5e5
+  display block
+  padding 8px 20px
+  margin 0
+
+#cssmenu .active a,
+#cssmenu li:hover > a
+  background #979797 repeat-x 0 -40px
+  background #666666 repeat-x 0 -40px
+  color #fff
+
+#cssmenu ul ul li:hover a,
+#cssmenu li:hover li a
+  background none
+  border none
+  color #666
+
+#cssmenu ul ul a,
+#cssmenu ul ul a:link
+  font-weight normal
+  font-size 12px
+
+*
+  html
+    #cssmenu
+      ul
+        height 1%
+
+.divCourseScheduleMain-Wrapper
+  border 1px solid #7d6d7d
+
+.divCourseScheduleMain-Wrapper.ng-move,
+.divCourseScheduleMain-Wrapper.ng-enter,
+.divCourseScheduleMain-Wrapper.ng-leave
+  -webkit-transition all linear 0.5s
+  transition all linear 0.5s
+
+.divCourseScheduleMain-Wrapper.ng-leave.ng-leave-active,
+.divCourseScheduleMain-Wrapper.ng-move,
+.divCourseScheduleMain-Wrapper.ng-enter
+  opacity 0
+  max-height 0
+
+.divCourseScheduleMain-Wrapper.ng-leave,
+.divCourseScheduleMain-Wrapper.ng-move.ng-move-active,
+.divCourseScheduleMain-Wrapper.ng-enter.ng-enter-active
+  opacity 1
+  max-height 40px
+
+.divSearchCourse
+  border 1px solid #7d6d7d
+  background white
+
+.divSearchCourse.ng-move,
+.divSearchCourse.ng-enter,
+.divSearchCourse.ng-leave
+  -webkit-transition all linear 0.5s
+  transition all linear 0.5s
+
+.divSearchCourse.ng-leave.ng-leave-active,
+.divSearchCourse.ng-move,
+.divSearchCourse.ng-enter
+  opacity 0
+  max-height 0
+
+.divSearchCourse.ng-leave,
+.divSearchCourse.ng-move.ng-move-active,
+.divSearchCourse.ng-enter.ng-enter-active
+  opacity 1
+  max-height 40px
+
+.animate-show
+  -webkit-transition all linear 0.9s
+  transition all linear 0.9s
+  line-height 20px
+  opacity 1
+  &.ng-hide
+    line-height 20px
+    opacity 0
+
+.animate-show.ng-hide-add,
+.animate-show.ng-hide-remove
+  display block!important
+
+.chatMessage.ng-move,
+.chatMessage.ng-enter,
+.chatMessage.ng-leave
+  -webkit-transition all linear 0.5s
+  transition all linear 0.5s
+
+.chatMessage.ng-leave.ng-leave-active,
+.chatMessage.ng-move,
+.chatMessage.ng-enter
+  opacity 0
+  max-height 0
+
+.chatMessage.ng-leave,
+.chatMessage.ng-move.ng-move-active,
+.chatMessage.ng-enter.ng-enter-active
+  opacity 1
+  max-height 40px
+
+.sub
+  font-size smaller
+  color #777
+  padding-top 5px
+  padding-left 10px
+
+.response
+  padding-top 30px
+  padding-top 30px
+  & > ul
+    list-style-type decimal
+    list-style-type decimal
+
+.response li, .response .reqh
+  color blue
+  font-size smaller
+  padding-bottom 5px
+  color blue
+  font-size smaller
+  padding-bottom 5px
+
+.js-fileapi-wrapper
+  display inline-block
+  vertical-align middle
+
+button
+  padding 1px 5px
+  font-size smaller
+  margin 0 3px
+
+.ng-v
+  float right
+
+.sel-file
+  padding 1px 5px
+  font-size smaller
+  color grey
+  img
+    float left
+    width 18px
+    height 18px
+    padding-right 10px
+
+.progress
+  display inline-block
+  width 100px
+  border 3px groove #CCC
+  div
+    font-size smaller
+    background orange
+    width 0
+
+.drop-box
+  border 5px dashed #000000
+  width 200px
+  height 65px
+  text-align center
+  padding-top 35px
+  &.dragover
+    border 5px dashed blue
+

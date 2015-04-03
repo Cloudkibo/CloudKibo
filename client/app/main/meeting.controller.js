@@ -1730,17 +1730,12 @@ angular.module('cloudKiboApp')
         ////////////////////////////////////////////////////////////////////////////////////////
 
         $scope.connected = false;
-        $scope.started = false;
 
         $scope.roomname = '';
 
         $scope.isConnected = function () {
             return $scope.connected;
         };
-        
-        $scope.isStarted = function(){
-            return $scope.started;
-        }
 
         $scope.callEnded = false;
 
@@ -1830,9 +1825,7 @@ angular.module('cloudKiboApp')
             remotevideo1.src = null;
             remoteaudio1.src = null;
             $timeout(function () {
-                $scope.started = true;
-                $scope.connected = false;
-                //location.reload();
+                location.reload();
             }, 400)
         });
 

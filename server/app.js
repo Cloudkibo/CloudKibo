@@ -51,7 +51,7 @@ httpapp.get('*',function(req,res){
 
 /*
 var socketio = require('socket.io')(httpsServer, {
-  serveClient: true,//(config.env === 'production') ? false : true,
+  serveClient: (config.env === 'production') ? false : true,
   path: '/socket.io-client'
 });
 */
@@ -73,6 +73,7 @@ server.listen(config.port, config.ip, function () {
 httpsServer.listen(config.secure_port, function(){
   console.log('Express server listening on %d, in %s mode', config.secure_port, app.get('env'));
 });
+
 
 // Expose app
 exports = module.exports = app;

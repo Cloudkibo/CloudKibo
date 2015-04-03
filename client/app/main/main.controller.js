@@ -694,6 +694,8 @@ angular.module('cloudKiboApp')
 
     .controller('HomeController', function ($scope, $http, Auth, socket, $timeout, $location, Sound, WebRTC, Signalling, ScreenShare, RestApi) {
 
+		$scope.getCurrentUser = Auth.getCurrentUser;
+
         $scope.isUserNameDefined = function() {
             return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
         };
@@ -1680,7 +1682,7 @@ angular.module('cloudKiboApp')
 
         function getMedia () {
             WebRTC.captureUserMedia('audio', function (err) {
-/*
+
                 // hack for now
 
                 $scope.localCameraOn = true;
@@ -1695,7 +1697,7 @@ angular.module('cloudKiboApp')
 
                 return ;
                 // hack for now
-*/
+
 
                 if (err) {
                     $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.')

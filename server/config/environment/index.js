@@ -22,7 +22,7 @@ var all = {
   port: process.env.PORT || 3000,
   
   // Secure Server port
-  secure_port: process.env.PORT || 8443,
+  secure_port: process.env.SECURE_PORT || 8443,
 
   // Should we populate the DB with sample data?
   seedDB: false,

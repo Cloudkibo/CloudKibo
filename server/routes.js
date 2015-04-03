@@ -81,7 +81,8 @@ module.exports = function(app) {
 	.get(viewroutes.indexRoute);
 	
   app.route('/')
-	.get(viewroutes.appRoute);
+	.get(function(req,res){ res.sendfile(app.get('appPath') + '/index.html'); });
+	//.get(viewroutes.appRoute);		// commented by sojharo 30/3/2015
 	
   app.route('/home')
 	.get(auth.isAuthenticated(), viewroutes.homeRoute);

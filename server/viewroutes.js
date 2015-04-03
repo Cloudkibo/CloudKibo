@@ -35,7 +35,12 @@ exports.appRoute = function (req, res) {
 			title = 'Synaps3WebRTC';
 
 
-		res.render('app', {title : title});
+		res.render('app', {title : title});	
+		
+		
+
+    
+		
   };
   
 exports.homeRoute = function (req, res) {
