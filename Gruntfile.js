@@ -633,7 +633,7 @@ module.exports = function (grunt) {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve']);
   });
-/* commented by sojharo, 3/4/2015, for testing purpose, would uncomment this in future
+
   grunt.registerTask('test', function(target) {
     if (target === 'server') {
       return grunt.task.run([
@@ -670,10 +670,10 @@ module.exports = function (grunt) {
 
     else grunt.task.run([
       'test:server',
-      'test:client'
+      //'test:client'
     ]);
   });
-*/
+
   grunt.registerTask('build', [
     'clean:dist',
     'concurrent:dist',
