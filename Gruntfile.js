@@ -320,7 +320,7 @@ module.exports = function (grunt) {
 //        }]
 //      }
 //    },
-	
+
     // Allow the use of non-minsafe AngularJS files. Automatically makes it
     // minsafe compatible so Uglify does not destroy the ng references
     ngAnnotate: {
@@ -385,7 +385,8 @@ module.exports = function (grunt) {
             'assets/fonts/**/*',
             'index.html',
             'sounds/*',
-            'fonts/*'
+            'fonts/*',
+            '*.js'
           ]
         }, {
           expand: true,
@@ -455,7 +456,7 @@ module.exports = function (grunt) {
         //'svgmin'
       ]
     },
-    
+
 
     // Test settings
     karma: {
@@ -494,8 +495,8 @@ module.exports = function (grunt) {
       },
       all: localConfig
     },
-    
-    
+
+
     // Compiles Jade to html // // commented by sojharo, 30/3/2015, (reason: not needed)
     //jade: {
       //compile: {
@@ -520,7 +521,7 @@ module.exports = function (grunt) {
       options: {
 
       },
-      
+
       // Inject application script files into index.html (doesn't include bower)
       scripts: {
         options: {
@@ -534,17 +535,8 @@ module.exports = function (grunt) {
         },
         files: {
           '<%= yeoman.client %>/index.html': [
-              ['{.tmp,<%= yeoman.client %>}/{app,components}/**/*.js',
-               '{.tmp,<%= yeoman.client %>}/global/plugins/jquery-1.11.0.min.js',
-               '{.tmp,<%= yeoman.client %>}/global/plugins/jquery-migrate-1.2.1.min.js',
-               '{.tmp,<%= yeoman.client %>}/global/plugins/bootstrap.js',
-               '{.tmp,<%= yeoman.client %>}/frontend/layout/scripts/back-to-top.js',
-               '{.tmp,<%= yeoman.client %>}/global/plugins/jquery.fancybox.pack.js',
-               '{.tmp,<%= yeoman.client %>}/global/plugins/owl.carousel.js',
-               '{.tmp,<%= yeoman.client %>}/global/plugins/jquery.themepunch.plugins.min.js',
-               '{.tmp,<%= yeoman.client %>}/global/plugins/jquery.themepunch.revolution.min.js',
-               '{.tmp,<%= yeoman.client %>}/frontend/pages/scripts/revo-slider-init.js',
-               '{.tmp,<%= yeoman.client %>}/frontend/layout/scripts/layout.js',
+              ['{.tmp,<%= yeoman.client %>}/components/**/*.js',
+               '{.tmp,<%= yeoman.client %>}/app/**/*.js',
                '!{.tmp,<%= yeoman.client %>}/app/app.js',
                '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.spec.js',
                '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.mock.js']
@@ -590,10 +582,10 @@ module.exports = function (grunt) {
 
      /**
      * RUNNING THE TASKS HERE
-     * 
+     *
      * AUTHOR : SOJHARO
      * */
-  
+
   grunt.registerTask('express-keepalive', 'Keep grunt running', function() {
     this.async();
   });
@@ -669,7 +661,7 @@ module.exports = function (grunt) {
     }
 
     else grunt.task.run([
-      'test:server',
+      //'test:server',
       //'test:client'
     ]);
   });
@@ -677,7 +669,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'concurrent:dist',
-    'injector',  
+    'injector',
     'wiredep',
     'useminPrepare',
     'autoprefixer',
@@ -697,6 +689,6 @@ module.exports = function (grunt) {
     //'test',		  // commented by sojharo, need to remove this comment
     'build'
   ]);
-  
-  
+
+
 };

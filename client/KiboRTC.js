@@ -7,7 +7,7 @@
   // Config
   angular.module('kiboRtc.config', [])
       .value('kiboRtc.config', {
-          debug: true
+          debug: false
       });
 
   // Modules

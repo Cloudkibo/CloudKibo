@@ -19,7 +19,7 @@ angular.module('cloudKiboApp', [
 			templateUrl: function(params){ return '/meeting/'+ params.mname},
 			controller: 'MeetingController'
 	  })
-	  
+
       .otherwise({
         redirectTo: '/'
       });
@@ -28,10 +28,10 @@ angular.module('cloudKiboApp', [
 	  enabled: true,
 	  requireBase: false
 	});
-	
+
     $httpProvider.interceptors.push('authInterceptor');
   })
-  
+
   .factory('socket', function (socketFactory) {
      return socketFactory();
   })
@@ -61,7 +61,7 @@ angular.module('cloudKiboApp', [
       }
     };
   })
-  
+
   .factory('Data', function(){
 		return {theLimit : 10};
 	})
@@ -76,9 +76,9 @@ angular.module('cloudKiboApp', [
       });
     });
   })
-  
 
-	
+
+
 	.directive('ngConfirmClick', [ function(){
 		return {
 		  priority: -1,
@@ -94,7 +94,7 @@ angular.module('cloudKiboApp', [
 		  }
 		}
 	  }
-	])	
+	])
 
 	.directive('schrollBottom', function () {
 	  return {
@@ -111,16 +111,16 @@ angular.module('cloudKiboApp', [
 		}
 	  }
 	})
-	
+
 	// does not work
 	.directive("myStream", function(){
-	   return {        
+	   return {
 		  restrict: 'A',
 		  scope:{config:'='},
 		  link: function(scope, element, attributes){
 		   //Element is whatever element this "directive" is on
 		   getUserMedia( {video:true}, function (stream) {
-			   console.log(stream)
+			   console.log(stream);
 			 element.src = URL.createObjectURL(stream);
 			 //scope.config = {localvideo: element.src};
 			 //scope.$apply(); //sometimes this can be unsafe.
@@ -129,7 +129,7 @@ angular.module('cloudKiboApp', [
 	   }
 
 	})
-	
+
 	.directive('ngFocus', [function() {
 		  var FOCUS_CLASS = "ng-focused";
 		  return {

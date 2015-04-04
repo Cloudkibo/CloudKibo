@@ -12,8 +12,8 @@ angular.module('cloudKiboApp')
 
             $http.post(RestApi.user.resetPasswordRequest, JSON.stringify(dataToSend))
                 .success(function(data) {
-                    console.log(data)
-                    $scope.addAlert(data.status, data.msg)
+                    console.log(data);
+                    $scope.addAlert(data.status, data.msg);
                     if(data.status == 'success')
                         $scope.sentData = true;
                 });

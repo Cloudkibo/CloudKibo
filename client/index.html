@@ -1,4 +1,4 @@
-<html>
+<!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -70,12 +70,20 @@
       <script src="bower_components/angular-socket-io/socket.js"></script>
       <!-- endbower -->
     <!-- endbuild -->
-    
+
     <script src="socket.io/socket.io.js"></script>
-    
+
+    <script src="theme.js"></script>
+
+    <script src="KiboRTC.js"></script>
+
         <!-- build:js({.tmp,client}) app/app.js -->
         <script src="app/app.js"></script>
           <!-- injector:js -->
+          <script src="components/auth/auth.service.js"></script>
+          <script src="components/auth/user.service.js"></script>
+          <script src="components/rest/rest.service.js"></script>
+          <script src="components/sound/sound.service.js"></script>
           <script src="app/account/account.js"></script>
           <script src="app/account/login/login.controller.js"></script>
           <script src="app/account/password/password.controller.js"></script>
@@ -87,30 +95,15 @@
           <script src="app/main/main.controller.js"></script>
           <script src="app/main/main.js"></script>
           <script src="app/main/meeting.controller.js"></script>
-          <script src="components/auth/auth.service.js"></script>
-          <script src="components/auth/user.service.js"></script>
-          <script src="components/rest/rest.service.js"></script>
-          <script src="components/sound/sound.service.js"></script>
-          <script src="components/webrtc/KiboRTC.js"></script>
-          <script src="global/plugins/jquery-1.11.0.min.js"></script>
-          <script src="global/plugins/jquery-migrate-1.2.1.min.js"></script>
-          <script src="global/plugins/bootstrap.js"></script>
-          <script src="frontend/layout/scripts/back-to-top.js"></script>
-          <script src="global/plugins/jquery.fancybox.pack.js"></script>
-          <script src="global/plugins/owl.carousel.js"></script>
-          <script src="global/plugins/jquery.themepunch.plugins.min.js"></script>
-          <script src="global/plugins/jquery.themepunch.revolution.min.js"></script>
-          <script src="frontend/pages/scripts/revo-slider-init.js"></script>
-          <script src="frontend/layout/scripts/layout.js"></script>
           <!-- endinjector -->
         <!-- endbuild -->
-        
+
         <script src='https://www.kibosupport.com/javascripts/widget/widget.js'></script>
-        
+
         <script>
 			jQuery(document).ready(function() {
-                Layout.init();    
-                Layout.initOWL();
+                //Layout.init();
+                //Layout.initOWL();
                 //RevosliderInit.initRevoSlider();
                 //Layout.initTwitter();
                 //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */

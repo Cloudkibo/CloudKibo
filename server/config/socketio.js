@@ -32,23 +32,23 @@ function onDisconnect(socketio,socket) {
 
 
 	var socketid = '';
-		
+
 	socket.get('nickname', function(err, nickname) {
-	
-		var clients = socketio.sockets.clients('globalchatroom')
+
+		var clients = socketio.sockets.clients('globalchatroom');
 		var socketid = '';
 		var user = require('./../api/user/user.model.js');
-		
+
 		if(nickname != null){
-		
+
 				user.findOne({username : nickname}, function(err, gotuser){
-					
+
 					if(gotuser != null){
-						
+
 						var contactslist = require('./../api/contactslist/contactslist.model.js');
-				
+
 						contactslist.find({userid : gotuser._id}).populate('contactid').exec(function(err3, gotContactList){
-						console.log(gotContactList);	
+						console.log(gotContactList);
 							if(gotContactList != null){
 								var i = 0;
 								clients.forEach(function(client) {
@@ -64,23 +64,23 @@ function onDisconnect(socketio,socket) {
 								});
 
 							}
-							
+
 						})
-						
+
 					}
-				
+
 
 			});
-				
+
 		}
-		
+
 	})
 }
 
 
 // When the user connects.. perform this
 function onConnect(socketio, socket) {
-  
+
 		//console.log(socket);
 
 	  // convenience function to log server messages on the client
@@ -93,14 +93,14 @@ function onConnect(socketio, socket) {
 		}
 
 		socket.on('message', function (message) {
-			
+
 			message.msg.from = socket.id;
-		
-			
-			var clients = socketio.sockets.clients(message.room)
-			
+
+
+			var clients = socketio.sockets.clients(message.room);
+
 			var socketid = '';
-			
+
 			var i = 0;
 			clients.forEach(function(client) {
 				client.get('nickname', function(err, nickname) {
@@ -114,12 +114,12 @@ function onConnect(socketio, socket) {
 				//socket.emit('disconnected', message.mycaller);
 			}
 			else{
-			
+
 				socketio.sockets.socket(socketid).emit('message', message.msg);
 
-				
+
 			}
-			
+
 		});
 
 		socket.on('messageformeeting', function (message) {
@@ -138,15 +138,15 @@ function onConnect(socketio, socket) {
 
 		socket.on('messagefordatachannel', function (message) {
 			//console.log('Got message:', message);
-			
+
 			//socket.broadcast.emit('message', message);
-			
+
 			message.msg.from = message.from;
-			
-			var clients = socketio.sockets.clients(message.room)
-			
+
+			var clients = socketio.sockets.clients(message.room);
+
 			var socketid = '';
-			
+
 			var i = 0;
 			clients.forEach(function(client) {
 				client.get('nickname', function(err, nickname) {
@@ -154,25 +154,25 @@ function onConnect(socketio, socket) {
 						socketid = client.id;
 					i++;
 				})
-			});			
-			 
+			});
+
 			socketio.sockets.socket(socketid).emit('messagefordatachannel', message.msg);
-			
+
 		});
 
 		socket.on('create or join', function (room) {
-			var numClients = socketio.sockets.clients(room.room).length; 
-			
+			var numClients = socketio.sockets.clients(room.room).length;
+
 			//console.log(socketio.sockets.manager.rooms)
 			//console.log(room)
-			
+
 			//log('Room ' + room.room + ' has ' + numClients + ' client(s)');
 			//log('Request to create or join room ' + room.room + ' from '+ room.username);
-			
-			var clients = socketio.sockets.clients(room.room)
-			
+
+			var clients = socketio.sockets.clients(room.room);
+
 			var canJoin = true;
-			
+
 			var i = 0;
 			clients.forEach(function(client) {
 				client.get('nickname', function(err, nickname) {
@@ -191,7 +191,7 @@ function onConnect(socketio, socket) {
 				socket.emit('created', room);
 			} else if (numClients === 1) {
 				if(canJoin){
-					socketio.sockets.in(room.room).emit('join', room);			
+					socketio.sockets.in(room.room).emit('join', room);
 					socket.join(room.room);
 					socket.set('nickname', room.username);
 					socket.emit('joined', room);
@@ -205,36 +205,36 @@ function onConnect(socketio, socket) {
 			} else { // max two clients
 				socket.emit('full', room.room);
 			}
-			
+
 			socket.emit('emit(): client ' + socket.id + ' joined room ' + room.room);
 			socket.broadcast.emit('broadcast(): client ' + socket.id + ' joined room ' + room.room);
-			
+
 			//console.log(socketio.sockets.manager.rooms)
-			
+
 		});
-		
+
 		socket.on('join global chatroom', function (room) {
-			
+
 			socket.join(room.room);
 			socket.set('nickname', room.user.username);
 			//socket.emit('you are in global chat room', room);
-			
+
 			var myOnlineContacts = [];
-			
-			var clients = socketio.sockets.clients(room.room)
-			
+
+			var clients = socketio.sockets.clients(room.room);
+
 			var socketid = '';
-			
+
 			var contactslist = require('./../api/contactslist/contactslist.model.js');
-				
+
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
-				
+
 				if(gotContactList != null){
 
 					var i = 0;
 					clients.forEach(function(client) {
 						client.get('nickname', function(err, nickname) {
-							
+
 							for(var j in gotContactList){
 								if(gotContactList[j].contactid != null){
 									if(nickname == gotContactList[j].contactid.username){
@@ -244,39 +244,39 @@ function onConnect(socketio, socket) {
 									}
 								}
 							}
-							
+
 							i++;
 						})
 					});
-					
+
 					socket.emit('youareonline', myOnlineContacts);
 
 				}
-				
-			})
-			
-			console.log(socketio.sockets.manager.rooms)
+
+			});
+
+			console.log(socketio.sockets.manager.rooms);
 			console.log(room.user.username)
-			
+
 		});
-		
+
 		socket.on('whozonline', function(room){
 			var myOnlineContacts = [];
-			
-			var clients = socketio.sockets.clients(room.room)
-			
+
+			var clients = socketio.sockets.clients(room.room);
+
 			var socketid = '';
-			
+
 			var contactslist = require('./../api/contactslist/contactslist.model.js');
-				
+
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
-				
+
 				if(gotContactList != null){
 
 					var i = 0;
 					clients.forEach(function(client) {
 						client.get('nickname', function(err, nickname) {
-							
+
 							for(var j in gotContactList){
 									if(nickname == gotContactList[j].contactid.username){
 										socketid = client.id;
@@ -284,26 +284,26 @@ function onConnect(socketio, socket) {
 										myOnlineContacts.push(gotContactList[j].contactid);
 									}
 							}
-							
+
 							i++;
 						})
 					});
-					
+
 					socket.emit('theseareonline', myOnlineContacts);
 
 				}
-				
+
 			})
-		})
-		
+		});
+
 		socket.on('callthisperson', function(message){
-			
+
 			var socketidSender = socket.id;
-			
-			var clients = socketio.sockets.clients(message.room)
-			
+
+			var clients = socketio.sockets.clients(message.room);
+
 			var socketid = '';
-			
+
 			var i = 0;
 			clients.forEach(function(client) {
 				client.get('nickname', function(err, nickname) {
@@ -312,22 +312,22 @@ function onConnect(socketio, socket) {
 					i++;
 				})
 			});
-			
+
 			if(socketid == ''){
 				socket.emit('calleeisoffline', message.callee);
 			}
 			else{
 				socketio.sockets.socket(socketid).emit('areyoufreeforcall', {caller : message.caller, sendersocket: socketidSender});
 			}
-			
+
 		});
-		
+
 		socket.on('noiambusy', function(message){
-			
-			var clients = socketio.sockets.clients(message.room)
-			
+
+			var clients = socketio.sockets.clients(message.room);
+
 			var socketid = '';
-			
+
 			var i = 0;
 			clients.forEach(function(client) {
 				client.get('nickname', function(err, nickname) {
@@ -336,22 +336,22 @@ function onConnect(socketio, socket) {
 					i++;
 				})
 			});
-			
+
 			if(socketid == ''){
 				//socket.emit('calleeisoffline', message.callee);
 			}
 			else{
 				socketio.sockets.socket(socketid).emit('calleeisbusy', {callee : message.me});
 			}
-			
+
 		});
-		
+
 		socket.on('yesiamfreeforcall', function(message){
-			
-			var clients = socketio.sockets.clients(message.room)
-			
+
+			var clients = socketio.sockets.clients(message.room);
+
 			var socketid = '';
-			
+
 			var i = 0;
 			clients.forEach(function(client) {
 				client.get('nickname', function(err, nickname) {
@@ -360,22 +360,22 @@ function onConnect(socketio, socket) {
 					i++;
 				})
 			});
-			
+
 			if(socketid == ''){
 				socket.emit('disconnected', message.mycaller);
 			}
 			else{
 				socketio.sockets.socket(socketid).emit('othersideringing', {callee : message.me});
 			}
-			
+
 		});
-		
+
 		socket.on('im', function(im){
-			
-			var clients = socketio.sockets.clients(im.room)
-			
+
+			var clients = socketio.sockets.clients(im.room);
+
 			var socketid = '';
-			
+
 			var i = 0;
 			clients.forEach(function(client) {
 				client.get('nickname', function(err, nickname) {
@@ -397,7 +397,7 @@ function onConnect(socketio, socket) {
 				fromFullName : im.stanza.fromFullName,
 				msg : im.stanza.msg,
 				owneruser : im.stanza.to
-			})
+			});
 
 			newUserChat.save(function (err2) {
 				if (err2) return console.log('Error 2'+ err2);
@@ -421,7 +421,7 @@ function onConnect(socketio, socket) {
 				fromFullName : im.stanza.fromFullName,
 				msg : im.stanza.msg,
 				owneruser : im.stanza.from
-			})
+			});
 
 			newUserChat.save(function (err2) {
 				if (err2) return console.log('Error 2'+ err2);
@@ -430,17 +430,17 @@ function onConnect(socketio, socket) {
 
 
 			socketio.sockets.socket(socketid).emit('im', im.stanza);
-			
+
 		});
 
 		socket.on('friendrequest', function(im){
-			
+
 			//console.log("GOT THIS MESSAGE", im);
-			
-			var clients = socketio.sockets.clients(im.room)
-			
+
+			var clients = socketio.sockets.clients(im.room);
+
 			var socketid = '';
-			
+
 			var i = 0;
 			clients.forEach(function(client) {
 				client.get('nickname', function(err, nickname) {
@@ -449,110 +449,110 @@ function onConnect(socketio, socket) {
 					i++;
 				})
 			});
-			
-			 
+
+
 			socketio.sockets.socket(socketid).emit('friendrequest', im);
-			
+
 		});
-		
+
 		socket.on('leave', function (room) {
-			
+
 			socketio.sockets.in(room.room).emit('left', room);
 			socket.leave(room.room);
 			socket.emit('left', room);
-			
-			
-			
-			
+
+
+
+
 			//console.log(socketio.sockets.manager.rooms)
-			
+
 		});
-		
+
 		socket.on('leaveChat', function (room) {
-			
+
 			socket.leave(room.room);
 			/*
 			var clients = socketio.sockets.clients(room.room)
-			
+
 			var socketid = '';
-			
+
 			var contactslist = require('./../api/contactslist/contactslist.model.js');
-				
+
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
-				
+
 				if(gotContactList != null){
 
 					var i = 0;
 					clients.forEach(function(client) {
 						client.get('nickname', function(err, nickname) {
-							
+
 							for(var j in gotContactList){
 									if(nickname == gotContactList[j].contactid.username){
 										socketid = client.id;
 										socketio.sockets.socket(socketid).emit('offline', room.user);
 									}
 							}
-							
+
 							i++;
 						})
 					});
 
 				}
-				
+
 			})
-			
+
 			console.log('I LEFT CHAT')
 			console.log(socketio.sockets.manager.rooms)
 			*/
 		});
-		
+
 		socket.on('status', function (room) {
-			
-			var clients = socketio.sockets.clients(room.room)
-			
+
+			var clients = socketio.sockets.clients(room.room);
+
 			var socketid = '';
-			
+
 			var contactslist = require('./../api/contactslist/contactslist.model.js');
-				
+
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
-				
+
 				if(gotContactList != null){
 
 					var i = 0;
 					clients.forEach(function(client) {
 						client.get('nickname', function(err, nickname) {
-							
+
 							for(var j in gotContactList){
 									if(nickname == gotContactList[j].contactid.username){
 										socketid = client.id;
 										socketio.sockets.socket(socketid).emit('statusUpdate', room.user);
 									}
 							}
-							
+
 							i++;
 						})
 					});
 
 				}
-				
-			})
-			
+
+			});
+
 	//		 socket.broadcast.to(room.room).emit('statusUpdate', room.user);
 			//console.log(socketio.sockets.manager.rooms)
-			
+
 		});
-		
+
 		socket.on('create or join meeting', function (room) {
 			var numClients = socketio.sockets.clients(room.room).length;
-			
+
 			//log('Room ' + room.room + ' has ' + numClients + ' client(s)');
 			//log('Request to create or join room ' + room.room + ' from '+ room.username);
-			
+
 			var clientsIDs = new Array(numClients);
 			var clientsIDsForOthers = new Array(numClients);
-			
-			var clients = socketio.sockets.clients(room.room)
-			
+
+			var clients = socketio.sockets.clients(room.room);
+
 			var i = 0;
 			clients.forEach(function(client) {
 				client.get('nickname', function(err, nickname) {
@@ -560,19 +560,19 @@ function onConnect(socketio, socket) {
 					i++;
 				})
 			});
-			
+
 			if (numClients === 0){
 				socket.join(room.room);
-				socket.set('nickname', room.username);    
+				socket.set('nickname', room.username);
 				socket.emit('created', room);
 			} else if (numClients < 5) {//(numClients === 2 || numClients === 1 || numClients === 3 || numClients === 4) {
 				socket.join(room.room);
-				socket.set('nickname', room.username);    
+				socket.set('nickname', room.username);
 				room.otherClients = clientsIDs;
 				socket.emit('joined', room);
-				
-				clients = socketio.sockets.clients(room.room)
-				
+
+				clients = socketio.sockets.clients(room.room);
+
 				var i = 0;
 				clients.forEach(function(client) {
 					client.get('nickname', function(err, nickname) {
@@ -580,39 +580,39 @@ function onConnect(socketio, socket) {
 						i++;
 					})
 				});
-				
+
 				room.otherClients = clientsIDsForOthers;
 				socketio.sockets.in(room.room).emit('join', room);
-				
+
 			} else { // max three clients
 				socket.emit('full', room.room);
 			}
-			
+
 			//console.log(socketio.sockets.manager.rooms)
-			
+
 		});
 
 		socket.on('create or join livehelp', function (room) {
 			var numClients = socketio.sockets.clients(room.room).length;
-		
+
 			if (numClients === 0){
 				socket.join(room.room);
-				socket.set('nickname', room.username);    
+				socket.set('nickname', room.username);
 				socket.emit('created', room);
 			} else if (numClients < 2) {
 				socket.join(room.room);
-				socket.set('nickname', room.username);    
+				socket.set('nickname', room.username);
 				socket.emit('joined', room);
 
 				socket.broadcast.to(room.room).emit('join', room);
-				
+
 			} else { // max three clients
 				socket.emit('full', room.room);
 			}
-			
-			console.log(socketio.sockets.manager.rooms)
+
+			console.log(socketio.sockets.manager.rooms);
 			console.log(room)
-			
+
 		});
 
 
@@ -678,9 +678,9 @@ function onConnect(socketio, socket) {
 	 // sending to individual socketid
 	 io.sockets.socket(socketid).emit('message', 'for your eyes only');
 	 */
-  
 
-  
+
+
 
   // Insert sockets below
   //require('../api/thing/thing.socket').register(socket);

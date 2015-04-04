@@ -8,38 +8,38 @@ var config = require('../../config/environment');
 
 exports.index = function(req, res) {
 	User.findById(req.user._id, function (err, gotUser) {
-			if (err) return console.log('Error 1'+ err)
-			
+			if (err) return console.log('Error 1'+ err);
+
 			if(req.body.user1 == gotUser.username){
-	  
-				  userchat.find({owneruser : gotUser.username, $or: [ { to : req.body.user1, from : req.body.user2 }, 
-																	  { to : req.body.user2, from : req.body.user1 } ]}, 
+
+				  userchat.find({owneruser : gotUser.username, $or: [ { to : req.body.user1, from : req.body.user2 },
+																	  { to : req.body.user2, from : req.body.user1 } ]},
 																		function(err1, gotMessages){
 																			if(err1) return console.log(err1);
-																			
+
 																			res.send({status : 'success', msg : gotMessages});
-																			
+
 																		})
-				
+
 			}
 	  })
 };
 
 exports.removechathistory = function(req, res) {
 	 User.findById(req.user._id, function (err, gotUser) {
-		if (err) return console.log('Error 1'+ err)
+		if (err) return console.log('Error 1'+ err);
 
-		console.log(req.body)
-						
+		console.log(req.body);
+
 		User.findOne({username : req.body.contact.username}, function (err, gotUserSaved) {
-			userchat.remove({owneruser : gotUser.username, $or: [ { to : gotUserSaved.username, from : gotUser.username }, 
-										{ to : gotUser.username, from : gotUserSaved.username } ]}, 
+			userchat.remove({owneruser : gotUser.username, $or: [ { to : gotUserSaved.username, from : gotUser.username },
+										{ to : gotUser.username, from : gotUserSaved.username } ]},
 										function(err1){
 											if(err1) return console.log(err1);
-											
+
 											res.send({status: 'success', msg: 'Friend is removed'});
-											
-										})			
+
+										})
 		})
 	})
 };
@@ -47,30 +47,30 @@ exports.removechathistory = function(req, res) {
 
 exports.save = function(req, res) {
 	User.findById(req.user._id, function (err, gotUser) {
-		if (err) return console.log('Error 1'+ err)
-		
+		if (err) return console.log('Error 1'+ err);
+
 		if(req.body.from == gotUser.username){
-  
+
 			  var newUserChat = new userchat({
 					to : req.body.to,
 					from : req.body.from,
 					fromFullName : req.body.fromFullName,
 					msg : req.body.msg,
 					owneruser : req.body.to
-			  })
-			  
+			  });
+
 			  newUserChat.save(function (err2) {
 					if (err2) return console.log('Error 2'+ err2);
 					res.send({status : 'success', msg : 'stored the message'});
-	
+
 					contactslist.findOne({userid : req.body.to_id, contactid : req.body.from_id}).exec(function(err3, gotContact){
-						
+
 						gotContact.unreadMessage = true;
-						
+
 						gotContact.save(function(err){
-							
+
 						})
-						
+
 					})
 			  });
 
@@ -82,14 +82,14 @@ exports.save = function(req, res) {
 					fromFullName : req.body.fromFullName,
 					msg : req.body.msg,
 					owneruser : req.body.from
-			  })
-			  
+			  });
+
 			  newUserChat.save(function (err2) {
 					if (err2) return console.log('Error 2'+ err2);
 			  });
 
 
-			
+
 		}
 	})
 };
@@ -97,16 +97,16 @@ exports.save = function(req, res) {
 
 exports.markasread = function(req, res) {
 	User.findById(req.user._id, function (err, gotUser) {
-		if (err) return console.log('Error 1'+ err)
-	
+		if (err) return console.log('Error 1'+ err);
+
 		contactslist.findOne({userid : req.body.user1, contactid : req.body.user2}).exec(function(err3, gotContact){
-			
+
 			gotContact.unreadMessage = false;
-			
+
 			gotContact.save(function(err){
-				
+
 			})
-			
+
 		})
 	})
 };

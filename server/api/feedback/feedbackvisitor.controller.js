@@ -16,7 +16,7 @@ exports.saveVisitorFeedback = function(req, res) {
     });
 
     feedback.save(function(err2){
-        if (err2) return console.log('Error 2'+ err)
+        if (err2) return console.log('Error 2'+ err);
 
         res.send({status: 'success', msg: 'Thank you for your feedback.'});
     })

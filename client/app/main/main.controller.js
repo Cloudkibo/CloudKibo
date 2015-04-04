@@ -63,7 +63,7 @@ angular.module('cloudKiboApp')
                 })
 
             }
-        }
+        };
 
         $scope.$on('dataChannelMessageReceived', function() {
 
@@ -670,7 +670,7 @@ angular.module('cloudKiboApp')
 
                 }
 
-            }
+            };
             reader.readAsArrayBuffer(blob);
         }
 
@@ -702,7 +702,7 @@ angular.module('cloudKiboApp')
 
         $scope.isMeetingPage = function(){
             return false;
-        }
+        };
 
         $scope.showError = function(){
             return $scope.isError;
@@ -747,7 +747,7 @@ angular.module('cloudKiboApp')
 
         $scope.getlocation = function () {
             return $location.url();
-        }
+        };
 
 
         //**********************************************************************************//
@@ -780,11 +780,11 @@ angular.module('cloudKiboApp')
                 console.log(error);
 
             });
-        }
+        };
 
         $scope.hasDeviceAccess = function () {
             return $scope.deviceAccess;
-        }
+        };
 
         $scope.ReadyToGo = function () {
 
@@ -792,12 +792,12 @@ angular.module('cloudKiboApp')
 
             $http.post(RestApi.user.initialTesting, {initialTesting: 'Yes'})
                 .success(function (data) {
-                    console.log(data)
+                    console.log(data);
                     if (data.status == 'success') {
                         $scope.user.initialTesting = data.msg.initialTesting;
                     }
                 })
-        }
+        };
 
         $scope.openMeeting = function () {
 
@@ -816,7 +816,7 @@ angular.module('cloudKiboApp')
             $scope.userFound = '';
 
             $scope.meetingSelected = !$scope.meetingSelected;
-        }
+        };
 
         $scope.isMeetingSelected = function () {
             return $scope.meetingSelected;
@@ -840,7 +840,7 @@ angular.module('cloudKiboApp')
             $scope.userFound = '';
 
             $scope.inviteSelected = !$scope.inviteSelected;
-        }
+        };
 
         $scope.isInviteSelected = function () {
             return $scope.inviteSelected;
@@ -862,7 +862,7 @@ angular.module('cloudKiboApp')
             $scope.settingsSelected = !$scope.settingsSelected;
             if (localStreamTest)
                 localStreamTest.stop();
-        }
+        };
 
         $scope.isSettingsSelected = function () {
             return $scope.settingsSelected;
@@ -887,7 +887,7 @@ angular.module('cloudKiboApp')
             $scope.callSelected = !$scope.callSelected;
             if (localStreamTest)
                 localStreamTest.stop();
-        }
+        };
 
         $scope.isCallSelected = function () {
             return $scope.callSelected;
@@ -912,7 +912,7 @@ angular.module('cloudKiboApp')
             $scope.addContactSelected = !$scope.addContactSelected;
             if (localStreamTest)
                 localStreamTest.stop();
-        }
+        };
 
         $scope.isAddContactSelected = function () {
             return $scope.addContactSelected;
@@ -941,7 +941,7 @@ angular.module('cloudKiboApp')
         $scope.alerts = [];
 
         $scope.addAlert = function (newtype, newMsg) {
-            console.log('Error', newtype, newMsg)
+            console.log('Error', newtype, newMsg);
             $scope.alerts.push({type: newtype, msg: newMsg});
         };
 
@@ -956,7 +956,7 @@ angular.module('cloudKiboApp')
                         $scope.addAlert(data.status, data.msg)
                     }
                 })
-        }
+        };
 
         $scope.userFound = '';
 
@@ -974,7 +974,7 @@ angular.module('cloudKiboApp')
                         $scope.userFound = null;
                     }
                 })
-        }
+        };
 
         $scope.searchEmail = function () {
             $http.post(RestApi.user.searchByUserEmail, JSON.stringify($scope.search))
@@ -990,7 +990,7 @@ angular.module('cloudKiboApp')
                         $scope.userFound = null;
                     }
                 })
-        }
+        };
 
         $scope.contactslist = {};
 
@@ -1020,7 +1020,7 @@ angular.module('cloudKiboApp')
                         $scope.userFound = 'danger';
                     }
                 })
-        }
+        };
 
         // todo Testing Required
 
@@ -1050,7 +1050,7 @@ angular.module('cloudKiboApp')
                         $scope.userFound = 'danger';
                     }
                 })
-        }
+        };
 
         $scope.updateProfile = function (gotUser) {
             $http.put(RestApi.user.changeUserProfile, JSON.stringify(gotUser))
@@ -1071,11 +1071,11 @@ angular.module('cloudKiboApp')
 
         $scope.isUnreadMessage = function (index) {
             return $scope.contactslist[index].unreadMessage;
-        }
+        };
 
         $scope.isOnline = function (index) {
             return $scope.contactslist[index].online;
-        }
+        };
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // General User Interface Logic                                                      //
@@ -1110,7 +1110,7 @@ angular.module('cloudKiboApp')
 
         socket.on('friendrequest', function (data) {
             $scope.addRequestslist.push(data);
-        })
+        });
 
         $scope.approveFriendRequest = function (index) {
             $http.post(RestApi.contacts.acceptContactRequest, $scope.addRequestslist[index].userid)
@@ -1121,7 +1121,7 @@ angular.module('cloudKiboApp')
                         socket.emit('whozonline', {room: 'globalchatroom', user: $scope.user})
                     }
                 });
-        }
+        };
 
         $scope.rejectFriendRequest = function (index) {
             $http.post(RestApi.contacts.rejectContactRequest, $scope.addRequestslist[index].userid)
@@ -1130,27 +1130,27 @@ angular.module('cloudKiboApp')
                         $scope.addRequestslist.splice(index, 1);
                     }
                 });
-        }
+        };
 
         $scope.removeFriend = function (index) {
             $http.post(RestApi.contacts.removeFromContactList, {contact: index})
                 .success(function (data) {
-                    console.log(data)
+                    console.log(data);
                     if (data.status == 'success') {
                         $location.path('/app');
                     }
                 });
-        }
+        };
 
         $scope.removechathistory = function (index) {
             $http.post(RestApi.userchat.removeChatHistroy, {contact: index})
                 .success(function (data) {
-                    console.log(data)
+                    console.log(data);
                     if (data.status == 'success') {
                         $location.path('/app');
                     }
                 });
-        }
+        };
 
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -1206,7 +1206,7 @@ angular.module('cloudKiboApp')
 
         $scope.showExtension = function () {
             return $scope.extensionAvailable;
-        }
+        };
 
         $scope.localCameraCaptured = function () {
             return $scope.localCameraOn;
@@ -1228,7 +1228,7 @@ angular.module('cloudKiboApp')
 
         $scope.sentFeedback = function () {
             return $scope.feedBackSent;
-        }
+        };
 
         $scope.feedBackForm = function () {
             $http.post(RestApi.feedback.feedbackByUser, JSON.stringify($scope.feedback))
@@ -1242,13 +1242,13 @@ angular.module('cloudKiboApp')
 
         $scope.isOtherPeerOffline = function () {
             return $scope.otherPeersOfflineStatus;
-        }
+        };
 
         $scope.isOtherPeerBusy = false;
 
         $scope.isOtherPeerBusy = function () {
             return $scope.otherPeersBusyStatus;
-        }
+        };
 
         $scope.otherScreenShared = false;
 
@@ -1270,7 +1270,7 @@ angular.module('cloudKiboApp')
                 $scope.otherScreenShared = false;
             })
 
-        })
+        });
 
         $scope.screenSharedLocal = false;
 
@@ -1286,14 +1286,14 @@ angular.module('cloudKiboApp')
                     room: 'globalchatroom',
                     callee: calleeusername,
                     caller: $scope.user.username
-                })
+                });
 
                 $scope.OutgoingCallStatement = 'Outgoing Call to : ' + calleeusername;
 
                 $scope.areYouCallingSomeone = true;
             }
 
-        }
+        };
 
         $scope.endCall = function () {
 
@@ -1307,7 +1307,8 @@ angular.module('cloudKiboApp')
 
             Signalling.sendMessage('hangup');
 
-            var endTime = new Date();
+            //noinspection UnnecessaryLocalVariableJS
+          var endTime = new Date();
 
             $scope.callData.EndTime = endTime;
 
@@ -1320,37 +1321,37 @@ angular.module('cloudKiboApp')
             $scope.amInCall = false;
 
             $scope.amInCallWith = '';
-        }
+        };
 
         $scope.IncomingCallStatement = '';
         $scope.isSomeOneCalling = false;
 
         $scope.isThereIncomingCall = function () {
             return $scope.isSomeOneCalling;
-        }
+        };
 
         $scope.OutgoingCallStatement = '';
         $scope.areYouCallingSomeone = false;
 
         $scope.isThereOutgoingCall = function () {
             return $scope.areYouCallingSomeone;
-        }
+        };
 
         $scope.isItRinging = function () {
             return $scope.ringing;
-        }
+        };
 
         $scope.isOtherSideRinging = function () {
             return $scope.otherSideRinging;
-        }
+        };
 
         $scope.onTimeoutForPersonOfflineOrBusy = function () {
             $scope.areYouCallingSomeone = false;
-        }
+        };
 
         $scope.onTimeoutOfMissedCall = function () {
             $scope.isSomeOneCalling = false;
-        }
+        };
 
         $scope.callData = {};
 
@@ -1380,7 +1381,7 @@ angular.module('cloudKiboApp')
 
             WebRTC.initialize(localvideo, localvideoscreen, remotevideo, remoteaudio, remotevideoscreen);
 
-        }
+        };
 
         $timeout($scope.connectTimeOut, 1000);
 
@@ -1399,27 +1400,27 @@ angular.module('cloudKiboApp')
             // Rejoin the room... (temporary fix)
 
             socket.emit('join global chatroom', {room: roomid, user: $scope.user});
-        }
+        };
 
         $scope.LeaveRoom = function () {
             //console.log('Leave room', {room: roomid, username: $scope.user.username});
 
             socket.emit('leaveChat', {room: 'globalchatroom', user: $scope.user});
-        }
+        };
 
         $scope.setStatus = function () {
 
             if ($scope.user.status != null) {
                 if ($scope.user.status.trim() != '') {
 
-                    socket.emit('status', {room: 'globalchatroom', user: $scope.user})
+                    socket.emit('status', {room: 'globalchatroom', user: $scope.user});
 
                     $http.post(RestApi.user.statusMessage, $scope.user).success(function (data) {
                     });
                 }
             }
 
-        }
+        };
 
         socket.on('online', function (friend) {
             for (i in $scope.contactslist) {
@@ -1471,7 +1472,7 @@ angular.module('cloudKiboApp')
 
             $scope.amInCallWith = '';
 
-        })
+        });
 
         socket.on('calleeisbusy', function (data) {
 
@@ -1486,7 +1487,7 @@ angular.module('cloudKiboApp')
             $scope.amInCallWith = '';
 
 
-        })
+        });
 
         $scope.amInCallWith = '';
 
@@ -1500,7 +1501,7 @@ angular.module('cloudKiboApp')
 
             Signalling.initialize(data.callee, $scope.user.username, roomid);
 
-        })
+        });
 
         $scope.amInCall = false;
 
@@ -1513,7 +1514,7 @@ angular.module('cloudKiboApp')
                 Sound.load();
                 Sound.play();
                 $scope.ringing = true;
-                socket.emit('yesiamfreeforcall', {mycaller: data.caller, me: $scope.user.username})
+                socket.emit('yesiamfreeforcall', {mycaller: data.caller, me: $scope.user.username});
                 $scope.amInCall = true;
                 $scope.amInCallWith = data.caller;
 
@@ -1700,7 +1701,7 @@ angular.module('cloudKiboApp')
 
 
                 if (err) {
-                    $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.')
+                    $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.');
 
                     $scope.ringing = false;
                     $scope.amInCall = false;
@@ -1713,7 +1714,7 @@ angular.module('cloudKiboApp')
                     WebRTC.captureUserMedia('video', function (err) {
 
                         if (err) {
-                            $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.')
+                            $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.');
 
                             $scope.ringing = false;
                             $scope.amInCall = false;
@@ -1748,7 +1749,7 @@ angular.module('cloudKiboApp')
             $scope.amInCallWith = '';
             $scope.OutgoingCallStatement = 'Calling stopped';
 
-        }
+        };
 
         $scope.receiveCalling = function () {
 
@@ -1759,7 +1760,7 @@ angular.module('cloudKiboApp')
             var startTime = new Date();
 
             $scope.callData.StartTime = startTime.toUTCString();
-        }
+        };
 
         $scope.AcceptCall = function () {
             Signalling.sendMessage('Accept Call');
@@ -1767,7 +1768,7 @@ angular.module('cloudKiboApp')
             Sound.load();
             Sound.pause();
             $scope.ringing = false;
-        }
+        };
 
         $scope.RejectCall = function () {
             Signalling.sendMessage('Reject Call');
@@ -1777,7 +1778,7 @@ angular.module('cloudKiboApp')
             $scope.ringing = false;
             $scope.amInCall = false;
             $scope.amInCallWith = '';
-        }
+        };
 
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -1801,7 +1802,7 @@ angular.module('cloudKiboApp')
                             $scope.isUnderProgress = false;
 
                         }
-                    })
+                    });
 
                 for (var i in $scope.contactslist) {
                     if ($scope.contactslist[i].contactid.username == $scope.otherUser.username) {
@@ -1814,7 +1815,7 @@ angular.module('cloudKiboApp')
                 }
 
             }
-        }
+        };
 
 
         $scope.sendIM = function () {
@@ -1828,7 +1829,7 @@ angular.module('cloudKiboApp')
                     $scope.im.to_id = $scope.otherUser._id;
                     $scope.im.fromFullName = $scope.user.firstname + ' ' + $scope.user.lastname;
 
-                    socket.emit('im', {room: 'globalchatroom', stanza: $scope.im})
+                    socket.emit('im', {room: 'globalchatroom', stanza: $scope.im});
 
                     $scope.messages.push($scope.im);
 
@@ -1840,7 +1841,7 @@ angular.module('cloudKiboApp')
                 }
             }
 
-        }
+        };
 
         socket.on('im', function (im) {
 
@@ -1855,19 +1856,19 @@ angular.module('cloudKiboApp')
                 }
             }
 
-        })
+        });
 
         socket.on('statusUpdate', function (user) {
 
             if ($scope.otherUser.username == user.username)
                 $scope.otherUser.status = user.status;
-        })
+        });
 
         $scope.isUnderProgress = true;
 
         $scope.loadUnderProgress = function () {
             return $scope.isUnderProgress;
-        }
+        };
 
         $scope.hasSharedDetails = function () {
             for (i in $scope.contactslist) {
@@ -1876,7 +1877,7 @@ angular.module('cloudKiboApp')
                 }
             }
             return false;
-        }
+        };
 
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -1974,7 +1975,7 @@ angular.module('cloudKiboApp')
                 failureInstallCallback
             );
 
-        }
+        };
 
         function successInstallCallback() {
             location.reload();
@@ -2017,7 +2018,7 @@ angular.module('cloudKiboApp')
 
         $scope.getlocation = function () {
             return $location.url();
-        }
+        };
 
         $scope.isActive = function (route) {
             return route === $location.path();
@@ -2060,7 +2061,10 @@ angular.module('cloudKiboApp')
 
         $interval($scope.showNext, 6000);
 
-        $timeout(function(){Layout.initOWL();}, 1000)
+        $timeout(function(){
+          Layout.init();
+          Layout.initOWL();
+        }, 1000);
 
         $scope.sendFeedback = function (contact) {
 
@@ -2100,4 +2104,4 @@ angular.module('cloudKiboApp')
     .controller('NewsController', function ($scope, Data) {
         $scope.data = Data;
     });
-  
+

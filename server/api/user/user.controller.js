@@ -45,9 +45,9 @@ exports.create = function (req, res, next) {
 
 
 	  newToken.save(function(err){
-		  if (err) return console.log(err)
+		  if (err) return console.log(err);
 		  //console.log('Token Saved')
-	  })
+	  });
 
 
 	  var sendgrid  = require('sendgrid')('cloudkibo', 'cl0udk1b0');
@@ -104,7 +104,7 @@ exports.me = function(req, res, next) {
 /**
  * Get User Image
  */
-exports.userimage = function(req, res, next) { 
+exports.userimage = function(req, res, next) {
   res.sendfile(req.params.image, {root: './userpictures'});
 };
 
@@ -135,10 +135,10 @@ exports.update = function(req, res, next) {
  * Update User Image
  */
 exports.updateimage = function(req, res, next){
-	console.log(req.files)
+	console.log(req.files);
 	User.findById(req.user._id, function (err, gotUser) {
-		if (err) return console.log('Error 1'+ err)
-		
+		if (err) return console.log('Error 1'+ err);
+
 		if(gotUser.picture == null)
 		{
 			  var today = new Date();
@@ -146,11 +146,11 @@ exports.updateimage = function(req, res, next){
 			  var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
 			  serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
 			  serverPath += '' + req.files.fileUploaded.name;
-			  
+
 			  var dir = __dirname + "/userpictures";
-			  
-			  if(req.files.fileUploaded.size == 0) return res.send('No file submitted')
-			  
+
+			  if(req.files.fileUploaded.size == 0) return res.send('No file submitted');
+
 			  require('fs').rename(
 				 req.files.fileUploaded.path,
 				 dir + "/" + serverPath,
@@ -159,47 +159,47 @@ exports.updateimage = function(req, res, next){
 						  res.send({
 							  error: 'Server Error: Could not upload the file'
 						  });
-						  return;
+						  return 0;
 					   }
 				   }
 			  );
-			  
+
 			  gotUser.picture = serverPath;
-			
+
 				gotUser.save(function (err2) {
 					if (err2) return console.log('Error 2'+ err2);
-					
+
 					User.findById(gotUser, function (err, gotUserSaved) {
-						
+
 						res.json(gotUserSaved);
 						//res.redirect('/home');
-						
+
 					})
-					
+
 				});
-			  
+
 		  }
 		  else
 		  {
 			  var dir = './userpictures';
 			  dir += gotUser.picture;
-				
+
 				if(gotUser.picture)
 				{
 					require('fs').unlink(dir, function (err) {
 						  if (err) throw err;
-						
-						
+
+
 						  var today = new Date();
 						  var uid = crypto.randomBytes(5).toString('hex');
 						  var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
 						  serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
 						  serverPath += '' + req.files.fileUploaded.name;
-						  
+
 						  var dir = __dirname + "/userpictures";
-						  
-						  if(req.files.fileUploaded.size == 0) return res.send('No file submitted')
-						  
+
+						  if(req.files.fileUploaded.size == 0) return res.send('No file submitted');
+
 						  require('fs').rename(
 							 req.files.fileUploaded.path,
 							 dir + "/" + serverPath,
@@ -208,42 +208,42 @@ exports.updateimage = function(req, res, next){
 									  res.send({
 										  error: 'Server Error: Could not upload the file'
 									  });
-									  return;
+									  return 0;
 								   }
 							   }
 						  );
-						  
+
 						  gotUser.picture = serverPath;
-						
+
 							gotUser.save(function (err2) {
 								if (err2) return console.log('Error 2'+ err2);
-								
+
 								User.findById(gotUser, function (err, gotUserSaved) {
-									
+
 									res.json(gotUserSaved);
 									//res.redirect('/home');
-									
+
 								})
-								
+
 							});
-						
-						
-					})  
+
+
+					})
 				}
 		  }
-		
-		
+
+
 	})
-}
+};
 
 /**
  * Search by username
  */
 exports.searchbyusername = function(req, res, next){
 	User.findOne({username : req.body.searchusername}, function (err, gotUser) {
-		res.json(gotUser);		
+		res.json(gotUser);
 	})
-}
+};
 
 
 
@@ -252,9 +252,9 @@ exports.searchbyusername = function(req, res, next){
  */
 exports.searchbyemail = function(req, res, next){
 	User.findOne({email : req.body.searchemail}, function (err, gotUser) {
-		res.json(gotUser);		
+		res.json(gotUser);
 	})
-}
+};
 
 
 exports.saveUsernameRoute = function(req, res, next) {
@@ -274,7 +274,7 @@ exports.saveUsernameRoute = function(req, res, next) {
 							res.json({status : 'danger', msg: 'This contact number is already taken'});
 						}else{
 
-							console.log(req.body)
+							console.log(req.body);
 							User.findById(req.body._id, function(err, gotUser){
 
 								console.log(gotUser);
@@ -284,7 +284,7 @@ exports.saveUsernameRoute = function(req, res, next) {
 								gotUser.phone = req.body.phone;
 
 								gotUser.save(function(err2){
-									if(err2) return res.json({status:'danger', msg:'Some error occurred on CloudKibo. Please contact us.'})
+									if(err2) return res.json({status:'danger', msg:'Some error occurred on CloudKibo. Please contact us.'});
 
 									User.findOne({_id : req.body._id}, function(err3, gotUser1){
 										if(err3) return console.log(err3);
@@ -304,14 +304,14 @@ exports.saveUsernameRoute = function(req, res, next) {
 		}
 
 	});
-}
+};
 
 
 /**
  * Invite by email
  */
 exports.invitebyemail = function(req, res, next){
-				
+
 	var sendgrid  = require('sendgrid')('cloudkibo', 'cl0udk1b0');
 
 	var email     = new sendgrid.Email({
@@ -320,7 +320,7 @@ exports.invitebyemail = function(req, res, next){
 	  subject:  ''+ req.user.firstname +' via CloudKibo: Join my Video Call',
 	  text:     ''
 	});
-	
+
 	var message = req.body.shortmessage;
 	if(req.body.shortmessage == null || req.body.shortmessage == 'undefined')
 	   message = 'Hello, I am available on CloudKibo for Video Chat.';
@@ -338,10 +338,10 @@ exports.invitebyemail = function(req, res, next){
 	  console.log(json);
 
 	});
-	
+
 	res.send({status: 'success', msg: 'Email Sent Successfully'})
 
-}
+};
 
 
 
@@ -350,22 +350,22 @@ exports.invitebyemail = function(req, res, next){
  */
 exports.initialtesting = function(req, res, next){
 	User.findById(req.user._id, function (err, gotUser) {
-		if (err) return console.log('Error 1'+ err)
-		
+		if (err) return console.log('Error 1'+ err);
+
 		gotUser.initialTesting = req.body.initialTesting;
-			
+
 		gotUser.save(function (err2) {
 			if (err2) return console.log('Error 2'+ err2);
-			
+
 			User.findById(req.user._id, function (err3, gotUser1) {
 				if (err3) return console.log('Error 3'+ err3);
 				res.send({status: 'success', msg: gotUser1})
 			})
-			
-			
+
+
 		});
 	})
-}
+};
 
 
 
@@ -374,16 +374,16 @@ exports.initialtesting = function(req, res, next){
  */
 exports.setstatusmessage = function(req, res, next){
 	User.findById(req.user._id, function (err, gotUser) {
-		if (err) return console.log('Error 1'+ err)
-		
+		if (err) return console.log('Error 1'+ err);
+
 		gotUser.status = req.body.status;
-				 
+
 		gotUser.save(function (err2) {
 				if (err2) return console.log('Error 2'+ err2);
 				res.send({status : 'success', msg : 'stored the message'});
 		 });
 	})
-}
+};
 
 
 
@@ -392,41 +392,41 @@ exports.setstatusmessage = function(req, res, next){
  */
 exports.resetpasswordrequest = function(req, res, next){
 	User.findOne({email : req.body.email}, function(err, gotUser){
-	  if(err) return console.log(err)
-	  if(!gotUser) return res.send({status:'danger', msg:'Sorry! No such account exists in our database.'})
-	  
+	  if(err) return console.log(err);
+	  if(!gotUser) return res.send({status:'danger', msg:'Sorry! No such account exists in our database.'});
+
 	  var tokenString = crypto.randomBytes(15).toString('hex');
 
 		var newToken = new passwordresettoken({
 					user : gotUser._id,
 					token : tokenString
 		});
-		
+
 		newToken.save(function(err){
 			if (err) return console.log(err)
-		})
-		
+		});
+
 		var sendgrid  = require('sendgrid')('cloudkibo', 'cl0udk1b0');
-			
+
 		var email     = new sendgrid.Email({
 		  to:       gotUser.email,
 		  from:     'support@cloudkibo.com',
 		  subject:  'CloudKibo: Password Reset',
 		  text:     'Password Reset'
 		});
-		
+
 		email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to change your password <br><br> http://www.cloudkibo.com/#resetpassword/'+ tokenString);
-		
+
 		sendgrid.send(email, function(err, json) {
 		  if (err) { return console.error(err); }
-		  
+
 		  console.log(json);
-		  
+
 		  res.send({status:'success', msg:'Password Reset Link has been sent to your email address. Check your spam or junk folder if you have not received our email.'});
-		  
+
 		});
   })
-}
+};
 
 
 

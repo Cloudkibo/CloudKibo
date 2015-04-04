@@ -4,7 +4,7 @@ angular.module('cloudKiboApp')
   .controller('LoginCtrl', function ($scope, Auth, $location, $window) {
     $scope.user = {};
     $scope.errors = {};
-    
+
     $scope.alerts = [];
 
 	$scope.addAlert = function(newtype, newMsg) {
@@ -18,13 +18,13 @@ angular.module('cloudKiboApp')
 
 	$scope.underProgress = function(){
 		return $scope.progressState;
-	}
+	};
 
 
 
     $scope.login = function(form) {
       $scope.submitted = true;
-      
+
       $scope.progressState = true;
 
       if(form.$valid) {
@@ -38,7 +38,7 @@ angular.module('cloudKiboApp')
           $location.path('/app');
         })
         .catch( function(err) {
-          console.log(err)
+          console.log(err);
 		      $scope.progressState = false;
           //$scope.errors.other = err.message;
           $scope.addAlert('danger', err.message)
