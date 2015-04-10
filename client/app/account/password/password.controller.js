@@ -35,7 +35,7 @@ angular.module('cloudKiboApp')
     })
 
 
-    .controller('NewPasswordController', function($scope, $http){
+    .controller('NewPasswordController', function($scope, $http, RestApi){
 
         $scope.save = function() {
 
