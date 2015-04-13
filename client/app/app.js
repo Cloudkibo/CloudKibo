@@ -20,9 +20,14 @@ angular.module('cloudKiboApp', [
 			controller: 'MeetingController'
 	  })
 
-      .otherwise({
-        redirectTo: '/'
-      });
+    .when('/livehelp/:mname', {
+      templateUrl: function(params){ return '/livehelp/'+ params.mname},
+      controller: 'LiveHelpController'
+    })
+
+    .otherwise({
+      redirectTo: '/'
+    });
 
     $locationProvider.html5Mode({
 	  enabled: true,

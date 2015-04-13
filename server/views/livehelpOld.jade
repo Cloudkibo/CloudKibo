@@ -1,0 +1,215 @@
+doctype html
+html(ng-app='cloudKiboApp')
+ head
+    title= title
+    
+    // Start UI
+    
+    //link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css')
+    
+    link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css')
+    
+    //link(href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|PT+Sans+Narrow|Source+Sans+Pro:200,300,400,600,700,900&amp;subset=all', rel='stylesheet', type='text/css')
+    
+    link(href='/global/plugins/font-awesome/css/font-awesome.min.css', rel='stylesheet')
+    
+    link(href='/global/plugins/bootstrap/css/bootstrap.css', rel='stylesheet')
+    
+    link(href='/global/plugins/fancybox/source/jquery.fancybox.css', rel='stylesheet')
+    
+    link(href='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.css', rel='stylesheet')
+    
+    link(href='/global/plugins/slider-revolution-slider/rs-plugin/css/settings.css', rel='stylesheet')
+    
+    link(href='/global/css/components.css', rel='stylesheet')
+    
+    link(href='/frontend/layout/css/style.css', rel='stylesheet')
+    
+    link(href='/frontend/pages/css/style-revolution-slider.css', rel='stylesheet')
+    
+    link(href='/frontend/layout/css/style-responsive.css', rel='stylesheet')
+    
+    link(href='/frontend/layout/css/themes/red.css', rel='stylesheet')
+    
+    link(href='/frontend/layout/css/custom.css', rel='stylesheet')
+
+    link(href= 'https://chrome.google.com/webstore/detail/hjfejjmhpakdodimneibbmgfhfhjedod', rel='chrome-webstore-item')
+    
+    //link(rel='stylesheet', href='/stylesheets/style.css')
+    
+    meta(name='viewport', content='width=device-width, initial-scale=1, minimum-scale=1')
+    
+    
+    // End UI
+    
+    //script(src='/javascripts/lib/angular-file-upload-shim.min.js')
+    
+    // never do angular.js, in folder it is latest version, we use oldest
+    script(src='/javascripts/lib/angular.min.js')
+    
+    script(src='/javascripts/lib/angular-route.min.js')
+    
+    //script(src='/javascripts/lib/angular-file-upload.js')
+    
+    script(src='/javascripts/lib/angular-animate.js')
+    
+    script(src='/javascripts/lib/angular-resource.js')
+    
+    script(src='/javascripts/lib/angular-cookies.js')
+    
+    script(src='/javascripts/lib/angular-sanitize.js')
+    
+    script(src='/javascripts/lib/angular-socket.io.js')
+    
+    script(src='/javascripts/lib/idb.filesystem.min.js')
+    
+    script(src='/socket.io/socket.io.js')
+    
+    script(src='/javascripts/lib/adapter.js')
+    
+    script(src='/javascripts/lib/ui-bootstrap-tpls-0.10.0.js')
+    
+    script(src='/app/cloudKiboApp.js')
+    
+    script(src='/app/main/main.js')
+
+    script(src='/components/webrtc/rtcconfig.service.js')
+
+    script(src='/components/rest/rest.service.js')
+    
+    
+    // New Boilerplate
+    
+    script(src='/app/account/account.js')
+    
+    script(src='/app/account/login/login.controller.js')
+    
+    script(src='/app/account/settings/settings.controller.js')
+    
+    script(src='/app/account/signup/signup.controller.js')
+    
+    script(src='/app/account/signup/signup.controller.js')
+    
+    script(src='/app/admin/admin.controller.js')
+    
+    script(src='/app/admin/admin.js')
+    
+    script(src='/app/main/main.controller.js')
+    
+    script(src='/app/main/meeting.controller.js')
+    
+    script(src='/components/auth/auth.service.js')
+    
+    script(src='/components/auth/user.service.js')
+    
+    script(src='/components/modal/modal.service.js')
+    
+    script(src='/components/mongoose-error/mongoose-error.directive.js')
+
+    script(src='/components/webrtc/KiboRTC.js')
+    
+    // New Boilerplate ends
+
+    script(src='/global/plugins/jquery-1.11.0.min.js')
+    script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
+    script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
+    script(src='/frontend/layout/scripts/back-to-top.js')
+ 
+    script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
+    script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
+ 
+    script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
+    script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
+    script(src='/frontend/pages/scripts/revo-slider-init.js')
+ 
+    script(src='/frontend/layout/scripts/layout.js')
+ 
+    
+
+    
+ body(ng-controller='LiveHelpController')
+   .header(ng-init='role=#{JSON.stringify(role)}')
+    .container
+      a(class='site-logo', href='/')
+        img(src='/images/logo_small.png')
+        | #{title}
+      a(href='javascript:void(0);', class='mobi-toggler')
+        i(class='fa fa-bars')
+      //div(class='header-navigation pull-right font-transform-inherit')
+              ul
+                li
+                  a.btn.btn-account.btn-send(ng-click='closeWindow()')
+                    | Leave Conference
+   .fullBodyPane(class='animate-show')
+    .main
+     .container
+      div(class='row margin-bottom-40')
+       div(class='col-md-12 col-sm-12')
+        .content-page(style='background: #badfef;')
+         .row
+          .mainBodyPane(class='col-md-9 col-sm-9 blog-posts')
+            div(class='well well-lg animate-show', ng-show='!localCameraCaptured()')
+              br
+              br
+              center
+                div(ng-show='isConnected()', class='animate-show')
+                  br
+                  br
+                  h3 Waiting for the other person.
+                  br
+                  h4 You can arrange/set your microphone and headphone in the mean time.
+                  br
+                  br
+            div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
+              div(style='text-align: center;')
+                span
+                  div(ng-show='role=="visitor"')
+                        video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                  div(ng-show='hasPeerSharedScreen()')
+                    video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                    audio(id='remoteaudio1', autoplay='true')
+                  div(ng-show='!hasPeerSharedScreen()')
+                    br
+                    br
+                    h3 You are in an audio call. You should hear the other party.
+                    br
+                    h5 Check your headset for any problem
+                    br
+                br
+                alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
+                br
+          .sidePane(class='col-md-3 col-sm-3 blog-sidebar')
+            div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
+              div(ng-show='role=="agent"')
+                video(id='localvideo', autoplay='true', width='100%', class='videoelement')
+              button(id='showScreenButton', ng-click='showScreen()') {{showScreenText}}
+              br
+              br
+              div(ng-show='showExtension()')
+                button(ng-click='installExtension()', style='padding: 0;background: none;height: 61px;vertical-align: middle;cursor:pointer;')
+                  | Add Chrome Screen Sharing Extension
+              br
+              br
+              label Send File
+              input(id='file', type='file')
+              br
+              div(id='0')
+              div(id='filelist_cointainer')
+              br
+              div(id='chatBox', scroll-if)
+                .chatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
+                  | {{userMessage}}
+              br
+              form
+                input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
+                button(ng-click='sendData()') Send
+            br
+   script(type='text/javascript').
+        jQuery(document).ready(function() {
+            Layout.init();    
+            Layout.initOWL();
+            RevosliderInit.initRevoSlider();
+            Layout.initTwitter();
+            //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
+            //Layout.initNavScrolling(); 
+        });
