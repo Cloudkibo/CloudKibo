@@ -21,7 +21,7 @@ angular.module('cloudKiboApp', [
 	  })
 
     .when('/livehelp/:mname', {
-      templateUrl: function(params){ return '/livehelp/'+ params.mname},
+      templateUrl: function(params){ console.log(params); return '/livehelp/'+ params.mname +'?role='+ params.role},
       controller: 'LiveHelpController'
     })
 
