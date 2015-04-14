@@ -158,7 +158,7 @@ function onConnect(socketio, socket) {
 
       var msgToSend = message.msg;
 
-      msgToSend = message.from;
+      msgToSend.from = message.from;
 
       console.log('Sending message:', msgToSend);
 
