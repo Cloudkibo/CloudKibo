@@ -14,4 +14,13 @@ angular.module('cloudKiboApp')
         }
       });
     };
+
+    $scope.isUserNameDefined = function() {
+      return true;
+    };
+
+    $scope.isMeetingPage = function(){
+      return false;
+    };
+
   });
