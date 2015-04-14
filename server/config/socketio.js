@@ -158,6 +158,9 @@ function onConnect(socketio, socket) {
 
       var msgToSend = message.msg;
 
+      if(typeof msgToSend === 'String')
+        msgToSend = JSON.parse(msgToSend);
+
       msgToSend.from = message.from;
 
       console.log('Sending message:', msgToSend);
