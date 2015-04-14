@@ -137,7 +137,7 @@ function onConnect(socketio, socket) {
 		});
 
 		socket.on('messagefordatachannel', function (message) {
-			//console.log('Got message:', message);
+			console.log('Got message:', message);
 
 			//socket.broadcast.emit('message', message);
 
@@ -156,7 +156,13 @@ function onConnect(socketio, socket) {
 				})
 			});
 
-			socketio.sockets.socket(socketid).emit('messagefordatachannel', message.msg);
+      var msgToSend = message.msg;
+
+      msgToSend = message.from;
+
+      console.log('Sending message:', msgToSend);
+
+			socketio.sockets.socket(socketid).emit('messagefordatachannel', msgToSend);
 
 		});
 
