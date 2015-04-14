@@ -7,7 +7,7 @@
 
 
 // Set default node environment to development
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
 
 
@@ -44,7 +44,7 @@ var httpsServer = require('https').createServer(options, app);
 
 
 
-httpapp.get('*',function(req,res){  
+httpapp.get('*',function(req,res){
     res.redirect('https://www.cloudkibo.com'+req.url)
 });
 
