@@ -156,7 +156,13 @@ function onConnect(socketio, socket) {
 				})
 			});
 
-			socketio.sockets.socket(socketid).emit('messagefordatachannel', message.msg);
+      var msgToSend = message.msg;
+
+      msgToSend = message.from;
+
+      console.log('Sending message:', msgToSend);
+
+			socketio.sockets.socket(socketid).emit('messagefordatachannel', msgToSend);
 
 		});
 
