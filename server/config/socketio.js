@@ -137,7 +137,7 @@ function onConnect(socketio, socket) {
 		});
 
 		socket.on('messagefordatachannel', function (message) {
-			//console.log('Got message:', message);
+			console.log('Got message:', message);
 
 			//socket.broadcast.emit('message', message);
 
