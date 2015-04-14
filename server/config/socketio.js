@@ -137,7 +137,7 @@ function onConnect(socketio, socket) {
 		});
 
 		socket.on('messagefordatachannel', function (message) {
-			console.log('Got message:', message);
+			//console.log('Got message:', message);
 
 			//socket.broadcast.emit('message', message);
 
@@ -158,13 +158,10 @@ function onConnect(socketio, socket) {
 
       var msgToSend = message.msg;
 
-      console.log(typeof msgToSend);
       if(typeof msgToSend != 'object')
         msgToSend = JSON.parse(msgToSend);
 
       msgToSend.from = message.from;
-
-      console.log('Sending message:', msgToSend);
 
 			socketio.sockets.socket(socketid).emit('messagefordatachannel', msgToSend);
 

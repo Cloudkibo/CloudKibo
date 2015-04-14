@@ -685,7 +685,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'newer:jshint',
+    //'newer:jshint',
     //'test',		  // commented by sojharo, need to remove this comment
     'build'
   ]);
