@@ -69,6 +69,8 @@ angular.module('cloudKiboApp')
 
             var message = FileTransfer.getMessage();
 
+          console.log(message);
+
             if (message.byteLength) {
                 process_binary(0, message, 0);
             }
