@@ -6,4 +6,10 @@ before_script:
   - npm install -g bower grunt-cli
   - bower install
 services: mongodb
-
+notifications:
+     email:
+         recipients:
+             - sojharo@gmail.com
+             - jekram@hotmail.com
+         on_success: always
+         on_failure: always
