@@ -35,7 +35,7 @@ block appbodycontent
                               img(src='/images/displayPic.jpg', width='62px', height='62px', class='img-frame')
                           #userNameBox
                             h5 {{userFound.firstname}} {{userFound.lastname}}
-                            b KiboName: 
+                            b KiboName:
                             i {{userFound.username}}
                             br
                         div(style='text-align:center;')
@@ -44,7 +44,7 @@ block appbodycontent
                             button.btn.btn-send(ng-click='StopOutgoingCall()')
                               | Stop Calling
                       div(class='animate-show', ng-show='!localCameraCaptured()')
-                      
+
 
 
                         if(otherUser)
@@ -65,7 +65,7 @@ block appbodycontent
                                 #userNameBoxForFriend
                                   #userInfoDetails
                                     h5 {{otherUser.firstname}} {{otherUser.lastname}}
-                                    b KiboName: 
+                                    b KiboName:
                                     i {{otherUser.username}}
                                     br
                                     small
@@ -81,20 +81,20 @@ block appbodycontent
                                       button.btn.btn-send(ng-click='startFileChat()') Send File
                               .chatArea
                                 .chatBox(schroll-bottom='messages')
-                                  
+
                                   div(ng-show='openFileSendView()')
                                     label Send File
                                     input(id='file', type='file')
-                                  
+
                                     div(id='0')
                                     div(id='filelist_cointainer')
-                                  
+
                                   div(ng-show='loadUnderProgress()', style='text-align:center;')
                                     img(src='/images/ProgressIcon.gif', width='60px', height='60px')
                                   div(ng-repeat='message in messages')
                                     .chatMessage
                                       .senderInfoInMessage
-                                        b {{message.fromFullName}} 
+                                        b {{message.fromFullName}}
                                       .messageTextInMessage
                                         | {{message.msg}}
                                 .chatControls
@@ -111,8 +111,8 @@ block appbodycontent
                                 br
                                 h4 To call someone you know
                                 br
-                                a(ng-href='#', ng-click='openCall()')
-                                  h4 Click Here. 
+                                a(ng-href='', ng-click='openCall()')
+                                  h4 Click Here.
                                 br
                                 h4 You should know kiboname or email address of the callee.
                             div(ng-show='!sentFeedback() && hasCallEnded()')
@@ -155,7 +155,7 @@ block appbodycontent
                                 button.btn.btn-send(type='submit', ,=',', ng-disabled='form7.$invalid') Send Feedback
                                 button.btn.btn-send(ng-click='ignoreFeedBack()') Ignore
 
-                      
+
 
                       div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
                         div(style='text-align: center;')
@@ -190,7 +190,7 @@ block appbodycontent
                             img(src='/images/displayPic.jpg', width='62px', height='62px', class='img-frame')
                         #userNameBox
                           h5 {{user.firstname}} {{user.lastname}}
-                          b KiboName: 
+                          b KiboName:
                           i {{user.username}}
                         #userStatusBox
                           form.userStatusForm(role='form', ng-submit='setStatus()')
@@ -206,7 +206,7 @@ block appbodycontent
                           div(ng-show='showExtension()')
                             button(ng-click='installExtension()', style='padding: 0;background: none;height: 61px;vertical-align: middle;cursor:pointer;')
                               | Add Chrome Screen Sharing Extension
-                          
+
 
                         br
                         br
