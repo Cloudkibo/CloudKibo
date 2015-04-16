@@ -34,12 +34,7 @@ exports.appRoute = function (req, res) {
 		else if(req.get('host') == 'www.synaps3webrtc.com')
 			title = 'Synaps3WebRTC';
 
-
 		res.render('app', {title : title});
-
-
-
-
 
   };
 
