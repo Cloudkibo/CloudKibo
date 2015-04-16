@@ -79,16 +79,14 @@ block appbodycontent
                                       button.btn.btn-send(ng-click='removechathistory(otherUser)') Remove Conversation
                                     span
                                       button.btn.btn-send(ng-click='startFileChat()') Send File
+                              div(ng-show='openFileSendView()')
+                                label Send File
+                                input(id='file', type='file')
+
+                                div(id='0')
+                                div(id='filelist_cointainer')
                               .chatArea
                                 .chatBox(schroll-bottom='messages')
-
-                                  div(ng-show='openFileSendView()')
-                                    label Send File
-                                    input(id='file', type='file')
-
-                                    div(id='0')
-                                    div(id='filelist_cointainer')
-
                                   div(ng-show='loadUnderProgress()', style='text-align:center;')
                                     img(src='/images/ProgressIcon.gif', width='60px', height='60px')
                                   div(ng-repeat='message in messages')
