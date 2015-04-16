@@ -158,8 +158,6 @@ angular.module('cloudKiboApp')
         var FSdebug = false;
         var chunksPerACK = 16; // 16k * 16 = 256k (buffer size in Chrome & seems to work 100% of the time)
 
-
-
         // Used in Chrome to handle larger files (and firefox with idb.filesystem.js)
         window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
         var file_to_upload;    // "pointer" to external file
@@ -192,7 +190,7 @@ angular.module('cloudKiboApp')
 
         function write_to_file(user_id, chunk_data, chunk_num, hash) {
 
-            //console.log('got Chunks : ', chunk_data)
+            console.log('got Chunks : ', chunk_data)
 
             // store our chunk temporarily in memory
             recievedChunks[user_id][chunk_num % chunksPerACK] = chunk_data;
@@ -256,7 +254,7 @@ angular.module('cloudKiboApp')
 
                         // EOF condition
                         if (recieved_meta[user_id].numOfChunksInFile <= (recievedChunksWritePointer[user_id])) {
-                            //console.log("creating file link!");
+                            console.log("creating file link!");
 
                             // stop accepting file info
                             downloading[user_id] = false;
@@ -289,7 +287,7 @@ angular.module('cloudKiboApp')
             meta.size = file.size;
             meta.filetype = file.type;
             meta.browser = 'chrome';//$.browser.name; // need browser name to set chunk size // should not be hardcoded
-            //console.log(meta);
+            console.log(meta);
 
             send_meta();
             FileTransfer.sendData("You have received a file. Download and Save it.");
@@ -330,7 +328,7 @@ angular.module('cloudKiboApp')
             if (recieved_meta[id].numOfChunksInFile > recieved_meta[id].chunks_recieved) {
                 update_container_percentage(id, recieved_meta[id].chunks_recieved - 1, recieved_meta[id].numOfChunksInFile, recieved_meta[id].size);
             } else {
-                //console.log("done downloading file!");
+                console.log("done downloading file!");
                 // stop accepting file info
                 downloading[id] = false;
                 // creating the download link is handled by write_to_file
@@ -364,7 +362,7 @@ angular.module('cloudKiboApp')
                 // if auto-download, start the process
 
 
-                //console.log(recieved_meta[0]);
+                console.log(recieved_meta[0]);
             } else if (data.kill) {
                 // if it is a kill msg, then the user on the other end has stopped uploading!
 
@@ -388,7 +386,7 @@ angular.module('cloudKiboApp')
                 }
             } else {
 
-                //console.log('Chunk is requested')
+                console.log('Chunk is requested by other peer')
 
                 // Otherwise, we are going to assume that if we have reached here, this is a request to download our file
                 if (data.chunk % chunksPerACK == 0) {
@@ -405,7 +403,7 @@ angular.module('cloudKiboApp')
                 console.log("DEBUG: requesting chunk " + chunk_num + " from " + id);
             }
 
-            //console.log('Function which actually asks for chunk')
+            console.log('Function which actually asks for chunk')
 
             FileTransfer.sendData(JSON.stringify({ //id, JSON.stringify({
                 "eventName": "request_chunk",
@@ -426,7 +424,7 @@ angular.module('cloudKiboApp')
             // and will instead display warning that only 1 file can be downloaded at a time :(
 
             if (filesysteminuse) {
-                //console.log('Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.')
+                console.log('Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.')
                 FileTransfer.bootAlert("Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.");
                 return;
             }
@@ -1685,22 +1683,6 @@ angular.module('cloudKiboApp')
 
         function getMedia () {
             WebRTC.captureUserMedia('audio', function (err) {
-
-                // hack for now
-
-                $scope.localCameraOn = true;
-
-                Signalling.sendMessage('got user media');
-
-                if (!WebRTC.getInitiator()) {
-
-                    maybeStart();
-
-                }
-
-                return ;
-                // hack for now
-
 
                 if (err) {
                     $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.');
