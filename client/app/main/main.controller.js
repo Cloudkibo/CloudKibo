@@ -1541,7 +1541,7 @@ angular.module('cloudKiboApp')
         window.onbeforeunload = function (e) {
             $scope.LeaveRoom();
             if (!$scope.isOtherPeerBusy())
-                Signalling.sendMessage('bye');
+                Signalling.sendMessage({msg: 'bye'});
         };
 
         ////////////////////////////////////////////////////////////////////////////////////////
