@@ -56,7 +56,7 @@ var socketio = require('socket.io')(httpsServer, {
 });
 */
 
-var socketio = require('socket.io').listen(httpsServer);		// USE THE UPPER CODE IN LONG RUN
+var socketio = require('socket.io').listen(httpsServer);		// USE THE UPPER CODE IN LONG RUN, IT USES THE NEW SOCKET.IO
 
 
 require('./config/socketio')(socketio);
