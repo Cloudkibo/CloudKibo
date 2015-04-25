@@ -694,7 +694,7 @@ angular.module('cloudKiboApp')
 
     .controller('HomeController', function ($scope, $http, Auth, socket, $timeout, $location, Sound, WebRTC, Signalling, ScreenShare, RestApi) {
 
-		$scope.getCurrentUser = Auth.getCurrentUser;
+		    $scope.getCurrentUser = Auth.getCurrentUser;
 
         $scope.isUserNameDefined = function() {
             return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');

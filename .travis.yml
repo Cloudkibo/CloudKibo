@@ -13,3 +13,5 @@ notifications:
              - shabir.saba@gmail.com
          on_success: change
          on_failure: always
+         
+cache: true
