@@ -1109,7 +1109,7 @@ angular.module('cloudKiboApp')
 
         /* only called by write_to_file */
         function store_in_fs(user_id, hash) {
-
+            var options = null;
             /* massive thanks to http://stackoverflow.com/questions/10720704/filesystem-api-upload-from-local-drive-to-local-filesystem */
             if (createdChunksWritePointer[user_id] == false) {
                 options = { create: true };
@@ -1303,7 +1303,7 @@ angular.module('cloudKiboApp')
 
                 /* Otherwise, we are going to assume that if we have reached here, this is a request to download our file */
                 if (data.chunk % chunksPerACK == 0) {
-                    for (i=0;i<chunksPerACK;i++) {
+                    for (var i=0;i<chunksPerACK;i++) {
                         send_chunk_if_queue_empty(0, data.chunk + i, data.browser, data.rand, data.hash);
                     }
                 }
@@ -2582,7 +2582,7 @@ angular.module('cloudKiboApp')
 
         /* only called by write_to_file */
         function store_in_fs(user_id, hash) {
-
+            var options = null;
             /* massive thanks to http://stackoverflow.com/questions/10720704/filesystem-api-upload-from-local-drive-to-local-filesystem */
             if (createdChunksWritePointer[user_id] == false) {
                 options = { create: true };
@@ -2618,7 +2618,7 @@ angular.module('cloudKiboApp')
                         /* debug */
                         if (FSdebug) {
                             console.log("DEBUG: writing chunk2 "+ recievedChunksWritePointer[user_id]);
-                            for (i=0;i<chunksPerACK;i++) {
+                            for (var i=0;i<chunksPerACK;i++) {
                                 if (recievedChunks[user_id][i]) {
                                     console.log('recived: '+CryptoJS.SHA256(_arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
                                 }
@@ -2774,7 +2774,7 @@ angular.module('cloudKiboApp')
 
                 /* Otherwise, we are going to assume that if we have reached here, this is a request to download our file */
                 if (data.chunk % chunksPerACK == 0) {
-                    for (i=0;i<chunksPerACK;i++) {
+                    for (var i=0;i<chunksPerACK;i++) {
                         send_chunk_if_queue_empty(0, data.chunk + i, data.browser, data.rand, data.hash);
                     }
                 }

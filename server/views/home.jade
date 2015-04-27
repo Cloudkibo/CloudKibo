@@ -195,7 +195,16 @@ block appbodycontent
                             input.statusTextField(type='text', ng-model='user.status', placeholder='Update your status here')
                       div(ng-show='localCameraCaptured()', class='well well-lg animate-show')
                         div(style='text-align:center;')
-                          video(id='localvideo', autoplay='true', muted='true', width='160', class='videoelement')
+                          div(ng-show='isVideoCaptured()')
+                            video(id='localvideo', autoplay='true', muted='true', width='160', class='videoelement')
+                          div(ng-show='isVideoCaptured()')
+                            button(ng-click='toggleVideoStream()') Hide Video
+                          div(ng-show='!isVideoCaptured()')
+                            button(ng-click='toggleVideoStream()') Show Video
+                          div(ng-show='isAudioCaptured()')
+                            button(ng-click='toggleAudioStream()') Mute
+                          div(ng-show='!isAudioCaptured()')
+                            button(ng-click='toggleAudioStream()') Unmute
                           br
                           div(ng-show='isLocalScreenShared()')
                             video(id='localvideoscreen', autoplay='true', muted='true', width='160', class='videoelement')

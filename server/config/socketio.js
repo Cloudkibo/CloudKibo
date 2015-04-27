@@ -94,7 +94,9 @@ function onConnect(socketio, socket) {
 
 		socket.on('message', function (message) {
 
-			message.msg.from = socket.id;
+      try {
+        message.msg.from = socket.id;
+      }catch(e){}
 
 
 			var clients = socketio.sockets.clients(message.room);
@@ -127,7 +129,9 @@ function onConnect(socketio, socket) {
 
 			//socket.broadcast.emit('message', message);
 
-			message.msg.from = socket.id;
+      try {
+        message.msg.from = socket.id;
+      }catch(e){}
 
 			//io2.sockets.in(message.room).emit('message', message.msg);
 			socket.broadcast.to(message.room).emit('message', message.msg);
@@ -141,7 +145,9 @@ function onConnect(socketio, socket) {
 
 			//socket.broadcast.emit('message', message);
 
-			message.msg.from = message.from;
+      try {
+        message.msg.from = socket.id;
+      }catch(e){}
 
 			var clients = socketio.sockets.clients(message.room);
 

@@ -1359,6 +1359,35 @@ angular.module('cloudKiboApp')
             $http.post(RestApi.callrecord.setCallRecordData, JSON.stringify($scope.callData))
         };
 
+        var localVideoCaptured = false;
+        var localAudioCaptured = false;
+
+        $scope.isVideoCaptured = function(){
+          return localVideoCaptured;
+        };
+
+        $scope.isAudioCaptured = function(){
+          return localAudioCaptured;
+        };
+
+        $scope.toggleVideoStream = function() {
+          WebRTC.toggleVideo(function(err){
+            if (err) alert('Permission denied.');
+
+            localVideoCaptured = WebRTC.isLocalVideoShared();
+
+          })
+        }
+
+        $scope.toggleAudioStream = function() {
+          WebRTC.toggleAudio(function(err){
+            if (err) alert('Permission denied.');
+
+            localAudioCaptured = WebRTC.isLocalAudioShared();
+
+          })
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////
         // Create or Join Room Logic                                                          //
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -1695,6 +1724,8 @@ angular.module('cloudKiboApp')
 
                 } else {
 
+                    localAudioCaptured = true;
+
                     WebRTC.captureUserMedia('video', function (err) {
 
                         if (err) {
@@ -1707,6 +1738,9 @@ angular.module('cloudKiboApp')
                             WebRTC.endConnection();
                         }
                         else {
+
+                            localVideoCaptured = true;
+
                             $scope.localCameraOn = true;
 
                             Signalling.sendMessage('got user media');
