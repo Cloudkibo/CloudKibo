@@ -94,7 +94,9 @@ function onConnect(socketio, socket) {
 
 		socket.on('message', function (message) {
 
-			message.msg.from = socket.id;
+      try {
+        message.msg.from = socket.id;
+      }catch(e){}
 
 
 			var clients = socketio.sockets.clients(message.room);
