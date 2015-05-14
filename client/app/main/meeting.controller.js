@@ -6,6 +6,7 @@ angular.module('cloudKiboApp')
         $scope.user = $scope.getCurrentUser();
 
         $scope.isUserNameDefined = function() {
+
             return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
         };
 

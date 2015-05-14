@@ -71,7 +71,7 @@ exports.homeRoute = function (req, res) {
 
 exports.meetingRoute = function (req, res) {
 	  if (typeof req.user == 'undefined')
-	      res.redirect('/');
+      res.render('meetingroom', { title: title, user: '', meetingroom : req.params[0]});
       else{
 
 		  var title = 'CloudKibo';
@@ -84,7 +84,10 @@ exports.meetingRoute = function (req, res) {
 			Account.findById(req.user._id, function (err, gotUser) {
 				if (err) return console.log(err);
 
+
 				res.render('meetingroom', { title: title, user: gotUser, meetingroom : req.params[0]});
+
+
 		  })
 
       }
