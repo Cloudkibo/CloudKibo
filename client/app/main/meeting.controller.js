@@ -1726,6 +1726,8 @@ angular.module('cloudKiboApp')
             roomid = roomid.split('/')[1];
         }
 
+
+
         ////////////////////////////////////////////////////////////////////////////////////////
         // WebRTC User Interface Logic                                                        //
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -1966,7 +1968,7 @@ angular.module('cloudKiboApp')
                 createPeerConnection();
                 pc.addStream(localStream);
 
-                if($scope.role == 'agent'){
+                if($scope.role == 'agent' || $scope.role == 'visitor'){
                     pc.addStream(localVideoStream)
                 }
 
@@ -2079,7 +2081,7 @@ angular.module('cloudKiboApp')
             sendMessage(sessionDescription);
         }
 
-        $scope.meetingRemoteVideoWidth = '100%';
+        $scope.meetingRemoteVideoWidth = '40%';
         $scope.switchingScreenShare = false;
         function handleRemoteStreamAdded(event) {
 
@@ -2134,7 +2136,7 @@ angular.module('cloudKiboApp')
 
             localStream = newStream;
 
-            if($scope.role == 'agent') {
+            if($scope.role == 'agent' || $scope.role == 'visitor') {
                 getUserMedia(video_constraints, handleUserMediaVideo, handleUserMediaError);
             }
             else {
@@ -3441,7 +3443,7 @@ angular.module('cloudKiboApp')
         sendMessage(sessionDescription);
     }
 
-    $scope.meetingRemoteVideoWidth = '100%';
+    $scope.meetingRemoteVideoWidth = '10%';
 
     function handleRemoteStreamAdded(event) {
 

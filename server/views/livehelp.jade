@@ -16,10 +16,10 @@ div
      .container
       div(class='row margin-bottom-40')
        div(class='col-md-12 col-sm-12')
-        .content-page(style='background: #badfef;')
+        .content-page
          .row
           .mainBodyPane(class='col-md-9 col-sm-9 blog-posts')
-            div(class='well well-lg animate-show', ng-show='!localCameraCaptured()')
+            div(class='animate-show', ng-show='!localCameraCaptured()')
               br
               br
               center
@@ -31,18 +31,19 @@ div
                   h4 You can arrange/set your microphone and headphone in the mean time.
                   br
                   br
-            div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
+            div(class='animate-show', ng-show='localCameraCaptured()')
               div(style='text-align: center;')
                 span
-                  div(ng-show='role=="visitor"')
-                        video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                  div()
+                    video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                    video(id='localvideo', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement')
                   div(ng-show='hasPeerSharedScreen()')
                     video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
                     audio(id='remoteaudio1', autoplay='true')
                   div(ng-show='!hasPeerSharedScreen()')
                     br
                     br
-                    h3 You are in an audio call. You should hear the other party.
+                    h3 You are in a call. You should hear the other party.
                     br
                     h5 Check your headset for any problem
                     br
@@ -50,9 +51,7 @@ div
                 alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
                 br
           .sidePane(class='col-md-3 col-sm-3 blog-sidebar')
-            div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
-              div(ng-show='role=="agent"')
-                video(id='localvideo', autoplay='true', width='100%', class='videoelement')
+            div(class='animate-show', ng-show='localCameraCaptured()')
               button(id='showScreenButton', ng-click='showScreen()') {{showScreenText}}
               br
               br
@@ -67,9 +66,10 @@ div
               div(id='0')
               div(id='filelist_container')
               br
-              div(id='chatBox', scroll-if)
-                .chatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
-                  | {{userMessage}}
+              .chatArea
+                .chatBox(scroll-if)
+                  .chatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
+                    | {{userMessage}}
               br
               form
                 input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
