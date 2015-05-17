@@ -1812,14 +1812,10 @@ angular.module('cloudKiboApp')
 
         socket.on('left', function (room){
             $scope.callEnded = true;
-            if(remoteStream1)
-                remoteStream1.stop();
-            if(localStream)
-                localStream.stop();
-            if(localStreamScreen)
-                localStreamScreen.stop();
-            if(remoteStreamScreen)
-                remoteStreamScreen.stop();
+            try{ remoteStream1.stop(); }catch(e){ console.log(e); }
+            try{ localStream.stop(); }catch(e){ console.log(e); }
+            try{ localStreamScreen.stop(); }catch(e){ console.log(e); }
+            try{ remoteStreamScreen.stop(); }catch(e){ console.log(e); }
             pc.close();
             pc = null;
             $scope.localCameraOn = false;
@@ -1920,7 +1916,7 @@ angular.module('cloudKiboApp')
                     $scope.switchingScreenShare = true;
                     $scope.peerSharedScreen = true;
 
-                  $scope.meetingRemoteVideoWidth = '80%';
+                  $scope.meetingRemoteVideoWidth = '60%';
 
                     pc.createAnswer(function(sessionDescription){
 
