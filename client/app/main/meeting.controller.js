@@ -1778,7 +1778,7 @@ angular.module('cloudKiboApp')
 
         $scope.extensionAvailable = false;
 
-        $scope.hasExtension = function(){
+        $scope.hasNoExtension = function(){
             return $scope.extensionAvailable;
         };
 
