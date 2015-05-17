@@ -1812,10 +1812,14 @@ angular.module('cloudKiboApp')
 
         socket.on('left', function (room){
             $scope.callEnded = true;
-            try{ remoteStream1.stop(); }catch(e){ console.log(e); }
-            try{ localStream.stop(); }catch(e){ console.log(e); }
-            try{ localStreamScreen.stop(); }catch(e){ console.log(e); }
-            try{ remoteStreamScreen.stop(); }catch(e){ console.log(e); }
+            if(remoteStream1)
+                remoteStream1.stop();
+            if(localStream)
+                localStream.stop();
+            if(localStreamScreen)
+                localStreamScreen.stop();
+            if(remoteStreamScreen)
+                remoteStreamScreen.stop();
             pc.close();
             pc = null;
             $scope.localCameraOn = false;

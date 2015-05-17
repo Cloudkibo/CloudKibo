@@ -520,6 +520,11 @@ textarea
   margin: 0.5em;
 }
 
+.videoelementscreen{
+  border: 1.5px solid #badfef;
+  margin: 0.5em;
+}
+
 #sidePanebox
 {
   width:180px;
