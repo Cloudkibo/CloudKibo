@@ -1920,6 +1920,8 @@ angular.module('cloudKiboApp')
                     $scope.switchingScreenShare = true;
                     $scope.peerSharedScreen = true;
 
+                  $scope.meetingRemoteVideoWidth = '80%';
+
                     pc.createAnswer(function(sessionDescription){
 
                             // Set Opus as the preferred codec in SDP if Opus is present.
@@ -1935,6 +1937,8 @@ angular.module('cloudKiboApp')
                     pc.setRemoteDescription(new RTCSessionDescription(message));
 
                     $scope.peerSharedScreen = false;
+
+                  $scope.meetingRemoteVideoWidth = '40%';
 
                     pc.createAnswer(function(sessionDescription){
 
