@@ -13,22 +13,24 @@ div
                     | Leave Conference
    .fullBodyPane.row(class='animate-show')
           .mainBodyPane.col-sm-12
-            div(class='animate-show', ng-hide='localCameraCaptured()')
+            div(class='animate-show', ng-hide='localCameraCaptured() && !hasPeerSharedScreen()')
               center
                 span
                   h4 Waiting for other person to join.
-            div(class='animate-show', ng-show='localCameraCaptured()')
+            div(class='animate-show', ng-show='localCameraCaptured() && !hasPeerSharedScreen()')
               center
                 span
                   div()
                     video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement')
                     video(id='localvideo', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement')
-                  div(ng-show='hasPeerSharedScreen()')
-                    video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
-                    audio(id='remoteaudio1', autoplay='true')
-                br
-                alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
-                br
+            div(ng-show='hasPeerSharedScreen()')
+              center
+                span
+                  video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                  audio(id='remoteaudio1', autoplay='true')
+            br
+            alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
+            br
           //.sidePane.col-sm-4
             div(class='animate-show', ng-show='localCameraCaptured()')
               .chatArea
