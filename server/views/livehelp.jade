@@ -11,67 +11,47 @@ div
                 li
                   a.btn.btn-account.btn-send(ng-click='closeWindow()')
                     | Leave Conference
-   .fullBodyPane(class='animate-show')
-    .main
-     .container
-      div(class='row margin-bottom-40')
-       div(class='col-md-12 col-sm-12')
-        .content-page
-         .row
-          .mainBodyPane(class='col-md-9 col-sm-9 blog-posts')
-            div(class='animate-show', ng-show='!localCameraCaptured()')
-              br
-              br
+   .fullBodyPane.row(class='animate-show')
+          .mainBodyPane.col-sm-12
+            div(class='animate-show', ng-hide='localCameraCaptured()')
               center
-                div(ng-show='isConnected()', class='animate-show')
-                  br
-                  br
-                  h3 Waiting for the other person.
-                  br
-                  h4 You can arrange/set your microphone and headphone in the mean time.
-                  br
-                  br
+                span
+                  h4 Waiting for other person to join.
             div(class='animate-show', ng-show='localCameraCaptured()')
-              div(style='text-align: center;')
+              center
                 span
                   div()
-                    video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
+                    video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement')
                     video(id='localvideo', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement')
                   div(ng-show='hasPeerSharedScreen()')
                     video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
                     audio(id='remoteaudio1', autoplay='true')
-                  div(ng-show='!hasPeerSharedScreen()')
-                    br
-                    br
-                    h3 You are in a call. You should hear the other party.
-                    br
-                    h5 Check your headset for any problem
-                    br
                 br
                 alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
                 br
-          .sidePane(class='col-md-3 col-sm-3 blog-sidebar')
+          //.sidePane.col-sm-4
             div(class='animate-show', ng-show='localCameraCaptured()')
-              button(id='showScreenButton', ng-click='showScreen()') {{showScreenText}}
-              br
-              br
-              div(ng-show='showExtension()')
-                button(ng-click='installExtension()', style='padding: 0;background: none;height: 61px;vertical-align: middle;cursor:pointer;')
-                  | Add Chrome Screen Sharing Extension
-              br
-              br
-              label Send File
-              input(id='file', type='file')
-              br
-              div(id='0')
-              div(id='filelist_container')
-              br
               .chatArea
                 .chatBox(scroll-if)
                   .chatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
                     | {{userMessage}}
-              br
               form
                 input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
                 button(ng-click='sendData()') Send
-            br
+   .bottomPane.row
+     .col-sm-1(ng-show='localCameraCaptured()')
+       .btn-wrapper-kibo
+         a.icon-btn(id='showScreenButton', ng-click='showScreen()')
+           i.fa.fa-desktop
+           div {{showScreenText}}
+     .col-sm-4(ng-hide='hasExtension()')
+       .btn-wrapper-kibo
+         a.btn.btn-lg.green(ng-click='installExtension()')
+           i.fa.fa-plus-square-o
+           div Add Screen Sharing Extension to share screen
+     .col-sm-1(ng-show='localCameraCaptured()')
+       .btn-wrapper-kibo
+         label Send File
+         input(id='file', type='file')
+     .col-sm-1(id='0', ng-show='localCameraCaptured()')
+     .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')

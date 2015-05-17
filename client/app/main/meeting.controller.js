@@ -1778,7 +1778,7 @@ angular.module('cloudKiboApp')
 
         $scope.extensionAvailable = false;
 
-        $scope.showExtension = function(){
+        $scope.hasExtension = function(){
             return $scope.extensionAvailable;
         };
 
@@ -1827,9 +1827,9 @@ angular.module('cloudKiboApp')
             $scope.localCameraOn = false;
             remotevideo1.src = null;
             remoteaudio1.src = null;
-            $timeout(function () {
+            /*$timeout(function () {
                 location.reload();
-            }, 400)
+            }, 400)*/
         });
 
         socket.on('join', function (room){
@@ -2236,7 +2236,7 @@ angular.module('cloudKiboApp')
             // check if desktop-capture extension installed.
             if (window.postMessage && isChrome) {
                 DetectRTC.screen.isChromeExtensionAvailable(function(status){
-                    $scope.extensionAvailable = !status;
+                    $scope.extensionAvailable = status;
                 });
             }
         })();

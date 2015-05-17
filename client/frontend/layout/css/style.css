@@ -233,6 +233,57 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 	vertical-align: top;
 }
 
+
+.sidePane
+{
+  position: absolute;
+  width: 20%;
+  #background: #badfef;
+  right: 0px;
+  top: 0px;
+}
+
+.mainBodyPane
+{
+  position: absolute;
+  #width: 80%;
+  left: 0px;
+  top: 0px;
+  #background: #00dd01;
+}
+
+.bottomPane
+{
+  position: absolute;
+  border-top: 1px solid #000000;
+  height: 13%;
+  #background: #00ed01;
+  bottom : 0px;
+  right: 15px;
+  left: 0px;
+}
+
+.btn-wrapper-kibo
+{
+  margin : 0.5em 0.1em 1.5em 1.5em;
+
+}
+
+
+.fullBodyPane
+{
+  position: relative;
+  right:15px;
+  height: 500px;
+  #background: #00fd01;
+}
+
+.btn-wrapper-kibo
+{
+  margin : 0.8em;
+
+}
+
 /*
 
 #profileLeft
@@ -453,19 +504,20 @@ textarea
 
 .videoelement
 {
-    border: 5px solid #badfef;
-	-webkit-border-bottom-right-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	-moz-border-radius-bottomright: 5px;
-	-moz-border-radius-bottomleft: 5px;
-	border-bottom-right-radius: 5px;
-	border-bottom-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
-	-webkit-border-top-left-radius: 5px;
-	-moz-border-radius-topright: 5px;
-	-moz-border-radius-topleft: 5px;
-	border-top-right-radius: 5px;
-	border-top-left-radius: 5px;
+  border: 1px solid #badfef;
+  -webkit-border-bottom-right-radius: 25px;
+  -webkit-border-bottom-left-radius: 25px;
+  -moz-border-radius-bottomright: 25px;
+  -moz-border-radius-bottomleft: 25px;
+  border-bottom-right-radius: 25px;
+  border-bottom-left-radius: 25px;
+  -webkit-border-top-right-radius: 25px;
+  -webkit-border-top-left-radius: 25px;
+  -moz-border-radius-topright: 25px;
+  -moz-border-radius-topleft: 25px;
+  border-top-right-radius: 25px;
+  border-top-left-radius: 25px;
+  margin: 0.5em;
 }
 
 #sidePanebox
