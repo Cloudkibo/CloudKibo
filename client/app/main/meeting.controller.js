@@ -2320,6 +2320,8 @@ angular.module('cloudKiboApp')
                 if(localStreamScreen){
                     localStreamScreen.stop();
 
+                    localvideo.src = URL.createObjectURL(localVideoStream);
+
                     $scope.closingScreenShare = true;
 
                     if(typeof pc != 'undefined'){
@@ -2366,6 +2368,9 @@ angular.module('cloudKiboApp')
             screenSharePCIndex = 0;
             if(typeof pc != 'undefined'){
                 pc.addStream(localStreamScreen);
+
+              localvideo.src = URL.createObjectURL(localStreamScreen);
+
                 pc.createOffer(function(sessionDescription){
 
                     //console.log('INSIDE CONDITION SCREEN SHARE')
