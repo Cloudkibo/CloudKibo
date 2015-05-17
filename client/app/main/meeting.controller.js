@@ -1776,8 +1776,8 @@ angular.module('cloudKiboApp')
             return $scope.peerSharedScreen;
         };
 
-        $scope.hasNoExtension = function(){
-            return !$scope.extensionAvailable;
+        $scope.hasExtension = function(){
+            return $scope.extensionAvailable;
         };
 
         $scope.screenSharedLocal = false;
@@ -2234,6 +2234,7 @@ angular.module('cloudKiboApp')
             // check if desktop-capture extension installed.
             if (window.postMessage && isChrome) {
                 DetectRTC.screen.isChromeExtensionAvailable(function(status){
+                  console.log(status)
                     $scope.extensionAvailable = status;
                 });
             }
