@@ -1779,7 +1779,7 @@ angular.module('cloudKiboApp')
         $scope.extensionAvailable = false;
 
         $scope.hasNoExtension = function(){
-            return $scope.extensionAvailable;
+            return !$scope.extensionAvailable;
         };
 
         $scope.screenSharedLocal = false;
