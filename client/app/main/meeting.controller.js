@@ -1776,8 +1776,6 @@ angular.module('cloudKiboApp')
             return $scope.peerSharedScreen;
         };
 
-        $scope.extensionAvailable = false;
-
         $scope.hasNoExtension = function(){
             return !$scope.extensionAvailable;
         };
