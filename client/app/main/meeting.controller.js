@@ -2234,8 +2234,10 @@ angular.module('cloudKiboApp')
             // check if desktop-capture extension installed.
             if (window.postMessage && isChrome) {
                 DetectRTC.screen.isChromeExtensionAvailable(function(status){
-                  console.log(status)
+                  $scope.$apply(function(){
                     $scope.extensionAvailable = status;
+                  })
+
                 });
             }
         })();
