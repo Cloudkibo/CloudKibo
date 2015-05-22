@@ -23,7 +23,7 @@ block bodycontent
          .content-form-page
            .row
              div(class='col-md-7 col-sm-7')
-               form(role='form', novalidate, name='form', class='css-form form-horizontal', enctype='multipart/form-data', ng-submit='register(form)')
+               form(role='form', novalidate, name='form', class='form-horizontal', enctype='multipart/form-data', ng-submit='register(form)')
                  fieldset
                    legend Your Personal Details
                    .form-group
@@ -32,34 +32,34 @@ block bodycontent
                          | *
                      .col-lg-8
                        input.form-control(type='text', name="firstname", placeholder='First Name', ng-model='user.firstname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
-                       div(ng-show!="form.fname.$dirty && !form.fname.$focused")
-                         div(ng-show="form.fname.$invalid")
-                           span(ng-show="form.fname.$error.required")
+                       div(ng-show!="form.firstname.$dirty && !form.fname.$focused")
+                         div(ng-show="form.firstname.$invalid")
+                           span(ng-show="form.firstname.$error.required")
                              | Enter the first name.
-                           span(ng-show="form.fname.$error.minlength")
+                           span(ng-show="form.firstname.$error.minlength")
                              | First name is too short.
-                           span(ng-show="form.fname.$error.maxlength")
+                           span(ng-show="form.firstname.$error.maxlength")
                              | First name is too big.
                    .form-group
                      label(for='email', class='col-lg-4 control-label') Last Name
                        span(class='require')
                          | *
                      .col-lg-8
-                       input.form-control(type='text', name="lastname", placeholder='Last Name', ng-model='user.lastname', required, ng-minlength='2', ng-maxlength='25', ng-focus)
-                       div(ng-show!="form.lname.$dirty && !form.lname.$focused")
-                         div(ng-show="form.lname.$invalid")
-                           span(ng-show="form.lname.$error.required")
+                       input.form-control(type='text', name="lastname", placeholder='Last Name', ng-model='user.lastname', required, ng-minlength='2', ng-maxlength='25',ng-focus)
+                       div(ng-show!="form.lastname.$dirty && !form.lname.$focused")
+                         div(ng-show="form.lastname.$invalid")
+                           span(ng-show="form.lastname.$error.required")
                              | Enter the last name.
-                           span(ng-show="form.lname.$error.minlength")
+                           span(ng-show="form.lastname.$error.minlength")
                              | Last name is too short.
-                           span(ng-show="form.lname.$error.maxlength")
+                           span(ng-show="form.lastname.$error.maxlength")
                              | Last name is too big.
                    .form-group
                      label(for='email', class='col-lg-4 control-label') Email Address
                        span(class='require')
                          | *
                      .col-lg-8
-                       input.form-control(type='email', name="email", placeholder='Email Address', ng-model="user.email", required, ng-focus)
+                       input.form-control(type='email', name="email", placeholder='Email Address', ng-model="user.email", required)
                        div(ng-show="form.email.$dirty && !form.email.$focused")
                          div(ng-show="form.email.$invalid")
                            span(ng-show="form.email.$error.required")
@@ -71,7 +71,7 @@ block bodycontent
                        span(class='require')
                          | *
                      .col-lg-8
-                       input.form-control(type='text', name="phoneNumber", placeholder='Phone Number', ng-model="user.phone", required, ng-focus)
+                       input.form-control(type='text', name="phoneNumber", placeholder='Phone Number', ng-model="user.phone", required)
                        div(ng-show="form.phoneNumber.$dirty && !form.phoneNumber.$focused")
                          div(ng-show="form.phoneNumber.$invalid")
                            span(ng-show="form.phoneNumber.$error.required")
@@ -85,7 +85,7 @@ block bodycontent
                        span(class='require')
                          | *
                      .col-lg-8
-                       input.form-control(type='text', name="username", placeholder='Enter Username (kiboname)', ng-model='user.username', required, ng-minlength='3', ng-maxlength='20', ng-focus)
+                       input.form-control(type='text', name="username", placeholder='Enter Username (kiboname)', ng-model='user.username', required, ng-minlength='3', ng-maxlength='20')
                        div(ng-show!="form.username.$dirty && !form.username.$focused")
                          div(ng-show="form.username.$invalid")
                            span(ng-show="form.username.$error.required")
@@ -99,21 +99,21 @@ block bodycontent
                        span(class='require')
                          | *
                      .col-lg-8
-                       input.form-control(type='password', id='password' name="password", placeholder='Password', ng-model="user.password", ng-minlength='6', required, ng-focus)
+                       input.form-control(type='password', id='password' name="password", placeholder='Password', ng-model="user.password", ng-minlength='6', required)
                        div(ng-show!="form.password.$dirty && !form.password.$focused")
                          div(ng-show="form.password.$invalid")
                            span(ng-show="form.password.$error.required")
                              | Enter the password.
                            span(ng-show="form.password.$error.minlength")
                              | Length of password should be greater than 6 characters.
-                  
+
                  .row
-                   div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')            
+                   div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
                      button.btn.btn-account.btn-send(type='submit', ng-disabled="form.$invalid || isUnchanged(user)") Submit
                    div(ng-show='underProgress()', style='text-align:center;')
                      img(src='/images/ProgressIcon.gif', width='60px', height='60px')
                  .row
-                   div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')            
+                   div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
                      alert(ng-repeat='alert in alertsRegister', type='alert.type', close='closeAlertRegister($index)') {{alert.msg}}
                  .row
                      div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-10 padding-right-30')
@@ -150,29 +150,29 @@ block bodycontent
                 li
                   a(href='#')
                     i(class='fa fa-youtube')
- 
+
  script(src='/global/plugins/jquery-1.11.0.min.js')
  script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
  script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
  script(src='/frontend/layout/scripts/back-to-top.js')
- 
+
  script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
  script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
- 
+
  script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
  script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
  script(src='/frontend/pages/scripts/revo-slider-init.js')
- 
+
  script(src='/frontend/layout/scripts/layout.js')
- 
+
  script(type='text/javascript').
         jQuery(document).ready(function() {
-            Layout.init();    
+            Layout.init();
             Layout.initOWL();
             RevosliderInit.initRevoSlider();
             Layout.initTwitter();
             //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
-            //Layout.initNavScrolling(); 
+            //Layout.initNavScrolling();
         });
 
 extends header
@@ -282,14 +282,14 @@ block bodycontent
                              | Enter the password.
                            span(ng-show="form.password.$error.minlength")
                              | Length of password should be greater than 6 characters.
-                  
+
                  .row
-                   div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')            
+                   div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
                      button.btn.btn-account.btn-send(type='submit', ng-disabled="form.$invalid || isUnchanged(user)") Submit
                    div(ng-show='underProgress()', style='text-align:center;')
                      img(src='/images/ProgressIcon.gif', width='60px', height='60px')
                  .row
-                   div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')            
+                   div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
                      alert(ng-repeat='alert in alertsRegister', type='alert.type', close='closeAlertRegister($index)') {{alert.msg}}
                  .row
                      div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-10 padding-right-30')
@@ -298,17 +298,17 @@ block bodycontent
                        div
                            div
                              a(class='btn-auth btn-facebook', ng-click='loginOauth("facebook")')
-                               | Login with 
+                               | Login with
                                b Facebook
                            br
                            div
                              a(class='btn-auth btn-google', ng-click='loginOauth("google")')
-                               | Login with 
+                               | Login with
                                b Google+
                            br
                            div
                              a(class='btn-auth btn-windows', ng-click='loginOauth("windowslive")')
-                               | Login with 
+                               | Login with
                                b Microsoft
  .footer
     .container
@@ -332,28 +332,28 @@ block bodycontent
                 li
                   a(href='#')
                     i(class='fa fa-youtube')
- 
+
  script(src='/global/plugins/jquery-1.11.0.min.js')
  script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
  script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
  script(src='/frontend/layout/scripts/back-to-top.js')
- 
+
  script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
  script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
- 
+
  script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
  script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
  script(src='/frontend/pages/scripts/revo-slider-init.js')
- 
+
  script(src='/frontend/layout/scripts/layout.js')
- 
+
  script(type='text/javascript').
         jQuery(document).ready(function() {
-            Layout.init();    
+            Layout.init();
             Layout.initOWL();
             RevosliderInit.initRevoSlider();
             Layout.initTwitter();
             //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
-            //Layout.initNavScrolling(); 
+            //Layout.initNavScrolling();
         });
 

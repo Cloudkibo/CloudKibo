@@ -22,13 +22,13 @@ block bodycontent
          .content-form-page
              .row
                div(class='col-md-7 col-sm-7')
-                 form(id='open-id-a', role='form', novalidate, name='form1', class='css-form form-horizontal form-without-legend', ng-submit='login(form1)')
+                 form(id='open-id-a', role='form', novalidate, name='form1', class='form-horizontal form-without-legend', ng-submit='login(form1)')
                    .form-group
                      label(for='email', class='col-lg-4 control-label') Username
                        span(class='require')
                          | *
                      .col-lg-8
-                       input.form-control(id='email', type='text', name="username", placeholder='Enter Username', ng-model='user1.username', required, ng-minlength='3', ng-maxlength='20', ng-focus)
+                       input.form-control(id='email', type='text', name="username", placeholder='Enter Username', ng-model='user1.username', required, ng-minlength='3', ng-maxlength='20')
                        span(ng-show!="form1.username.$dirty && !form1.username.$focused")
                          span(ng-show="form1.username.$invalid")
                            span(ng-show="form1.username.$error.required")
@@ -42,7 +42,7 @@ block bodycontent
                        span(class='require')
                          | *
                      .col-lg-8
-                       input.form-control(id='password', type='password', name="password", placeholder='Password', ng-model="user1.password", ng-minlength='6', required, ng-focus)
+                       input.form-control(id='password', type='password', name="password", placeholder='Password', ng-model="user1.password", ng-minlength='6', required)
                        span(ng-show!="form1.password.$dirty && !form1.password.$focused")
                          span(ng-show="form1.password.$invalid")
                            span(ng-show="form1.password.$error.required")
@@ -59,7 +59,7 @@ block bodycontent
                      div(ng-show='underProgress()', style='text-align:center;')
                        img(src='/images/ProgressIcon.gif', width='60px', height='60px')
                    .row
-                     div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')            
+                     div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
                        alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
                    .row
                      div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-10 padding-right-30')
@@ -96,27 +96,27 @@ block bodycontent
                 li
                   a(href='#')
                     i(class='fa fa-youtube')
- 
+
  script(src='/global/plugins/jquery-1.11.0.min.js')
  script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
  script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
  script(src='/frontend/layout/scripts/back-to-top.js')
- 
+
  script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
  script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
- 
+
  script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
  script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
  script(src='/frontend/pages/scripts/revo-slider-init.js')
- 
+
  script(src='/frontend/layout/scripts/layout.js')
- 
+
  script(type='text/javascript').
         jQuery(document).ready(function() {
-            Layout.init();    
+            Layout.init();
             Layout.initOWL();
             RevosliderInit.initRevoSlider();
             Layout.initTwitter();
             //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
-            //Layout.initNavScrolling(); 
+            //Layout.initNavScrolling();
         });
