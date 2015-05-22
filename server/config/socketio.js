@@ -35,7 +35,7 @@ function onDisconnect(socketio,socket) {
 
 	socket.get('nickname', function(err, nickname) {
 
-    var clients = socketio.nsps['/'].adapter.rooms[globalchatroom];//var clients = socketio.sockets.clients('globalchatroom');
+    var clients = findClientsSocket('globalchatroom');//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 		var socketid = '';
 		var user = require('./../api/user/user.model.js');
 
@@ -50,18 +50,17 @@ function onDisconnect(socketio,socket) {
 						contactslist.find({userid : gotuser._id}).populate('contactid').exec(function(err3, gotContactList){
 						console.log(gotContactList);
 							if(gotContactList != null){
-								var i = 0;
-								clients.forEach(function(client) {
-									client.get('nickname', function(err, nickname2) {
-										for(var j in gotContactList){
-											if(nickname2 == gotContactList[j].contactid.username){
-												socketid = client.id;
-												socketio.sockets.socket(socketid).emit('offline', gotuser);
-											}
-										}
-										i++;
-									})
-								});
+
+                for(var i in clients){
+                  for(var j in gotContactList){
+                    if(gotContactList[j].contactid != null){
+                      if(clients[i].username == gotContactList[j].contactid.username){
+                        socketid = clients[i].id;
+                        socketio.to(socketid).emit('offline', gotuser);
+                      }
+                    }
+                  }
+                }
 
 							}
 
@@ -75,6 +74,27 @@ function onDisconnect(socketio,socket) {
 		}
 
 	})
+
+  function findClientsSocket(roomId, namespace) {
+    var res = []
+      , ns = socketio.of(namespace ||"/");    // the default namespace is "/"
+
+    if (ns) {
+      for (var id in ns.connected) {
+        if(roomId) {
+          var index = ns.connected[id].rooms.indexOf(roomId) ;
+          if(index !== -1) {
+            res.push(ns.connected[id]);
+          }
+        } else {
+          res.push(ns.connected[id]);
+        }
+      }
+    }
+
+    return res;
+  }
+
 }
 
 
@@ -99,25 +119,23 @@ function onConnect(socketio, socket) {
       }catch(e){}
 
 
-			var clients = socketio.nsps['/'].adapter.rooms[message.room];//socketio.sockets.clients(message.room);
+      var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
 			var socketid = '';
 
-			var i = 0;
-			clients.forEach(function(client) {
-				client.get('nickname', function(err, nickname) {
-					if(nickname == message.to)
-						socketid = client.id;
-					i++;
-				})
-			});
+      for(var i in clients){
+        if(clients[i].username == message.to){
+          socketid = clients[i].id;
+        }
+      }
 
 			if(socketid == ''){
 				//socket.emit('disconnected', message.mycaller);
 			}
 			else{
 
-				socketio.sockets.socket(socketid).emit('message', message.msg);
+        socketio.to(socketid).emit('message', message.msg);
+				//socketio.sockets.socket(socketid).emit('message', message.msg);
 
 
 			}
@@ -149,18 +167,15 @@ function onConnect(socketio, socket) {
         message.msg.from = socket.id;
       }catch(e){}
 
-      var clients = socketio.nsps['/'].adapter.rooms[message.room];//var clients = socketio.sockets.clients(message.room);
+      var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
 			var socketid = '';
 
-			var i = 0;
-			clients.forEach(function(client) {
-				client.get('nickname', function(err, nickname) {
-					if(nickname == message.to)
-						socketid = client.id;
-					i++;
-				})
-			});
+      for(var i in clients){
+        if(clients[i].username == message.to){
+          socketid = clients[i].id;
+        }
+      }
 
       var msgToSend = message.msg;
 
@@ -169,49 +184,40 @@ function onConnect(socketio, socket) {
 
       msgToSend.from = message.from;
 
-			socketio.sockets.socket(socketid).emit('messagefordatachannel', msgToSend);
+      socketio.to(socketid).emit('messagefordatachannel', msgToSend);
+			//socketio.sockets.socket(socketid).emit('messagefordatachannel', msgToSend);
 
 		});
 
 		socket.on('create or join', function (room) {
-			var numClients = socketio.sockets.clients(room.room).length;
 
-			//console.log(socketio.sockets.manager.rooms)
-			//console.log(room)
+      var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-			//log('Room ' + room.room + ' has ' + numClients + ' client(s)');
-			//log('Request to create or join room ' + room.room + ' from '+ room.username);
-
-      var clients = socketio.nsps['/'].adapter.rooms[message.room];//var clients = socketio.sockets.clients(room.room);
+      var numClients = clients.length;
 
 			var canJoin = true;
 
-			var i = 0;
-			clients.forEach(function(client) {
-				client.get('nickname', function(err, nickname) {
-					if(nickname == room.username){
-						canJoin = false;
-						//client.leave(room.room);
-						console.log('CASE OF JOINING TWICE!')
-					}
-					i++;
-				})
-			});
+      for(var i in clients){
+        if(clients[i].username == room.username){
+          socketid = clients[i].id;
+          canJoin = false;
+          console.info('CASE OF JOINING TWICE');
+        }
+      }
 
 			if (numClients === 0){
 				socket.join(room.room);
-				socket.set('nickname', room.username);
+        socket.username= room.username;
 				socket.emit('created', room);
 			} else if (numClients === 1) {
 				if(canJoin){
-					socketio.sockets.in(room.room).emit('join', room);
+          socketio.in(room.room).emit('join', room);
 					socket.join(room.room);
-					socket.set('nickname', room.username);
+          socket.username= room.sername;
 					socket.emit('joined', room);
 				}
 				else{
 					//socket.join(room.room);
-					//socket.set('nickname', room.username);
 					//socket.emit('created', room);
 					socket.emit('joining twice', room);
 				}
@@ -220,7 +226,7 @@ function onConnect(socketio, socket) {
 			}
 
 			socket.emit('emit(): client ' + socket.id + ' joined room ' + room.room);
-			socket.broadcast.emit('broadcast(): client ' + socket.id + ' joined room ' + room.room);
+			//socket.broadcast.emit('broadcast(): client ' + socket.id + ' joined room ' + room.room);
 
 			//console.log(socketio.sockets.manager.rooms)
 
@@ -230,47 +236,33 @@ function onConnect(socketio, socket) {
 
 			socket.join(room.room);
 
-      socket.username= room.user.username; //socket.set('nickname', room.user.username);
+      socket.username= room.user.username;
 			//socket.emit('you are in global chat room', room);
 
 			var myOnlineContacts = [];
 
-      var clients = socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
-      console.log("//////////////////")
-      console.log(clients);
+      var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
 			var socketid = '';
 
 			var contactslist = require('./../api/contactslist/contactslist.model.js');
 
-      function get_users_by_room(nsp, room) {
-        var users = []
-        for (var id in io.of(nsp).adapter.rooms[room]) {
-          users.push(io.of(nsp).adapter.nsp.connected[id]);
-        };
-        return users;
-      };
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
 
 				if(gotContactList != null){
 
-					var i = 0;
-					clients.forEach(function(client) {
-						client.get('nickname', function(err, nickname) {
-
-							for(var j in gotContactList){
-								if(gotContactList[j].contactid != null){
-									if(nickname == gotContactList[j].contactid.username){
-										socketid = client.id;
-										socketio.sockets.socket(socketid).emit('online', room.user);
-										myOnlineContacts.push(gotContactList[j].contactid);
-									}
-								}
-							}
-
-							i++;
-						})
-					});
+          for(var i in clients){
+            for(var j in gotContactList){
+              if(gotContactList[j].contactid != null){
+                if(clients[i].username == gotContactList[j].contactid.username){
+                  socketid = clients[i].id;
+                  socketio.to(socketid).emit('online', room.user);
+                  //socketio.sockets.socket(socketid).emit('online', room.user);
+                  myOnlineContacts.push(gotContactList[j].contactid);
+                }
+              }
+            }
+          }
 
 					socket.emit('youareonline', myOnlineContacts);
 
@@ -286,7 +278,7 @@ function onConnect(socketio, socket) {
 		socket.on('whozonline', function(room){
 			var myOnlineContacts = [];
 
-      var clients = socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
 			var socketid = '';
 
@@ -296,21 +288,18 @@ function onConnect(socketio, socket) {
 
 				if(gotContactList != null){
 
-					var i = 0;
-					clients.forEach(function(client) {
-						client.get('nickname', function(err, nickname) {
-
-							for(var j in gotContactList){
-									if(nickname == gotContactList[j].contactid.username){
-										socketid = client.id;
-										socketio.sockets.socket(socketid).emit('online', room.user);
-										myOnlineContacts.push(gotContactList[j].contactid);
-									}
-							}
-
-							i++;
-						})
-					});
+          for(var i in clients){
+            for(var j in gotContactList){
+              if(gotContactList[j].contactid != null){
+                if(clients[i].username == gotContactList[j].contactid.username){
+                  socketid = clients[i].id;
+                  socketio.to(socketid).emit('online', room.user);
+                  //socketio.sockets.socket(socketid).emit('online', room.user);
+                  myOnlineContacts.push(gotContactList[j].contactid);
+                }
+              }
+            }
+          }
 
 					socket.emit('theseareonline', myOnlineContacts);
 
@@ -323,90 +312,80 @@ function onConnect(socketio, socket) {
 
 			var socketidSender = socket.id;
 
-      var clients = socketio.nsps['/'].adapter.rooms[message.room];//var clients = socketio.sockets.clients(message.room);
+      var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
 			var socketid = '';
 
-			var i = 0;
-			clients.forEach(function(client) {
-				client.get('nickname', function(err, nickname) {
-					if(nickname == message.callee)
-						socketid = client.id;
-					i++;
-				})
-			});
+      for(var i in clients){
+        if(clients[i].username == message.callee){
+          socketid = clients[i].id;
+        }
+      }
 
 			if(socketid == ''){
 				socket.emit('calleeisoffline', message.callee);
 			}
 			else{
-				socketio.sockets.socket(socketid).emit('areyoufreeforcall', {caller : message.caller, sendersocket: socketidSender});
+        socketio.to(socketid).emit('areyoufreeforcall', {caller : message.caller, sendersocket: socketidSender});
 			}
 
 		});
 
 		socket.on('noiambusy', function(message){
 
-      var clients = socketio.nsps['/'].adapter.rooms[message.room];//var clients = socketio.sockets.clients(message.room);
+      var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
 			var socketid = '';
 
-			var i = 0;
-			clients.forEach(function(client) {
-				client.get('nickname', function(err, nickname) {
-					if(nickname == message.mycaller)
-						socketid = client.id;
-					i++;
-				})
-			});
+      for(var i in clients){
+        if(clients[i].username == message.mycaller){
+          socketid = clients[i].id;
+        }
+      }
 
 			if(socketid == ''){
 				//socket.emit('calleeisoffline', message.callee);
 			}
 			else{
-				socketio.sockets.socket(socketid).emit('calleeisbusy', {callee : message.me});
+        socketio.to(socketid).emit('calleeisbusy', {callee : message.me});
+				//socketio.sockets.socket(socketid).emit('calleeisbusy', {callee : message.me});
 			}
 
 		});
 
 		socket.on('yesiamfreeforcall', function(message){
 
-      var clients = socketio.nsps['/'].adapter.rooms[message.room];//var clients = socketio.sockets.clients(message.room);
+      var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
 			var socketid = '';
 
-			var i = 0;
-			clients.forEach(function(client) {
-				client.get('nickname', function(err, nickname) {
-					if(nickname == message.mycaller)
-						socketid = client.id;
-					i++;
-				})
-			});
+      for(var i in clients){
+        if(clients[i].username == message.mycaller){
+          socketid = clients[i].id;
+        }
+      }
 
 			if(socketid == ''){
 				socket.emit('disconnected', message.mycaller);
 			}
 			else{
-				socketio.sockets.socket(socketid).emit('othersideringing', {callee : message.me});
+        socketio.to(socketid).emit('othersideringing', {callee : message.me});
+				//socketio.sockets.socket(socketid).emit('othersideringing', {callee : message.me});
 			}
 
 		});
 
 		socket.on('im', function(im){
 
-      var clients = socketio.nsps['/'].adapter.rooms[im.room];//var clients = socketio.sockets.clients(im.room);
+      var clients = findClientsSocket(im.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
 			var socketid = '';
 
-			var i = 0;
-			clients.forEach(function(client) {
-				client.get('nickname', function(err, nickname) {
-					if(nickname == im.stanza.to)
-						socketid = client.id;
-					i++;
-				})
-			});
+      for(var i in clients){
+        if(clients[i].username == im.stanza.to){
+          socketid = clients[i].id;
+        }
+      }
 
 			// saving to the database
 
@@ -450,9 +429,8 @@ function onConnect(socketio, socket) {
 				if (err2) return console.log('Error 2'+ err2);
 			});
 
-
-
-			socketio.sockets.socket(socketid).emit('im', im.stanza);
+      socketio.to(socketid).emit('im', im.stanza);
+			//socketio.sockets.socket(socketid).emit('im', im.stanza);
 
 		});
 
@@ -460,27 +438,24 @@ function onConnect(socketio, socket) {
 
 			//console.log("GOT THIS MESSAGE", im);
 
-      var clients = socketio.nsps['/'].adapter.rooms[im.room];//var clients = socketio.sockets.clients(im.room);
+      var clients = findClientsSocket(im.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
 			var socketid = '';
 
-			var i = 0;
-			clients.forEach(function(client) {
-				client.get('nickname', function(err, nickname) {
-					if(nickname == im.contact)
-						socketid = client.id;
-					i++;
-				})
-			});
+      for(var i in clients){
+        if(clients[i].username == im.contact){
+          socketid = clients[i].id;
+        }
+      }
 
-
-			socketio.sockets.socket(socketid).emit('friendrequest', im);
+      socketio.to(socketid).emit('friendrequest', im);
+			//socketio.sockets.socket(socketid).emit('friendrequest', im);
 
 		});
 
 		socket.on('leave', function (room) {
 
-			socketio.sockets.in(room.room).emit('left', room);
+      socketio.in(room.room).emit('left', room);
 			socket.leave(room.room);
 			socket.emit('left', room);
 
@@ -531,7 +506,7 @@ function onConnect(socketio, socket) {
 
 		socket.on('status', function (room) {
 
-      var clients = socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
 			var socketid = '';
 
@@ -541,20 +516,16 @@ function onConnect(socketio, socket) {
 
 				if(gotContactList != null){
 
-					var i = 0;
-					clients.forEach(function(client) {
-						client.get('nickname', function(err, nickname) {
-
-							for(var j in gotContactList){
-									if(nickname == gotContactList[j].contactid.username){
-										socketid = client.id;
-										socketio.sockets.socket(socketid).emit('statusUpdate', room.user);
-									}
-							}
-
-							i++;
-						})
-					});
+          for(var i in clients){
+            for(var j in gotContactList){
+              if(gotContactList[j].contactid != null){
+                if(clients[i].username == gotContactList[j].contactid.username){
+                  socketid = clients[i].id;
+                  socketio.to(socketid).emit('statusUpdate', room.user);
+                }
+              }
+            }
+          }
 
 				}
 
@@ -566,46 +537,42 @@ function onConnect(socketio, socket) {
 		});
 
 		socket.on('create or join meeting', function (room) {
-			var numClients = socketio.sockets.clients(room.room).length;
 
-			//log('Room ' + room.room + ' has ' + numClients + ' client(s)');
-			//log('Request to create or join room ' + room.room + ' from '+ room.username);
 
-			var clientsIDs = new Array(numClients);
-			var clientsIDsForOthers = new Array(numClients);
+      var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-      var clients = socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var numClients = clients.length;
 
-			var i = 0;
-			clients.forEach(function(client) {
-				client.get('nickname', function(err, nickname) {
-					clientsIDs[i] = nickname;
-					i++;
-				})
-			});
+      //log('Room ' + room.room + ' has ' + numClients + ' client(s)');
+      //log('Request to create or join room ' + room.room + ' from '+ room.username);
+
+      var clientsIDs = new Array(numClients);
+      var clientsIDsForOthers = new Array(numClients);
+
+      for(var i in clients){
+          clientsIDs[i] == clients[i].username;
+      }
 
 			if (numClients === 0){
 				socket.join(room.room);
-				socket.set('nickname', room.username);
+        socket.username= room.username;
+
 				socket.emit('created', room);
 			} else if (numClients < 5) {//(numClients === 2 || numClients === 1 || numClients === 3 || numClients === 4) {
 				socket.join(room.room);
-				socket.set('nickname', room.username);
+        socket.username= room.username;
+
 				room.otherClients = clientsIDs;
 				socket.emit('joined', room);
 
-				clients = socketio.sockets.clients(room.room);
+        clients = findClientsSocket(room.room);
 
-				var i = 0;
-				clients.forEach(function(client) {
-					client.get('nickname', function(err, nickname) {
-						clientsIDsForOthers[i] = nickname;
-						i++;
-					})
-				});
+        for(var i in clients){
+          clientsIDsForOthers[i] == clients[i].username;
+        }
 
 				room.otherClients = clientsIDsForOthers;
-				socketio.sockets.in(room.room).emit('join', room);
+        socketio.in(room.room).emit('join', room);
 
 			} else { // max three clients
 				socket.emit('full', room.room);
@@ -616,15 +583,16 @@ function onConnect(socketio, socket) {
 		});
 
 		socket.on('create or join livehelp', function (room) {
-			var numClients = socketio.sockets.clients(room.room).length;
+      var clients = findClientsSocket(room.room);
+			var numClients = clients.length;
 
 			if (numClients === 0){
 				socket.join(room.room);
-				socket.set('nickname', room.username);
+        socket.username= room.username;
 				socket.emit('created', room);
 			} else if (numClients < 2) {
 				socket.join(room.room);
-				socket.set('nickname', room.username);
+        socket.username= room.username;
 				socket.emit('joined', room);
 
 				socket.broadcast.to(room.room).emit('join', room);
@@ -633,8 +601,8 @@ function onConnect(socketio, socket) {
 				socket.emit('full', room.room);
 			}
 
-			console.log(socketio.sockets.manager.rooms);
-			console.log(room)
+			//console.log(socketio.sockets.manager.rooms);
+			//console.log(room)
 
 		});
 
@@ -681,8 +649,28 @@ function onConnect(socketio, socket) {
 			.emit('messageReceived', currentUser.name, message);
 	});
 
+  function findClientsSocket(roomId, namespace) {
+    var res = []
+      , ns = socketio.of(namespace ||"/");    // the default namespace is "/"
 
-	/*
+    if (ns) {
+      for (var id in ns.connected) {
+        if(roomId) {
+          var index = ns.connected[id].rooms.indexOf(roomId) ;
+          if(index !== -1) {
+            res.push(ns.connected[id]);
+          }
+        } else {
+          res.push(ns.connected[id]);
+        }
+      }
+    }
+
+    return res;
+  }
+
+
+	/* Socket.io 0.9.x
 	 // send to current request socket client
 	 socket.emit('message', "this is a test");
 

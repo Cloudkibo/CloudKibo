@@ -2,17 +2,9 @@ extends tabcontents
 
 block appbodycontent
 
-    .fullBodyPane(class='animate-show')
-      .main
-       .container
-        div(class='row margin-bottom-40')
-         div(class='col-md-12 col-sm-12')
-          .content-page(style='background: #badfef;')
-           .row
-            .mainBodyPane(class='col-md-9 col-sm-9 blog-posts')
-              div(class='well well-lg animate-show', ng-show='!localCameraCaptured()')
-                br
-                br
+  .fullBodyPane.row(class='animate-show')
+            .mainBodyPane.col-sm-12
+              div(class='animate-show', ng-hide='localCameraCaptured()')
                 center
                   div(ng-show='isConnected()', class='animate-show')
                     br
@@ -22,62 +14,43 @@ block appbodycontent
                     h4 {{roomname}}
                     br
                     br
-              div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
-                div(style='text-align: center;')
+              div(class='animate-show', ng-show='localCameraCaptured() && !hasPeerSharedScreen()')
+                center
                   span
+                    video(id='localvideo', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', muted='true')
                     video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
-                  span(ng-show='hasPeer2Joined()')
-                    video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
-                  span(ng-show='hasPeer3Joined()')
-                    video(id='remotevideo3', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
-                  span(ng-show='hasPeer4Joined()')
-                    video(id='remotevideo4', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true')
-                  br
-                  span(ng-show='hasPeerSharedScreen()')
+                    video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true', ng-show='hasPeer2Joined()')
+                    video(id='remotevideo3', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true', ng-show='hasPeer3Joined()')
+                    video(id='remotevideo4', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true', ng-show='hasPeer4Joined()')
+              div(ng-show='hasPeerSharedScreen()')
+                center
+                  span
                     video(id='remoteVideoScreen', autoplay='true', width='560', class='videoelement', controls='true')
-                  br
-                  alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
-                  br
-            .sidePane(class='col-md-3 col-sm-3 blog-sidebar')
-              div(class='well well-lg')
-                #pictureBox
-                  if(user.picture)
-                    img(src='/userimage'+user.picture, width='62px', height='62px', class='img-frame')
-                  else if(user.fb_photo)
-                    img(src='{{user.fb_photo}}', width='62px', height='62px', class='img-frame')
-                  else if(user.google_photo)
-                    img(src='{{user.google_photo}}', width='62px', height='62px', class='img-frame')
-                  else if(user.windows_photo)
-                    img(src='{{user.windows_photo}}', width='62px', height='62px', class='img-frame')
-                  else
-                    img(src='/images/displayPic.jpg', width='62px', height='62px', class='img-frame')
-                #userNameBox
-                  h4 {{user.firstname}} {{user.lastname}}
-                  b KiboName:
-                  i {{user.username}}
-              div(ng-show='localCameraCaptured()', class='well well-lg animate-show')
-                div(style='text-align:center;')
-                  video(id='localvideo', autoplay='true', muted='true', width='160', class='videoelement')
-                  br
-                  div(ng-show='isLocalScreenShared()')
-                    video(id='localvideoscreen', autoplay='true', muted='true', width='160', class='videoelement')
-                  br
-                  button(id='showScreenButton', ng-click='showScreen()') {{showScreenText}}
-                  div(ng-show='showExtension()')
-                    button(ng-click='installExtension()', style='padding: 0;background: none;height: 61px;vertical-align: middle;cursor:pointer;')
-                      | Add Chrome Screen Sharing Extension
-                br
-                br
-                label Send File
-                input(id='file', type='file')
-                br
-                div(id='0')
-                div(id='filelist_container')
-                br
+              br
+              alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
+              br
+            .sidePane.col-sm-4
+              div(ng-hide='localCameraCaptured()', class='animate-show')
                 div(id='chatBox', scroll-if)
                   .chatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
                     | {{userMessage}}
-                br
                 form
                   input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
                   button(ng-click='sendData()') Send
+  .bottomPane.row
+    .col-sm-1(ng-show='localCameraCaptured()')
+      .btn-wrapper-kibo
+        a.icon-btn(id='showScreenButton', ng-click='showScreen()')
+          i.fa.fa-desktop
+          div {{showScreenText}}
+    .col-sm-4(ng-hide='hasExtension()')
+      .btn-wrapper-kibo
+        a.btn.btn-lg.green(ng-click='installExtension()')
+          i.fa.fa-plus-square-o
+          div Add Screen Sharing Extension to share screen
+    .col-sm-1(ng-show='localCameraCaptured()')
+      .btn-wrapper-kibo
+        label Send File
+        input(id='file', type='file')
+    .col-sm-1(id='0', ng-show='localCameraCaptured()')
+    .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')

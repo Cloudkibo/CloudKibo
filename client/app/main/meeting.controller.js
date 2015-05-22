@@ -6,6 +6,7 @@ angular.module('cloudKiboApp')
         $scope.user = $scope.getCurrentUser();
 
         $scope.isUserNameDefined = function() {
+
             return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
         };
 
@@ -62,7 +63,7 @@ angular.module('cloudKiboApp')
 
         $scope.extensionAvailable = false;
 
-        $scope.showExtension = function(){
+        $scope.hasExtension = function(){
             return $scope.extensionAvailable;
         };
 
@@ -589,7 +590,7 @@ angular.module('cloudKiboApp')
             sendMessage({msg: 'got screen', FromUser : $scope.user.username, ToUser : toUserName});
         };
 
-        $scope.meetingRemoteVideoWidth = '100%';
+        $scope.meetingRemoteVideoWidth = '60%';
         $scope.firstVideoAdded = false;
         $scope.secondVideoAdded = false;
         $scope.thirdVideoAdded = false;
@@ -618,7 +619,7 @@ angular.module('cloudKiboApp')
                     $scope.peer2Joined = true;
                 });
 
-                $scope.meetingRemoteVideoWidth = '50%';//$scope.meetingRemoteVideoWidth = 560/2;
+                $scope.meetingRemoteVideoWidth = '30%';//$scope.meetingRemoteVideoWidth = 560/2;
 
                 remotevideo2.src = URL.createObjectURL(event.stream);
                 remoteStream2 = event.stream;
@@ -629,7 +630,7 @@ angular.module('cloudKiboApp')
                     $scope.peer3Joined = true;
                 });
 
-                $scope.meetingRemoteVideoWidth = '50%';//$scope.meetingRemoteVideoWidth = 560/2;
+                $scope.meetingRemoteVideoWidth = '30%';//$scope.meetingRemoteVideoWidth = 560/2;
 
                 remotevideo3.src = URL.createObjectURL(event.stream);
                 remoteStream3 = event.stream;
@@ -640,7 +641,7 @@ angular.module('cloudKiboApp')
                     $scope.peer4Joined = true;
                 });
 
-                $scope.meetingRemoteVideoWidth = '50%';//$scope.meetingRemoteVideoWidth = 560/2;
+                $scope.meetingRemoteVideoWidth = '30%';//$scope.meetingRemoteVideoWidth = 560/2;
 
                 remotevideo4.src = URL.createObjectURL(event.stream);
                 remoteStream4 = event.stream;
@@ -750,7 +751,7 @@ angular.module('cloudKiboApp')
             // check if desktop-capture extension installed.
             if (window.postMessage && isChrome) {
                 DetectRTC.screen.isChromeExtensionAvailable(function(status){
-                    $scope.extensionAvailable = !status;
+                    $scope.extensionAvailable = status;
                 });
             }
         })();
@@ -857,6 +858,9 @@ angular.module('cloudKiboApp')
                     }
                 }
 
+                var localvideo = document.getElementById("localvideo");
+                localvideo.src = URL.createObjectURL(localStream);
+
                 $scope.screenSharedLocal = false;
 
                 $scope.showScreenText = 'Share Screen';
@@ -866,8 +870,8 @@ angular.module('cloudKiboApp')
 
         function onStreamApproved(newStream){
 
-            var localvideoscreen = document.getElementById("localvideoscreen");
-            localvideoscreen.src = URL.createObjectURL(newStream);
+            var localvideo = document.getElementById("localvideo");
+            localvideo.src = URL.createObjectURL(newStream);
             localStreamScreen = newStream;
 
             $scope.showScreenText = 'Hide Screen';
@@ -1725,6 +1729,8 @@ angular.module('cloudKiboApp')
             roomid = roomid.split('/')[1];
         }
 
+
+
         ////////////////////////////////////////////////////////////////////////////////////////
         // WebRTC User Interface Logic                                                        //
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -1773,9 +1779,7 @@ angular.module('cloudKiboApp')
             return $scope.peerSharedScreen;
         };
 
-        $scope.extensionAvailable = false;
-
-        $scope.showExtension = function(){
+        $scope.hasExtension = function(){
             return $scope.extensionAvailable;
         };
 
@@ -1824,9 +1828,9 @@ angular.module('cloudKiboApp')
             $scope.localCameraOn = false;
             remotevideo1.src = null;
             remoteaudio1.src = null;
-            $timeout(function () {
+            /*$timeout(function () {
                 location.reload();
-            }, 400)
+            }, 400)*/
         });
 
         socket.on('join', function (room){
@@ -1919,6 +1923,8 @@ angular.module('cloudKiboApp')
                     $scope.switchingScreenShare = true;
                     $scope.peerSharedScreen = true;
 
+                  $scope.meetingRemoteVideoWidth = '60%';
+
                     pc.createAnswer(function(sessionDescription){
 
                             // Set Opus as the preferred codec in SDP if Opus is present.
@@ -1934,6 +1940,8 @@ angular.module('cloudKiboApp')
                     pc.setRemoteDescription(new RTCSessionDescription(message));
 
                     $scope.peerSharedScreen = false;
+
+                  $scope.meetingRemoteVideoWidth = '40%';
 
                     pc.createAnswer(function(sessionDescription){
 
@@ -1965,7 +1973,7 @@ angular.module('cloudKiboApp')
                 createPeerConnection();
                 pc.addStream(localStream);
 
-                if($scope.role == 'agent'){
+                if($scope.role == 'agent' || $scope.role == 'visitor'){
                     pc.addStream(localVideoStream)
                 }
 
@@ -2078,7 +2086,7 @@ angular.module('cloudKiboApp')
             sendMessage(sessionDescription);
         }
 
-        $scope.meetingRemoteVideoWidth = '100%';
+        $scope.meetingRemoteVideoWidth = '40%';
         $scope.switchingScreenShare = false;
         function handleRemoteStreamAdded(event) {
 
@@ -2133,7 +2141,7 @@ angular.module('cloudKiboApp')
 
             localStream = newStream;
 
-            if($scope.role == 'agent') {
+            if($scope.role == 'agent' || $scope.role == 'visitor') {
                 getUserMedia(video_constraints, handleUserMediaVideo, handleUserMediaError);
             }
             else {
@@ -2233,7 +2241,10 @@ angular.module('cloudKiboApp')
             // check if desktop-capture extension installed.
             if (window.postMessage && isChrome) {
                 DetectRTC.screen.isChromeExtensionAvailable(function(status){
-                    $scope.extensionAvailable = !status;
+                  $scope.$apply(function(){
+                    $scope.extensionAvailable = status;
+                  })
+
                 });
             }
         })();
@@ -2316,6 +2327,8 @@ angular.module('cloudKiboApp')
                 if(localStreamScreen){
                     localStreamScreen.stop();
 
+                    localvideo.src = URL.createObjectURL(localVideoStream);
+
                     $scope.closingScreenShare = true;
 
                     if(typeof pc != 'undefined'){
@@ -2362,6 +2375,9 @@ angular.module('cloudKiboApp')
             screenSharePCIndex = 0;
             if(typeof pc != 'undefined'){
                 pc.addStream(localStreamScreen);
+
+              localvideo.src = URL.createObjectURL(localStreamScreen);
+
                 pc.createOffer(function(sessionDescription){
 
                     //console.log('INSIDE CONDITION SCREEN SHARE')
@@ -3440,7 +3456,7 @@ angular.module('cloudKiboApp')
         sendMessage(sessionDescription);
     }
 
-    $scope.meetingRemoteVideoWidth = '100%';
+    $scope.meetingRemoteVideoWidth = '10%';
 
     function handleRemoteStreamAdded(event) {
 
