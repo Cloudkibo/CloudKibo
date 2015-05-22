@@ -91,7 +91,7 @@ module.exports = function(app) {
 	.get(function(req, res){ res.redirect('/'); });
 
   app.route('/meeting/*')
-	.get(auth.isAuthenticated(), viewroutes.meetingRoute);
+	.get(viewroutes.meetingRoute);
 
   app.route('/livehelp/*')
 	.get(viewroutes.liveHelpRoute);

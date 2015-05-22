@@ -43,7 +43,16 @@ angular.module('cloudKiboApp')
 
         $scope.connectTimeOut = function(){
             $scope.roomname = roomid;
-            $scope.createOrJoinMeeting();
+            if($scope.isUserNameDefined())
+              $scope.createOrJoinMeeting();
+            else{
+              var sampleName = "user_"+ Math.random().toString(36).substring(7);
+              $scope.user.username = window.prompt("Please input your username", sampleName);
+              if($scope.user.username == null)
+                $scope.user.username = sampleName;
+              console.log($scope.user.username)
+              $scope.createOrJoinMeeting();
+            }
             $scope.connected = true;
         };
 
@@ -106,6 +115,16 @@ angular.module('cloudKiboApp')
         $scope.recordMeetingData = function(){
             $http.post(RestApi.meetingrecord.setMeetingRecord, JSON.stringify($scope.meetingData))
         };
+
+        $scope.chatBoxVisible = false;
+
+        $scope.showChatBox = function(){
+          return $scope.chatBoxVisible;
+        }
+
+        $scope.toggleChatBoxVisibility = function(){
+          $scope.chatBoxVisible = !$scope.chatBoxVisible;
+        }
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // Signaling Logic                                                                    //
@@ -590,7 +609,7 @@ angular.module('cloudKiboApp')
             sendMessage({msg: 'got screen', FromUser : $scope.user.username, ToUser : toUserName});
         };
 
-        $scope.meetingRemoteVideoWidth = '60%';
+        $scope.meetingRemoteVideoWidth = '40%';
         $scope.firstVideoAdded = false;
         $scope.secondVideoAdded = false;
         $scope.thirdVideoAdded = false;
