@@ -1,12 +1,12 @@
 div
    .header(ng-init='role=#{JSON.stringify(role)}')
-    .container
-      a(class='site-logo', href='/')
-        img(src='/images/logo_small.png')
-        | #{title}
-      a(href='javascript:void(0);', class='mobi-toggler')
-        i(class='fa fa-bars')
-      //div(class='header-navigation pull-right font-transform-inherit')
+     .container
+       a(class='site-logo', href='/')
+         img(src='/images/logo_small.png')
+         | #{title}
+       a(href='javascript:void(0);', class='mobi-toggler')
+         i(class='fa fa-bars')
+       //div(class='header-navigation pull-right font-transform-inherit')
               ul
                 li
                   a.btn.btn-account.btn-send(ng-click='closeWindow()')
