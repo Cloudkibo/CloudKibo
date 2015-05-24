@@ -57,3 +57,8 @@ div
          input(id='file', type='file')
      .col-sm-1(id='0', ng-show='localCameraCaptured()')
      .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')
+     .col-sm-1.chatBoxButton(ng-show='localCameraCaptured()')
+       .btn-wrapper-kibo
+         a.icon-btn(ng-click='toggleChatBoxVisibility()')
+           i.fa.fa-video-camera
+           div Video
