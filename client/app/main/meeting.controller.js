@@ -126,6 +126,26 @@ angular.module('cloudKiboApp')
           $scope.chatBoxVisible = !$scope.chatBoxVisible;
         }
 
+        $scope.videoToggleText = 'Show Video';
+
+        $scope.toggleVideo = function() {
+
+          if($scope.videoToggleText == 'Show Video'){
+            $scope.videoToggleText = 'Hide Video';    // this changes the text of button from 'show' to 'hide' video
+
+
+
+          }
+          else{
+            $scope.videoToggleText = 'Show Video';    // this changes the text of button from 'show' to 'hide' video
+
+            localStream.stop();
+
+            doCall();
+          }
+
+        };
+
         ////////////////////////////////////////////////////////////////////////////////////////
         // Signaling Logic                                                                    //
         ///////////////////////////////////////////////////////////////////////////////////////
@@ -1992,7 +2012,7 @@ angular.module('cloudKiboApp')
                 createPeerConnection();
                 pc.addStream(localStream);
 
-                if($scope.role == 'agent' || $scope.role == 'visitor'){
+                if($scope.role == 'agent'){
                     pc.addStream(localVideoStream)
                 }
 
@@ -2160,7 +2180,7 @@ angular.module('cloudKiboApp')
 
             localStream = newStream;
 
-            if($scope.role == 'agent' || $scope.role == 'visitor') {
+            if($scope.role == 'agent') {
                 getUserMedia(video_constraints, handleUserMediaVideo, handleUserMediaError);
             }
             else {
