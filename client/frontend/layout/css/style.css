@@ -286,6 +286,35 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
   margin-bottom: 8px;
 }
 
+/*
+todo need more work
+*/
+
+
+.videoCallSidePane
+{
+  position: fixed;
+  width: 23%;
+  #background: #badfef;
+  right: 0px;
+  top: 142px;
+  height: 450px;
+}
+
+.videoCallMainBodyPane
+{
+  position: absolute;
+  width: 80%;
+  height: 450px;
+  left: 0px;
+  top: 0px;
+  #background: #00dd01;
+}
+
+/*
+end needs more work
+*/
+
 .meetingFullBodyPane
 {
   position: relative;

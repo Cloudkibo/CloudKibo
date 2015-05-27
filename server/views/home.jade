@@ -8,7 +8,7 @@ block appbodycontent
             div(class='col-md-12 col-sm-12')
              .content-page(style='background: #badfef;')
                .row
-                 .mainBodyPane(class='col-md-9 col-sm-9 blog-posts')
+                 .homeMainBodyPane(class='col-md-9 col-sm-9 blog-posts')
                    div(style='padding: 20px 20px 20px 20px', class='well well-lg')
                       div(ng-show='isThereIncomingCall()', class='well well-lg animate-show')
                         div(style='text-align:center;')
@@ -154,8 +154,7 @@ block appbodycontent
                                 button.btn.btn-send(ng-click='ignoreFeedBack()') Ignore
 
 
-
-                      div(class='well well-lg animate-show', ng-show='localCameraCaptured()')
+                      .videoCallMainBodyPane(ng-show='localCameraCaptured()')
                         div(style='text-align: center;')
                           video(id='remotevideo', autoplay='true', width='95%', class='videoelement', controls)
                           audio(id='remoteaudio', autoplay='true')
@@ -163,6 +162,7 @@ block appbodycontent
                           //button(ng-click='enterVideoFullScreen()') Full Screen
                           br
                           div(ng-show='hasOtherPartySharedScreen()')
+                            video(id='localvideo', autoplay='true', muted='true', width='160', class='videoelement')
                             video(id='remotevideoscreen', autoplay='true', width='95%', class='videoelement', controls)
                             br
                             //button(ng-click='enterVideoScreenFullScreen()') Full Screen
@@ -172,7 +172,7 @@ block appbodycontent
                           alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
                           br
 
-                 .sidePane(class='col-md-3 col-sm-3 blog-sidebar')
+                 .homeSidePane(class='col-md-3 col-sm-3 blog-sidebar')
                    div
                       div(class="userInfoBoxContainer")
                         #pictureBox
@@ -193,10 +193,10 @@ block appbodycontent
                         #userStatusBox
                           form.userStatusForm(role='form', ng-submit='setStatus()')
                             input.statusTextField(type='text', ng-model='user.status', placeholder='Update your status here')
-                      div(ng-show='localCameraCaptured()', class='well well-lg animate-show')
+                   .videoCallSidePane(ng-show='localCameraCaptured()')
                         div(style='text-align:center;')
                           div(ng-show='isVideoCaptured()')
-                            video(id='localvideo', autoplay='true', muted='true', width='160', class='videoelement')
+                            //video(id='localvideo', autoplay='true', muted='true', width='160', class='videoelement')
                           div(ng-show='isVideoCaptured()')
                             button(ng-click='toggleVideoStream()') Hide Video
                           div(ng-show='!isVideoCaptured()')
