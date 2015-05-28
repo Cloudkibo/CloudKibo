@@ -1204,8 +1204,8 @@ angular.module('cloudKiboApp')
 
         $scope.extensionAvailable = false;
 
-        $scope.showExtension = function () {
-            return $scope.extensionAvailable;
+        $scope.hasExtension = function(){
+          return $scope.extensionAvailable;
         };
 
         $scope.localCameraCaptured = function () {
@@ -1967,6 +1967,44 @@ angular.module('cloudKiboApp')
 
         }
 
+
+    function shareScreenNew(cb) {
+      // this statement verifies chrome extension availability
+      // if installed and available then it will invoke extension API
+      // otherwise it will fallback to command-line based screen capturing API
+      if (ScreenShare.getChromeMediaSource() == 'desktop' && !ScreenShare.getSourceIdValue()) {
+        ScreenShare.getSourceId(function (error) {
+
+          // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
+          if (ScreenShare.getChromeMediaSource() == 'desktop') {
+            ScreenShare.setSourceIdInConstraints();
+          }
+
+          // if exception occurred or access denied
+          if (error && error == 'PermissionDeniedError') {
+            alert('PermissionDeniedError: User denied to share content of his/her screen.');
+          }
+
+          // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
+          if (ScreenShare.getChromeMediaSource() == 'desktop') {
+            ScreenShare.setSourceIdInConstraints();
+          }
+
+          // now invoking native getUserMedia API
+          navigator.webkitGetUserMedia(ScreenShare.session(),
+            function (newStream) {
+
+              cb(null, newStream);
+
+            }, function (err) {
+              cb(err);
+            });
+
+        });
+      }
+
+    }
+
         //////////////////////////////////////////////////////////////////////////////////////////
         // Talking to extension                                                                 //
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -1974,7 +2012,7 @@ angular.module('cloudKiboApp')
         ScreenShare.initialize();
 
         ScreenShare.isChromeExtensionAvailable(function (status){
-            $scope.extensionAvailable = !status;
+            $scope.extensionAvailable = status;
         });
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

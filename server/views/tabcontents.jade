@@ -41,9 +41,7 @@ block bodycontent
                   a(href='/admin')
                     | Admin Dashboard
  div(ng-init='otherUser=#{JSON.stringify(otherUser)}')
-  .fullBodyPane(class='animate-show')
-   .main
-    .container
+  div
      div(ng-show='!isUserNameDefined()')
        div(class='row margin-bottom-40')
          div(class='well well-lg modalBox')
@@ -97,7 +95,7 @@ block bodycontent
                    h5 {{errorMessage}}
 
      div(ng-show='isUserNameDefined()')
-      div(class='row margin-bottom-40')
+      div
         div(ng-show='testingDefined()', class='well well-lg modalBox')
           .animate-show
             h3 Checking Browser Compatibility
@@ -118,11 +116,11 @@ block bodycontent
               video(id='testvideo', autoplay='true', muted='true', width='160', height='120')
             br
             br
-            b Note: 
+            b Note:
             | Latest version of Google Chrome is recommended.
             div(style='text-align:right;')
               button.btn.btn-default(ng-click='ReadyToGo()') I'm Ready
-        
+
         div(ng-show='isMeetingSelected()', class='well well-lg animate-show modalBox')
           label Name your Meeting Room
           input.form-control(type='text', ng-model='meetingroom')
@@ -140,7 +138,7 @@ block bodycontent
           br
           div(style='text-align:right;')
             button.btn.btn-default(ng-click='openMeeting()') Hide Me!
-        
+
         div(ng-show='isCallSelected()', class='well well-lg animate-show modalBox')
           div
             div(ng-show='isUserNameSearchSelected()', class='well well-lg')
@@ -179,7 +177,7 @@ block bodycontent
                 small Invite to CloudKibo
           div(style='text-align:right;')
             button.btn.btn-default(ng-click='openCall()') Hide Me!
-        
+
         div(ng-show='isInviteSelected()', class='well well-lg animate-show modalBox')
           div
             div(style='text-align:right;')
@@ -205,7 +203,7 @@ block bodycontent
                   button.btn.btn-send(type='submit', ng-disabled="form6.$invalid") Invite
               br
               alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
-        
+
         div(ng-show='isAddContactSelected()', class='well well-lg animate-show modalBox')
           div
             div(ng-show='isUserNameAddSelected()', class='well well-lg')
@@ -246,7 +244,7 @@ block bodycontent
               b {{addUserResponseMessage}}
           div(style='text-align:right;')
             button.btn.btn-default(ng-click='openAddContact()') Hide Me!
-        
+
         div(ng-show='isSettingsSelected()', class='well well-lg  animate-show modalBox')
           div
             tabset(justified='true')
@@ -532,15 +530,15 @@ block bodycontent
                     button.btn.btn-default(ng-click='checkDeviceAccess()') Test Audio/Video
                   br
                   br
-                  b Note: 
+                  b Note:
                   | Latest version of Google Chrome is recommended.
           div(style='text-align:right;')
             button.btn.btn-default(ng-click='openSettings()') Hide Me!
         //fullBodyLightCoverShow(ng-show='isCallSelected() || isInviteSelected() || isSettingsSelected() || isMeetingSelected()')
-        
+
         block appbodycontent
-        
- .footer
+
+ //.footer
     .container
       .row
         div(class='col-md-6 col-sm-6 padding-top-10')
