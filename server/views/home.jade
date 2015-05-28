@@ -2,15 +2,15 @@ extends tabcontents
 
 block appbodycontent
         div(ng-show='!testingDefined()', class='animate-show')
-         .main
-          .container
-           div()
-            div()
+         div
+          div
+           div
+            div
              .content-page(style='background: #badfef;')
                .row
                  div()
                    div()
-                      div(ng-show='isThereIncomingCall()', class='well well-lg animate-show')
+                      div(ng-show='isThereIncomingCall()')
                         div(style='text-align:center;')
                           h3 {{IncomingCallStatement | uppercase}}
                           b
@@ -20,8 +20,8 @@ block appbodycontent
                               | &nbsp; | &nbsp;
                               button.btn.btn-send(ng-click='RejectCall()')
                                 | Reject Call
-                      div(ng-show='isThereOutgoingCall()', class='well well-lg animate-show')
-                        div(class='well well-lg animate-show', ng-show='userFound')
+                      div(ng-show='isThereOutgoingCall()')
+                        div(ng-show='userFound')
                           #pictureBox
                             div(ng-show='userFound.picture')
                               img(src='/api/users/userimage{{userFound.picture}}', width='62px', height='62px', class='img-frame')
@@ -172,7 +172,7 @@ block appbodycontent
                           alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
                           br
 
-                 .homeSidePane(class='col-md-3 col-sm-3 blog-sidebar')
+                 .homeSidePane
                    div
                       div(class="userInfoBoxContainer")
                         #pictureBox
