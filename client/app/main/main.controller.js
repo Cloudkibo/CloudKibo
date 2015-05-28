@@ -1204,8 +1204,8 @@ angular.module('cloudKiboApp')
 
         $scope.extensionAvailable = false;
 
-        $scope.showExtension = function () {
-            return $scope.extensionAvailable;
+        $scope.hasExtension = function(){
+          return $scope.extensionAvailable;
         };
 
         $scope.localCameraCaptured = function () {
@@ -2012,7 +2012,7 @@ angular.module('cloudKiboApp')
         ScreenShare.initialize();
 
         ScreenShare.isChromeExtensionAvailable(function (status){
-            $scope.extensionAvailable = !status;
+            $scope.extensionAvailable = status;
         });
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

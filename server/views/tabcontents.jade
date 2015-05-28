@@ -42,8 +42,6 @@ block bodycontent
                     | Admin Dashboard
  div(ng-init='otherUser=#{JSON.stringify(otherUser)}')
   div
-   .main
-    .container
      div(ng-show='!isUserNameDefined()')
        div(class='row margin-bottom-40')
          div(class='well well-lg modalBox')
@@ -97,7 +95,7 @@ block bodycontent
                    h5 {{errorMessage}}
 
      div(ng-show='isUserNameDefined()')
-      div(class='row margin-bottom-40')
+      div
         div(ng-show='testingDefined()', class='well well-lg modalBox')
           .animate-show
             h3 Checking Browser Compatibility
@@ -540,7 +538,7 @@ block bodycontent
 
         block appbodycontent
 
- .footer
+ //.footer
     .container
       .row
         div(class='col-md-6 col-sm-6 padding-top-10')
