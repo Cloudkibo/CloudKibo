@@ -148,7 +148,7 @@ block appbodycontent
                                 button.btn.btn-send(ng-click='ignoreFeedBack()') Ignore
 
 
-                      div(ng-show='localCameraCaptured()')
+                      div(ng-show='localCameraCaptured() && !hasOtherPartySharedScreen()')
                         div(style='text-align: center;')
                           video(id='localvideo', autoplay='true', muted='true', width='40%', class='videoelement')
                           video(id='remotevideo', autoplay='true', width='40%', class='videoelement', controls)
@@ -156,16 +156,16 @@ block appbodycontent
                           br
                           //button(ng-click='enterVideoFullScreen()') Full Screen
                           br
-                          div(ng-show='hasOtherPartySharedScreen()')
-                            video(id='remotevideoscreen', autoplay='true', width='40%', class='videoelement', controls)
-                            //button(ng-click='enterVideoScreenFullScreen()') Full Screen
-                          br
-                          button(ng-click='endCall()') End Call
-                          br
-                          alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
-                          br
+                      div(ng-show='localCameraCaptured() && hasOtherPartySharedScreen()')
+                        div(style='text-align: center;')
+                          video(id='remotevideoscreen', autoplay='true', width='60%', class='videoelement', controls)
+                      div(ng-show='localCameraCaptured()', style='text-align: center;')
+                        button(ng-click='endCall()') End Call
+                        br
+                        alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
+                        br
 
-                 .videoCallSidePane
+                 .videoCallSidePane(ng-hide='localCameraCaptured()')
                    div
                       div(class="userInfoBoxContainer")
                         #pictureBox
@@ -186,34 +186,7 @@ block appbodycontent
                         #userStatusBox
                           form.userStatusForm(role='form', ng-submit='setStatus()')
                             input.statusTextField(type='text', ng-model='user.status', placeholder='Update your status here')
-                   div(ng-show='localCameraCaptured()')
-                        div(style='text-align:center;')
-                          div(ng-show='isVideoCaptured()')
-                            //video(id='localvideo', autoplay='true', muted='true', width='160', class='videoelement')
-                          //div(ng-show='isAudioCaptured()')
-                            button(ng-click='toggleAudioStream()') Mute
-                          //div(ng-show='!isAudioCaptured()')
-                            button(ng-click='toggleAudioStream()') Unmute
-                          br
-                          //div(ng-show='isLocalScreenShared()')
-                            video(id='localvideoscreen', autoplay='true', muted='true', width='160', class='videoelement')
-                          br
-                          //button(ng-click='showScreen()') {{showScreenText}}
-                          //div(ng-show='showExtension()')
-                            button(ng-click='installExtension()', style='padding: 0;background: none;height: 61px;vertical-align: middle;cursor:pointer;')
-                              | Add Chrome Screen Sharing Extension
 
-
-                        br
-                        br
-                        //br
-                        //div(id='chatBox', scroll-if)
-                          .chatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
-                            | {{userMessage}}
-                        //br
-                        //form
-                          input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
-                          button(ng-click='sendData()') Send
                    .contactsPaneContainer(ng-show='!localCameraCaptured()')
                      div(ng-if='addRequestslist.length > 0')
                               b Friend Requests
@@ -259,7 +232,7 @@ block appbodycontent
                                 td(width='10%')
                                   i.fa.fa-envelope-o(ng-show="isUnreadMessage($index)")
                                 td(width='10%')
-                                  img(src ="/images/onlineIcon.gif", height='10px', width='10px', ng-show="isOnline($index)")
+                                  img(src ="/images/onlinIcon.gif", height='10px', width='10px', ng-show="isOnline($index)")
                         .addNewContactOption
                           a(href='', ng-click='openAddContact()')
                             i.fa.fa-plus &nbsp; &nbsp;
@@ -281,14 +254,22 @@ block appbodycontent
                        input(id='file', type='file')
                    .col-sm-1(id='0', ng-show='localCameraCaptured()')
                    .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')
-                   .col-sm-1.chatBoxButton(ng-show='localCameraCaptured()')
+                   .col-sm-1(ng-show='localCameraCaptured()')
                      .btn-wrapper-kibo
                        a.icon-btn(ng-click='toggleChatBoxVisibility()')
                          i.fa.fa-envelope-o
                          div Chat
-                   .col-sm-1.chatBoxButton(ng-show='localCameraCaptured()')
+                   .col-sm-1(ng-show='localCameraCaptured()')
                      .btn-wrapper-kibo
                        a.icon-btn(ng-click='toggleVideoStream()')
                          i.fa.fa-video-camera
                          div(ng-hide='isVideoCaptured()') Show Video
                          div(ng-show='isVideoCaptured()') Hide Video
+                   .col-sm-1(ng-show='localCameraCaptured()')
+                     .btn-wrapper-kibo
+                       a.icon-btn(ng-click='toggleAudioStream()')
+                         i(ng-hide='isAudioCaptured()').fa.fa-microphone
+                         i(ng-show='isAudioCaptured()').fa.fa-microphone-slash
+                         div(ng-hide='isAudioCaptured()') Unmute
+                         div(ng-show='isAudioCaptured()') Mute
+
