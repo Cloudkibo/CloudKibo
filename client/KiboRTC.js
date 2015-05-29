@@ -1658,6 +1658,7 @@ angular.module('kiboRtc.services')
        */
       hideScreen: function () {
         localStreamScreen.stop();
+        localVideoScreen.src = URL.createObjectURL(localVideoStream);
         pc.removeStream(localStreamScreen);
       },
 
