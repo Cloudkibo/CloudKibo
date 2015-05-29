@@ -151,7 +151,7 @@ block appbodycontent
                       div(ng-show='localCameraCaptured() && !hasOtherPartySharedScreen()')
                         div(style='text-align: center;')
                           video(id='localvideo', autoplay='true', muted='true', width='40%', class='videoelement')
-                          video(id='remotevideo', autoplay='true', width='40%', class='videoelement', controls)
+                          video(id='remotevideo', autoplay='true', width='40%', class='videoelement')
                           audio(id='remoteaudio', autoplay='true')
                           br
                           //button(ng-click='enterVideoFullScreen()') Full Screen
@@ -237,6 +237,25 @@ block appbodycontent
                           a(href='', ng-click='openAddContact()')
                             i.fa.fa-plus &nbsp; &nbsp;
                             b Add New Contact
+
+                 //.videoCallSidePane(ng-show='localCameraCaptured()')
+                   .chatArea
+                     .chatBox(schroll-bottom='messages')
+                       div(ng-show='loadUnderProgress()', style='text-align:center;')
+                         img(src='/images/ProgressIcon.gif', width='60px', height='60px')
+                       div(ng-repeat='message in messages')
+                         .chatMessage
+                           .senderInfoInMessage
+                             b {{message.fromFullName}}
+                           .messageTextInMessage
+                             | {{message.msg}}
+                     .chatControls
+                       form(class='chatMessageForm', role='form', ng-submit='sendIM()', ng-if='hasSharedDetails()')
+                         //http://stackoverflow.com/questions/6014702/how-do-i-detect-shiftenter-and-generate-a-new-line-in-textarea
+                         input.chatTextField(type='text', ng-model='im.msg', placeholder='Send a message')
+                       div(ng-if='!hasSharedDetails()')
+                         center {{otherUser.firstname}} {{otherUser.lastname}} has not shared details with you.
+
                  .meetingBottomPane.row
                    .col-sm-1(ng-show='localCameraCaptured()')
                      .btn-wrapper-kibo
@@ -254,7 +273,7 @@ block appbodycontent
                        input(id='file', type='file')
                    .col-sm-1(id='0', ng-show='localCameraCaptured()')
                    .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')
-                   .col-sm-1(ng-show='localCameraCaptured()')
+                   //.col-sm-1(ng-show='localCameraCaptured()')
                      .btn-wrapper-kibo
                        a.icon-btn(ng-click='toggleChatBoxVisibility()')
                          i.fa.fa-envelope-o
