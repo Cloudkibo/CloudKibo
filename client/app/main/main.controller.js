@@ -1405,10 +1405,9 @@ angular.module('cloudKiboApp')
             var remotevideo = document.getElementById("remotevideo");
             var remotevideoscreen = document.getElementById("remotevideoscreen");
             var localvideo = document.getElementById("localvideo");
-            var localvideoscreen = document.getElementById("localvideoscreen");
             var remoteaudio = document.getElementById('remoteaudio');
 
-            WebRTC.initialize(localvideo, localvideoscreen, remotevideo, remoteaudio, remotevideoscreen);
+            WebRTC.initialize(localvideo, localvideo, remotevideo, remoteaudio, remotevideoscreen);
 
         };
 
@@ -1889,7 +1888,7 @@ angular.module('cloudKiboApp')
         };
 
         $scope.hasSharedDetails = function () {
-            for (i in $scope.contactslist) {
+            for (var i in $scope.contactslist) {
                 if ($scope.contactslist[i].contactid.username == $scope.otherUser.username) {
                     return $scope.contactslist[i].detailsshared != 'No';
                 }
