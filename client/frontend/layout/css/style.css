@@ -292,14 +292,14 @@ todo need more work
 .contactsPaneContainer{
   position: relative;
   width: 100%;
-  height: 324px;
-  background: #fff;
+  height: 321px;
+  #background: #fff000;
   padding: 5px;
 }
 
 .contacts{
   overflow: auto;
-  height: 280px;
+  height: 270px;
   #background: #fffbbb;
 }
 .contact{
