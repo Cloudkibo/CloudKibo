@@ -1669,7 +1669,7 @@ angular.module('kiboRtc.services')
        * Currently, screen sharing service is used by application and application get the stream using screen
        * sharing service and add it to peer connection object by calling this function
        *
-       * todo: Use the screen sharing service inside this service and don't depend  on application
+       * todo: Use the screen sharing service inside this service and don't depend on application
        *
        * @param stream Screen sharing stream
        */
