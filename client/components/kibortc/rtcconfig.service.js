@@ -15,14 +15,24 @@ angular.module('kiboRtc.services')
  * todo: Add the function addICEServer which should take JSON array or JSON object as input
  */
   .factory('pc_config', function () {
+
+    var isChrome = !!navigator.webkitGetUserMedia;
+
+    return {'iceServers': [
+      createIceServer(isChrome
+        ? 'stun:stun.l.google.com:19302'
+        : 'stun:23.21.150.121', null, null)
+    ]};
+
     /*
-     return pc_config = {'iceServers': [createIceServer('stun:stun.l.google.com:19302', null, null),
+     return {'iceServers': [createIceServer('turn:cloudkibo@162.243.217.34:3478?transport=udp', 'cloudkibo', 'cloudkibo'),
+       createIceServer('stun:stun.l.google.com:19302', null, null),
      createIceServer('stun:stun.anyfirewall.com:3478', null, null),
      createIceServer('turn:turn.bistri.com:80?transport=udp', 'homeo', 'homeo'),
      createIceServer('turn:turn.bistri.com:80?transport=tcp', 'homeo', 'homeo'),
      createIceServer('turn:turn.anyfirewall.com:443?transport=tcp', 'webrtc', 'webrtc')
-     ]};
-     */
+     ]};*/
+     /*
 
     return {
       'iceServers': [{
@@ -36,7 +46,7 @@ angular.module('kiboRtc.services')
         {url: 'turn:turn.anyfirewall.com:443?transport=tcp', username: 'webrtc', credential: 'webrtc'}
       ]
     };
-
+    */
     /*
      {url: 'turn:cloudkibo@162.243.217.34:3478?transport=udp', username: 'cloudkibo',
      credential: 'cloudkibo'}
