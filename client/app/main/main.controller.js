@@ -1372,7 +1372,7 @@ angular.module('cloudKiboApp')
 
         $scope.toggleVideoStream = function() {
           WebRTC.toggleVideo(function(err){
-            if (err) alert('Permission denied.');
+            if (err) return alert('Permission denied.');
 
             localVideoCaptured = WebRTC.isLocalVideoShared();
 
@@ -1381,12 +1381,12 @@ angular.module('cloudKiboApp')
 
         $scope.toggleAudioStream = function() {
           WebRTC.toggleAudio(function(err){
-            if (err) alert('Permission denied.');
+            if (err) return alert('Permission denied.');
 
             localAudioCaptured = WebRTC.isLocalAudioShared();
 
           })
-        }
+        };
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // Create or Join Room Logic                                                          //
@@ -1631,6 +1631,12 @@ angular.module('cloudKiboApp')
                 $scope.amInCallWith = '';
 
                 Signalling.destroy();
+            }
+            else if (message === 'sharing video'){
+              WebRTC.setSharingVideo(true);
+            }
+            else if (message === 'hiding video'){
+              WebRTC.setHidingVideo(true);
             }
             else if (message === 'bye') {
 

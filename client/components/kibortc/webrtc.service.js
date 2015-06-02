@@ -73,6 +73,12 @@ angular.module('kiboRtc.services')
     var screenShared = false;
     /* This boolean variable indicates if the other party has shared the screen */
 
+    var sharingVideo = false;
+    /* This boolean variable indicates if the other party is going to share video */
+
+    var hidingVideo = false;
+    /* This boolean variable indicates if the other party is going to hide video */
+
     var AUDIO = 'audio';
     /* Constant defining audio */
     var VIDEO = 'video';
@@ -181,6 +187,7 @@ angular.module('kiboRtc.services')
 
           localVideoStream.stop();
           pc.removeStream(localVideoStream);
+          Signalling.sendMessage('hiding video');
           pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
 
           localVideo.src = null;
@@ -197,6 +204,7 @@ angular.module('kiboRtc.services')
             if (err) return cb(err);
 
             pc.addStream(localVideoStream);
+            Signalling.sendMessage('sharing video');
             pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
 
             localVideo.src = URL.createObjectURL(localVideoStream);
@@ -425,6 +433,14 @@ angular.module('kiboRtc.services')
        */
       isLocalAudioShared: function () {
         return audioShared;
+      },
+
+      setSharingVideo: function (value) {
+        sharingVideo = value;
+      },
+
+      setHidingVideo: function (value) {
+        hidingVideo = value;
       }
     };
 
@@ -492,9 +508,10 @@ angular.module('kiboRtc.services')
       }
 
       if (event.stream.getVideoTracks().length) {
-        if (!remoteVideoStream) {
+        if (!remoteVideoStream || sharingVideo) {
           remoteVideo.src = URL.createObjectURL(event.stream);
           remoteVideoStream = event.stream;
+          sharingVideo = false;
         } else {
           remoteVideoScreen.src = URL.createObjectURL(event.stream);
           remoteStreamScreen = event.stream;
@@ -514,8 +531,14 @@ angular.module('kiboRtc.services')
      * @param event
      */
     function handleRemoteStreamRemoved(event) {
-      console.log(event);
-      if (typeof remoteStreamScreen != 'undefined') {
+      //console.log(event);
+      if(hidingVideo){
+        remoteVideoStream.stop();
+        remoteVideoStream = null;
+        hidingVideo = false;
+      }
+
+      if (typeof remoteStreamScreen != 'undefined' && !hidingVideo) {
         remoteStreamScreen.stop();
         remoteStreamScreen = null;
         $rootScope.$broadcast('screenRemoved');
