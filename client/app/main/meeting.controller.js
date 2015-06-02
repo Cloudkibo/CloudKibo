@@ -2464,7 +2464,7 @@ angular.module('cloudKiboApp')
         };
 
         function successInstallCallback() {
-            location.reload();
+            //location.reload();
         }
         function failureInstallCallback(error) {
             alert(error);
