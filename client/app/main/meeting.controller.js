@@ -1752,6 +1752,8 @@ angular.module('cloudKiboApp')
         // File Sharing Logic End                                                              //
         ////////////////////////////////////////////////////////////////////////////////////////
 
+<<<<<<< HEAD
+=======
     })
 
 
@@ -3417,132 +3419,5 @@ angular.module('cloudKiboApp')
             });
             pc.addIceCandidate(candidate);
         }
+>>>>>>> dfaa88d56dfd8ec5deba4e62170a71cbf3cb1b34
     });
-
-    function maybeStart() {
-        //console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
-        if (!isStarted && typeof localStream != 'undefined' && isChannelReady) {
-
-            createPeerConnection();
-            pc.addStream(localStream);
-            isStarted = true;
-
-            if (isInitiator) {
-                doCall();
-            }
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // WebRTC logic                                                                       //
-    ///////////////////////////////////////////////////////////////////////////////////////
-
-    function createPeerConnection() {
-        try {
-            //
-            //Different URL way for FireFox
-            //
-            pc = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
-            pc.onicecandidate = handleIceCandidate;
-            pc.onaddstream = handleRemoteStreamAdded;
-            pc.onremovestream = handleRemoteStreamRemoved;
-
-        } catch (e) {
-            console.log('Failed to create PeerConnection, exception: ' + e.message);
-            alert('Cannot create RTCPeerConnection object.');
-            return 0;
-        }
-    }
-
-    function handleIceCandidate(event) {
-        if (event.candidate) {
-            console.log('I got candidate...');
-            console.log(event.candidate);
-            sendMessage({
-                type: 'candidate',
-                label: event.candidate.sdpMLineIndex,
-                id: event.candidate.sdpMid,
-                candidate: event.candidate.candidate
-            })
-        } else {
-            console.log('End of candidates.');
-        }
-    }
-
-    function handleCreateOfferError(event){
-        console.log('createOffer() error: ', e);
-    }
-
-    function doCall() {
-        console.log('Sending offer to peer');
-        pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
-    }
-
-    function doAnswer() {
-        console.log('Sending answer to peer.');
-        pc.createAnswer(setLocalAndSendMessage, function (error){console.log(error)}, sdpConstraints);
-    }
-
-    function setLocalAndSendMessage(sessionDescription) {
-
-
-        // Set Opus as the preferred codec in SDP if Opus is present.
-        pc.setLocalDescription(sessionDescription);
-
-
-        //console.log('setLocalAndSendMessage sending message' , sessionDescription);
-
-        //console.log(''+ sessionDescription.FromUser +' sending Offer or Answer to ', toUserName)
-        sendMessage(sessionDescription);
-    }
-
-    $scope.meetingRemoteVideoWidth = '10%';
-
-    function handleRemoteStreamAdded(event) {
-
-        remotevideo1.src = URL.createObjectURL(event.stream);
-        remoteStreamScreen = event.stream;
-
-    }
-
-    function handleRemoteStreamRemoved(event) {
-
-        remotevideo1.src = null;
-
-        $scope.$apply(function(){
-            //		$scope.screenSharedByPeer = false;
-        })
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // Media Stream Logic                                                                 //
-    ///////////////////////////////////////////////////////////////////////////////////////
-
-    var localPeerConnection, remotePeerConnection;
-
-    function handleUserMedia(newStream){
-
-        localStream = newStream;
-        $scope.localCameraOn = true;
-
-        sendMessage({msg: 'got user media'});
-
-        if (isInitiator) {
-            maybeStart();
-        }
-    }
-
-    function handleUserMediaError(error){
-        //console.log(error);
-    }
-
-    var video_constraints = {video: true, audio: true};
-
-    $scope.startCalling = function(){
-
-        getUserMedia(video_constraints, handleUserMedia, handleUserMediaError);
-
-    }
-
-
-});
