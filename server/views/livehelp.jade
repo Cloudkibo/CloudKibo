@@ -59,6 +59,7 @@ div
      .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')
      .col-sm-1.chatBoxButton(ng-show='localCameraCaptured()')
        .btn-wrapper-kibo
-         a.icon-btn(ng-click='toggleVideo()')
+         a.icon-btn(ng-click='toggleVideoStream()')
            i.fa.fa-video-camera
-           div {{videoToggleText}}
+           div(ng-hide='isVideoCaptured()') Show Video
+           div(ng-show='isVideoCaptured()') Hide Video
