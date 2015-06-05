@@ -3,6 +3,41 @@
 angular.module('cloudKiboApp')
   .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi, $window){
 
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // Variables for WebRTC Session                                                       //
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    var isChannelReady;
+    var isInitiator = false;
+    var isStarted = false;
+    var sendChannel;
+    var receiveChannel;
+    var screenSharePCIndex;
+    var localStream;
+    var localVideoStream;
+    var localStreamScreen;
+    var videoTogglingFromOtherSide = false;
+    var pc;
+    var remoteVideoStream;
+    var remoteStream1;
+    var remoteStreamScreen;
+    var turnReady;
+    var bell = new Audio('/sounds/bells_simple.mp3');
+    bell.loop = true;
+
+    var remoteaudio1 = document.getElementById("remoteaudio1");
+    remoteaudio1.src = null;
+
+    var remotevideo1 = document.getElementById("remotevideo1");
+    remotevideo1.src = null;
+
+    var remotevideo2 = document.getElementById("remotevideo2");
+    remotevideo2.src = null;
+
+    var localvideo = document.getElementById("localvideo");
+    localvideo.src = null;
+
+
     var roomid = '';
     ////////////////////////////////////////////////////////////////////////////////////////
     // Create or Join Room Logic                                                          //
@@ -73,45 +108,11 @@ angular.module('cloudKiboApp')
       return $scope.screenSharedLocal;
     };
 
-    var localVideoCaptured = false;
+    $scope.localVideoCaptured = false;
 
     $scope.isVideoCaptured = function(){
-      return localVideoCaptured;
+      return $scope.localVideoCaptured;
     };
-
-    $scope.toggleVideoStream = function() {
-      if (localVideoCaptured) {
-
-        localVideoStream.stop();
-        pc.removeStream(localVideoStream);
-        sendMessage('hiding video');
-        pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
-
-        localVideo.src = null;
-
-        localVideoCaptured = false;
-
-      }
-      else {
-
-        captureMedia(video_constraints, VIDEO, function (err) {
-          if (err) return alert('Access denied');
-
-          pc.addStream(localVideoStream);
-          sendMessage('sharing video');
-          pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
-
-          localVideo.src = URL.createObjectURL(localVideoStream);
-
-          localVideoCaptured = true;
-
-          cb(null);
-
-        });
-
-      }
-    }
-
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // Signaling Logic                                                                    //
@@ -186,38 +187,6 @@ angular.module('cloudKiboApp')
       socket.emit('messageformeeting', message);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // Variables for WebRTC Session                                                       //
-    ///////////////////////////////////////////////////////////////////////////////////////
-
-    var isChannelReady;
-    var isInitiator = false;
-    var isStarted = false;
-    var sendChannel;
-    var receiveChannel;
-    var screenSharePCIndex;
-    var localStream;
-    var localVideoStream;
-    var localStreamScreen;
-    var pc;
-    var remoteVideoStream;
-    var remoteStream1;
-    var remoteStreamScreen;
-    var turnReady;
-    var bell = new Audio('/sounds/bells_simple.mp3');
-    bell.loop = true;
-
-    var remoteaudio1 = document.getElementById("remoteaudio1");
-    remoteaudio1.src = null;
-
-    var remotevideo1 = document.getElementById("remotevideo1");
-    remotevideo1.src = null;
-
-    var remotevideo2 = document.getElementById("remotevideo2");
-    remotevideo2.src = null;
-
-    var localvideo = document.getElementById("localvideo");
-    localvideo.src = null;
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // WebRTC using sigaling logic                                                        //
@@ -231,7 +200,16 @@ angular.module('cloudKiboApp')
           $scope.startCalling();//maybeStart();
         }
       }
+      if(message === 'hiding video' || message === 'sharing video'){
+        videoTogglingFromOtherSide = true;
+      }
       else if (message.type === 'offer') {
+
+        if(videoTogglingFromOtherSide){
+          pc.setRemoteDescription(new RTCSessionDescription(message));
+          doAnswer();
+          return 0;
+        }
 
         if(!isStarted){
           if (!isInitiator && !isStarted) {
@@ -239,6 +217,7 @@ angular.module('cloudKiboApp')
           }
           pc.setRemoteDescription(new RTCSessionDescription(message));
           doAnswer();
+
         }
         else if(message.sharingScreen === 'open') {
 
@@ -414,6 +393,16 @@ angular.module('cloudKiboApp')
     $scope.switchingScreenShare = false;
     function handleRemoteStreamAdded(event) {
 
+      if(videoTogglingFromOtherSide){
+
+        $scope.$apply(function(){
+          remotevideo2.src = URL.createObjectURL(event.stream);
+          remoteVideoStream = event.stream;
+        })
+
+        videoTogglingFromOtherSide = false;
+      }
+
       if($scope.switchingScreenShare == true){
         remotevideo1.src = URL.createObjectURL(event.stream);
         remoteStreamScreen = event.stream;
@@ -427,7 +416,6 @@ angular.module('cloudKiboApp')
           remoteStream1 = event.stream;
         }
 
-        console.log(event.stream);
         if(event.stream.getVideoTracks().length){
           if (!remoteVideoStream) {
 
@@ -445,11 +433,11 @@ angular.module('cloudKiboApp')
 
     function handleRemoteStreamRemoved(event) {
 
-      //remotevideo1.src = null;
-
       $scope.$apply(function(){
         $scope.screenSharedByPeer = false;
+        remotevideo2.src = null;
       })
+      videoTogglingFromOtherSide = false;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -487,6 +475,8 @@ angular.module('cloudKiboApp')
 
       $scope.localCameraOn = true;
 
+      $scope.localVideoCaptured = true;
+
       sendMessage({msg: 'got user media'});
 
       if (isInitiator) {
@@ -498,6 +488,38 @@ angular.module('cloudKiboApp')
       //console.log(error);
     }
 
+    $scope.toggleVideoStream = function() {
+      if ($scope.localVideoCaptured) {
+
+        localVideoStream.stop();
+        pc.removeStream(localVideoStream);
+        sendMessage('hiding video');
+        doCall();
+
+        localvideo.src = null;
+
+        $scope.localVideoCaptured = false;
+
+      }
+      else {
+
+        getUserMedia(video_constraints, function (stream) {
+
+          localVideoStream = stream;
+
+          pc.addStream(localVideoStream);
+          sendMessage('sharing video');
+          doCall();
+
+          localvideo.src = URL.createObjectURL(localVideoStream);
+
+          $scope.$apply(function(){
+            $scope.localVideoCaptured = true;
+          })
+
+        }, function(err){ alert(err); });
+      }
+    };
 
 
     $scope.startCalling = function(){

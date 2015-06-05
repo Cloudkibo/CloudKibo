@@ -50,7 +50,7 @@ angular.module('cloudKiboApp')
               $scope.user.username = window.prompt("Please input your username", sampleName);
               if($scope.user.username == null)
                 $scope.user.username = sampleName;
-              console.log($scope.user.username)
+              console.log($scope.user.username);
               $scope.createOrJoinMeeting();
             }
             $scope.connected = true;
@@ -120,11 +120,11 @@ angular.module('cloudKiboApp')
 
         $scope.showChatBox = function(){
           return $scope.chatBoxVisible;
-        }
+        };
 
         $scope.toggleChatBoxVisibility = function(){
           $scope.chatBoxVisible = !$scope.chatBoxVisible;
-        }
+        };
 
         $scope.videoToggleText = 'Show Video';
 
@@ -299,7 +299,7 @@ angular.module('cloudKiboApp')
                         pc[screenSharePCIndex].addStream(localStreamScreen);
                         pc[screenSharePCIndex].createOffer(function(sessionDescription){
                             sessionDescription.FromUser = $scope.user.username;
-                            sessionDescription.ToUser = otherPeers[screenSharePCIndex];;
+                            sessionDescription.ToUser = otherPeers[screenSharePCIndex];
                             //console.log('INSIDE CONDITION SCREEN SHARE OPEN')
 
                             if($scope.closingScreenShare == false){
@@ -330,7 +330,7 @@ angular.module('cloudKiboApp')
                         pc[screenSharePCIndex].removeStream(localStreamScreen);
                         pc[screenSharePCIndex].createOffer(function(sessionDescription){
                             sessionDescription.FromUser = $scope.user.username;
-                            sessionDescription.ToUser = otherPeers[screenSharePCIndex];;
+                            sessionDescription.ToUser = otherPeers[screenSharePCIndex];
                             //console.log('INSIDE CONDITION SCREEN SHARE CLOSE')
 
                             if($scope.closingScreenShare == false){
@@ -986,7 +986,7 @@ angular.module('cloudKiboApp')
 
             var data = $scope.dataChannelSend;
 
-            var i = 0;
+            var i;
             for(i=0; i<pc.length; i++){
                 if(typeof pc[i] != 'undefined'){
                     sendChannel[i].send(''+ $scope.user.username +': '+ data);
@@ -1239,7 +1239,7 @@ angular.module('cloudKiboApp')
             //console.log(meta);
 
             send_meta();
-            var i = 0;
+            var i;
             for(i=0; i<pc.length; i++)
                 if(typeof pc[i] != 'undefined')
                     sendChannel[i].send("You have received a file. Download and Save it.");
@@ -1377,7 +1377,7 @@ angular.module('cloudKiboApp')
 
             console.log('Function which actually asks for chunk');
 
-            var i = 0;
+            var i;
             for(i=0; i<pc.length; i++)
                 if(typeof pc[i] != 'undefined')
                     sendChannel[i].send(JSON.stringify({ //id, JSON.stringify({
@@ -1578,7 +1578,7 @@ angular.module('cloudKiboApp')
                 i++;
             } while (fileSizeInBytes > 1024);
             return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
-        };
+        }
 
         /* create a link to this file */
         function create_file_link (meta, id, fileEntry) {
@@ -1641,7 +1641,7 @@ angular.module('cloudKiboApp')
             //console.log("sending meta data");
             //console.log(meta);
 
-            var i = 0;
+            var i;
             for(i=0; i<pc.length; i++)
                 if(typeof pc[i] != 'undefined')
                     sendChannel[i].send(JSON.stringify({
@@ -1679,7 +1679,7 @@ angular.module('cloudKiboApp')
                         console.log("DEBUG: sending chunk "+ chunk_num);
                         console.log('sending: '+CryptoJS.SHA256(_arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
                     }
-                    var i = 0;
+                    var i;
                     for(i=0; i<pc.length; i++)
                         if(typeof pc[i] != 'undefined')
                             sendChannel[i].send(event.target.result);//id, event.target.result);
@@ -1731,7 +1731,7 @@ angular.module('cloudKiboApp')
                 default:
                     msg = 'Unknown Error';
                     break;
-            };
+            }
             console.error('Error: ' + msg);
         }
 
