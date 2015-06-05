@@ -303,7 +303,7 @@ angular.module('kiboRtc.services')
        * @param peer
        * @returns {number}
        */
-      getChunkSize: function (me, peer) {
+      getChunkSize: function () {
         return 16000;//64000;//36000;
       }
     };
