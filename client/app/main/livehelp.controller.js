@@ -526,9 +526,8 @@ angular.module('cloudKiboApp')
 
         localvideo.src = null;
 
-        $scope.$apply(function(){
-          $scope.localVideoCaptured = false;
-        })
+        $scope.localVideoCaptured = false;
+
 
 
       }
@@ -555,9 +554,9 @@ angular.module('cloudKiboApp')
 
           localvideo.src = URL.createObjectURL(localVideoStream);
 
-          $scope.$apply(function(){
-            $scope.localVideoCaptured = true;
-          })
+
+          $scope.localVideoCaptured = true;
+
 
         }, function(err){ alert(err); });
       }
