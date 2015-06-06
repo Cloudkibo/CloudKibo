@@ -410,9 +410,10 @@ angular.module('cloudKiboApp')
 
           $scope.$apply(function(){
             remotevideo2.src = URL.createObjectURL(event.stream);
-            remoteVideoStream = event.stream;
-            $scope.videoTogglingFromOtherSide = false;
           });
+
+          remoteVideoStream = event.stream;
+          $scope.videoTogglingFromOtherSide = false;
 
           return 0;
         }
@@ -421,9 +422,10 @@ angular.module('cloudKiboApp')
 
           $scope.$apply(function(){
             remotevideo1.src = URL.createObjectURL(event.stream);
-            remoteStreamScreen = event.stream;
-            $scope.switchingScreenShare = false;
-          })
+          });
+
+          remoteStreamScreen = event.stream;
+          $scope.switchingScreenShare = false;
 
           return 0;
         }
@@ -443,18 +445,14 @@ angular.module('cloudKiboApp')
     function handleRemoteStreamRemoved(event) {
 
       if($scope.switchingScreenShare && !$scope.videoTogglingFromOtherSide){
-        $scope.$apply(function(){
-          remotevideo1.src = null;
-          $scope.switchingScreenShare = false;
-          $scope.screenSharedByPeer = false;
-        })
+        remotevideo1.src = null;
+        $scope.switchingScreenShare = false;
+        $scope.screenSharedByPeer = false;
       }
 
       if($scope.videoTogglingFromOtherSide && !$scope.switchingScreenShare){
-        $scope.$apply(function(){
-          $scope.videoTogglingFromOtherSide = false;
-          remotevideo2.src = null;
-        })
+        $scope.videoTogglingFromOtherSide = false;
+        remotevideo2.src = null;
       }
 
     }
@@ -526,8 +524,9 @@ angular.module('cloudKiboApp')
 
         }, handleCreateOfferError);
 
+        localvideo.src = null;
+
         $scope.$apply(function(){
-          localvideo.src = null;
           $scope.localVideoCaptured = false;
         })
 
