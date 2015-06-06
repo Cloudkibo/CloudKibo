@@ -153,6 +153,10 @@ angular.module('kiboRtc.services')
         return sourceId;
       },
 
+      setSourceIdValue: function (value) {
+        sourceId = value;
+      },
+
       /**
        * It sets the source id in screen_constraints which is used by geUserMedia() Element
        */
