@@ -296,7 +296,6 @@ angular.module('cloudKiboApp')
       }
     });
 
-    var localVideoStream;
     function maybeStart() {
       //console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
       if (!isStarted && typeof localStream != 'undefined' && isChannelReady) {
@@ -528,7 +527,7 @@ angular.module('cloudKiboApp')
 
         }, handleCreateOfferError);
 
-        localvideo.src = null;
+        //localvideo.src = null;
 
         $scope.localVideoCaptured = false;
 
