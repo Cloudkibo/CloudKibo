@@ -13,6 +13,9 @@ div
                     | Leave Conference
    .fullBodyPane.row(class='animate-show')
           .mainBodyPane.col-sm-12
+            br
+            alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
+            br
             div(class='animate-show', ng-hide='localCameraCaptured()')
               center
                 span
@@ -28,9 +31,6 @@ div
                 span
                   video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelementscreen', controls='true')
                   audio(id='remoteaudio1', autoplay='true')
-            br
-            alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
-            br
           //.sidePane.col-sm-4
             div(class='animate-show', ng-show='localCameraCaptured()')
               .chatArea
