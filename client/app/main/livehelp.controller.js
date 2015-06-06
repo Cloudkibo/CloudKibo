@@ -392,43 +392,43 @@ angular.module('cloudKiboApp')
     $scope.switchingScreenShare = false;
     function handleRemoteStreamAdded(event) {
 
-      if($scope.videoTogglingFromOtherSide && !$scope.switchingScreenShare){
-
-        $scope.$apply(function(){
-          remotevideo2.src = URL.createObjectURL(event.stream);
-          remoteVideoStream = event.stream;
-        });
-
-        $scope.videoTogglingFromOtherSide = false;
-
-        return 0;
+      if(event.stream.getAudioTracks().length){
+        remoteaudio1.src = URL.createObjectURL(event.stream);
+        remoteStream1 = event.stream;
       }
+      else if(event.stream.getVideoTracks().length){
 
-      if($scope.switchingScreenShare == true){
-        remotevideo1.src = URL.createObjectURL(event.stream);
-        remoteStreamScreen = event.stream;
-        $scope.switchingScreenShare = false;
+        if($scope.videoTogglingFromOtherSide && !$scope.switchingScreenShare){
 
-        return 0;
-      }
-      else{
-        if(event.stream.getAudioTracks().length){
-          remoteaudio1.src = URL.createObjectURL(event.stream);
-          remoteStream1 = event.stream;
+          $scope.$apply(function(){
+            remotevideo2.src = URL.createObjectURL(event.stream);
+            remoteVideoStream = event.stream;
+            $scope.videoTogglingFromOtherSide = false;
+          });
+
+          return 0;
         }
 
-        if(event.stream.getVideoTracks().length){
-          if (!remoteVideoStream) {
+        if($scope.switchingScreenShare && !$scope.videoTogglingFromOtherSide){
 
-            $scope.$apply(function(){
-              remotevideo2.src = URL.createObjectURL(event.stream);
-              remoteVideoStream = event.stream;
-            })
+          $scope.$apply(function(){
+            remotevideo1.src = URL.createObjectURL(event.stream);
+            remoteStreamScreen = event.stream;
+            $scope.switchingScreenShare = false;
+          })
 
-          }
+          return 0;
+        }
+
+        if (!remoteVideoStream) {
+
+          $scope.$apply(function(){
+            remotevideo2.src = URL.createObjectURL(event.stream);
+            remoteVideoStream = event.stream;
+          })
+
         }
       }
-
 
     }
 
