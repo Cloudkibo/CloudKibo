@@ -16,7 +16,7 @@ angular.module('cloudKiboApp')
     var localStream;
     var localVideoStream;
     var localStreamScreen;
-    $scope.videoTogglingFromOtherSide = false;
+    $scope.videoTogglingFromOtherSide;
     var pc;
     var remoteVideoStream;
     var remoteStream1;
@@ -201,6 +201,7 @@ angular.module('cloudKiboApp')
         }
       }
       else if (message.type === 'offer') {
+        console.log(message)
         if(!isStarted){
           if (!isInitiator && !isStarted) {
             maybeStart();
@@ -221,6 +222,7 @@ angular.module('cloudKiboApp')
               pc.setLocalDescription(sessionDescription);
 
               sendMessage(sessionDescription);
+              console.log('Sending answer to video share true')
 
             },
             function (error){console.log(error)}, sdpConstraints);
@@ -238,6 +240,7 @@ angular.module('cloudKiboApp')
               pc.setLocalDescription(sessionDescription);
 
               sendMessage(sessionDescription);
+              console.log('Sending answer to video share false')
 
             },
             function (error){console.log(error)}, sdpConstraints);
@@ -358,7 +361,7 @@ angular.module('cloudKiboApp')
 
     function handleIceCandidate(event) {
       if (event.candidate) {
-        console.log('I got candidate...');
+        //console.log('I got candidate...');
         sendMessage({
           type: 'candidate',
           label: event.candidate.sdpMLineIndex,
@@ -366,7 +369,7 @@ angular.module('cloudKiboApp')
           candidate: event.candidate.candidate
         })
       } else {
-        console.log('End of candidates.');
+        //console.log('End of candidates.');
       }
     }
 
@@ -514,13 +517,14 @@ angular.module('cloudKiboApp')
         pc.createOffer(function(sessionDescription){
           //console.log('INSIDE CONDITION SCREEN SHARE')
 
-          sessionDescription.sharingVideo = 'close';
-          console.log('HIDING THE VIDEO');
+          var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'close'};
+          console.log('CLOSING THE VIDEO');
+          console.log(payload)
 
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc.setLocalDescription(sessionDescription);
 
-          sendMessage(sessionDescription);
+          sendMessage(payload);
 
         }, handleCreateOfferError);
 
@@ -542,13 +546,14 @@ angular.module('cloudKiboApp')
           pc.createOffer(function(sessionDescription){
             //console.log('INSIDE CONDITION SCREEN SHARE')
 
-            sessionDescription.sharingVideo = 'open';
+            var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'open'};
             console.log('SHARING THE VIDEO');
+            console.log(payload)
 
             // Set Opus as the preferred codec in SDP if Opus is present.
             pc.setLocalDescription(sessionDescription);
 
-            sendMessage(sessionDescription);
+            sendMessage(payload);
 
           }, handleCreateOfferError);
 
