@@ -16,7 +16,7 @@ angular.module('cloudKiboApp')
     var localStream;
     var localVideoStream;
     var localStreamScreen;
-    var videoTogglingFromOtherSide = false;
+    $scope.videoTogglingFromOtherSide = false;
     var pc;
     var remoteVideoStream;
     var remoteStream1;
@@ -201,16 +201,9 @@ angular.module('cloudKiboApp')
         }
       }
       if(message === 'hiding video' || message === 'sharing video'){
-        videoTogglingFromOtherSide = true;
+        $scope.videoTogglingFromOtherSide = true;
       }
       else if (message.type === 'offer') {
-
-        if(videoTogglingFromOtherSide){
-          pc.setRemoteDescription(new RTCSessionDescription(message));
-          doAnswer();
-          return 0;
-        }
-
         if(!isStarted){
           if (!isInitiator && !isStarted) {
             maybeStart();
@@ -243,6 +236,7 @@ angular.module('cloudKiboApp')
           pc.setRemoteDescription(new RTCSessionDescription(message));
 
           $scope.peerSharedScreen = false;
+          $scope.switchingScreenShare = true;
 
           $scope.meetingRemoteVideoWidth = '40%';
 
@@ -256,6 +250,11 @@ angular.module('cloudKiboApp')
             },
             function (error){console.log(error)}, sdpConstraints);
 
+        }
+        if($scope.videoTogglingFromOtherSide){
+          pc.setRemoteDescription(new RTCSessionDescription(message));
+          doAnswer();
+          return 0;
         }
       } else if (message.type === 'answer' && isStarted) {
         pc.setRemoteDescription(new RTCSessionDescription(message));
@@ -393,14 +392,16 @@ angular.module('cloudKiboApp')
     $scope.switchingScreenShare = false;
     function handleRemoteStreamAdded(event) {
 
-      if(videoTogglingFromOtherSide){
+      if($scope.videoTogglingFromOtherSide && !$scope.switchingScreenShare){
 
         $scope.$apply(function(){
           remotevideo2.src = URL.createObjectURL(event.stream);
           remoteVideoStream = event.stream;
-        })
+        });
 
-        videoTogglingFromOtherSide = false;
+        $scope.videoTogglingFromOtherSide = false;
+
+        return 0;
       }
 
       if($scope.switchingScreenShare == true){
@@ -433,11 +434,21 @@ angular.module('cloudKiboApp')
 
     function handleRemoteStreamRemoved(event) {
 
-      $scope.$apply(function(){
-        $scope.screenSharedByPeer = false;
-        remotevideo2.src = null;
-      })
-      videoTogglingFromOtherSide = false;
+      if($scope.switchingScreenShare && !$scope.videoTogglingFromOtherSide){
+        $scope.$apply(function(){
+          remotevideo1.src = null;
+          $scope.switchingScreenShare = false;
+          $scope.screenSharedByPeer = false;
+        })
+      }
+
+      if($scope.videoTogglingFromOtherSide && !$scope.switchingScreenShare){
+        $scope.$apply(function(){
+          $scope.videoTogglingFromOtherSide = false;
+          remotevideo2.src = null;
+        })
+      }
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////
