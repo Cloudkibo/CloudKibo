@@ -200,9 +200,6 @@ angular.module('cloudKiboApp')
           $scope.startCalling();//maybeStart();
         }
       }
-      if(message === 'hiding video' || message === 'sharing video'){
-        $scope.videoTogglingFromOtherSide = true;
-      }
       else if (message.type === 'offer') {
         if(!isStarted){
           if (!isInitiator && !isStarted) {
@@ -210,6 +207,40 @@ angular.module('cloudKiboApp')
           }
           pc.setRemoteDescription(new RTCSessionDescription(message));
           doAnswer();
+
+        }
+        else if(message.sharingVideo === 'open') {
+
+          pc.setRemoteDescription(new RTCSessionDescription(message));
+
+          $scope.videoTogglingFromOtherSide = true;
+
+          pc.createAnswer(function(sessionDescription){
+
+              // Set Opus as the preferred codec in SDP if Opus is present.
+              pc.setLocalDescription(sessionDescription);
+
+              sendMessage(sessionDescription);
+
+            },
+            function (error){console.log(error)}, sdpConstraints);
+
+        }
+        else if(message.sharingVideo === 'close') {
+
+          pc.setRemoteDescription(new RTCSessionDescription(message));
+
+          $scope.videoTogglingFromOtherSide = true;
+
+          pc.createAnswer(function(sessionDescription){
+
+              // Set Opus as the preferred codec in SDP if Opus is present.
+              pc.setLocalDescription(sessionDescription);
+
+              sendMessage(sessionDescription);
+
+            },
+            function (error){console.log(error)}, sdpConstraints);
 
         }
         else if(message.sharingScreen === 'open') {
@@ -250,11 +281,6 @@ angular.module('cloudKiboApp')
             },
             function (error){console.log(error)}, sdpConstraints);
 
-        }
-        if($scope.videoTogglingFromOtherSide){
-          pc.setRemoteDescription(new RTCSessionDescription(message));
-          doAnswer();
-          return 0;
         }
       } else if (message.type === 'answer' && isStarted) {
         pc.setRemoteDescription(new RTCSessionDescription(message));
@@ -360,27 +386,9 @@ angular.module('cloudKiboApp')
 
     function setLocalAndSendMessage(sessionDescription) {
 
-      if($scope.screenSharedLocal == false){
-        // Set Opus as the preferred codec in SDP if Opus is present.
-        pc.setLocalDescription(sessionDescription);
-      }
-      else{
 
-        //console.log('INSIDE CONDITION SCREEN SHARE')
-
-        if($scope.closingScreenShare == false){
-          sessionDescription.sharingScreen = 'open';
-          console.log('SHARING THE SCREEN')
-        }
-        else{
-          sessionDescription.sharingScreen = 'close';
-          console.log('CLOSING THE SCREEN');
-          $scope.screenSharedLocal = false;
-        }
-
-        // Set Opus as the preferred codec in SDP if Opus is present.
-        pc.setLocalDescription(sessionDescription);
-      }
+      // Set Opus as the preferred codec in SDP if Opus is present.
+      pc.setLocalDescription(sessionDescription);
 
       //console.log('setLocalAndSendMessage sending message' , sessionDescription);
 
@@ -504,12 +512,25 @@ angular.module('cloudKiboApp')
 
         localVideoStream.stop();
         pc.removeStream(localVideoStream);
-        sendMessage('hiding video');
-        doCall();
 
-        localvideo.src = null;
+        pc.createOffer(function(sessionDescription){
+          //console.log('INSIDE CONDITION SCREEN SHARE')
 
-        $scope.localVideoCaptured = false;
+          sessionDescription.sharingVideo = 'close';
+          console.log('HIDING THE VIDEO');
+
+          // Set Opus as the preferred codec in SDP if Opus is present.
+          pc.setLocalDescription(sessionDescription);
+
+          sendMessage(sessionDescription);
+
+        }, handleCreateOfferError);
+
+        $scope.$apply(function(){
+          localvideo.src = null;
+          $scope.localVideoCaptured = false;
+        })
+
 
       }
       else {
@@ -519,8 +540,19 @@ angular.module('cloudKiboApp')
           localVideoStream = stream;
 
           pc.addStream(localVideoStream);
-          sendMessage('sharing video');
-          doCall();
+
+          pc.createOffer(function(sessionDescription){
+            //console.log('INSIDE CONDITION SCREEN SHARE')
+
+            sessionDescription.sharingVideo = 'open';
+            console.log('SHARING THE VIDEO');
+
+            // Set Opus as the preferred codec in SDP if Opus is present.
+            pc.setLocalDescription(sessionDescription);
+
+            sendMessage(sessionDescription);
+
+          }, handleCreateOfferError);
 
           localvideo.src = URL.createObjectURL(localVideoStream);
 
@@ -723,9 +755,11 @@ angular.module('cloudKiboApp')
 
       localStreamScreen = newStream;
 
-      $scope.showScreenText = 'Hide Screen';
-      $scope.screenSharedLocal = true;
-      $scope.closingScreenShare = false;
+      $scope.$apply(function(){
+        $scope.showScreenText = 'Hide Screen';
+        $scope.screenSharedLocal = true;
+        $scope.closingScreenShare = false;
+      })
 
       $scope.localCameraOn = true;
 
