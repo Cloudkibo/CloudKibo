@@ -868,6 +868,8 @@ angular.module('cloudKiboApp')
                 if(localStreamScreen){
                     localStreamScreen.stop();
 
+                  DetectRTC.screen.sourceId = null;
+
                     $scope.closingScreenShare = true;
 
                     screenSharePCIndex = 0;
