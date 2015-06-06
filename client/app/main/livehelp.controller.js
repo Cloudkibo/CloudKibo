@@ -717,6 +717,7 @@ angular.module('cloudKiboApp')
       else{
         if(localStreamScreen){
           localStreamScreen.stop();
+          DetectRTC.screen.sourceId = null;
 
           localvideo.src = URL.createObjectURL(localVideoStream);
 
@@ -798,7 +799,7 @@ angular.module('cloudKiboApp')
     }
 
     function OnStreamDenied(error){
-      //console.log(error);
+      console.log(error);
       $scope.addAlertCallStart('danger', error);
 
     }
