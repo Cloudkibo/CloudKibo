@@ -727,13 +727,13 @@ angular.module('cloudKiboApp')
             pc.removeStream(localStreamScreen);
             pc.createOffer(function(sessionDescription){
               //console.log('INSIDE CONDITION SCREEN SHARE')
-
+              var payload;
               if($scope.closingScreenShare == false){
-                sessionDescription.sharingScreen = 'open';
+                payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'open'};
                 console.log('SHARING THE SCREEN')
               }
               else{
-                sessionDescription.sharingScreen = 'close';
+                payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'close'};
                 console.log('CLOSING THE SCREEN');
                 $scope.screenSharedLocal = false;
               }
@@ -741,7 +741,7 @@ angular.module('cloudKiboApp')
               // Set Opus as the preferred codec in SDP if Opus is present.
               pc.setLocalDescription(sessionDescription);
 
-              sendMessage(sessionDescription);
+              sendMessage(payload);
 
             }, handleCreateOfferError);
           }
@@ -776,12 +776,13 @@ angular.module('cloudKiboApp')
 
           //console.log('INSIDE CONDITION SCREEN SHARE')
 
+          var payload;
           if($scope.closingScreenShare == false){
-            sessionDescription.sharingScreen = 'open';
+            payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'open'};
             console.log('SHARING THE SCREEN')
           }
           else{
-            sessionDescription.sharingScreen = 'close';
+            payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'close'};
             console.log('CLOSING THE SCREEN');
             $scope.screenSharedLocal = false;
           }
@@ -789,7 +790,7 @@ angular.module('cloudKiboApp')
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc.setLocalDescription(sessionDescription);
 
-          sendMessage(sessionDescription);
+          sendMessage(payload);
 
         }, handleCreateOfferError);
       }
