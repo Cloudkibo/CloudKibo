@@ -547,9 +547,13 @@ angular.module('cloudKiboApp')
 
         $scope.extensionAvailable = false;
 
-        $scope.hasExtension = function(){
+        $scope.hasChromeExtension = function(){
           return $scope.extensionAvailable;
         };
+
+        $scope.isFireFox = function(){
+          return typeof navigator.mozGetUserMedia !== 'undefined';
+        }
 
         $scope.localCameraCaptured = function () {
             return $scope.localCameraOn;

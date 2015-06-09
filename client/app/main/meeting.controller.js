@@ -72,9 +72,13 @@ angular.module('cloudKiboApp')
 
         $scope.extensionAvailable = false;
 
-        $scope.hasExtension = function(){
-            return $scope.extensionAvailable;
+        $scope.hasChromeExtension = function(){
+          return $scope.extensionAvailable;
         };
+
+        $scope.isFireFox = function(){
+          return typeof navigator.mozGetUserMedia !== 'undefined';
+        }
 
         $scope.localCameraCaptured = function () {
             return $scope.localCameraOn;
@@ -863,7 +867,26 @@ angular.module('cloudKiboApp')
 
             if($scope.showScreenText == 'Share Screen'){
                 //getUserMedia(screen_constraints, handleUserMediaShowScreen, handleUserMediaErrorShowScreen)
+
+              if(!!navigator.webkitGetUserMedia){
+
                 captureUserMedia(onStreamApproved);
+
+              }
+              else if(!!navigator.mozGetUserMedia){
+                getUserMedia({
+                  video : {
+                    mozMediaSource: 'window',
+                    mediaSource: 'window'
+                  }}, function(stream){
+
+                  onStreamApproved(stream);
+
+                }, function(err){
+                  alert(err)
+                });
+              }
+
             }
             else{
                 if(localStreamScreen){
