@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-    .controller('MeetingController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location, RestApi){
+    .controller('MeetingController', function($scope, RTCConference, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location, RestApi){
 
         $scope.user = $scope.getCurrentUser();
 
@@ -42,18 +42,26 @@ angular.module('cloudKiboApp')
         };
 
         $scope.connectTimeOut = function(){
+
             $scope.roomname = roomid;
-            if($scope.isUserNameDefined())
-              $scope.createOrJoinMeeting();
+
+            if($scope.isUserNameDefined()) {
+              RTCConference.joinMeeting($scope.roomname, $scope.user.username);
+            }
             else{
+
               var sampleName = "user_"+ Math.random().toString(36).substring(7);
+
               $scope.user.username = window.prompt("Please input your username", sampleName);
+
               if($scope.user.username == null)
                 $scope.user.username = sampleName;
-              console.log($scope.user.username);
-              $scope.createOrJoinMeeting();
+
+              RTCConference.joinMeeting($scope.roomname, $scope.user.username);
             }
+
             $scope.connected = true;
+
         };
 
         $timeout($scope.connectTimeOut, 1000);
@@ -137,8 +145,6 @@ angular.module('cloudKiboApp')
           if($scope.videoToggleText == 'Show Video'){
             $scope.videoToggleText = 'Hide Video';    // this changes the text of button from 'show' to 'hide' video
 
-
-
           }
           else{
             $scope.videoToggleText = 'Show Video';    // this changes the text of button from 'show' to 'hide' video
@@ -154,16 +160,6 @@ angular.module('cloudKiboApp')
         // Signaling Logic                                                                    //
         ///////////////////////////////////////////////////////////////////////////////////////
 
-        $scope.createOrJoinMeeting = function(){
-            console.log('Create or join room', {room: roomid, username: $scope.user.username});
-            socket.emit('create or join meeting', {room: roomid, username: $scope.user.username});
-        };
-
-        $scope.LeaveRoom = function(){
-            console.log('Leave room', {room: roomid, username: $scope.user.username});
-            socket.emit('leave', {room: roomid, username: $scope.user.username});
-        };
-
         socket.on('created', function (room){
             console.log('Created room ' + room);
 
@@ -173,10 +169,6 @@ angular.module('cloudKiboApp')
             $scope.meetingData.StartTime = startTime.toUTCString();
 
             isInitiator = true;
-        });
-
-        socket.on('full', function (room){
-            console.log('Room ' + room + ' is full');
         });
 
         socket.on('join', function (room){
@@ -219,7 +211,7 @@ angular.module('cloudKiboApp')
             $scope.meetingData.EndTime = endTime.toUTCString();
             $scope.recordMeetingData();
             sendMessage({msg: 'bye', FromUser : $scope.user.username});
-            $scope.LeaveRoom();
+            RTCConference.leaveMeeting();
             localStream.stop();
         });
 
@@ -228,7 +220,7 @@ angular.module('cloudKiboApp')
             $scope.meetingData.EndTime = endTime.toUTCString();
             $scope.recordMeetingData();
             sendMessage({msg: 'bye', FromUser : $scope.user.username});
-            $scope.LeaveRoom();
+            RTCConference.leaveMeeting();
             localStream.stop();
         };
 
@@ -646,11 +638,14 @@ angular.module('cloudKiboApp')
                 remotevideo1.src = URL.createObjectURL(event.stream);
                 remoteStream1 = event.stream;
                 $scope.firstVideoAdded = true;
+              console.log('added in 1')
             }
             else if($scope.firstVideoAdded == true && $scope.secondVideoAdded == false){
                 $scope.$apply(function(){
                     $scope.peer2Joined = true;
                 });
+
+              console.log('added in 2')
 
                 $scope.meetingRemoteVideoWidth = '30%';//$scope.meetingRemoteVideoWidth = 560/2;
 
@@ -662,6 +657,8 @@ angular.module('cloudKiboApp')
                 $scope.$apply(function(){
                     $scope.peer3Joined = true;
                 });
+
+              console.log('added in 3')
 
                 $scope.meetingRemoteVideoWidth = '30%';//$scope.meetingRemoteVideoWidth = 560/2;
 
@@ -679,6 +676,7 @@ angular.module('cloudKiboApp')
                 remotevideo4.src = URL.createObjectURL(event.stream);
                 remoteStream4 = event.stream;
                 $scope.forthVideoAdded = true;
+              console.log('added in 4')
             }
 
           if($scope.switchingScreenShare == true){
@@ -686,6 +684,7 @@ angular.module('cloudKiboApp')
             remoteStreamScreen = event.stream;
             $scope.switchingScreenShare = false;
 
+            console.log('added in screen')
             $timeout($scope.screenTimeOut, 4000);
 
             return ;

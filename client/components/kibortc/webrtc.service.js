@@ -82,7 +82,7 @@ angular.module('kiboRtc.services')
     var AUDIO = 'audio';
     /* Constant defining audio */
     var VIDEO = 'video';
-    /* Constant defininf video */
+    /* Constant defining video */
 
     return {
 

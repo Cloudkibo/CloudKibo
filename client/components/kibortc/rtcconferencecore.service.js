@@ -1,10 +1,13 @@
 'use strict';
 
 angular.module('kiboRtc.services')
-  .factory('RTCConference', function RTCConference($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
+  .factory('RTCConferenceCore', function RTCConference($rootScope, SocketConference, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
 
     var pcIndex = 0;
     var pcLength = 4;
+
+    var roomname;
+    var username;
 
     var isChannelReady;
     /* It is used to check Data Channel is ready or not */
@@ -13,13 +16,13 @@ angular.module('kiboRtc.services')
     var isStarted = false;
     /* It indicates whether the WebRTC session is started or not */
 
-    var sendChannel = new Array(pcLength);
+    var sendChannel = [];
     var receiveChannel;
 
     var localStream;
     var localStreamScreen;
 
-    var pc = new Array(pcLength);
+    var pc = [];
     /* Array of Peer Connection Objects */
 
     var remoteStream1;
@@ -69,6 +72,17 @@ angular.module('kiboRtc.services')
         remoteVideoScreen = remVidScr;
         localvideo = locVid;
         localvideoscreen = locVidScr;
+      },
+
+      joinMeeting: function(room_name, user_name){
+        roomname = room_name;
+        username = user_name;
+
+        SocketConference.createOrJoinMeeting(roomname, username);
+      },
+
+      leaveMeeting: function () {
+        SocketConference.leaveMeeting(roomname, username);
       },
 
       /**
