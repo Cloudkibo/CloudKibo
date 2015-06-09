@@ -638,16 +638,6 @@ angular.module('cloudKiboApp')
         function handleRemoteStreamAdded(event) {
             console.log('Remote stream added. ');//, event);
 
-            if($scope.switchingScreenShare == true){
-                remoteVideoScreen.src = URL.createObjectURL(event.stream);
-                remoteStreamScreen = event.stream;
-                $scope.switchingScreenShare = false;
-
-                $timeout($scope.screenTimeOut, 4000);
-
-                return ;
-            }
-
             if($scope.firstVideoAdded == false){
                 remotevideo1.src = URL.createObjectURL(event.stream);
                 remoteStream1 = event.stream;
@@ -686,6 +676,17 @@ angular.module('cloudKiboApp')
                 remoteStream4 = event.stream;
                 $scope.forthVideoAdded = true;
             }
+
+          if($scope.switchingScreenShare == true){
+            remoteVideoScreen.src = URL.createObjectURL(event.stream);
+            remoteStreamScreen = event.stream;
+            $scope.switchingScreenShare = false;
+
+            $timeout($scope.screenTimeOut, 4000);
+
+            return ;
+          }
+
         }
 
         function handleRemoteStreamRemoved(event) {
