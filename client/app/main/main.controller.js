@@ -1281,7 +1281,14 @@ angular.module('cloudKiboApp')
                     mozMediaSource: 'window',
                     mediaSource: 'window'
                   }}, function(stream){
-                  alert(stream)
+
+                  WebRTC.addStreamForScreen(stream);
+
+                  WebRTC.createAndSendOffer();
+
+                  $scope.showScreenText = 'Hide Screen';
+                  $scope.screenSharedLocal = true;
+
                 }, function(err){
                   alert(err)
                 });
