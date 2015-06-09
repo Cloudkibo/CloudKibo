@@ -1256,21 +1256,36 @@ angular.module('cloudKiboApp')
 
             if ($scope.showScreenText == 'Share Screen') {
 
+              if(!!navigator.webkitGetUserMedia){
+
                 shareScreen(function (err, stream) {
-                    if(err) {
-                        $scope.addAlertCallStart('danger', err);
-                    }
-                    else {
+                  if(err) {
+                    $scope.addAlertCallStart('danger', err);
+                  }
+                  else {
 
-                        WebRTC.addStreamForScreen(stream);
+                    WebRTC.addStreamForScreen(stream);
 
-                        WebRTC.createAndSendOffer();
+                    WebRTC.createAndSendOffer();
 
-                        $scope.showScreenText = 'Hide Screen';
-                        $scope.screenSharedLocal = true;
+                    $scope.showScreenText = 'Hide Screen';
+                    $scope.screenSharedLocal = true;
 
-                    }
+                  }
                 });
+
+              }
+              else if(!!navigator.mozGetUserMedia){
+                getUserMedia({
+                  video : {
+                    mozMediaSource: 'window',
+                    mediaSource: 'window'
+                  }}, function(stream){
+                  alert(stream)
+                }, function(err){
+                  alert(err)
+                });
+              }
 
 
             }
