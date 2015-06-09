@@ -3,23 +3,95 @@
 angular.module('cloudKiboApp')
     .controller('MeetingController', function($scope, RTCConference, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location, RestApi){
 
-        $scope.user = $scope.getCurrentUser();
+        ////////////////////////////////////////////////////////////////////////////////////////
+        // Variables for WebRTC Session                                                       //
+        ////////////////////////////////////////////////////////////////////////////////////////
 
-        $scope.isUserNameDefined = function() {
 
-            return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
-        };
+        var remotevideo1 = document.getElementById("remotevideo1");
+        remotevideo1.src = null;
 
-        $scope.isMeetingPage = function(){
-            return true;
-        };
+        var remotevideo2 = document.getElementById("remotevideo2");
+        remotevideo2.src = null;
 
-        var roomid;
+        var remotevideo3 = document.getElementById("remotevideo3");
+        remotevideo3.src = null;
+
+        var remotevideo4 = document.getElementById("remotevideo4");
+        remotevideo4.src = null;
+
+        var remoteVideoScreen = document.getElementById("remoteVideoScreen");
+        remoteVideoScreen.src = null;
+
+        var localvideo = document.getElementById("localvideo");
+        localvideo.src = null;
+
         ////////////////////////////////////////////////////////////////////////////////////////
         // Create or Join Room Logic                                                          //
         ////////////////////////////////////////////////////////////////////////////////////////
 
-        roomid = $location.url().split('/')[2];
+        $scope.user = $scope.getCurrentUser();
+
+        $scope.isUserNameDefined = function() {
+
+          return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
+        };
+
+        $scope.isMeetingPage = function(){
+          return true;
+        };
+
+        var roomid = $location.url().split('/')[2];
+
+        $scope.connectTimeOut = function(){
+
+          $scope.roomname = roomid;
+
+          if($scope.isUserNameDefined()) {
+
+            RTCConference.joinMeeting({
+              username : $scope.user.username,
+              room : $scope.roomname,
+              video_elements : {
+                remote1 : remotevideo1,
+                remote2 : remotevideo2,
+                remote3 : remotevideo3,
+                remote4 : remotevideo4,
+                remoteScreen : remoteVideoScreen,
+                local : localvideo
+              }
+            });
+
+          }
+          else {
+
+            var sampleName = "user_"+ Math.random().toString(36).substring(7);
+
+            $scope.user.username = window.prompt("Please input your username", sampleName);
+
+            if($scope.user.username == null)
+              $scope.user.username = sampleName;
+
+            RTCConference.joinMeeting({
+              username : $scope.user.username,
+              room : $scope.roomname,
+              video_elements : {
+                remote1 : remotevideo1,
+                remote2 : remotevideo2,
+                remote3 : remotevideo3,
+                remote4 : remotevideo4,
+                remoteScreen : remoteVideoScreen,
+                local : localvideo
+              }
+            });
+
+          }
+
+          $scope.connected = true;
+
+        };
+
+        $timeout($scope.connectTimeOut, 1000);
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // WebRTC User Interface Logic                                                        //
@@ -40,31 +112,6 @@ angular.module('cloudKiboApp')
         $scope.hasCallEnded = function () {
             return $scope.callEnded;
         };
-
-        $scope.connectTimeOut = function(){
-
-            $scope.roomname = roomid;
-
-            if($scope.isUserNameDefined()) {
-              RTCConference.joinMeeting($scope.roomname, $scope.user.username);
-            }
-            else{
-
-              var sampleName = "user_"+ Math.random().toString(36).substring(7);
-
-              $scope.user.username = window.prompt("Please input your username", sampleName);
-
-              if($scope.user.username == null)
-                $scope.user.username = sampleName;
-
-              RTCConference.joinMeeting($scope.roomname, $scope.user.username);
-            }
-
-            $scope.connected = true;
-
-        };
-
-        $timeout($scope.connectTimeOut, 1000);
 
         $scope.alertsCallStart = [];
 
@@ -160,357 +207,16 @@ angular.module('cloudKiboApp')
         // Signaling Logic                                                                    //
         ///////////////////////////////////////////////////////////////////////////////////////
 
-        socket.on('created', function (room){
-            console.log('Created room ' + room);
-
-            $scope.meetingData.creator = $scope.user.username;
-            $scope.meetingData.roomname = room;
-            var startTime = new Date();
-            $scope.meetingData.StartTime = startTime.toUTCString();
-
-            isInitiator = true;
-        });
-
-        socket.on('join', function (room){
-            //console.log('Another peer made a request to join room ' + room);
-            //console.log('This peer is the initiator of room ' + room + '!');
-            if(isStarted)
-            {
-                pcIndex++;
-            }
-
-            $scope.meetingData.members = room.otherClients.slice();
-            otherPeers = room.otherClients.slice();
-
-            $scope.meetingData.members.splice( $scope.meetingData.members.indexOf($scope.user.username), 1 );
-            otherPeers.splice( otherPeers.indexOf($scope.user.username), 1 );
-
-            isChannelReady = true;
-        });
-
-        socket.on('joined', function (room){
-            //console.log('This peer has joined room ' + room.room + ' '+ room.username +' '+ room.otherClients);
-            isChannelReady = true;
-
-            if(room.otherClients.length > 1)
-            {
-                iJoinLate = true;
-                otherPeers = room.otherClients.slice();
-                //console.log(otherPeers)
-            }
-
-            $scope.startCalling();
-        });
-
-        socket.on('log', function (array){
-            console.log.apply(console, array);
-        });
-
-        $scope.$on('$locationChangeStart', function(event) {
-            var endTime = new Date();
-            $scope.meetingData.EndTime = endTime.toUTCString();
-            $scope.recordMeetingData();
-            sendMessage({msg: 'bye', FromUser : $scope.user.username});
-            RTCConference.leaveMeeting();
-            localStream.stop();
-        });
-
         window.onbeforeunload = function(e){
-            var endTime = new Date();
-            $scope.meetingData.EndTime = endTime.toUTCString();
-            $scope.recordMeetingData();
-            sendMessage({msg: 'bye', FromUser : $scope.user.username});
+            //var endTime = new Date();
+            //$scope.meetingData.EndTime = endTime.toUTCString();
+            //$scope.recordMeetingData();
+            RTCConference.sendMessage({msg: 'bye', FromUser : $scope.user.username});
             RTCConference.leaveMeeting();
-            localStream.stop();
+            //localStream.stop(); // todo this should be in service
         };
 
-        function sendMessage(message){
-            message = {msg:message};
-            message.room = roomid;
-            message.username = $scope.user.username;
-            //console.log('Client sending message: ', message);
-            socket.emit('messageformeeting', message);
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // Variables for WebRTC Session                                                       //
-        ////////////////////////////////////////////////////////////////////////////////////////
-
-        var pcIndex = 0;
-        var pcLength = 4;
-        var isChannelReady;
-        var isInitiator = false;
-        var isStarted = false;
-        var sendChannel = new Array(pcLength);
-        var receiveChannel;
-        var localStream;
-        var localStreamScreen;
-        var pc = new Array(pcLength);
-        var remoteStream1;
-        var remoteStream2;
-        var remoteStream3;
-        var remoteStream4;
-        var remoteStreamScreen;
-        var iJoinLate = false;
-        var otherPeers;
-        var toUserName = '';
-        var screenSharePCIndex = 0;
-        var turnReady;
-        var bell = new Audio('/sounds/bells_simple.mp3');
-        bell.loop = true;
-
-        var remotevideo1 = document.getElementById("remotevideo1");
-        remotevideo1.src = null;
-
-        var remotevideo2 = document.getElementById("remotevideo2");
-        remotevideo2.src = null;
-
-        var remotevideo3 = document.getElementById("remotevideo3");
-        remotevideo3.src = null;
-
-        var remotevideo4 = document.getElementById("remotevideo4");
-        remotevideo4.src = null;
-
-        var remoteVideoScreen = document.getElementById("remoteVideoScreen");
-        remoteVideoScreen.src = null;
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // WebRTC using sigaling logic                                                        //
-        ///////////////////////////////////////////////////////////////////////////////////////
-
-        socket.on('message', function (message) {
-            //console.log('Client received message: '+ JSON.stringify(message));
-
-            if (message.msg === 'got user media') {
-                if (isInitiator && !isStarted) {
-                    toUserName = message.FromUser;
-                    $scope.startCalling();//maybeStart();
-                }
-            }
-            else if (message.msg === 'got screen' && message.ToUser == $scope.user.username){
-
-                screenSharePCIndex++;
-                if(screenSharePCIndex < pc.length){
-                    if(typeof pc[screenSharePCIndex] != 'undefined'){
-                        pc[screenSharePCIndex].addStream(localStreamScreen);
-                        pc[screenSharePCIndex].createOffer(function(sessionDescription){
-                            sessionDescription.FromUser = $scope.user.username;
-                            sessionDescription.ToUser = otherPeers[screenSharePCIndex];
-                            //console.log('INSIDE CONDITION SCREEN SHARE OPEN')
-
-                            if($scope.closingScreenShare == false){
-                                sessionDescription.sharingScreen = 'open';
-                                console.log('SHARING THE SCREEN')
-                            }
-                            else{
-                                sessionDescription.sharingScreen = 'close';
-                                console.log('CLOSING THE SCREEN');
-                                $scope.screenSharedLocal = false;
-                            }
-
-                            // Set Opus as the preferred codec in SDP if Opus is present.
-                            pc[screenSharePCIndex].setLocalDescription(sessionDescription);
-
-                            sendMessage(sessionDescription);
-
-                        }, handleCreateOfferError);
-                    }
-                }
-
-            }
-            else if (message.msg === 'screen close' && message.ToUser == $scope.user.username){
-
-                screenSharePCIndex++;
-                if(screenSharePCIndex < pc.length){
-                    if(typeof pc[screenSharePCIndex] != 'undefined'){
-                        pc[screenSharePCIndex].removeStream(localStreamScreen);
-                        pc[screenSharePCIndex].createOffer(function(sessionDescription){
-                            sessionDescription.FromUser = $scope.user.username;
-                            sessionDescription.ToUser = otherPeers[screenSharePCIndex];
-                            //console.log('INSIDE CONDITION SCREEN SHARE CLOSE')
-
-                            if($scope.closingScreenShare == false){
-                                sessionDescription.sharingScreen = 'open';
-                                console.log('SHARING THE SCREEN')
-                            }
-                            else{
-                                sessionDescription.sharingScreen = 'close';
-                                console.log('CLOSING THE SCREEN');
-                                $scope.screenSharedLocal = false;
-                            }
-
-                            // Set Opus as the preferred codec in SDP if Opus is present.
-                            pc[screenSharePCIndex].setLocalDescription(sessionDescription);
-
-                            sendMessage(sessionDescription);
-
-                        }, handleCreateOfferError);
-                    }
-                }
-
-            }
-            else if (message.type === 'offer') {
-                toUserName = message.FromUser;
-                if(!iJoinLate && !isStarted){
-                    if (!isInitiator && !isStarted) {
-                        maybeStart();
-                    }
-                    pc[pcIndex].setRemoteDescription(new RTCSessionDescription(message));
-                    doAnswer();
-                }
-                else if(message.sharingScreen === 'open') {
-                    toUserName = message.FromUser;
-                    if(message.ToUser == $scope.user.username){
-                        pc[otherPeers.indexOf(message.FromUser)].setRemoteDescription(new RTCSessionDescription(message));
-
-                        console.log('I am in the open condition and offerer number is ', otherPeers.indexOf(message.FromUser));
-
-                        $scope.switchingScreenShare = true;
-                        $scope.peerSharedScreen = true;
-
-                        var showScreenButton = document.getElementById("showScreenButton");
-                        showScreenButton.disabled = true;
-
-                        pc[otherPeers.indexOf(message.FromUser)].createAnswer(function(sessionDescription){
-
-                                sessionDescription.FromUser = $scope.user.username;
-                                sessionDescription.ToUser = toUserName;
-                                // Set Opus as the preferred codec in SDP if Opus is present.
-                                pc[otherPeers.indexOf(message.FromUser)].setLocalDescription(sessionDescription);
-
-                                sendMessage(sessionDescription);
-
-                                console.log('I have answered the screen share offer')
-
-                            },
-                            function (error){console.log(error)}, sdpConstraints);
-                    }
-                }
-                else if(message.sharingScreen === 'close') {
-                    toUserName = message.FromUser;
-                    if(message.ToUser == $scope.user.username){
-                        pc[otherPeers.indexOf(message.FromUser)].setRemoteDescription(new RTCSessionDescription(message));
-
-                        console.log('I am in the close condition and offerer number is ', otherPeers.indexOf(message.FromUser));
-
-                        $scope.peerSharedScreen = false;
-
-                        var showScreenButton = document.getElementById("showScreenButton");
-                        showScreenButton.disabled = false;
-
-                        pc[otherPeers.indexOf(message.FromUser)].createAnswer(function(sessionDescription){
-
-                                sessionDescription.FromUser = $scope.user.username;
-                                sessionDescription.ToUser = toUserName;
-                                // Set Opus as the preferred codec in SDP if Opus is present.
-                                pc[otherPeers.indexOf(message.FromUser)].setLocalDescription(sessionDescription);
-
-                                sendMessage(sessionDescription);
-
-                                console.log('I have answered the screen close offer')
-
-                            },
-                            function (error){console.log(error)}, sdpConstraints);
-
-                        $timeout($scope.screenCloseTimeOut, 3000);
-                    }
-                }
-                else if(!iJoinLate && isStarted){
-                    if(message.ToUser == $scope.user.username){
-                        createPeerConnection();
-                        pc[pcIndex].addStream(localStream);
-                        //console.log('I GOT OFFER FROM '+ toUserName)
-                        pc[pcIndex].setRemoteDescription(new RTCSessionDescription(message));
-                        doAnswer();
-                    }
-                }
-            } else if (message.type === 'answer' && isStarted) {
-                toUserName = message.FromUser;
-                if(message.ToUser == $scope.user.username){
-                    //console.log('I RECEIVED ANSWER FROM '+ message.FromUser)
-                    pc[pcIndex].setRemoteDescription(new RTCSessionDescription(message));
-                }
-            } else if (message.type === 'candidate' && isStarted) {
-                toUserName = message.FromUser;
-                if(message.ToUser == $scope.user.username){//(message.FromUser != $scope.user.username){
-                    var candidate = new RTCIceCandidate({
-                        sdpMLineIndex: message.label,
-                        candidate: message.candidate
-                    });
-                    pc[pcIndex].addIceCandidate(candidate);
-                }
-            } else if (message.msg === 'bye' && isStarted) {
-
-                if(otherPeers.indexOf(message.FromUser) == 0){
-                    $scope.firstVideoAdded = false;
-                    remoteStream1 = null;
-                    remotevideo1.src = null;
-                }
-                else if(otherPeers.indexOf(message.FromUser) == 1){
-                    $scope.secondVideoAdded = false;
-                    remoteStream2 = null;
-                    remotevideo2.src = null;
-
-                    $scope.$apply(function(){
-                        $scope.peer2Joined = false;
-                    })
-                }
-                else if(otherPeers.indexOf(message.FromUser) == 2){
-                    $scope.thirdVideoAdded = false;
-                    remoteStream3 = null;
-                    remotevideo3.src = null;
-
-                    $scope.$apply(function(){
-                        $scope.peer3Joined = false;
-                    })
-                }
-                else if(otherPeers.indexOf(message.FromUser) == 3){
-                    $scope.forthVideoAdded = false;
-                    remoteStream4 = null;
-                    remotevideo4.src = null;
-
-                    $scope.$apply(function(){
-                        $scope.peer4Joined = false;
-                    })
-                }
-
-                if(!$scope.firstVideoAdded && !$scope.secondVideoAdded && !$scope.thirdVideoAdded && !$scope.forthVideoAdded){
-                    localStream.stop();
-                    $scope.localCameraOn = false;
-                    $scope.callEnded = true;
-                    console.log("HIN MEI AYO AAA")
-                }
-
-                pcIndex--;
-
-                pc.splice( pc.indexOf(message.FromUser), 1 );
-                sendChannel.splice( sendChannel.indexOf(message.FromUser), 1 );
-
-            }
-        });
-
-        function maybeStart() {
-            //console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
-            if (!isStarted && typeof localStream != 'undefined' && isChannelReady && !iJoinLate) {
-
-                createPeerConnection();
-                pc[pcIndex].addStream(localStream);
-                isStarted = true;
-
-                if (isInitiator) {
-                    doCall();
-                }
-            }
-            else if(iJoinLate){
-                createPeerConnection();
-                pc[pcIndex].addStream(localStream);
-                isStarted = true;
-                //console.log('Im about to call')
-                doCall();
-                //sendMessage({msg: 'You can join', FromUser : $scope.user.username});//doCall();
-            }
-        }
-
+        // todo this should go to service
         $scope.screenCloseTimeOut = function(){
             sendMessage({msg: 'screen close', FromUser : $scope.user.username, ToUser : toUserName});
         };
@@ -519,185 +225,13 @@ angular.module('cloudKiboApp')
         // WebRTC logic                                                                       //
         ///////////////////////////////////////////////////////////////////////////////////////
 
-        function createPeerConnection() {
-            try {
-                //
-                //Different URL way for FireFox
-                //
-                pc[pcIndex] = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
-                pc[pcIndex].onicecandidate = handleIceCandidate;
-                pc[pcIndex].onaddstream = handleRemoteStreamAdded;
-                pc[pcIndex].onremovestream = handleRemoteStreamRemoved;
-
-                //if (isInitiator) {
-                try {
-                    // Reliable Data Channels not yet supported in Chrome
-                    try{
-                        sendChannel[pcIndex] = pc[pcIndex].createDataChannel("sendDataChannel", {reliable: true});
-                    }
-                    catch(e){
-                        console.log('UNRELIABLE DATA CHANNEL');
-                        sendChannel[pcIndex] = pc[pcIndex].createDataChannel("sendDataChannel", {reliable: false});
-                    }
-                    sendChannel[pcIndex].onmessage = handleMessage;
-                    trace('Created send data channel');
-                } catch (e) {
-                    alert('Failed to create data channel. ' +
-                    'You need Chrome M25 or later with RtpDataChannel enabled : '+ e.message );
-                    trace('createDataChannel() failed with exception: ' + e.message);
-                }
-                sendChannel[pcIndex].onopen = handleSendChannelStateChange;
-                sendChannel[pcIndex].onclose = handleSendChannelStateChange;
-                // } else {
-                pc[pcIndex].ondatachannel = gotReceiveChannel;
-                // }
-            } catch (e) {
-                console.log('Failed to create PeerConnection, exception: ' + e.message);
-                alert('Cannot create RTCPeerConnection object.');
-                return 0;
-            }
-        }
-
-        function handleIceCandidate(event) {
-            if (event.candidate) {
-                console.log('I got candidate...');
-                sendMessage({
-                    type: 'candidate',
-                    label: event.candidate.sdpMLineIndex,
-                    id: event.candidate.sdpMid,
-                    candidate: event.candidate.candidate,
-                    FromUser: $scope.user.username,
-                    ToUser : toUserName});
-            } else {
-                console.log('End of candidates.');
-            }
-        }
-
-        function handleCreateOfferError(event){
-            console.log('createOffer() error: ', e);
-        }
-
-        $scope.closingScreenShare = false;
-        function doCall() {
-            console.log('Sending offer to peer');
-            pc[pcIndex].createOffer(setLocalAndSendMessage, handleCreateOfferError);
-        }
-
-        function doAnswer() {
-            console.log('Sending answer to peer.');
-            pc[pcIndex].createAnswer(setLocalAndSendMessage, function (error){console.log(error)}, sdpConstraints);
-        }
-
-        function setLocalAndSendMessage(sessionDescription) {
-
-            if($scope.screenSharedLocal == false){
-                sessionDescription.FromUser = $scope.user.username;
-                sessionDescription.ToUser = toUserName;
-                // Set Opus as the preferred codec in SDP if Opus is present.
-                pc[pcIndex].setLocalDescription(sessionDescription);
-            }
-            else{
-                sessionDescription.FromUser = $scope.user.username;
-
-                //console.log('INSIDE CONDITION SCREEN SHARE')
-
-                if($scope.closingScreenShare == false){
-                    sessionDescription.sharingScreen = 'open';
-                    console.log('SHARING THE SCREEN')
-                }
-                else{
-                    sessionDescription.sharingScreen = 'close';
-                    console.log('CLOSING THE SCREEN');
-                    $scope.screenSharedLocal = false;
-                }
-
-                // Set Opus as the preferred codec in SDP if Opus is present.
-                pc[screenSharePCIndex].setLocalDescription(sessionDescription);
-            }
-
-            //console.log('setLocalAndSendMessage sending message' , sessionDescription);
-
-            //console.log(''+ sessionDescription.FromUser +' sending Offer or Answer to ', toUserName)
-            sendMessage(sessionDescription);
-        }
-
+        // todo this should go to service
         $scope.screenTimeOut = function(){
             sendMessage({msg: 'got screen', FromUser : $scope.user.username, ToUser : toUserName});
         };
 
+
         $scope.meetingRemoteVideoWidth = '40%';
-        $scope.firstVideoAdded = false;
-        $scope.secondVideoAdded = false;
-        $scope.thirdVideoAdded = false;
-        $scope.forthVideoAdded = false;
-        $scope.switchingScreenShare = false;
-        function handleRemoteStreamAdded(event) {
-            console.log('Remote stream added. ');//, event);
-
-            if($scope.firstVideoAdded == false){
-                remotevideo1.src = URL.createObjectURL(event.stream);
-                remoteStream1 = event.stream;
-                $scope.firstVideoAdded = true;
-              console.log('added in 1')
-            }
-            else if($scope.firstVideoAdded == true && $scope.secondVideoAdded == false){
-                $scope.$apply(function(){
-                    $scope.peer2Joined = true;
-                });
-
-              console.log('added in 2')
-
-                $scope.meetingRemoteVideoWidth = '30%';//$scope.meetingRemoteVideoWidth = 560/2;
-
-                remotevideo2.src = URL.createObjectURL(event.stream);
-                remoteStream2 = event.stream;
-                $scope.secondVideoAdded = true;
-            }
-            else if($scope.firstVideoAdded == true && $scope.secondVideoAdded == true && $scope.thirdVideoAdded == false){
-                $scope.$apply(function(){
-                    $scope.peer3Joined = true;
-                });
-
-              console.log('added in 3')
-
-                $scope.meetingRemoteVideoWidth = '30%';//$scope.meetingRemoteVideoWidth = 560/2;
-
-                remotevideo3.src = URL.createObjectURL(event.stream);
-                remoteStream3 = event.stream;
-                $scope.thirdVideoAdded = true;
-            }
-            else if($scope.firstVideoAdded == true && $scope.secondVideoAdded == true && $scope.thirdVideoAdded == true && $scope.forthVideoAdded == false){
-                $scope.$apply(function(){
-                    $scope.peer4Joined = true;
-                });
-
-                $scope.meetingRemoteVideoWidth = '30%';//$scope.meetingRemoteVideoWidth = 560/2;
-
-                remotevideo4.src = URL.createObjectURL(event.stream);
-                remoteStream4 = event.stream;
-                $scope.forthVideoAdded = true;
-              console.log('added in 4')
-            }
-
-          if($scope.switchingScreenShare == true){
-            remoteVideoScreen.src = URL.createObjectURL(event.stream);
-            remoteStreamScreen = event.stream;
-            $scope.switchingScreenShare = false;
-
-            console.log('added in screen')
-            $timeout($scope.screenTimeOut, 4000);
-
-            return ;
-          }
-
-        }
-
-        function handleRemoteStreamRemoved(event) {
-            console.log('Remote stream removed.');// Event: ', event);
-            $scope.$apply(function(){
-                $scope.screenSharedByPeer = false;
-            })
-        }
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // Media Stream Logic                                                                 //
