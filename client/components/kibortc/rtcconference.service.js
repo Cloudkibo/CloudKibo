@@ -23,7 +23,7 @@ angular.module('kiboRtc.services')
 
     function maybeStart() {
       //console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
-      if (!isStarted && typeof localStream != 'undefined' && isChannelReady && !iJoinLate) {
+      if (!isStarted && isChannelReady && !iJoinLate) {
 
         // todo this from other service
         createPeerConnection();
@@ -43,6 +43,23 @@ angular.module('kiboRtc.services')
         doCall();
         //sendMessage({msg: 'You can join', FromUser : $scope.user.username});//doCall();
       }
+    }
+
+    function startCalling(){
+      RTCConferenceCore.captureUserMedia('audio', function(err){
+        if(err) return alert(err);
+
+        Signalling.sendMessageForMeeting({msg: 'got user media', FromUser : username});
+
+        if (isInitiator) {
+          maybeStart();
+        }
+        else if(pcIndex < otherPeers.length && iJoinLate && !isStarted){
+          toUserName = otherPeers[pcIndex];
+          maybeStart();
+        }
+
+      })
     }
 
     return {
@@ -110,8 +127,7 @@ angular.module('kiboRtc.services')
         otherPeers = room.otherClients.slice();
       }
 
-      // todo startCallingFunction
-      //$scope.startCalling();
+      startCalling();
     });
 
     // todo complete todo here
@@ -121,9 +137,10 @@ angular.module('kiboRtc.services')
       if (message.msg === 'got user media') {
         if (isInitiator && !isStarted) {
           toUserName = message.FromUser;
-          $scope.startCalling();//maybeStart();
+          startCalling();//maybeStart();
         }
       }
+
       else if (message.msg === 'got screen' && message.ToUser == username) {
 
         screenSharePCIndex++;

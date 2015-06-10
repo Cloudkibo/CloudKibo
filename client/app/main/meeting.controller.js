@@ -47,19 +47,21 @@ angular.module('cloudKiboApp')
 
           $scope.roomname = roomid;
 
+          var videoelements = {
+            remote1 : remotevideo1,
+            remote2 : remotevideo2,
+            remote3 : remotevideo3,
+            remote4 : remotevideo4,
+            remoteScreen : remoteVideoScreen,
+            local : localvideo
+          };
+
           if($scope.isUserNameDefined()) {
 
             RTCConference.joinMeeting({
               username : $scope.user.username,
               room : $scope.roomname,
-              video_elements : {
-                remote1 : remotevideo1,
-                remote2 : remotevideo2,
-                remote3 : remotevideo3,
-                remote4 : remotevideo4,
-                remoteScreen : remoteVideoScreen,
-                local : localvideo
-              }
+              video_elements : videoelements
             });
 
           }
@@ -75,14 +77,7 @@ angular.module('cloudKiboApp')
             RTCConference.joinMeeting({
               username : $scope.user.username,
               room : $scope.roomname,
-              video_elements : {
-                remote1 : remotevideo1,
-                remote2 : remotevideo2,
-                remote3 : remotevideo3,
-                remote4 : remotevideo4,
-                remoteScreen : remoteVideoScreen,
-                local : localvideo
-              }
+              video_elements : videoelements
             });
 
           }
@@ -241,31 +236,10 @@ angular.module('cloudKiboApp')
 
         function handleUserMedia(newStream){
 
-            var localvideo = document.getElementById("localvideo");
-            localvideo.src = URL.createObjectURL(newStream);
-            localStream = newStream;
             $scope.localCameraOn = true;
 
-            sendMessage({msg: 'got user media', FromUser : $scope.user.username});
 
-            if (isInitiator) {
-                maybeStart();
-            }
-            else if(pcIndex < otherPeers.length && iJoinLate && !isStarted){
-                toUserName = otherPeers[pcIndex];
-                maybeStart();
-            }
         }
-
-        function handleUserMediaError(error){
-            //console.log(error);
-        }
-
-        var video_constraints = {video: true, audio: true};
-
-        $scope.startCalling = function(){
-            getUserMedia(video_constraints, handleUserMedia, handleUserMediaError);
-        };
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // Screen Sharing Logic                                                               //

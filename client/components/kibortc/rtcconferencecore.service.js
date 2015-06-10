@@ -52,6 +52,11 @@ angular.module('kiboRtc.services')
 
     var turnReady;
 
+    var AUDIO = 'audio';
+    /* Constant defining audio */
+    var VIDEO = 'video';
+    /* Constant defining video */
+
     $scope.firstVideoAdded = false;
     $scope.secondVideoAdded = false;
     $scope.thirdVideoAdded = false;
@@ -189,6 +194,88 @@ angular.module('kiboRtc.services')
       },
 
       /**
+       * This will toggle the local video on or off. It will automatically notify other client that
+       * video has been turned off or on.
+       *
+       * @param cb callback function to notify application if task was not successful
+       */
+      toggleVideo: function (cb) {
+        if (videoShared) {
+
+          localVideoStream.stop();
+          pc.removeStream(localVideoStream);
+          Signalling.sendMessage('hiding video');
+          pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+
+          localVideo.src = null;
+
+          videoShared = false;
+
+          $rootScope.$broadcast('localVideoRemoved');
+
+          cb(null);
+        }
+        else {
+
+          captureMedia(video_constraints, VIDEO, function (err) {
+            if (err) return cb(err);
+
+            pc.addStream(localVideoStream);
+            Signalling.sendMessage('sharing video');
+            pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+
+            localVideo.src = URL.createObjectURL(localVideoStream);
+
+            videoShared = true;
+
+            $rootScope.$broadcast('localVideoAdded');
+
+            cb(null);
+
+          });
+
+        }
+      },
+
+      /**
+       * This will toggle the local audio on or off. It will automatically notify other client that
+       * audio has been turned off or on.
+       *
+       * @param cb callback function to notify application if task was not successful
+       */
+      toggleAudio: function (cb) {
+        if (audioShared) {
+
+          localAudioStream.stop();
+          pc.removeStream(localAudioStream);
+          pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+
+          audioShared = false;
+
+          $rootScope.$broadcast('localAudioRemoved');
+
+          cb(null);
+        }
+        else {
+
+          captureMedia(audio_constraints, AUDIO, function (err) {
+            if (err) return cb(err);
+
+            pc.addStream(localAudioStream);
+            pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+
+            audioShared = true;
+
+            $rootScope.$broadcast('localAudioAdded');
+
+            cb(null);
+
+          });
+
+        }
+      },
+
+      /**
        * Capture the User Media. Application must call this function to capture camera and mic. This function
        * uses video_constraints from the configurations. It sets the callback with null on success and err
        * on error. It attaches the local media stream to video element for the application.
@@ -196,19 +283,18 @@ angular.module('kiboRtc.services')
        * @param streamType Type of the stream to be captured. Possible values are "audio" or "video"
        * @param cb It is the callback which should be called with err if there was an error in accessing the media
        */
-      captureUserMedia: function (cb) {
-        getUserMedia(video_constraints,
-          function (newStream) {
+      captureUserMedia: function (streamType, cb) {
+        var constraints;
 
-            localStream = newStream;
-            localVideo.src = URL.createObjectURL(newStream);
+        if (streamType == AUDIO)
+          constraints = audio_constraints;
+        else if (streamType == VIDEO)
+          constraints = video_constraints;
+        else
+          return cb('Invalid stream type. Must be "audio" or "video"');
 
-            cb(null);
-          },
-          function (err) {
-            cb(err);
-          }
-        );
+        captureMedia(constraints, streamType, cb);
+
       },
 
       /**
@@ -593,6 +679,40 @@ angular.module('kiboRtc.services')
     function handleReceiveChannelStateChange() {
       var readyState = sendChannel.readyState;
       //trace('Receive channel state is: ' + readyState);
+    }
+
+    /**
+     * Helper function to capture user media. This will be used by the service internally. This
+     * should not be exposed to the application.
+     *
+     * @param constraints Audio or Video constraints should be set here
+     * @param type Stream type should be specified here. Possible values are 'audio' and 'video'
+     * @param cb Callback function should be given here
+     *
+     * todo needs some work
+     */
+    function captureMedia(constraints, type, cb) {
+
+      getUserMedia(constraints,
+        function (newStream) {
+
+          if (type == AUDIO) {
+            localAudioStream = newStream;
+            audioShared = true;
+          }
+          else if (type == VIDEO) {
+            localVideoStream = newStream;
+            localVideo.src = URL.createObjectURL(newStream);
+            videoShared = true;
+          }
+
+          cb(null);
+        },
+        function (err) {
+          cb(err);
+        }
+      );
+
     }
 
 
