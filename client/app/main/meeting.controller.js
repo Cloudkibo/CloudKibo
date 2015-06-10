@@ -7,7 +7,6 @@ angular.module('cloudKiboApp')
         // Variables for WebRTC Session                                                       //
         ////////////////////////////////////////////////////////////////////////////////////////
 
-
         var remoteaudio1 = document.getElementById("remoteaudio1");
         remoteaudio1.src = null;
         var remoteaudio2 = document.getElementById("remoteaudio2");
@@ -149,7 +148,8 @@ angular.module('cloudKiboApp')
             return $scope.localCameraOn;
         };
 
-        $scope.peer2Joined = false;
+        // todo fix this testing hack
+        $scope.peer2Joined = true;
 
         $scope.hasPeer2Joined = function(){
             return $scope.peer2Joined;
@@ -160,7 +160,8 @@ angular.module('cloudKiboApp')
           $scope.meetingRemoteVideoWidth = '30%';
         });
 
-        $scope.peer3Joined = false;
+    // todo fix this testing hack
+        $scope.peer3Joined = true;
 
         $scope.hasPeer3Joined = function(){
             return $scope.peer3Joined;
@@ -171,7 +172,8 @@ angular.module('cloudKiboApp')
           $scope.meetingRemoteVideoWidth = '30%';
         });
 
-        $scope.peer4Joined = false;
+    // todo fix this testing hack
+        $scope.peer4Joined = true;
 
         $scope.hasPeer4Joined = function(){
             return $scope.peer4Joined;
@@ -244,7 +246,8 @@ angular.module('cloudKiboApp')
         };
 
 
-        $scope.meetingRemoteVideoWidth = '40%';
+    // todo fix this testing hack
+        $scope.meetingRemoteVideoWidth = '30%';//'40%';
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // Media Stream Logic                                                                 //

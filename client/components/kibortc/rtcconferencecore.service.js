@@ -6,7 +6,7 @@
  */
 
 angular.module('kiboRtc.services')
-  .factory('RTCConferenceCore', function RTCConference($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling, $timeout) {
+  .factory('RTCConferenceCore', function RTCConference($rootScope, pc_config, pc_constraints, sdpConstraints, audio_constraints, video_constraints, Signalling, $timeout) {
 
     var pcIndexTemp = 0;
     var pcLength = 4;
@@ -34,12 +34,22 @@ angular.module('kiboRtc.services')
     var pc = [];
     /* Array of Peer Connection Objects */
 
-    var remoteStream1;
-    var remoteStream2;
-    var remoteStream3;
-    var remoteStream4;
+    var remoteAudioStream1;
+    var remoteAudioStream2;
+    var remoteAudioStream3;
+    var remoteAudioStream4;
+
+    var remoteVideoStream1;
+    var remoteVideoStream2;
+    var remoteVideoStream3;
+    var remoteVideoStream4;
 
     var remoteStreamScreen;
+
+    var remoteaudio1;
+    var remoteaudio2;
+    var remoteaudio3;
+    var remoteaudio4;
 
     var remotevideo1;
     var remotevideo2;
@@ -60,6 +70,11 @@ angular.module('kiboRtc.services')
     /* Constant defining audio */
     var VIDEO = 'video';
     /* Constant defining video */
+
+    var firstAudioAdded = false;
+    var secondAudioAdded = false;
+    var thirdAudioAdded = false;
+    var forthAudioAdded = false;
 
     var firstVideoAdded = false;
     var secondVideoAdded = false;
@@ -82,13 +97,19 @@ angular.module('kiboRtc.services')
        * @param remVidScr
        * @param locVid
        */
-      initialize: function (elements, pc_length) {
-        remotevideo1 = elements.remote1;
-        remotevideo2 = elements.remote2;
-        remotevideo3 = elements.remote3;
-        remotevideo4 = elements.remote4;
-        remoteVideoScreen = elements.remoteScreen;
-        localvideo = elements.local;
+      initialize: function (video_elements, audio_elements, pc_length) {
+        remoteaudio1 = audio_elements.remote1;
+        remoteaudio2 = audio_elements.remote2;
+        remoteaudio3 = audio_elements.remote3;
+        remoteaudio4 = audio_elements.remote4;
+
+        remotevideo1 = video_elements.remote1;
+        remotevideo2 = video_elements.remote2;
+        remotevideo3 = video_elements.remote3;
+        remotevideo4 = video_elements.remote4;
+
+        remoteVideoScreen = video_elements.remoteScreen;
+        localvideo = video_elements.local;
 
         pcLength = pc_length;
         pc = new Array(pcLength);
@@ -114,7 +135,7 @@ angular.module('kiboRtc.services')
           pc[pcInd].onicecandidate = handleIceCandidate;
           pc[pcInd].onaddstream = handleRemoteStreamAdded;
           pc[pcInd].onremovestream = handleRemoteStreamRemoved;
-
+/*
           //if (isInitiator) {
           try {
             // Reliable Data Channels not yet supported in Chrome
@@ -136,11 +157,15 @@ angular.module('kiboRtc.services')
           sendChannel[pcInd].onclose = handleSendChannelStateChange;
           // } else {
           pc[pcInd].ondatachannel = gotReceiveChannel;
-
-          if(audioShared)
+*/
+          if(audioShared) {
             pc[pcInd].addStream(localAudioStream);
-          else
+            console.log('added audio stream to pc', localAudioStream);
+          }
+          else {
             pc[pcInd].addStream(localVideoStream);
+            console.log('added video stream to pc ', localVideoStream);
+          }
 
           // }
         } catch (e) {
@@ -534,44 +559,83 @@ angular.module('kiboRtc.services')
      * todo this needs some work, remove scopes from here
      */
     function handleRemoteStreamAdded(event) {
-      console.log('Remote stream added. ');//, event);
+      console.log('Remote stream added. ', event.stream);//, event);
+
+      if (event.stream.getAudioTracks().length) {
+        if(firstAudioAdded == false){
+          $rootScope.$broadcast('peer1Joined');
+
+          console.log('added audio in 1');
+
+          remoteaudio1.src = URL.createObjectURL(event.stream);
+          remoteAudioStream1 = event.stream;
+          firstAudioAdded = true;
+        }
+        else if(firstAudioAdded == true && secondAudioAdded == false){
+          $rootScope.$broadcast('peer2Joined');
+
+          console.log('added audio in 2');
+
+          remoteaudio2.src = URL.createObjectURL(event.stream);
+          remoteAudioStream2 = event.stream;
+          secondAudioAdded = true;
+        }
+        else if(firstAudioAdded == true && secondAudioAdded == true && thirdAudioAdded == false){
+          $rootScope.$broadcast('peer3Joined');
+
+          console.log('added audio in 3');
+
+          remoteaudio3.src = URL.createObjectURL(event.stream);
+          remoteAudioStream3 = event.stream;
+          thirdAudioAdded = true;
+        }
+        else if(firstAudioAdded == true && secondAudioAdded == true && thirdAudioAdded == true && forthAudioAdded == false){
+          $rootScope.$broadcast('peer4Joined');
+
+          console.log('added audio in 4');
+
+          remoteaudio4.src = URL.createObjectURL(event.stream);
+          remoteAudioStream4 = event.stream;
+          forthAudioAdded = true;
+        }
+      }
 
       if (event.stream.getVideoTracks().length) {
 
         if(firstVideoAdded == false){
-          $rootScope.$broadcast('peer1Joined');
+          $rootScope.$broadcast('peer1SharedVideo');
 
-          console.log('added in 1');
+          console.log('added video in 1');
 
           remotevideo1.src = URL.createObjectURL(event.stream);
-          remoteStream1 = event.stream;
+          remoteVideoStream1 = event.stream;
           firstVideoAdded = true;
         }
         else if(firstVideoAdded == true && secondVideoAdded == false){
-          $rootScope.$broadcast('peer2Joined');
+          $rootScope.$broadcast('peer2SharedVideo');
 
-          console.log('added in 2');
+          console.log('added video in 2');
 
           remotevideo2.src = URL.createObjectURL(event.stream);
-          remoteStream2 = event.stream;
+          remoteVideoStream2 = event.stream;
           secondVideoAdded = true;
         }
         else if(firstVideoAdded == true && secondVideoAdded == true && thirdVideoAdded == false){
-          $rootScope.$broadcast('peer3Joined');
+          $rootScope.$broadcast('peer3SharedVideo');
 
-          console.log('added in 3');
+          console.log('added video in 3');
 
           remotevideo3.src = URL.createObjectURL(event.stream);
-          remoteStream3 = event.stream;
+          remoteVideoStream3 = event.stream;
           thirdVideoAdded = true;
         }
         else if(firstVideoAdded == true && secondVideoAdded == true && thirdVideoAdded == true && forthVideoAdded == false){
-          $rootScope.$broadcast('peer4Joined');
+          $rootScope.$broadcast('peer4SharedVideo');
 
-          console.log('added in 4');
+          console.log('added video in 4');
 
           remotevideo4.src = URL.createObjectURL(event.stream);
-          remoteStream4 = event.stream;
+          remoteVideoStream4 = event.stream;
           forthVideoAdded = true;
         }
 

@@ -21,81 +21,6 @@ angular.module('kiboRtc.services')
 
     var iJoinLate = false;
 
-    function maybeStart() {
-      //console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
-      if (!isStarted && isChannelReady && !iJoinLate) {
-
-        RTCConferenceCore.createPeerConnection(pcIndex);
-        isStarted = true;
-
-        if (isInitiator) {
-          RTCConferenceCore.createAndSendOffer(pcIndex, toUserName);
-        }
-      }
-      else if(iJoinLate){
-
-        RTCConferenceCore.createPeerConnection(pcIndex);
-        isStarted = true;
-        //console.log('Im about to call')
-        RTCConferenceCore.createAndSendOffer(pcIndex, toUserName);
-        //sendMessage({msg: 'You can join', FromUser : $scope.user.username});//doCall();
-      }
-    }
-
-    function startCalling(){
-      RTCConferenceCore.captureUserMedia('audio', function(err){
-        if(err) return alert(err);
-
-        Signalling.sendMessageForMeeting({msg: 'got user media', FromUser : username});
-
-        if (isInitiator) {
-          maybeStart();
-        }
-        else if(pcIndex < otherPeers.length && iJoinLate && !isStarted){
-          toUserName = otherPeers[pcIndex];
-          maybeStart();
-        }
-
-        $rootScope.$broadcast('localStreamCaptured');
-
-      })
-    }
-
-    window.onbeforeunload = function(e){
-      //var endTime = new Date();
-      //$scope.meetingData.EndTime = endTime.toUTCString();
-      //$scope.recordMeetingData();
-      Signalling.sendMessage('bye');
-      // todo this needs work
-      //RTCConferenceCore.leaveMeeting();
-      //localStream.stop(); // todo this should be in service
-    };
-
-    return {
-
-      sendMessage: function (message) {
-        Signalling.sendMessageForMeeting(message);
-      },
-
-      joinMeeting: function (payload) {
-
-        username = payload.username;
-        room = payload.room;
-
-        Signalling.initialize(null, username, room);
-
-        RTCConferenceCore.initialize(payload.video_elements, pcLength);
-
-        socket.emit('create or join meeting', {room: room, username: username});
-
-      },
-
-      leaveMeeting: function () {
-        socket.emit('leave', {room: room, username: username});
-      }
-
-    };
-
     socket.on('full', function (room) {
       alert('Room ' + room + ' is full. You can not join the meeting.');
     });
@@ -143,14 +68,14 @@ angular.module('kiboRtc.services')
     socket.on('message', function (message) {
       //console.log('Client received message: '+ JSON.stringify(message));
 
-      if (message.msg === 'got user media') {
+      if (message.payload.msg === 'got user media') {
         if (isInitiator && !isStarted) {
           toUserName = message.FromUser;
           startCalling();//maybeStart();
         }
       }
 
-      else if (message.msg === 'got screen' && message.ToUser == username) {
+      else if (message.payload.msg === 'got screen' && message.ToUser == username) {
 
         screenSharePCIndex++;
         if (screenSharePCIndex < pc.length) {
@@ -182,7 +107,7 @@ angular.module('kiboRtc.services')
 
       }
 
-      else if (message.msg === 'screen close' && message.ToUser == $scope.user.username) {
+      else if (message.payload.msg === 'screen close' && message.ToUser == $scope.user.username) {
 
         screenSharePCIndex++;
         if (screenSharePCIndex < pc.length) {
@@ -364,6 +289,82 @@ angular.module('kiboRtc.services')
 
       }
     });
+
+    return {
+
+      sendMessage: function (message) {
+        Signalling.sendMessageForMeeting(message);
+      },
+
+      joinMeeting: function (payload) {
+
+        username = payload.username;
+        room = payload.room;
+
+        Signalling.initialize(null, username, room);
+
+        RTCConferenceCore.initialize(payload.video_elements, payload.audio_elements, pcLength);
+
+        socket.emit('create or join meeting', {room: room, username: username});
+
+      },
+
+      leaveMeeting: function () {
+        socket.emit('leave', {room: room, username: username});
+      }
+
+    };
+
+
+    function maybeStart() {
+      //console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
+      if (!isStarted && isChannelReady && !iJoinLate) {
+
+        RTCConferenceCore.createPeerConnection(pcIndex);
+        isStarted = true;
+
+        if (isInitiator) {
+          RTCConferenceCore.createAndSendOffer(pcIndex, toUserName);
+        }
+      }
+      else if(iJoinLate){
+
+        RTCConferenceCore.createPeerConnection(pcIndex);
+        isStarted = true;
+        //console.log('Im about to call')
+        RTCConferenceCore.createAndSendOffer(pcIndex, toUserName);
+        //sendMessage({msg: 'You can join', FromUser : $scope.user.username});//doCall();
+      }
+    }
+
+    function startCalling(){
+      RTCConferenceCore.captureUserMedia('video', function(err){
+        if(err) return alert(err);
+
+        Signalling.sendMessageForMeeting({msg: 'got user media', FromUser : username});
+
+        if (isInitiator) {
+          maybeStart();
+        }
+        else if(pcIndex < otherPeers.length && iJoinLate && !isStarted){
+          toUserName = otherPeers[pcIndex];
+          maybeStart();
+        }
+
+        $rootScope.$broadcast('localStreamCaptured');
+
+      })
+    }
+
+    window.onbeforeunload = function(e){
+      //var endTime = new Date();
+      //$scope.meetingData.EndTime = endTime.toUTCString();
+      //$scope.recordMeetingData();
+      Signalling.sendMessage('bye');
+      // todo this needs work
+      //RTCConferenceCore.leaveMeeting();
+      //localStream.stop(); // todo this should be in service
+    };
 
 
   });
