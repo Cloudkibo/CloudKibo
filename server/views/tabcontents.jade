@@ -89,7 +89,7 @@ block bodycontent
                            | This is not a valid phone number.
                .row
                  div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
-                   button.btn.btn-account.btn-send(type='submit', ng-disabled="form.$invalid || isUnchanged(user)") Submit
+                   button.myButton(type='submit', ng-disabled="form.$invalid || isUnchanged(user)") Submit
                .row
                  div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20 usernameerror', ng-show='showError()')
                    h5 {{errorMessage}}
@@ -137,13 +137,13 @@ block bodycontent
           br
           br
           div(style='text-align:right;')
-            button.btn.btn-default(ng-click='openMeeting()') Hide Me!
+            button.myButton1(ng-click='openMeeting()') Hide Me!
 
         div(ng-show='isCallSelected()', class='well well-lg animate-show modalBox')
           div
-            div(ng-show='isUserNameSearchSelected()', class='well well-lg')
+            div(ng-show='isUserNameSearchSelected()', class='innerbox')
               form(role='form', ng-submit='searchUserName()', novalidate, name='form5', class='css-form')
-                .form-group
+                .form-group1
                   label Type the person's username to make a call
                   input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='search.searchusername')
                 a(ng-href='#', ng-click='switchSearchOption()')
@@ -151,10 +151,10 @@ block bodycontent
                 br
                 br
                 div
-                  button.btn.btn-send(type='submit', ng-disabled="form5.$invalid") Call
+                  button.myButton(type='submit', ng-disabled="form5.$invalid") Call
             div(ng-show='!isUserNameSearchSelected()', class='well well-lg')
               form(role='form', ng-submit='searchEmail()', novalidate, name='form4', class='css-form')
-                .form-group
+                .form-group1
                   label Type the person's email address to make a call
                   input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='search.searchemail')
                 div(ng-show="form4.email.$dirty && !form4.email.$focused")
@@ -168,7 +168,7 @@ block bodycontent
                 br
                 br
                 div
-                  button.btn.btn-send(type='submit', ng-disabled="form4.$invalid") Call
+                  button.myButton(type='submit', ng-disabled="form4.$invalid") Call
             br
             div(class='well well-lg animate-show', ng-show='userFound == null')
               b User, you are trying to call is not registered on CloudKibo
@@ -176,15 +176,14 @@ block bodycontent
               a(ng-href='#', ng-click='openInvite()')
                 small Invite to CloudKibo
           div(style='text-align:right;')
-            button.btn.btn-default(ng-click='openCall()') Hide Me!
+            button.myButton1(ng-click='openCall()') Hide Me!
 
         div(ng-show='isInviteSelected()', class='well well-lg animate-show modalBox')
           div
             div(style='text-align:right;')
-              button.btn.btn-default(ng-click='openInvite()') Hide Me!
+              //button.myButton1(ng-click='openInvite()') Hide Me!
             #inviteEmailBox(class='well well-lg')
               label Invite your friend to CloudKibo
-              br
               form(role='form', method="post", novalidate, name='form6', class='css-form', ng-submit='emailInvite(inviteemail)')
                 .form-group
                   input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='inviteemail.recipientEmail')
@@ -194,14 +193,14 @@ block bodycontent
                       | Enter the email address.
                     span(ng-show="form6.email.$error.email")
                       | This is not a valid email address.
-                br
                 label Optional Message
-                .form-group
+                .form-group2
                   textarea.form-control(rows=8, cols=40, name="smessage", ng-model='inviteemail.shortmessage', ng-focus)
                 br
                 div
-                  button.btn.btn-send(type='submit', ng-disabled="form6.$invalid") Invite
-              br
+                  button.myButton(type='submit', ng-disabled="form6.$invalid") Invite
+                  button.myButton1(ng-click='openInvite()') Hide Me!
+
               alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
 
         div(ng-show='isAddContactSelected()', class='well well-lg animate-show modalBox')
@@ -216,7 +215,7 @@ block bodycontent
                 br
                 br
                 div
-                  button.btn.btn-send(type='submit', ng-disabled="form9.$invalid") Add
+                  button.myButton(type='submit', ng-disabled="form9.$invalid") Add
             div(ng-show='!isUserNameAddSelected()', class='well well-lg')
               form(role='form', ng-submit='addEmail(add)', novalidate, name='form41', class='css-form')
                 .form-group
@@ -233,7 +232,7 @@ block bodycontent
                 br
                 br
                 div
-                  button.btn.btn-send(type='submit', ng-disabled="form41.$invalid") Add
+                  button.myButton(type='submit', ng-disabled="form41.$invalid") Add
             br
             div(class='well well-lg animate-show', ng-show='userFound == null')
               b User, you are trying to add is not registered on CloudKibo
@@ -243,7 +242,7 @@ block bodycontent
             div(class='well well-lg animate-show', ng-show='userFound == "danger"')
               b {{addUserResponseMessage}}
           div(style='text-align:right;')
-            button.btn.btn-default(ng-click='openAddContact()') Hide Me!
+            button.myButton1(ng-click='openAddContact()') Hide Me!
 
         div(ng-show='isSettingsSelected()', class='well well-lg  animate-show modalBox')
           div
@@ -480,7 +479,7 @@ block bodycontent
                             option(value="Zimbabwe") Zimbabwe
                       br
                       div
-                        button.btn.btn-send(type='submit') Save
+                        button.myButton(type='submit') Save
                   #profileRight
                       #pictureBox
                        if(user.picture)
@@ -527,13 +526,13 @@ block bodycontent
                     video(id='testvideo2', autoplay='true', muted='true', width='160', class='videoelement')
                   br
                   div(style='text-align:center;')
-                    button.btn.btn-default(ng-click='checkDeviceAccess()') Test Audio/Video
+                    button.myButton(ng-click='checkDeviceAccess()') Test Audio/Video
                   br
                   br
                   b Note:
                   | Latest version of Google Chrome is recommended.
           div(style='text-align:right;')
-            button.btn.btn-default(ng-click='openSettings()') Hide Me!
+            button.myButton1(ng-click='openSettings()') Hide Me!
         //fullBodyLightCoverShow(ng-show='isCallSelected() || isInviteSelected() || isSettingsSelected() || isMeetingSelected()')
 
         block appbodycontent
