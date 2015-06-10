@@ -25,22 +25,19 @@ angular.module('kiboRtc.services')
       //console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
       if (!isStarted && isChannelReady && !iJoinLate) {
 
-        // todo this from other service
-        createPeerConnection();
-        pc[pcIndex].addStream(localStream);
+        RTCConferenceCore.createPeerConnection(pcIndex);
         isStarted = true;
 
         if (isInitiator) {
-          doCall();
+          RTCConferenceCore.createAndSendOffer(pcIndex, toUserName);
         }
       }
       else if(iJoinLate){
-        // todo this from other service
-        createPeerConnection();
-        pc[pcIndex].addStream(localStream);
+
+        RTCConferenceCore.createPeerConnection(pcIndex);
         isStarted = true;
         //console.log('Im about to call')
-        doCall();
+        RTCConferenceCore.createAndSendOffer(pcIndex, toUserName);
         //sendMessage({msg: 'You can join', FromUser : $scope.user.username});//doCall();
       }
     }
@@ -59,8 +56,20 @@ angular.module('kiboRtc.services')
           maybeStart();
         }
 
+        $rootScope.$broadcast('localStreamCaptured');
+
       })
     }
+
+    window.onbeforeunload = function(e){
+      //var endTime = new Date();
+      //$scope.meetingData.EndTime = endTime.toUTCString();
+      //$scope.recordMeetingData();
+      Signalling.sendMessage('bye');
+      // todo this needs work
+      //RTCConferenceCore.leaveMeeting();
+      //localStream.stop(); // todo this should be in service
+    };
 
     return {
 
@@ -172,6 +181,7 @@ angular.module('kiboRtc.services')
         }
 
       }
+
       else if (message.msg === 'screen close' && message.ToUser == $scope.user.username) {
 
         screenSharePCIndex++;
@@ -203,14 +213,15 @@ angular.module('kiboRtc.services')
         }
 
       }
-      else if (message.type === 'offer') {
+
+      else if (message.payload.type === 'offer') {
         toUserName = message.FromUser;
         if (!iJoinLate && !isStarted) {
           if (!isInitiator && !isStarted) {
             maybeStart();
           }
-          pc[pcIndex].setRemoteDescription(new RTCSessionDescription(message));
-          doAnswer();
+          RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
+          RTCConferenceCore.createAndSendAnswer(pcIndex, toUserName);
         }
         else if (message.sharingScreen === 'open') {
           toUserName = message.FromUser;
@@ -274,30 +285,37 @@ angular.module('kiboRtc.services')
           }
         }
         else if (!iJoinLate && isStarted) {
-          if (message.ToUser == $scope.user.username) {
-            createPeerConnection();
-            pc[pcIndex].addStream(localStream);
-            //console.log('I GOT OFFER FROM '+ toUserName)
-            pc[pcIndex].setRemoteDescription(new RTCSessionDescription(message));
-            doAnswer();
+          if (message.ToUser == username) {
+            RTCConferenceCore.createPeerConnection(pcIndex);
+            console.log('I GOT OFFER FROM '+ toUserName)
+            RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
+            RTCConferenceCore.createAndSendAnswer(pcIndex, toUserName);
           }
         }
-      } else if (message.type === 'answer' && isStarted) {
+      }
+
+      else if (message.type === 'answer' && isStarted) {
         toUserName = message.FromUser;
-        if (message.ToUser == $scope.user.username) {
+        if (message.ToUser == username) {
           //console.log('I RECEIVED ANSWER FROM '+ message.FromUser)
-          pc[pcIndex].setRemoteDescription(new RTCSessionDescription(message));
+          RTCConferenceCore.setToUserName(toUserName);
+          RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
         }
-      } else if (message.type === 'candidate' && isStarted) {
+      }
+
+      else if (message.type === 'candidate' && isStarted) {
         toUserName = message.FromUser;
-        if (message.ToUser == $scope.user.username) {//(message.FromUser != $scope.user.username){
+        if (message.ToUser == username) {
           var candidate = new RTCIceCandidate({
-            sdpMLineIndex: message.label,
-            candidate: message.candidate
+            sdpMLineIndex: message.payload.label,
+            candidate: message.payload.candidate
           });
-          pc[pcIndex].addIceCandidate(candidate);
+          RTCConferenceCore.setToUserName(toUserName);
+          RTCConferenceCore.addIceCandidate(candidate, pcIndex);
         }
-      } else if (message.msg === 'bye' && isStarted) {
+      }
+
+      else if (message.msg === 'bye' && isStarted) {
 
         if (otherPeers.indexOf(message.FromUser) == 0) {
           $scope.firstVideoAdded = false;

@@ -8,15 +8,21 @@ angular.module('cloudKiboApp')
         ////////////////////////////////////////////////////////////////////////////////////////
 
 
+        var remoteaudio1 = document.getElementById("remoteaudio1");
+        remoteaudio1.src = null;
+        var remoteaudio2 = document.getElementById("remoteaudio2");
+        remoteaudio2.src = null;
+        var remoteaudio3 = document.getElementById("remoteaudio3");
+        remoteaudio3.src = null;
+        var remoteaudio4 = document.getElementById("remoteaudio4");
+        remoteaudio4.src = null;
+
         var remotevideo1 = document.getElementById("remotevideo1");
         remotevideo1.src = null;
-
         var remotevideo2 = document.getElementById("remotevideo2");
         remotevideo2.src = null;
-
         var remotevideo3 = document.getElementById("remotevideo3");
         remotevideo3.src = null;
-
         var remotevideo4 = document.getElementById("remotevideo4");
         remotevideo4.src = null;
 
@@ -47,6 +53,13 @@ angular.module('cloudKiboApp')
 
           $scope.roomname = roomid;
 
+          var audioelements = {
+            remote1 : remoteaudio1,
+            remote2 : remoteaudio2,
+            remote3 : remoteaudio3,
+            remote4 : remoteaudio4
+          };
+
           var videoelements = {
             remote1 : remotevideo1,
             remote2 : remotevideo2,
@@ -61,7 +74,8 @@ angular.module('cloudKiboApp')
             RTCConference.joinMeeting({
               username : $scope.user.username,
               room : $scope.roomname,
-              video_elements : videoelements
+              video_elements : videoelements,
+              audio_elements : audioelements
             });
 
           }
@@ -77,7 +91,8 @@ angular.module('cloudKiboApp')
             RTCConference.joinMeeting({
               username : $scope.user.username,
               room : $scope.roomname,
-              video_elements : videoelements
+              video_elements : videoelements,
+              audio_elements : audioelements
             });
 
           }
@@ -140,11 +155,21 @@ angular.module('cloudKiboApp')
             return $scope.peer2Joined;
         };
 
+        $scope.$on('peer2Joined', function(){
+          $scope.peer2Joined = true;
+          $scope.meetingRemoteVideoWidth = '30%';
+        });
+
         $scope.peer3Joined = false;
 
         $scope.hasPeer3Joined = function(){
             return $scope.peer3Joined;
         };
+
+        $scope.$on('peer3Joined', function(){
+          $scope.peer3Joined = true;
+          $scope.meetingRemoteVideoWidth = '30%';
+        });
 
         $scope.peer4Joined = false;
 
@@ -152,11 +177,20 @@ angular.module('cloudKiboApp')
             return $scope.peer4Joined;
         };
 
+        $scope.$on('peer4Joined', function(){
+          $scope.peer4Joined = true;
+          $scope.meetingRemoteVideoWidth = '30%';
+        });
+
         $scope.peerSharedScreen = false;
 
         $scope.hasPeerSharedScreen = function(){
             return $scope.peerSharedScreen;
         };
+
+        $scope.$on('ScreenShared', function(){
+          $scope.peerSharedScreen = true;
+        });
 
         $scope.screenSharedLocal = false;
 
@@ -202,27 +236,11 @@ angular.module('cloudKiboApp')
         // Signaling Logic                                                                    //
         ///////////////////////////////////////////////////////////////////////////////////////
 
-        window.onbeforeunload = function(e){
-            //var endTime = new Date();
-            //$scope.meetingData.EndTime = endTime.toUTCString();
-            //$scope.recordMeetingData();
-            RTCConference.sendMessage({msg: 'bye', FromUser : $scope.user.username});
-            RTCConference.leaveMeeting();
-            //localStream.stop(); // todo this should be in service
-        };
+
 
         // todo this should go to service
         $scope.screenCloseTimeOut = function(){
             sendMessage({msg: 'screen close', FromUser : $scope.user.username, ToUser : toUserName});
-        };
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // WebRTC logic                                                                       //
-        ///////////////////////////////////////////////////////////////////////////////////////
-
-        // todo this should go to service
-        $scope.screenTimeOut = function(){
-            sendMessage({msg: 'got screen', FromUser : $scope.user.username, ToUser : toUserName});
         };
 
 
@@ -232,14 +250,9 @@ angular.module('cloudKiboApp')
         // Media Stream Logic                                                                 //
         ///////////////////////////////////////////////////////////////////////////////////////
 
-        var localPeerConnection, remotePeerConnection;
-
-        function handleUserMedia(newStream){
-
-            $scope.localCameraOn = true;
-
-
-        }
+        $scope.$on('localStreamCaptured', function(){
+          $scope.localCameraOn = true;
+        });
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // Screen Sharing Logic                                                               //

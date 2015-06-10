@@ -6,13 +6,14 @@
  */
 
 angular.module('kiboRtc.services')
-  .factory('RTCConferenceCore', function RTCConference($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
+  .factory('RTCConferenceCore', function RTCConference($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling, $timeout) {
 
-    var pcIndex = 0;
+    var pcIndexTemp = 0;
     var pcLength = 4;
 
     var roomname;
     var username;
+    var toUserName
 
     var isChannelReady;
     /* It is used to check Data Channel is ready or not */
@@ -24,8 +25,11 @@ angular.module('kiboRtc.services')
     var sendChannel = [];
     var receiveChannel;
 
-    var localStream;
-    var localStreamScreen;
+    var localAudioStream;
+    var localVideoStream;
+
+    var audioShared = false;
+    var videoShared = false;
 
     var pc = [];
     /* Array of Peer Connection Objects */
@@ -57,11 +61,11 @@ angular.module('kiboRtc.services')
     var VIDEO = 'video';
     /* Constant defining video */
 
-    $scope.firstVideoAdded = false;
-    $scope.secondVideoAdded = false;
-    $scope.thirdVideoAdded = false;
-    $scope.forthVideoAdded = false;
-    $scope.switchingScreenShare = false;
+    var firstVideoAdded = false;
+    var secondVideoAdded = false;
+    var thirdVideoAdded = false;
+    var forthVideoAdded = false;
+    var switchingScreenShare = false;
 
     return {
 
@@ -103,38 +107,41 @@ angular.module('kiboRtc.services')
        * that the local peer has got the camera and mic access and it adds the stream to peer connection object.
        * todo this needs some work
        */
-      createPeerConnection: function () {
+      createPeerConnection: function (pcInd) {
         try {
-          //
-          //Different URL way for FireFox
-          //
-          pc[pcIndex] = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
-          pc[pcIndex].onicecandidate = handleIceCandidate;
-          pc[pcIndex].onaddstream = handleRemoteStreamAdded;
-          pc[pcIndex].onremovestream = handleRemoteStreamRemoved;
+
+          pc[pcInd] = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
+          pc[pcInd].onicecandidate = handleIceCandidate;
+          pc[pcInd].onaddstream = handleRemoteStreamAdded;
+          pc[pcInd].onremovestream = handleRemoteStreamRemoved;
 
           //if (isInitiator) {
           try {
             // Reliable Data Channels not yet supported in Chrome
             try {
-              sendChannel[pcIndex] = pc[pcIndex].createDataChannel("sendDataChannel", {reliable: true});
+              sendChannel[pcInd] = pc[pcInd].createDataChannel("sendDataChannel", {reliable: true});
             }
             catch (e) {
               console.log('UNRELIABLE DATA CHANNEL')
-              sendChannel[pcIndex] = pc[pcIndex].createDataChannel("sendDataChannel", {reliable: false});
+              sendChannel[pcInd] = pc[pcInd].createDataChannel("sendDataChannel", {reliable: false});
             }
-            sendChannel[pcIndex].onmessage = handleMessage;
+            sendChannel[pcInd].onmessage = handleMessage;
             trace('Created send data channel');
           } catch (e) {
             alert('Failed to create data channel. ' +
             'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
             trace('createDataChannel() failed with exception: ' + e.message);
           }
-          sendChannel[pcIndex].onopen = handleSendChannelStateChange;
-          sendChannel[pcIndex].onclose = handleSendChannelStateChange;
+          sendChannel[pcInd].onopen = handleSendChannelStateChange;
+          sendChannel[pcInd].onclose = handleSendChannelStateChange;
           // } else {
-          pc[pcIndex].ondatachannel = gotReceiveChannel;
-          pc.addStream(localStream);
+          pc[pcInd].ondatachannel = gotReceiveChannel;
+
+          if(audioShared)
+            pc[pcInd].addStream(localAudioStream);
+          else
+            pc[pcInd].addStream(localVideoStream);
+
           // }
         } catch (e) {
           console.log('Failed to create PeerConnection, exception: ' + e.message);
@@ -149,8 +156,10 @@ angular.module('kiboRtc.services')
        * and handle the create offer error. Application doesn't need to care about these functions.
        *
        */
-      createAndSendOffer: function () {
-        pc[pcIndex].createOffer(setLocalAndSendMessage, handleCreateOfferError);
+      createAndSendOffer: function (pcInd, toUser) {
+        pcIndexTemp = pcInd;
+        toUserName = toUser;
+        pc[pcInd].createOffer(setLocalAndSendMessage, handleCreateOfferError);
       },
 
       /**
@@ -161,8 +170,10 @@ angular.module('kiboRtc.services')
        * Subsequently, application must call this function to send answer.
        *
        */
-      createAndSendAnswer: function () {
-        pc[pcIndex].createAnswer(setLocalAndSendMessage, function (error) {
+      createAndSendAnswer: function (pcInd, toUser) {
+        pcIndexTemp = pcInd;
+        toUserName = toUser;
+        pc[pcInd].createAnswer(setLocalAndSendMessage, function (error) {
           console.log(error)
         }, sdpConstraints);
       },
@@ -173,8 +184,8 @@ angular.module('kiboRtc.services')
        *
        * @param message It is the remote description sent to the local peer
        */
-      setRemoteDescription: function (message) {
-        pc.setRemoteDescription(new RTCSessionDescription(message));
+      setRemoteDescription: function (message, pcInd) {
+        pc[pcInd].setRemoteDescription(new RTCSessionDescription(message));
       },
 
       /**
@@ -185,12 +196,12 @@ angular.module('kiboRtc.services')
        *
        * @param message It is the remote candidate sent to the local peer
        */
-      addIceCandidate: function (message) {
+      addIceCandidate: function (message, pcInd) {
         var candidate = new RTCIceCandidate({
           sdpMLineIndex: message.label,
           candidate: message.candidate
         });
-        pc.addIceCandidate(candidate);
+        pc[pcInd].addIceCandidate(candidate);
       },
 
       /**
@@ -456,8 +467,8 @@ angular.module('kiboRtc.services')
         return iJoinLate;
       },
 
-      stopLocalStream: function () {
-        localStream.stop();
+      setToUserName: function(username) {
+        toUserName = username;
       }
     };
 
@@ -475,13 +486,11 @@ angular.module('kiboRtc.services')
     function handleIceCandidate(event) {
       if (event.candidate) {
         console.log('I got candidate...');
-        sendMessage({
+        Signalling.sendMessageForMeeting({
           type: 'candidate',
           label: event.candidate.sdpMLineIndex,
           id: event.candidate.sdpMid,
-          candidate: event.candidate.candidate,
-          FromUser: $scope.user.username,
-          ToUser : toUserName});
+          candidate: event.candidate.candidate}, toUserName);
       } else {
         console.log('End of candidates.');
       }
@@ -494,39 +503,13 @@ angular.module('kiboRtc.services')
      * Signalling service for more information on it.
      *
      * @param sessionDescription description about the session
-     * todo This needs work and also injecting the values won't work
      */
     function setLocalAndSendMessage(sessionDescription) {
 
-      if($scope.screenSharedLocal == false){
-        sessionDescription.FromUser = $scope.user.username;
-        sessionDescription.ToUser = toUserName;
-        // Set Opus as the preferred codec in SDP if Opus is present.
-        pc[pcIndex].setLocalDescription(sessionDescription);
-      }
-      else{
-        sessionDescription.FromUser = $scope.user.username;
-
-        //console.log('INSIDE CONDITION SCREEN SHARE')
-
-        if($scope.closingScreenShare == false){
-          sessionDescription.sharingScreen = 'open';
-          console.log('SHARING THE SCREEN')
-        }
-        else{
-          sessionDescription.sharingScreen = 'close';
-          console.log('CLOSING THE SCREEN');
-          $scope.screenSharedLocal = false;
-        }
-
-        // Set Opus as the preferred codec in SDP if Opus is present.
-        pc[screenSharePCIndex].setLocalDescription(sessionDescription);
-      }
-
-      //console.log('setLocalAndSendMessage sending message' , sessionDescription);
+      pc[pcIndexTemp].setLocalDescription(sessionDescription);
 
       //console.log(''+ sessionDescription.FromUser +' sending Offer or Answer to ', toUserName)
-      sendMessage(sessionDescription);
+      Signalling.sendMessageForMeeting(sessionDescription, toUserName);
     }
 
     /**
@@ -553,61 +536,65 @@ angular.module('kiboRtc.services')
     function handleRemoteStreamAdded(event) {
       console.log('Remote stream added. ');//, event);
 
-      if($scope.firstVideoAdded == false){
-        remotevideo1.src = URL.createObjectURL(event.stream);
-        remoteStream1 = event.stream;
-        $scope.firstVideoAdded = true;
-        console.log('added in 1')
+      if (event.stream.getVideoTracks().length) {
+
+        if(firstVideoAdded == false){
+          $rootScope.$broadcast('peer1Joined');
+
+          console.log('added in 1');
+
+          remotevideo1.src = URL.createObjectURL(event.stream);
+          remoteStream1 = event.stream;
+          firstVideoAdded = true;
+        }
+        else if(firstVideoAdded == true && secondVideoAdded == false){
+          $rootScope.$broadcast('peer2Joined');
+
+          console.log('added in 2');
+
+          remotevideo2.src = URL.createObjectURL(event.stream);
+          remoteStream2 = event.stream;
+          secondVideoAdded = true;
+        }
+        else if(firstVideoAdded == true && secondVideoAdded == true && thirdVideoAdded == false){
+          $rootScope.$broadcast('peer3Joined');
+
+          console.log('added in 3');
+
+          remotevideo3.src = URL.createObjectURL(event.stream);
+          remoteStream3 = event.stream;
+          thirdVideoAdded = true;
+        }
+        else if(firstVideoAdded == true && secondVideoAdded == true && thirdVideoAdded == true && forthVideoAdded == false){
+          $rootScope.$broadcast('peer4Joined');
+
+          console.log('added in 4');
+
+          remotevideo4.src = URL.createObjectURL(event.stream);
+          remoteStream4 = event.stream;
+          forthVideoAdded = true;
+        }
+
+        // todo screen switching would need work
+        if(switchingScreenShare == true){
+          $rootScope.$broadcast('ScreenShared');
+
+          remoteVideoScreen.src = URL.createObjectURL(event.stream);
+          remoteStreamScreen = event.stream;
+          switchingScreenShare = false;
+
+          console.log('added in screen');
+
+          // todo this needs to be understood
+          $timeout(function(){
+            Signalling.sendMessageForMeeting('got screen', toUserName);
+          }, 4000);
+
+        }
+
       }
-      else if($scope.firstVideoAdded == true && $scope.secondVideoAdded == false){
-        $scope.$apply(function(){
-          $scope.peer2Joined = true;
-        });
 
-        console.log('added in 2')
 
-        $scope.meetingRemoteVideoWidth = '30%';//$scope.meetingRemoteVideoWidth = 560/2;
-
-        remotevideo2.src = URL.createObjectURL(event.stream);
-        remoteStream2 = event.stream;
-        $scope.secondVideoAdded = true;
-      }
-      else if($scope.firstVideoAdded == true && $scope.secondVideoAdded == true && $scope.thirdVideoAdded == false){
-        $scope.$apply(function(){
-          $scope.peer3Joined = true;
-        });
-
-        console.log('added in 3')
-
-        $scope.meetingRemoteVideoWidth = '30%';//$scope.meetingRemoteVideoWidth = 560/2;
-
-        remotevideo3.src = URL.createObjectURL(event.stream);
-        remoteStream3 = event.stream;
-        $scope.thirdVideoAdded = true;
-      }
-      else if($scope.firstVideoAdded == true && $scope.secondVideoAdded == true && $scope.thirdVideoAdded == true && $scope.forthVideoAdded == false){
-        $scope.$apply(function(){
-          $scope.peer4Joined = true;
-        });
-
-        $scope.meetingRemoteVideoWidth = '30%';//$scope.meetingRemoteVideoWidth = 560/2;
-
-        remotevideo4.src = URL.createObjectURL(event.stream);
-        remoteStream4 = event.stream;
-        $scope.forthVideoAdded = true;
-        console.log('added in 4')
-      }
-
-      if($scope.switchingScreenShare == true){
-        remoteVideoScreen.src = URL.createObjectURL(event.stream);
-        remoteStreamScreen = event.stream;
-        $scope.switchingScreenShare = false;
-
-        console.log('added in screen')
-        $timeout($scope.screenTimeOut, 4000);
-
-        //return ;
-      }
 
     }
 
@@ -689,7 +676,6 @@ angular.module('kiboRtc.services')
      * @param type Stream type should be specified here. Possible values are 'audio' and 'video'
      * @param cb Callback function should be given here
      *
-     * todo needs some work
      */
     function captureMedia(constraints, type, cb) {
 
@@ -702,7 +688,7 @@ angular.module('kiboRtc.services')
           }
           else if (type == VIDEO) {
             localVideoStream = newStream;
-            localVideo.src = URL.createObjectURL(newStream);
+            localvideo.src = URL.createObjectURL(newStream);
             videoShared = true;
           }
 
