@@ -210,6 +210,7 @@ angular.module('kiboRtc.services')
        * @param message It is the remote description sent to the local peer
        */
       setRemoteDescription: function (message, pcInd) {
+        console.log('setting remote description ', message);
         pc[pcInd].setRemoteDescription(new RTCSessionDescription(message));
       },
 
@@ -226,6 +227,7 @@ angular.module('kiboRtc.services')
           sdpMLineIndex: message.label,
           candidate: message.candidate
         });
+        console.log('adding ice candidate ', candidate);
         pc[pcInd].addIceCandidate(candidate);
       },
 

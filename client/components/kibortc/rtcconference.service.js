@@ -219,7 +219,7 @@ angular.module('kiboRtc.services')
         }
       }
 
-      else if (message.type === 'answer' && isStarted) {
+      else if (message.payload.type === 'answer' && isStarted) {
         toUserName = message.FromUser;
         if (message.ToUser == username) {
           //console.log('I RECEIVED ANSWER FROM '+ message.FromUser)
@@ -228,15 +228,11 @@ angular.module('kiboRtc.services')
         }
       }
 
-      else if (message.type === 'candidate' && isStarted) {
+      else if (message.payload.type === 'candidate' && isStarted) {
         toUserName = message.FromUser;
         if (message.ToUser == username) {
-          var candidate = new RTCIceCandidate({
-            sdpMLineIndex: message.payload.label,
-            candidate: message.payload.candidate
-          });
           RTCConferenceCore.setToUserName(toUserName);
-          RTCConferenceCore.addIceCandidate(candidate, pcIndex);
+          RTCConferenceCore.addIceCandidate(message.payload, pcIndex);
         }
       }
 
