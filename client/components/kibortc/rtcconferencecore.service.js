@@ -1,88 +1,86 @@
 'use strict';
 
 /**
- * This is core WebRTC one-to-one video call service. It depends on the Signalling Service for doing signalling.
- * Furthermore, it uses services from configuration too. To use this, one should follow the WebRTC call procedure.
- * Here it is mostly same as standard procedure of a WebRTC call, but this service hides much of the details from
- * application. Before starting a video call, initialize function must be called and it must be given reference of
- * HTML video elements. This service automatically attaches the remote and local streams to these video elements.
- * It also takes care of both local and remote screen sharing streams. Application must call the functions in
- * following order:
- *
- * 1. Call the initialize() function when controller loads
- * 2. Call the initilizeSignalling() function if not called initialize() function of signalling service
- * 3. Capture the audio & video using captureUserMedia()
- * 4. If both peers has captured the camera then initiator would call the createPeerConnection() function
- * (NOTE: It is responsibility of the application to make sure both peers have got the media access. Application
- * may use the Signalling Service for this purpose)
- * 5. Initiator subsequently would call the createAndSendOffer() method
- * 6. Other peer would receive the offer and would call createPeerConnection()
- * 7. Subsequently, other peer would set the received SDP using setRemoteDescription()
- * (NOTE: For now, it is the responsibility of application to listen to "message" on socket.io for offer, answer
- * and other WebRTC signalling messages)
- * 8. Other peer would now call createAndSendAnswer() function
- * 9. Subsequently, service would automatically get the ICECandidates and send them to other peer
- * (NOTE: Also for ICECandidates, application should listen to "message" and invoke the setRemoteDescription() if
- * the message type is candidate)
- * 10. To end the call, application must call the endConnection() function, however it is application's responsibility
- * to clean the User Interface or change it accordingly.
+ * This module was intended to make conference call code more modular. This is not used for now and is also
+ * incomplete, as rewriting of conference code was delayed.
  */
 
 angular.module('kiboRtc.services')
-  .factory('WebRTC', function WebRTC($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, audio_constraints, Signalling) {
+  .factory('RTCConferenceCore', function RTCConference($rootScope, pc_config, pc_constraints, sdpConstraints, audio_constraints, video_constraints, Signalling, $timeout) {
 
+    var pcIndexTemp = 0;
+    var pcLength = 4;
+
+    var roomname;
+    var username;
+    var toUserName
+
+    var isChannelReady;
+    /* It is used to check Data Channel is ready or not */
     var isInitiator = false;
     /* It indicates which peer is the initiator of the call */
     var isStarted = false;
     /* It indicates whether the WebRTC session is started or not */
 
-    var localVideoStream;
-    /* It holds local camera stream */
+    var sendChannel = [];
+    var receiveChannel;
+
     var localAudioStream;
-    /* It holds local audio stream */
-    var localStreamScreen;
-    /* It holds local screen sharing stream */
+    var localVideoStream;
 
-    var videoShared = false;
-    /* Booelean variable to check if local video is shared or not */
     var audioShared = false;
-    /* Booelean variable to check if local audio is shared or not */
+    var videoShared = false;
 
-    var pc;
-    /* Peer Connection object */
+    var pc = [];
+    /* Array of Peer Connection Objects */
 
-    var remoteVideoStream = null;
-    /* It holds the other peer's camera stream */
-    var remoteAudioStream = null;
-    /* It holds the other peer's audio stream */
-    var remoteStreamScreen = null;
-    /* It holds the other peer's screen sharing stream */
+    var remoteAudioStream1;
+    var remoteAudioStream2;
+    var remoteAudioStream3;
+    var remoteAudioStream4;
 
-    var localVideo;
-    /* It is the HTML5 video element to hold local peer's video */
-    var localVideoScreen;
-    /* It is the HTML5 video element to hold local screen sharing video */
+    var remoteVideoStream1;
+    var remoteVideoStream2;
+    var remoteVideoStream3;
+    var remoteVideoStream4;
 
-    var remoteVideo;
-    /* It is the HTML5 video element to hold other peer's video */
-    var remoteAudio;
-    /* It is the HTML5 audio element to hold other peer's audio */
+    var remoteStreamScreen;
+
+    var remoteaudio1;
+    var remoteaudio2;
+    var remoteaudio3;
+    var remoteaudio4;
+
+    var remotevideo1;
+    var remotevideo2;
+    var remotevideo3;
+    var remotevideo4;
+
     var remoteVideoScreen;
-    /* It is the HTML5 video element to hold other peer's screen sharing video */
 
-    var screenShared = false;
-    /* This boolean variable indicates if the other party has shared the screen */
+    var localvideo;
 
-    var sharingVideo = false;
-    /* This boolean variable indicates if the other party is going to share video */
+    var iJoinLate = false;
 
-    var hidingVideo = false;
-    /* This boolean variable indicates if the other party is going to hide video */
+    var screenSharePCIndex = 0;
+
+    var turnReady;
 
     var AUDIO = 'audio';
     /* Constant defining audio */
     var VIDEO = 'video';
     /* Constant defining video */
+
+    var firstAudioAdded = false;
+    var secondAudioAdded = false;
+    var thirdAudioAdded = false;
+    var forthAudioAdded = false;
+
+    var firstVideoAdded = false;
+    var secondVideoAdded = false;
+    var thirdVideoAdded = false;
+    var forthVideoAdded = false;
+    var switchingScreenShare = false;
 
     return {
 
@@ -92,19 +90,34 @@ angular.module('kiboRtc.services')
        * Service would attach the local and incoming streams to these video elements by itself. You must get
        * the reference of these elements and pass them as parameters.
        *
-       * @param localvideo Video Element to hold local peer's webcam video
-       * @param localaudio Audio Element to hold local peer's audio
-       * @param localvideoscreen Video Element to hold local peer's screen
-       * @param remotevideo Video Element to hold remote peer's webcam video
-       * @param remoteaudio Audio Element to hold remote peer's audio
-       * @param remotevideoscreen Video Element to hold remote peer's screen
+       * @param remVid1
+       * @param remVid2
+       * @param remVid3
+       * @param remVid4
+       * @param remVidScr
+       * @param locVid
        */
-      initialize: function (localvideo, localvideoscreen, remotevideo, remoteaudio, remotevideoscreen) {
-        localVideo = localvideo;
-        localVideoScreen = localvideoscreen;
-        remoteVideo = remotevideo;
-        remoteAudio = remoteaudio;
-        remoteVideoScreen = remotevideoscreen;
+      initialize: function (video_elements, audio_elements, pc_length) {
+        remoteaudio1 = audio_elements.remote1;
+        remoteaudio2 = audio_elements.remote2;
+        remoteaudio3 = audio_elements.remote3;
+        remoteaudio4 = audio_elements.remote4;
+
+        remotevideo1 = video_elements.remote1;
+        remotevideo2 = video_elements.remote2;
+        remotevideo3 = video_elements.remote3;
+        remotevideo4 = video_elements.remote4;
+
+        remoteVideoScreen = video_elements.remoteScreen;
+        localvideo = video_elements.local;
+
+        pcLength = pc_length;
+        pc = new Array(pcLength);
+
+        for(var i = 0; i<pcLength; i++){
+          pc[i] = null;
+        }
+
       },
 
       /**
@@ -113,16 +126,52 @@ angular.module('kiboRtc.services')
        * pc_config service from the configurations. Furthermore, service attaches some private callback functions
        * to some WebRTC connection events. Application doesn't need to care about them. This function assumes
        * that the local peer has got the camera and mic access and it adds the stream to peer connection object.
-       *
+       * todo this needs some work
        */
-      createPeerConnection: function () {
-        pc = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
-        pc.onicecandidate = handleIceCandidate;
-        pc.onaddstream = handleRemoteStreamAdded;
-        pc.onremovestream = handleRemoteStreamRemoved;
-        pc.addStream(localAudioStream);
-        if (localVideoStream)
-          pc.addStream(localVideoStream);
+      createPeerConnection: function (pcInd) {
+        try {
+
+          pc[pcInd] = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
+          pc[pcInd].onicecandidate = handleIceCandidate;
+          pc[pcInd].onaddstream = handleRemoteStreamAdded;
+          pc[pcInd].onremovestream = handleRemoteStreamRemoved;
+/*
+          //if (isInitiator) {
+          try {
+            // Reliable Data Channels not yet supported in Chrome
+            try {
+              sendChannel[pcInd] = pc[pcInd].createDataChannel("sendDataChannel", {reliable: true});
+            }
+            catch (e) {
+              console.log('UNRELIABLE DATA CHANNEL')
+              sendChannel[pcInd] = pc[pcInd].createDataChannel("sendDataChannel", {reliable: false});
+            }
+            sendChannel[pcInd].onmessage = handleMessage;
+            trace('Created send data channel');
+          } catch (e) {
+            alert('Failed to create data channel. ' +
+            'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
+            trace('createDataChannel() failed with exception: ' + e.message);
+          }
+          sendChannel[pcInd].onopen = handleSendChannelStateChange;
+          sendChannel[pcInd].onclose = handleSendChannelStateChange;
+          // } else {
+          pc[pcInd].ondatachannel = gotReceiveChannel;
+*/
+          if(audioShared) {
+            pc[pcInd].addStream(localAudioStream);
+            console.log('added audio stream to pc', localAudioStream);
+          }
+          else {
+            pc[pcInd].addStream(localVideoStream);
+            console.log('added video stream to pc ', localVideoStream);
+          }
+
+          // }
+        } catch (e) {
+          console.log('Failed to create PeerConnection, exception: ' + e.message);
+          alert('Cannot create RTCPeerConnection object.');
+        }
       },
 
       /**
@@ -132,8 +181,10 @@ angular.module('kiboRtc.services')
        * and handle the create offer error. Application doesn't need to care about these functions.
        *
        */
-      createAndSendOffer: function () {
-        pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+      createAndSendOffer: function (pcInd, toUser) {
+        pcIndexTemp = pcInd;
+        toUserName = toUser;
+        pc[pcInd].createOffer(setLocalAndSendMessage, handleCreateOfferError);
       },
 
       /**
@@ -144,8 +195,10 @@ angular.module('kiboRtc.services')
        * Subsequently, application must call this function to send answer.
        *
        */
-      createAndSendAnswer: function () {
-        pc.createAnswer(setLocalAndSendMessage, function (error) {
+      createAndSendAnswer: function (pcInd, toUser) {
+        pcIndexTemp = pcInd;
+        toUserName = toUser;
+        pc[pcInd].createAnswer(setLocalAndSendMessage, function (error) {
           console.log(error)
         }, sdpConstraints);
       },
@@ -156,8 +209,8 @@ angular.module('kiboRtc.services')
        *
        * @param message It is the remote description sent to the local peer
        */
-      setRemoteDescription: function (message) {
-        pc.setRemoteDescription(new RTCSessionDescription(message));
+      setRemoteDescription: function (message, pcInd) {
+        pc[pcInd].setRemoteDescription(new RTCSessionDescription(message));
       },
 
       /**
@@ -168,12 +221,12 @@ angular.module('kiboRtc.services')
        *
        * @param message It is the remote candidate sent to the local peer
        */
-      addIceCandidate: function (message) {
+      addIceCandidate: function (message, pcInd) {
         var candidate = new RTCIceCandidate({
           sdpMLineIndex: message.label,
           candidate: message.candidate
         });
-        pc.addIceCandidate(candidate);
+        pc[pcInd].addIceCandidate(candidate);
       },
 
       /**
@@ -292,26 +345,18 @@ angular.module('kiboRtc.services')
         isStarted = false;
         isInitiator = false;
 
-        //console.log(localStream);
+        console.log(localStream);
 
-        if (localVideoStream) {
-          localVideoStream.stop();
-        }
-        if (localAudioStream) {
-          localAudioStream.stop();
+        if (localStream) {
+          localStream.stop();
         }
         if (localStreamScreen) {
           localStreamScreen.stop();
         }
-        if (remoteVideoStream) {
-          remoteVideoStream.stop();
+        if (remoteStream) {
+          remoteStream.stop();
           remoteVideo.src = null;
-          remoteVideoStream = null;
-        }
-        if (remoteAudioStream) {
-          remoteAudioStream.stop();
-          remoteAudio.src = null;
-          remoteAudioStream = null;
+          remoteStream = null;
         }
         if (remoteStreamScreen) {
           remoteStreamScreen.stop();
@@ -319,7 +364,7 @@ angular.module('kiboRtc.services')
           remoteStreamScreen = null;
         }
 
-        //console.log(localStream);
+        console.log(localStream);
 
         try {
           pc.close();
@@ -350,7 +395,6 @@ angular.module('kiboRtc.services')
        */
       hideScreen: function () {
         localStreamScreen.stop();
-        localVideoScreen.src = URL.createObjectURL(localVideoStream);
         pc.removeStream(localStreamScreen);
       },
 
@@ -370,7 +414,6 @@ angular.module('kiboRtc.services')
         localVideoScreen.src = URL.createObjectURL(stream);
 
         pc.addStream(stream);
-
       },
 
       /**
@@ -378,8 +421,12 @@ angular.module('kiboRtc.services')
        *
        * @returns {*}
        */
-      getLocalAudioStream: function () {
-        return localAudioStream;
+      getLocalStream: function () {
+        return localStream;
+      },
+
+      getScreenShared: function () {
+        return screenShared;
       },
 
       /**
@@ -421,26 +468,32 @@ angular.module('kiboRtc.services')
         return isStarted;
       },
 
-      /**
-       * Client can check if the local video is being shared or not
-       */
-      isLocalVideoShared: function () {
-        return videoShared;
+      increasePCIndex: function () {
+        pcIndex++;
       },
 
-      /**
-       * Client can check if the local audio is being shared or not
-       */
-      isLocalAudioShared: function () {
-        return audioShared;
+      getPcIndex: function () {
+        return pcIndex;
       },
 
-      setSharingVideo: function (value) {
-        sharingVideo = value;
+      setIsChannelReady: function (value) {
+        isChannelReady = value;
       },
 
-      setHidingVideo: function (value) {
-        hidingVideo = value;
+      getIsChannelReady: function () {
+        return isChannelReady;
+      },
+
+      setIJoinLate: function (value) {
+        iJoinLate = value;
+      },
+
+      getIJoinLate: function () {
+        return iJoinLate;
+      },
+
+      setToUserName: function(username) {
+        toUserName = username;
       }
     };
 
@@ -452,17 +505,19 @@ angular.module('kiboRtc.services')
      * This function is not exposed to application and is handled by library itself.
      *
      * @param event holds the candidate
+     *
+     * todo this needs work and also injecting the values in this won't work
      */
     function handleIceCandidate(event) {
       if (event.candidate) {
-        Signalling.sendMessage({
+        console.log('I got candidate...');
+        Signalling.sendMessageForMeeting({
           type: 'candidate',
           label: event.candidate.sdpMLineIndex,
           id: event.candidate.sdpMid,
-          candidate: event.candidate.candidate
-        });
+          candidate: event.candidate.candidate}, toUserName);
       } else {
-        //console.log('End of candidates.');
+        console.log('End of candidates.');
       }
     }
 
@@ -475,10 +530,11 @@ angular.module('kiboRtc.services')
      * @param sessionDescription description about the session
      */
     function setLocalAndSendMessage(sessionDescription) {
-      // Set Opus as the preferred codec in SDP if Opus is present.
-      pc.setLocalDescription(sessionDescription);
-      //console.log('setLocalAndSendMessage sending message' , sessionDescription);
-      Signalling.sendMessage(sessionDescription);
+
+      pc[pcIndexTemp].setLocalDescription(sessionDescription);
+
+      //console.log(''+ sessionDescription.FromUser +' sending Offer or Answer to ', toUserName)
+      Signalling.sendMessageForMeeting(sessionDescription, toUserName);
     }
 
     /**
@@ -500,24 +556,110 @@ angular.module('kiboRtc.services')
      * to listen to that message and change the UI accordingly i.e. show video element
      *
      * @param event holds the stream sent by the remote peer
+     * todo this needs some work, remove scopes from here
      */
     function handleRemoteStreamAdded(event) {
+      console.log('Remote stream added. ', event.stream);//, event);
+
       if (event.stream.getAudioTracks().length) {
-        remoteAudio.src = URL.createObjectURL(event.stream);
-        remoteAudioStream = event.stream;
+        if(firstAudioAdded == false){
+          $rootScope.$broadcast('peer1Joined');
+
+          console.log('added audio in 1');
+
+          remoteaudio1.src = URL.createObjectURL(event.stream);
+          remoteAudioStream1 = event.stream;
+          firstAudioAdded = true;
+        }
+        else if(firstAudioAdded == true && secondAudioAdded == false){
+          $rootScope.$broadcast('peer2Joined');
+
+          console.log('added audio in 2');
+
+          remoteaudio2.src = URL.createObjectURL(event.stream);
+          remoteAudioStream2 = event.stream;
+          secondAudioAdded = true;
+        }
+        else if(firstAudioAdded == true && secondAudioAdded == true && thirdAudioAdded == false){
+          $rootScope.$broadcast('peer3Joined');
+
+          console.log('added audio in 3');
+
+          remoteaudio3.src = URL.createObjectURL(event.stream);
+          remoteAudioStream3 = event.stream;
+          thirdAudioAdded = true;
+        }
+        else if(firstAudioAdded == true && secondAudioAdded == true && thirdAudioAdded == true && forthAudioAdded == false){
+          $rootScope.$broadcast('peer4Joined');
+
+          console.log('added audio in 4');
+
+          remoteaudio4.src = URL.createObjectURL(event.stream);
+          remoteAudioStream4 = event.stream;
+          forthAudioAdded = true;
+        }
       }
 
       if (event.stream.getVideoTracks().length) {
-        if (!remoteVideoStream || sharingVideo) {
-          remoteVideo.src = URL.createObjectURL(event.stream);
-          remoteVideoStream = event.stream;
-          sharingVideo = false;
-        } else {
+
+        if(firstVideoAdded == false){
+          $rootScope.$broadcast('peer1SharedVideo');
+
+          console.log('added video in 1');
+
+          remotevideo1.src = URL.createObjectURL(event.stream);
+          remoteVideoStream1 = event.stream;
+          firstVideoAdded = true;
+        }
+        else if(firstVideoAdded == true && secondVideoAdded == false){
+          $rootScope.$broadcast('peer2SharedVideo');
+
+          console.log('added video in 2');
+
+          remotevideo2.src = URL.createObjectURL(event.stream);
+          remoteVideoStream2 = event.stream;
+          secondVideoAdded = true;
+        }
+        else if(firstVideoAdded == true && secondVideoAdded == true && thirdVideoAdded == false){
+          $rootScope.$broadcast('peer3SharedVideo');
+
+          console.log('added video in 3');
+
+          remotevideo3.src = URL.createObjectURL(event.stream);
+          remoteVideoStream3 = event.stream;
+          thirdVideoAdded = true;
+        }
+        else if(firstVideoAdded == true && secondVideoAdded == true && thirdVideoAdded == true && forthVideoAdded == false){
+          $rootScope.$broadcast('peer4SharedVideo');
+
+          console.log('added video in 4');
+
+          remotevideo4.src = URL.createObjectURL(event.stream);
+          remoteVideoStream4 = event.stream;
+          forthVideoAdded = true;
+        }
+
+        // todo screen switching would need work
+        if(switchingScreenShare == true){
+          $rootScope.$broadcast('ScreenShared');
+
           remoteVideoScreen.src = URL.createObjectURL(event.stream);
           remoteStreamScreen = event.stream;
-          $rootScope.$broadcast('screenShared');
+          switchingScreenShare = false;
+
+          console.log('added in screen');
+
+          // todo this needs to be understood
+          $timeout(function(){
+            Signalling.sendMessageForMeeting('got screen', toUserName);
+          }, 4000);
+
         }
+
       }
+
+
+
     }
 
     /**
@@ -529,27 +671,65 @@ angular.module('kiboRtc.services')
      * to listen to that message and change the UI accordingly i.e. hide video element
      *
      * @param event
+     *
+     * todo this needs work
      */
     function handleRemoteStreamRemoved(event) {
-      //console.log(event);
-      if(hidingVideo){
-        remoteVideoStream.stop();
-        remoteVideoStream = null;
-        hidingVideo = false;
-      }
+      console.log('Remote stream removed.');// Event: ', event);
+      $scope.$apply(function(){
+        $scope.screenSharedByPeer = false;
+      })
+    }
 
-      if (typeof remoteStreamScreen != 'undefined' && !hidingVideo) {
-        remoteStreamScreen.stop();
-        remoteStreamScreen = null;
-        $rootScope.$broadcast('screenRemoved');
-      }
-      else {
-        remoteStreamScreen.stop();
-        remoteVideoStream.stop();
+    /**
+     * This callback function is used to handle the message sent by other peer. The message is sent using data channel
+     * of WebRTC. It broadcasts this message to the application so that application can use the message.
+     *
+     * @param event contains the data sent by other peer
+     */
+    function handleMessage(event) {
+      //trace('MESSAGE GOT: ' + event.data);
+      //document.getElementById("dataChannelReceive").value = event.data;
 
-        remoteStreamScreen = null;
-        remoteVideoStream = null;
-      }
+      message = event.data;
+
+      $rootScope.$broadcast("dataChannelMessageReceived");
+
+    }
+
+    /**
+     * This callback function is used to handle the sendChannel's state whether it is opened or closed.
+     *
+     * todo: look for more documentation of this from WebRTC
+     */
+    function handleSendChannelStateChange() {
+      var readyState = sendChannel.readyState;
+      //trace('Send channel state is: ' + readyState);
+    }
+
+    /**
+     * This callback function is called by WebRTC whenever the receiving channel is opened. This receiving channel
+     * is the channel through which data travels.
+     *
+     * @param event holds the channel
+     */
+    function gotReceiveChannel(event) {
+      //trace('Receive Channel Callback');
+      sendChannel = event.channel;
+      sendChannel.onmessage = handleMessage;
+      sendChannel.onopen = handleReceiveChannelStateChange;
+      sendChannel.onclose = handleReceiveChannelStateChange;
+    }
+
+    /**
+     * This is used to handle the situation when receive channel is opened or closed. Application should
+     * modify the UI depending on whether the data channel is opened or not.
+     *
+     * todo: notify the change to application using a broadcast
+     */
+    function handleReceiveChannelStateChange() {
+      var readyState = sendChannel.readyState;
+      //trace('Receive channel state is: ' + readyState);
     }
 
     /**
@@ -559,6 +739,7 @@ angular.module('kiboRtc.services')
      * @param constraints Audio or Video constraints should be set here
      * @param type Stream type should be specified here. Possible values are 'audio' and 'video'
      * @param cb Callback function should be given here
+     *
      */
     function captureMedia(constraints, type, cb) {
 
@@ -571,7 +752,7 @@ angular.module('kiboRtc.services')
           }
           else if (type == VIDEO) {
             localVideoStream = newStream;
-            localVideo.src = URL.createObjectURL(newStream);
+            localvideo.src = URL.createObjectURL(newStream);
             videoShared = true;
           }
 
