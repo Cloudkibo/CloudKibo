@@ -27,6 +27,7 @@ angular.module('kiboRtc.services')
 
     var localAudioStream;
     var localVideoStream;
+    var localScreenStream;
 
     var audioShared = false;
     var videoShared = false;
@@ -210,6 +211,7 @@ angular.module('kiboRtc.services')
        * @param message It is the remote description sent to the local peer
        */
       setRemoteDescription: function (message, pcInd) {
+        console.log('setting remote description ', message);
         pc[pcInd].setRemoteDescription(new RTCSessionDescription(message));
       },
 
@@ -226,6 +228,7 @@ angular.module('kiboRtc.services')
           sdpMLineIndex: message.label,
           candidate: message.candidate
         });
+        console.log('adding ice candidate ', candidate);
         pc[pcInd].addIceCandidate(candidate);
       },
 
@@ -234,6 +237,7 @@ angular.module('kiboRtc.services')
        * video has been turned off or on.
        *
        * @param cb callback function to notify application if task was not successful
+       * todo this needs work
        */
       toggleVideo: function (cb) {
         if (videoShared) {
@@ -278,6 +282,7 @@ angular.module('kiboRtc.services')
        * audio has been turned off or on.
        *
        * @param cb callback function to notify application if task was not successful
+       * todo this needs work
        */
       toggleAudio: function (cb) {
         if (audioShared) {
@@ -339,53 +344,55 @@ angular.module('kiboRtc.services')
        * clean or change the UI itself. Both the peers should call this function to end the call.
        * This function cleans many variables and also stop all the local streams so that camera and screen media
        * (if accessed) would be stopped. Finally, it closes the peer connection.
-       *
+       * todo end if for conference needs a lot of work
        */
       endConnection: function () {
-        isStarted = false;
-        isInitiator = false;
 
-        console.log(localStream);
+        if (otherPeers.indexOf(message.FromUser) == 0) {
+          $scope.firstVideoAdded = false;
+          remoteStream1 = null;
+          remotevideo1.src = null;
+        }
+        else if (otherPeers.indexOf(message.FromUser) == 1) {
+          $scope.secondVideoAdded = false;
+          remoteStream2 = null;
+          remotevideo2.src = null;
 
-        if (localStream) {
+          $scope.$apply(function () {
+            $scope.peer2Joined = false;
+          })
+        }
+        else if (otherPeers.indexOf(message.FromUser) == 2) {
+          $scope.thirdVideoAdded = false;
+          remoteStream3 = null;
+          remotevideo3.src = null;
+
+          $scope.$apply(function () {
+            $scope.peer3Joined = false;
+          })
+        }
+        else if (otherPeers.indexOf(message.FromUser) == 3) {
+          $scope.forthVideoAdded = false;
+          remoteStream4 = null;
+          remotevideo4.src = null;
+
+          $scope.$apply(function () {
+            $scope.peer4Joined = false;
+          })
+        }
+
+        if (!$scope.firstVideoAdded && !$scope.secondVideoAdded && !$scope.thirdVideoAdded && !$scope.forthVideoAdded) {
           localStream.stop();
-        }
-        if (localStreamScreen) {
-          localStreamScreen.stop();
-        }
-        if (remoteStream) {
-          remoteStream.stop();
-          remoteVideo.src = null;
-          remoteStream = null;
-        }
-        if (remoteStreamScreen) {
-          remoteStreamScreen.stop();
-          remoteVideoScreen.src = null;
-          remoteStreamScreen = null;
+          $scope.localCameraOn = false;
+          $scope.callEnded = true;
+          console.log("HIN MEI AYO AAA")
         }
 
-        console.log(localStream);
+        pcIndex--;
 
-        try {
-          pc.close();
-        } catch (e) {
-        }
+        pc.splice(pc.indexOf(message.FromUser), 1);
+        sendChannel.splice(sendChannel.indexOf(message.FromUser), 1);
 
-      },
-
-      /**
-       * Initializes the Signalling Service. Application can either initialize the signalling from this service or
-       * by injecting the original Signalling Service and calling the initialize.
-       *
-       * Before starting any WebRTC call, application should give information about username of peers
-       * and name of the room they join on the server.
-       *
-       * @param to Username of the other peer
-       * @param from Username of this peer
-       * @param roomName Name of the socket.io room which both peers must join for signalling
-       */
-      initializeSignalling: function (to, from, roomName) {
-        Signalling.initialize(to, from, roomName);
       },
 
       /**
@@ -393,9 +400,56 @@ angular.module('kiboRtc.services')
        * the local screen stream and also removes the stream from the peer connection object. It is the responsibility
        * of application to call createAndSendOffer() function afterwards to let other peer know about this.
        */
-      hideScreen: function () {
-        localStreamScreen.stop();
-        pc.removeStream(localStreamScreen);
+      hideScreen: function (pcInd, username, otherPeer) {
+        localScreenStream.stop();
+        localvideo.src = URL.createObjectURL(localVideoStream);
+
+        pcIndexTemp = pcInd;
+
+        pc[pcInd].removeStream(localScreenStream);
+
+        pc[pcInd].createOffer(function(sessionDescription){
+          sessionDescription.FromUser = username;
+          sessionDescription.ToUser = otherPeer;
+          //console.log('INSIDE CONDITION SCREEN SHARE')
+
+          var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'close'};
+          console.log('SHARING THE SCREEN')
+
+          // Set Opus as the preferred codec in SDP if Opus is present.
+          pc[pcIndexTemp].setLocalDescription(sessionDescription);
+
+          Signalling.sendMessageForMeeting(payload, otherPeer);
+
+        }, handleCreateOfferError);
+
+      },
+
+      hideScreenToNext: function (pcInd, username, otherPeer) {
+
+        if(typeof pc[pcInd] != 'undefined'){
+
+          pcIndexTemp = pcInd;
+
+          pc[pcInd].removeStream(localScreenStream);
+
+          pc[pcInd].createOffer(function(sessionDescription){
+            sessionDescription.FromUser = username;
+            sessionDescription.ToUser = otherPeer;
+            //console.log('INSIDE CONDITION SCREEN SHARE')
+
+            var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'close'};
+            console.log('CLOSING THE SCREEN');
+
+            // Set Opus as the preferred codec in SDP if Opus is present.
+            pc[pcIndexTemp].setLocalDescription(sessionDescription);
+
+            Signalling.sendMessageForMeeting(payload, otherPeer);
+
+          }, handleCreateOfferError);
+
+        }
+
       },
 
       /**
@@ -409,15 +463,57 @@ angular.module('kiboRtc.services')
        *
        * @param stream Screen sharing stream
        */
-      addStreamForScreen: function (stream) {
-        localStreamScreen = stream;
-        localVideoScreen.src = URL.createObjectURL(stream);
+      shareScreen: function (stream, pcInd, username, otherPeer) {
+        localScreenStream = stream;
+        localvideo.src = URL.createObjectURL(stream);
 
-        pc.addStream(stream);
+        pcIndexTemp = pcInd;
+
+        pc[pcInd].addStream(stream);
+
+        pc[pcInd].createOffer(function(sessionDescription){
+          sessionDescription.FromUser = username;
+          sessionDescription.ToUser = otherPeer;
+          //console.log('INSIDE CONDITION SCREEN SHARE')
+
+          var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'open'};
+          console.log('SHARING THE SCREEN')
+
+          // Set Opus as the preferred codec in SDP if Opus is present.
+          pc[pcIndexTemp].setLocalDescription(sessionDescription);
+
+          Signalling.sendMessageForMeeting(payload, otherPeer);
+
+        }, handleCreateOfferError);
+      },
+
+      shareScreenToNext: function(pcInd, username, otherPeer){
+
+        if(typeof pc[pcInd] != 'undefined'){
+          pcIndexTemp = pcInd;
+
+          pc[pcInd].addStream(localScreenStream);
+
+          pc[pcInd].createOffer(function(sessionDescription){
+            sessionDescription.FromUser = username;
+            sessionDescription.ToUser = otherPeer;
+            //console.log('INSIDE CONDITION SCREEN SHARE')
+
+            var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'open'};
+            console.log('SHARING THE SCREEN');
+
+            // Set Opus as the preferred codec in SDP if Opus is present.
+            pc[pcIndexTemp].setLocalDescription(sessionDescription);
+
+            Signalling.sendMessageForMeeting(payload, otherPeer);
+
+          }, handleCreateOfferError);
+        }
+
       },
 
       /**
-       *  Application can check if the local stream is fetched or not by calling this function.
+       * Application can check if the local stream is fetched or not by calling this function.
        *
        * @returns {*}
        */
@@ -429,71 +525,12 @@ angular.module('kiboRtc.services')
         return screenShared;
       },
 
-      /**
-       * Application can set this to true for the peer who is the initiator of the call. Service must know
-       * who is the initiator of the call. Initiator is the one who sends the offer to other peer.
-       *
-       * @param value Boolean variable to set the value for isInitiator
-       */
-      setInitiator: function (value) {
-        isInitiator = value;
-      },
-
-      /**
-       * Application can check if the peer is set as initiator or not by using this function. Initiator is
-       * the one who sends the offer to other peer.
-       * @returns {boolean}
-       */
-      getInitiator: function () {
-        return isInitiator;
-      },
-
-      /**
-       * Application can set this to true if the call or signalling has been started. This can be used to
-       * put some controls i.e. do not send the candidates until the call is started
-       *
-       * @param value
-       */
-      setIsStarted: function (value) {
-        isStarted = value;
-      },
-
-      /**
-       * Application can check if the call or signalling has started or not. This can be used to put some controls.
-       * i.e. do not send the candidates until the call is started
-       *
-       * @returns {boolean}
-       */
-      getIsStarted: function () {
-        return isStarted;
-      },
-
-      increasePCIndex: function () {
-        pcIndex++;
-      },
-
-      getPcIndex: function () {
-        return pcIndex;
-      },
-
-      setIsChannelReady: function (value) {
-        isChannelReady = value;
-      },
-
-      getIsChannelReady: function () {
-        return isChannelReady;
-      },
-
-      setIJoinLate: function (value) {
-        iJoinLate = value;
-      },
-
-      getIJoinLate: function () {
-        return iJoinLate;
-      },
-
       setToUserName: function(username) {
         toUserName = username;
+      },
+
+      setSwitchingScreenShare : function(value){
+        switchingScreenShare = value;
       }
     };
 
@@ -602,6 +639,24 @@ angular.module('kiboRtc.services')
 
       if (event.stream.getVideoTracks().length) {
 
+        // todo screen switching would need work
+        if(switchingScreenShare == true){
+          $rootScope.$broadcast('ScreenShared');
+
+          remoteVideoScreen.src = URL.createObjectURL(event.stream);
+          remoteStreamScreen = event.stream;
+          switchingScreenShare = false;
+
+          console.log('added in screen');
+
+          $timeout(function(){
+            Signalling.sendMessageForMeeting('got screen', toUserName);
+          }, 3000);
+
+          return ;
+
+        }
+
         if(firstVideoAdded == false){
           $rootScope.$broadcast('peer1SharedVideo');
 
@@ -639,26 +694,7 @@ angular.module('kiboRtc.services')
           forthVideoAdded = true;
         }
 
-        // todo screen switching would need work
-        if(switchingScreenShare == true){
-          $rootScope.$broadcast('ScreenShared');
-
-          remoteVideoScreen.src = URL.createObjectURL(event.stream);
-          remoteStreamScreen = event.stream;
-          switchingScreenShare = false;
-
-          console.log('added in screen');
-
-          // todo this needs to be understood
-          $timeout(function(){
-            Signalling.sendMessageForMeeting('got screen', toUserName);
-          }, 4000);
-
-        }
-
       }
-
-
 
     }
 
@@ -672,13 +708,15 @@ angular.module('kiboRtc.services')
      *
      * @param event
      *
-     * todo this needs work
+     * todo this needs a lot of work
      */
     function handleRemoteStreamRemoved(event) {
       console.log('Remote stream removed.');// Event: ', event);
-      $scope.$apply(function(){
-        $scope.screenSharedByPeer = false;
-      })
+
+      $timeout(function () {
+        Signalling.sendMessageForMeeting('screen close', toUserName);
+      }, 3000);
+
     }
 
     /**

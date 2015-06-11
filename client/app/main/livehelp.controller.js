@@ -104,7 +104,7 @@ angular.module('cloudKiboApp')
 
     $scope.isFireFox = function(){
       return typeof navigator.mozGetUserMedia !== 'undefined';
-    }
+    };
 
     $scope.screenSharedLocal = false;
 
