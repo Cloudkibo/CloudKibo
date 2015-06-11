@@ -6,7 +6,7 @@
  */
 
 angular.module('kiboRtc.services')
-  .factory('RTCConference', function RTCConference($rootScope, socket, Signalling, RTCConferenceCore) {
+  .factory('RTCConference', function RTCConference($rootScope, socket, Signalling, RTCConferenceCore, ScreenShare) {
 
     var username;
     var room;
@@ -17,9 +17,14 @@ angular.module('kiboRtc.services')
     var isStarted = false;
     var pcIndex = 0;
     var pcLength = 4;
+    var screenSharePCIndex = 0;
     var otherPeers = [];
 
+    var switchingScreenShare = false;
+
     var iJoinLate = false;
+
+    ScreenShare.initialize();
 
     socket.on('full', function (room) {
       alert('Room ' + room + ' is full. You can not join the meeting.');
@@ -78,63 +83,17 @@ angular.module('kiboRtc.services')
       else if (message.payload.msg === 'got screen' && message.ToUser == username) {
 
         screenSharePCIndex++;
-        if (screenSharePCIndex < pc.length) {
-          if (typeof pc[screenSharePCIndex] != 'undefined') {
-            pc[screenSharePCIndex].addStream(localStreamScreen);
-            pc[screenSharePCIndex].createOffer(function (sessionDescription) {
-              sessionDescription.FromUser = $scope.user.username;
-              sessionDescription.ToUser = otherPeers[screenSharePCIndex];
-              //console.log('INSIDE CONDITION SCREEN SHARE OPEN')
-
-              if ($scope.closingScreenShare == false) {
-                sessionDescription.sharingScreen = 'open';
-                console.log('SHARING THE SCREEN')
-              }
-              else {
-                sessionDescription.sharingScreen = 'close';
-                console.log('CLOSING THE SCREEN');
-                $scope.screenSharedLocal = false;
-              }
-
-              // Set Opus as the preferred codec in SDP if Opus is present.
-              pc[screenSharePCIndex].setLocalDescription(sessionDescription);
-
-              sendMessage(sessionDescription);
-
-            }, handleCreateOfferError);
-          }
+        if (screenSharePCIndex <= pcIndex) {
+          RTCConferenceCore.shareScreenToNext(screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
         }
 
       }
 
-      else if (message.payload.msg === 'screen close' && message.ToUser == $scope.user.username) {
+      else if (message.payload.msg === 'screen close' && message.ToUser == username) {
 
         screenSharePCIndex++;
-        if (screenSharePCIndex < pc.length) {
-          if (typeof pc[screenSharePCIndex] != 'undefined') {
-            pc[screenSharePCIndex].removeStream(localStreamScreen);
-            pc[screenSharePCIndex].createOffer(function (sessionDescription) {
-              sessionDescription.FromUser = $scope.user.username;
-              sessionDescription.ToUser = otherPeers[screenSharePCIndex];
-              //console.log('INSIDE CONDITION SCREEN SHARE CLOSE')
-
-              if ($scope.closingScreenShare == false) {
-                sessionDescription.sharingScreen = 'open';
-                console.log('SHARING THE SCREEN')
-              }
-              else {
-                sessionDescription.sharingScreen = 'close';
-                console.log('CLOSING THE SCREEN');
-                $scope.screenSharedLocal = false;
-              }
-
-              // Set Opus as the preferred codec in SDP if Opus is present.
-              pc[screenSharePCIndex].setLocalDescription(sessionDescription);
-
-              sendMessage(sessionDescription);
-
-            }, handleCreateOfferError);
-          }
+        if (screenSharePCIndex <= pcIndex) {
+          RTCConferenceCore.hideScreenToNext(screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
         }
 
       }
@@ -148,71 +107,40 @@ angular.module('kiboRtc.services')
           RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
           RTCConferenceCore.createAndSendAnswer(pcIndex, toUserName);
         }
-        else if (message.sharingScreen === 'open') {
+        else if (message.payload.sharingScreen === 'open') {
           toUserName = message.FromUser;
-          if (message.ToUser == $scope.user.username) {
-            pc[otherPeers.indexOf(message.FromUser)].setRemoteDescription(new RTCSessionDescription(message));
+          if (message.ToUser == username) {
+
+            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the open condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
-            $scope.switchingScreenShare = true;
-            $scope.peerSharedScreen = true;
+            RTCConferenceCore.setSwitchingScreenShare(true);
+            $rootScope.$broadcast("ScreenShared");
 
-            var showScreenButton = document.getElementById("showScreenButton");
-            showScreenButton.disabled = true;
+            RTCConferenceCore.createAndSendAnswer(otherPeers.indexOf(message.FromUser), toUserName);
 
-            pc[otherPeers.indexOf(message.FromUser)].createAnswer(function (sessionDescription) {
-
-                sessionDescription.FromUser = $scope.user.username;
-                sessionDescription.ToUser = toUserName;
-                // Set Opus as the preferred codec in SDP if Opus is present.
-                pc[otherPeers.indexOf(message.FromUser)].setLocalDescription(sessionDescription);
-
-                sendMessage(sessionDescription);
-
-                console.log('I have answered the screen share offer')
-
-              },
-              function (error) {
-                console.log(error)
-              }, sdpConstraints);
           }
         }
-        else if (message.sharingScreen === 'close') {
+        else if (message.payload.sharingScreen === 'close') {
           toUserName = message.FromUser;
-          if (message.ToUser == $scope.user.username) {
-            pc[otherPeers.indexOf(message.FromUser)].setRemoteDescription(new RTCSessionDescription(message));
+          if (message.ToUser == username) {
+
+            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the close condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
-            $scope.peerSharedScreen = false;
+            RTCConferenceCore.setSwitchingScreenShare(true);
+            $rootScope.$broadcast("ScreenSharedRemoved");
 
-            var showScreenButton = document.getElementById("showScreenButton");
-            showScreenButton.disabled = false;
+            RTCConferenceCore.createAndSendAnswer(otherPeers.indexOf(message.FromUser), toUserName);
 
-            pc[otherPeers.indexOf(message.FromUser)].createAnswer(function (sessionDescription) {
-
-                sessionDescription.FromUser = $scope.user.username;
-                sessionDescription.ToUser = toUserName;
-                // Set Opus as the preferred codec in SDP if Opus is present.
-                pc[otherPeers.indexOf(message.FromUser)].setLocalDescription(sessionDescription);
-
-                sendMessage(sessionDescription);
-
-                console.log('I have answered the screen close offer')
-
-              },
-              function (error) {
-                console.log(error)
-              }, sdpConstraints);
-
-            $timeout($scope.screenCloseTimeOut, 3000);
           }
         }
         else if (!iJoinLate && isStarted) {
           if (message.ToUser == username) {
             RTCConferenceCore.createPeerConnection(pcIndex);
-            console.log('I GOT OFFER FROM '+ toUserName)
+            console.log('I GOT OFFER FROM '+ toUserName);
             RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
             RTCConferenceCore.createAndSendAnswer(pcIndex, toUserName);
           }
@@ -236,52 +164,9 @@ angular.module('kiboRtc.services')
         }
       }
 
-      else if (message.msg === 'bye' && isStarted) {
+      else if (message.payload.msg === 'bye' && isStarted) {
 
-        if (otherPeers.indexOf(message.FromUser) == 0) {
-          $scope.firstVideoAdded = false;
-          remoteStream1 = null;
-          remotevideo1.src = null;
-        }
-        else if (otherPeers.indexOf(message.FromUser) == 1) {
-          $scope.secondVideoAdded = false;
-          remoteStream2 = null;
-          remotevideo2.src = null;
-
-          $scope.$apply(function () {
-            $scope.peer2Joined = false;
-          })
-        }
-        else if (otherPeers.indexOf(message.FromUser) == 2) {
-          $scope.thirdVideoAdded = false;
-          remoteStream3 = null;
-          remotevideo3.src = null;
-
-          $scope.$apply(function () {
-            $scope.peer3Joined = false;
-          })
-        }
-        else if (otherPeers.indexOf(message.FromUser) == 3) {
-          $scope.forthVideoAdded = false;
-          remoteStream4 = null;
-          remotevideo4.src = null;
-
-          $scope.$apply(function () {
-            $scope.peer4Joined = false;
-          })
-        }
-
-        if (!$scope.firstVideoAdded && !$scope.secondVideoAdded && !$scope.thirdVideoAdded && !$scope.forthVideoAdded) {
-          localStream.stop();
-          $scope.localCameraOn = false;
-          $scope.callEnded = true;
-          console.log("HIN MEI AYO AAA")
-        }
-
-        pcIndex--;
-
-        pc.splice(pc.indexOf(message.FromUser), 1);
-        sendChannel.splice(sendChannel.indexOf(message.FromUser), 1);
+        RTCConferenceCore.endConnection();
 
       }
     });
@@ -307,6 +192,73 @@ angular.module('kiboRtc.services')
 
       leaveMeeting: function () {
         socket.emit('leave', {room: room, username: username});
+      },
+
+      chromeExtensionInstalled: function (cb) {
+        ScreenShare.isChromeExtensionAvailable(function (status) {
+          cb(status);
+        });
+      },
+
+      toggleScreenSharing: function (state, cb) {
+
+        var action;
+        if (state === 'on')
+          action = 'on';
+        else if (state === 'off')
+          action = 'off';
+        else
+          return cb('Invalid value. Value should be either "on" or "off".');
+
+        screenSharePCIndex = 0;
+
+        if(action === 'on'){
+
+          if (!!navigator.webkitGetUserMedia) {
+
+            shareScreen(function (err, stream) {
+              if (err) {
+                cb(err);
+              }
+              else {
+
+                RTCConferenceCore.shareScreen(stream, screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
+
+                cb(null);
+
+              }
+            });
+
+          }
+          else if (!!navigator.mozGetUserMedia) {
+            getUserMedia({
+              video: {
+                mozMediaSource: 'window',
+                mediaSource: 'window'
+              }
+            }, function (stream) {
+
+              RTCConferenceCore.shareScreen(stream, screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
+
+              cb(null);
+
+            }, function (err) {
+              cb(err);
+            });
+          }
+
+        }
+        else if(action === 'off'){
+
+          ScreenShare.setSourceIdValue(null);
+
+          screenSharePCIndex = 0;
+          RTCConferenceCore.hideScreen(screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
+
+          cb(null);
+        }
+
+
       }
 
     };
@@ -350,6 +302,37 @@ angular.module('kiboRtc.services')
         $rootScope.$broadcast('localStreamCaptured');
 
       })
+    }
+
+    function shareScreen(cb) {
+      // this statement verifies chrome extension availability
+      // if installed and available then it will invoke extension API
+      // otherwise it will fallback to command-line based screen capturing API
+      if (ScreenShare.getChromeMediaSource() == 'desktop' && !ScreenShare.getSourceIdValue()) {
+        ScreenShare.getSourceId(function (error) {
+          // if exception occurred or access denied
+          if (error && error == 'PermissionDeniedError') {
+            alert('PermissionDeniedError: User denied to share content of his/her screen.');
+          }
+
+          // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
+          if (ScreenShare.getChromeMediaSource() == 'desktop') {
+            ScreenShare.setSourceIdInConstraints();
+          }
+
+          // now invoking native getUserMedia API
+          navigator.webkitGetUserMedia(ScreenShare.session(),
+            function (newStream) {
+
+              cb(null, newStream);
+
+            }, function (err) {
+              cb(err);
+            });
+
+        });
+      }
+
     }
 
     window.onbeforeunload = function(e){
