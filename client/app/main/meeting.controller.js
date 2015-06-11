@@ -82,7 +82,7 @@ angular.module('cloudKiboApp')
 
             var sampleName = "user_"+ Math.random().toString(36).substring(7);
 
-            $scope.user.username = window.prompt("Please input your username", sampleName);
+            $scope.user.username = window.prompt("Please write your username", sampleName);
 
             if($scope.user.username == null)
               $scope.user.username = sampleName;
@@ -148,8 +148,7 @@ angular.module('cloudKiboApp')
             return $scope.localCameraOn;
         };
 
-        // todo fix this testing hack
-        $scope.peer2Joined = true;
+        $scope.peer2Joined = false;
 
         $scope.hasPeer2Joined = function(){
             return $scope.peer2Joined;
@@ -160,8 +159,7 @@ angular.module('cloudKiboApp')
           $scope.meetingRemoteVideoWidth = '30%';
         });
 
-    // todo fix this testing hack
-        $scope.peer3Joined = true;
+        $scope.peer3Joined = false;
 
         $scope.hasPeer3Joined = function(){
             return $scope.peer3Joined;
@@ -172,8 +170,7 @@ angular.module('cloudKiboApp')
           $scope.meetingRemoteVideoWidth = '30%';
         });
 
-    // todo fix this testing hack
-        $scope.peer4Joined = true;
+        $scope.peer4Joined = false;
 
         $scope.hasPeer4Joined = function(){
             return $scope.peer4Joined;
@@ -246,8 +243,7 @@ angular.module('cloudKiboApp')
         };
 
 
-    // todo fix this testing hack
-        $scope.meetingRemoteVideoWidth = '30%';//'40%';
+        $scope.meetingRemoteVideoWidth = '40%';
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // Media Stream Logic                                                                 //
