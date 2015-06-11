@@ -113,6 +113,7 @@ function onConnect(socketio, socket) {
 		}
 
 		socket.on('message', function (message) {
+      console.log('Got message:', message.msg);
 
       try {
         message.msg.from = socket.id;
@@ -143,7 +144,7 @@ function onConnect(socketio, socket) {
 		});
 
 		socket.on('messageformeeting', function (message) {
-			//console.log('Got message:', message);
+			console.log('Got message:', message.msg);
 
 			//socket.broadcast.emit('message', message);
 
@@ -539,6 +540,8 @@ function onConnect(socketio, socket) {
 		socket.on('create or join meeting', function (room) {
 
 
+      console.log(room)
+
       var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
       var numClients = clients.length;
@@ -553,10 +556,13 @@ function onConnect(socketio, socket) {
           clientsIDs[i] == clients[i].username;
       }
 
+      console.log('people in room: ', numClients);
+
 			if (numClients === 0){
 				socket.join(room.room);
         socket.username= room.username;
 
+        console.log('room created');
 				socket.emit('created', room);
 			} else if (numClients < 5) {//(numClients === 2 || numClients === 1 || numClients === 3 || numClients === 4) {
 				socket.join(room.room);
@@ -565,6 +571,7 @@ function onConnect(socketio, socket) {
 				room.otherClients = clientsIDs;
 				socket.emit('joined', room);
 
+        console.log('room joined');
         clients = findClientsSocket(room.room);
 
         for(var i in clients){

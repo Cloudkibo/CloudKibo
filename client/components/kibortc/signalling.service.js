@@ -95,8 +95,8 @@ angular.module('kiboRtc.services')
        *
        * @param message WebRTC signalling message, i.e. offer object, answer object, candidate objects etc
        */
-      sendMessageForMeeting: function (message) {
-        message = {msg: message};
+      sendMessageForMeeting: function (message, toUserName) {
+        message = {msg: {payload : message, ToUser : toUserName, FromUser : username}};
         message.room = roomName;
         message.username = username;
         //console.log('Client sending message: ', message);
