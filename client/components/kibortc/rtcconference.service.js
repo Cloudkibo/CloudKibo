@@ -177,6 +177,13 @@ angular.module('kiboRtc.services')
         Signalling.sendMessageForMeeting(message);
       },
 
+      sendData: function (message) {
+        var i;
+        for (i = 0; i < pcLength; i++) {
+          RTCConferenceCore.sendDataChannelMessage(message, i);
+        }
+      },
+
       joinMeeting: function (payload) {
 
         username = payload.username;
@@ -259,6 +266,10 @@ angular.module('kiboRtc.services')
         }
 
 
+      },
+
+      getMessage: function () {
+        return RTCConferenceCore.getDataChannelMessage();
       }
 
     };

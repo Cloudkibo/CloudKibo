@@ -13,7 +13,9 @@ angular.module('kiboRtc.services')
 
     var roomname;
     var username;
-    var toUserName
+    var toUserName;
+
+    var message;
 
     var isChannelReady;
     /* It is used to check Data Channel is ready or not */
@@ -117,6 +119,7 @@ angular.module('kiboRtc.services')
 
         for(var i = 0; i<pcLength; i++){
           pc[i] = null;
+          sendChannel[i] = null;
         }
 
       },
@@ -136,7 +139,7 @@ angular.module('kiboRtc.services')
           pc[pcInd].onicecandidate = handleIceCandidate;
           pc[pcInd].onaddstream = handleRemoteStreamAdded;
           pc[pcInd].onremovestream = handleRemoteStreamRemoved;
-/*
+
           //if (isInitiator) {
           try {
             // Reliable Data Channels not yet supported in Chrome
@@ -144,11 +147,11 @@ angular.module('kiboRtc.services')
               sendChannel[pcInd] = pc[pcInd].createDataChannel("sendDataChannel", {reliable: true});
             }
             catch (e) {
-              console.log('UNRELIABLE DATA CHANNEL')
+              console.log('UNRELIABLE DATA CHANNEL on index '+ pcInd)
               sendChannel[pcInd] = pc[pcInd].createDataChannel("sendDataChannel", {reliable: false});
             }
             sendChannel[pcInd].onmessage = handleMessage;
-            trace('Created send data channel');
+            trace('Created send data channel on index '+ pcInd);
           } catch (e) {
             alert('Failed to create data channel. ' +
             'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
@@ -158,7 +161,7 @@ angular.module('kiboRtc.services')
           sendChannel[pcInd].onclose = handleSendChannelStateChange;
           // } else {
           pc[pcInd].ondatachannel = gotReceiveChannel;
-*/
+
           if(audioShared) {
             pc[pcInd].addStream(localAudioStream);
             console.log('added audio stream to pc', localAudioStream);
@@ -531,6 +534,17 @@ angular.module('kiboRtc.services')
 
       setSwitchingScreenShare : function(value){
         switchingScreenShare = value;
+      },
+
+      getDataChannelMessage : function () {
+        return message;
+      },
+
+      sendDataChannelMessage : function (message, pcInd) {
+        console.log('sending data channel msg on index '+ pcInd);
+        if (typeof pc[pcInd] != 'undefined' && pc[pcInd] != null && typeof sendChannel[pcInd] != 'undefined' && sendChannel[pcInd] != null) {
+          sendChannel[pcInd].send(message);
+        }
       }
     };
 
@@ -731,7 +745,7 @@ angular.module('kiboRtc.services')
 
       message = event.data;
 
-      $rootScope.$broadcast("dataChannelMessageReceived");
+      $rootScope.$broadcast("DataChannelMessageReceived");
 
     }
 
@@ -741,7 +755,7 @@ angular.module('kiboRtc.services')
      * todo: look for more documentation of this from WebRTC
      */
     function handleSendChannelStateChange() {
-      var readyState = sendChannel.readyState;
+      var readyState = sendChannel[pcIndexTemp].readyState;
       //trace('Send channel state is: ' + readyState);
     }
 
@@ -752,11 +766,25 @@ angular.module('kiboRtc.services')
      * @param event holds the channel
      */
     function gotReceiveChannel(event) {
-      //trace('Receive Channel Callback');
-      sendChannel = event.channel;
-      sendChannel.onmessage = handleMessage;
-      sendChannel.onopen = handleReceiveChannelStateChange;
-      sendChannel.onclose = handleReceiveChannelStateChange;
+      console.log('Receive Channel Callback');
+      sendChannel[pcIndexTemp] = event.channel;
+      sendChannel[pcIndexTemp].onmessage = handleMessage;
+      sendChannel[pcIndexTemp].onopen = handleReceiveChannelStateChange;
+      sendChannel[pcIndexTemp].onclose = handleReceiveChannelStateChange;
+
+      // todo person who joins late, logic for him would start here
+
+      /*if (iJoinLate && isStarted) {
+        pcIndex++;
+        if (pcIndex < otherPeers.length) {
+          toUserName = otherPeers[pcIndex];
+          maybeStart();
+        }
+        else {
+          iJoinLate = false;
+          pcIndex--;
+        }
+      }*/
     }
 
     /**
@@ -766,8 +794,9 @@ angular.module('kiboRtc.services')
      * todo: notify the change to application using a broadcast
      */
     function handleReceiveChannelStateChange() {
-      var readyState = sendChannel.readyState;
+      var readyState = sendChannel[pcIndexTemp].readyState;
       //trace('Receive channel state is: ' + readyState);
+
     }
 
     /**

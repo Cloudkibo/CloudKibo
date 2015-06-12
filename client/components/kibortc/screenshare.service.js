@@ -13,7 +13,7 @@
  * angularjs code
  */
 angular.module('kiboRtc.services')
-  .factory('ScreenShare', function ScreenShare($rootScope, $window, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
+  .factory('ScreenShare', function ScreenShare($rootScope, $window, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling, RestApi) {
 
     // todo need to check exact chrome browser because opera also uses chromium framework
     var isChrome;
@@ -163,6 +163,18 @@ angular.module('kiboRtc.services')
       setSourceIdInConstraints: function () {
         screen_constraints.mandatory.chromeMediaSourceId = sourceId;
         session.video = screen_constraints;
+      },
+
+      installChromeExtension: function () {
+        !!navigator.webkitGetUserMedia
+        && !!window.chrome
+        && !!chrome.webstore
+        && !!chrome.webstore.install &&
+        chrome.webstore.install(
+          RestApi.extensionlink.screenSharingExtension,
+          successInstallCallback,
+          failureInstallCallback
+        );
       }
 
     };
@@ -196,6 +208,14 @@ angular.module('kiboRtc.services')
         sourceId = data.sourceId;
         if (screenCallback) screenCallback(data.sourceId);
       }
+    }
+
+    function successInstallCallback() {
+      location.reload();
+    }
+
+    function failureInstallCallback(error) {
+      alert(error);
     }
 
 

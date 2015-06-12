@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('MeetingController', function ($scope, RTCConference, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location, RestApi) {
+  .controller('MeetingController', function ($scope, RTCConference, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location, RestApi, ScreenShare) {
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // Variables for WebRTC Session                                                       //
@@ -247,7 +247,7 @@ angular.module('cloudKiboApp')
     // Signaling Logic                                                                    //
     ///////////////////////////////////////////////////////////////////////////////////////
 
-    $scope.meetingRemoteVideoWidth = '40%';
+    $scope.meetingRemoteVideoWidth = '30%';
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // Media Stream Logic                                                                 //
@@ -303,25 +303,11 @@ angular.module('cloudKiboApp')
 
     $scope.installExtension = function () {
 
-      !!navigator.webkitGetUserMedia
-      && !!window.chrome
-      && !!chrome.webstore
-      && !!chrome.webstore.install &&
-      chrome.webstore.install(
-        RestApi.extensionlink.screenSharingExtension,
-        successInstallCallback,
-        failureInstallCallback
-      );
+      ScreenShare.installChromeExtension();
 
     };
 
-    function successInstallCallback() {
-      location.reload();
-    }
 
-    function failureInstallCallback(error) {
-      alert(error);
-    }
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // WebRTC DataChannel logic (Text Messages)                                           //
@@ -333,12 +319,7 @@ angular.module('cloudKiboApp')
 
       var data = $scope.dataChannelSend;
 
-      var i;
-      for (i = 0; i < pc.length; i++) {
-        if (typeof pc[i] != 'undefined') {
-          sendChannel[i].send('' + $scope.user.username + ': ' + data);
-        }
-      }
+      RTCConference.sendData('' + $scope.user.username + ': ' + data);
 
       $scope.userMessages.push('Me: ' + data);
       $scope.dataChannelSend = '';
@@ -348,13 +329,10 @@ angular.module('cloudKiboApp')
 
     };
 
-    function handleMessage(event) {
-      //trace('Received message: ' + event.data);
-      //document.getElementById("dataChannelReceive").value = event.data;
+    $scope.$on('DataChannelMessageReceived', function(){
+      var message = RTCConference.getMessage();
 
-      var message = event.data;
-
-      if (message.byteLength) {
+      if (message.byteLength  || typeof message !== 'string') {
         process_binary(0, message, 0);
       }
       else if (message.charAt(0) == '{' && message.charAt(message.length - 1) == '}') {
@@ -369,51 +347,8 @@ angular.module('cloudKiboApp')
         var chatBox = document.getElementById('chatBox');
         chatBox.scrollTop = 300 + 8 + ($scope.userMessages.length * 240);
       }
-    }
+    });
 
-    function handleSendChannelStateChange() {
-      var readyState = sendChannel[pcIndex].readyState;
-      //trace('Send channel state is: ' + readyState);
-      enableMessageInterface(readyState == "open");
-    }
-
-    function gotReceiveChannel(event) {
-      console.log('Receive Channel Callback');
-      sendChannel[pcIndex] = event.channel;
-      sendChannel[pcIndex].onmessage = handleMessage;
-      sendChannel[pcIndex].onopen = handleReceiveChannelStateChange;
-      sendChannel[pcIndex].onclose = handleReceiveChannelStateChange;
-
-      if (iJoinLate && isStarted) {
-        pcIndex++;
-        if (pcIndex < otherPeers.length) {
-          toUserName = otherPeers[pcIndex];
-          maybeStart();
-        }
-        else {
-          iJoinLate = false;
-          pcIndex--;
-        }
-      }
-    }
-
-    function handleReceiveChannelStateChange() {
-      var readyState = sendChannel[pcIndex].readyState;
-      //trace('Receive channel state is: ' + readyState);
-      enableMessageInterface(readyState == "open");
-    }
-
-    function enableMessageInterface(shouldEnable) {
-      if (shouldEnable) {
-        //dataChannelSend.disabled = false;
-        //dataChannelSend.focus();
-        //dataChannelSend.placeholder = "";
-        //sendButton.disabled = false;
-      } else {
-        //dataChannelSend.disabled = true;
-        //sendButton.disabled = true;
-      }
-    }
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // File Sharing Logic                                                                 //

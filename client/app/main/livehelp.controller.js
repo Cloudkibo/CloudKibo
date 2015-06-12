@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi, $window){
+  .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi, $window, ScreenShare){
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // Variables for WebRTC Session                                                       //
@@ -831,24 +831,9 @@ angular.module('cloudKiboApp')
 
     $scope.installExtension= function(){
 
-      !!navigator.webkitGetUserMedia
-      && !!window.chrome
-      && !!chrome.webstore
-      && !!chrome.webstore.install &&
-      chrome.webstore.install(
-        RestApi.extensionlink.screenSharingExtension,
-        successInstallCallback,
-        failureInstallCallback
-      );
+      ScreenShare.installChromeExtension();
 
     };
-
-    function successInstallCallback() {
-      //location.reload();
-    }
-    function failureInstallCallback(error) {
-      alert(error);
-    }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////
