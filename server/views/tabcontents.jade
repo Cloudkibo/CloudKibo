@@ -244,10 +244,10 @@ block bodycontent
           div(style='text-align:right;')
             button.myButton1(ng-click='openAddContact()') Hide Me!
 
-        div(ng-show='isSettingsSelected()', class='well well-lg  animate-show modalBox')
-          div
-            tabset(justified='true')
-              tab(heading='Profile', class='animate-show')
+        div(ng-show='isSettingsSelected()', class='well well-lg animate-show modalBox')
+          div(class='well well-lg')
+            tabset(justified='true', class='well well-lg')
+              tab(heading='Profile')
                 div(class='well well-lg')
                   #profileLeft
                     form(role='form', novalidate, name='form', class='css-form', enctype='multipart/form-data', ng-submit='updateProfile(user)')
@@ -506,7 +506,7 @@ block bodycontent
                            br
                            br
                            button.btn.btn-submit(type='submit', ng-disabled="form8.$invalid || isUnchanged(myfile)") Update Photo
-              tab(heading='Support Test', class='animate-show')
+              tab(heading='Support Test')
                 div(class='well well-lg')
                   h3 Checking Browser Compatibility
                   br

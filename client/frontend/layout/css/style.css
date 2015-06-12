@@ -983,6 +983,7 @@ background-color: #78FA89;
   transition:all linear 0.9s;
   line-height:20px;
   opacity:1;
+  border: none;
 }
 
 .animate-show.ng-hide-add,
@@ -2964,22 +2965,28 @@ div.content-form-page .checkbox-list {
 
 
 .nav-tabs {
-	border-color: #e6400c;
-	padding-bottom: 1px;
-	font-size: 14px;
-	margin-bottom: 0;
+
+  padding-bottom: 6px;
+  font-size: 1px;
+  margin-bottom: 0;
+  position:absolute;
+  left:25px ;
+
+  top: 0px;
 }
 .nav-tabs > li > a, .nav-tabs > li > a:hover, .nav-tabs > li > a:focus {
-	background: #F4F4F4;
-	color: #647484;
-	border-radius: 0;
-	padding: 5px 15px 4px;
-	border: none !important;
+
+  background: #F4F4F4;
+  color: #46abc5;
+  padding: 5px 15px 4px;
+  border: none !important;
+  width: 90%;
 }
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-	background: #e6400c;
-	color: #fff;
-	padding: 5px 15px 4px;
+
+  background: #46abc5;
+  color: #fff;
+  padding: 5px 15px 4px;
 }
 .tab-content {
 	background: #FAFAFA;
