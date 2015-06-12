@@ -163,7 +163,7 @@ angular.module('kiboRtc.services')
             pc[pcInd].addStream(localAudioStream);
             console.log('added audio stream to pc', localAudioStream);
           }
-          else {
+          if(videoShared) {
             pc[pcInd].addStream(localVideoStream);
             console.log('added video stream to pc ', localVideoStream);
           }

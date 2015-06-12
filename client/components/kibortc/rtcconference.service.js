@@ -286,7 +286,7 @@ angular.module('kiboRtc.services')
     }
 
     function startCalling(){
-      RTCConferenceCore.captureUserMedia('video', function(err){
+      RTCConferenceCore.captureUserMedia('audio', function(err){
         if(err) return alert(err);
 
         Signalling.sendMessageForMeeting({msg: 'got user media', FromUser : username});
