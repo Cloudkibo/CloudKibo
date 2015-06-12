@@ -155,6 +155,8 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 
 .userInfoBoxContainer{
   background: #fffbbb;
+  position : relative;
+  top : 15px;
 }
 
 .statusTextField{
@@ -307,6 +309,24 @@ todo need more work
   padding: 5px;
 }
 
+
+
+.inviteBox{
+  position: fixed;
+  right: 275px;
+  top: 140px;
+  overflow: auto;
+  height: 420px;
+  width: 78%;
+  z-index: 10;
+  border : 1px solid #6891A1;
+  border-radius: 25px;
+  background-color: #ffffff;
+  padding-top: 5px;
+  padding-left: 10px;
+
+}
+
 .modalBox{
   position: fixed;
   left: 10px;
@@ -316,7 +336,7 @@ todo need more work
   width: 78%;
   z-index: 10;
   border : 1px solid #6891A1;
-  background-color: #f1f1f1;
+  background-color: #ffffff;
 
 }
 
@@ -326,7 +346,7 @@ todo need more work
   height: 324px;
   left: 0px;
   top: 121px;
-  #background: #00dd01;
+  #background: #ffffff;
 }
 
 .chatArea
@@ -984,6 +1004,7 @@ background-color: #78FA89;
   line-height:20px;
   opacity:1;
   border: none;
+  background: #ffffff;
 }
 
 .animate-show.ng-hide-add,
@@ -1955,6 +1976,8 @@ Pre-Header and pre-header elements
 .additional-shop-info li:first-child {
 	padding-left: 0;
 }
+
+
 .additional-nav li:last-child {
 	padding-right: 0;
 }

@@ -141,12 +141,12 @@ block bodycontent
 
         div(ng-show='isCallSelected()', class='well well-lg animate-show modalBox')
           div
-            div(ng-show='isUserNameSearchSelected()', class='well well-lg innerbox')
+            div(ng-show='isUserNameSearchSelected()', class='innerbox')
               form(role='form', ng-submit='searchUserName()', novalidate, name='form5', class='css-form')
                 .form-group1
                   label Type the person's username to make a call
                   input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='search.searchusername')
-                a(ng-href='#', ng-click='switchSearchOption()')
+                a(ng-click='switchSearchOption()')
                   small Call using email
                 br
                 br
@@ -163,7 +163,7 @@ block bodycontent
                       | Enter the email address.
                     span(ng-show="form4.email.$error.email")
                       | This is not a valid email address.
-                a(ng-href='#', ng-click='switchSearchOption()')
+                a(ng-click='switchSearchOption()')
                   small Call using username
                 br
                 br
@@ -173,18 +173,18 @@ block bodycontent
             div(class='well well-lg animate-show', ng-show='userFound == null')
               b User, you are trying to call is not registered on CloudKibo
               br
-              a(ng-href='#', ng-click='openInvite()')
+              a(ng-click='openInvite()')
                 small Invite to CloudKibo
           div(style='text-align:right;')
             button.myButton1(ng-click='openCall()') Hide Me!
 
-        div(ng-show='isInviteSelected()', class='well well-lg animate-show modalBox')
-          div
-            div(style='text-align:right;')
+        div(ng-show='isInviteSelected()', class='animate-show modalBox')
+          div(class='')
+            div(style='text-align:right;', class='')
               //button.myButton1(ng-click='openInvite()') Hide Me!
-            #inviteEmailBox(class='well well-lg')
-              label Invite your friend to CloudKibo
+            #inviteEmailBox1(class='')
               form(role='form', method="post", novalidate, name='form6', class='css-form', ng-submit='emailInvite(inviteemail)')
+                label Invite your friend to CloudKibo
                 .form-group
                   input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='inviteemail.recipientEmail')
                 div(ng-show="form6.email.$dirty && !form6.email.$focused")
@@ -203,20 +203,20 @@ block bodycontent
 
               alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
 
-        div(ng-show='isAddContactSelected()', class='well well-lg animate-show modalBox')
+        div(ng-show='isAddContactSelected()', class='animate-show modalBox')
           div
-            div(ng-show='isUserNameAddSelected()', class='well well-lg')
+            div(ng-show='isUserNameAddSelected()', class='')
               form(role='form', ng-submit='addUserName(add)', novalidate, name='form9', class='css-form')
                 .form-group
                   label Add contact by username
                   input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='add.searchusername')
-                a(ng-href='#', ng-click='switchAddOption()')
+                a(ng-click='switchAddOption()')
                   small Add contact by email
                 br
                 br
                 div
                   button.myButton(type='submit', ng-disabled="form9.$invalid") Add
-            div(ng-show='!isUserNameAddSelected()', class='well well-lg')
+            div(ng-show='!isUserNameAddSelected()', class='')
               form(role='form', ng-submit='addEmail(add)', novalidate, name='form41', class='css-form')
                 .form-group
                   label Add contact by email
@@ -227,28 +227,28 @@ block bodycontent
                       | Enter the email address.
                     span(ng-show="form41.email.$error.email")
                       | This is not a valid email address.
-                a(ng-href='#', ng-click='switchAddOption()')
+                a(ng-click='switchAddOption()')
                   small Add contact by username
                 br
                 br
                 div
                   button.myButton(type='submit', ng-disabled="form41.$invalid") Add
             br
-            div(class='well well-lg animate-show', ng-show='userFound == null')
+            div(class='animate-show', ng-show='userFound == null')
               b User, you are trying to add is not registered on CloudKibo
               br
-              a(ng-href='#', ng-click='openInvite()')
+              a(ng-click='openInvite()')
                 small Invite to CloudKibo
             div(class='well well-lg animate-show', ng-show='userFound == "danger"')
               b {{addUserResponseMessage}}
           div(style='text-align:right;')
             button.myButton1(ng-click='openAddContact()') Hide Me!
 
-        div(ng-show='isSettingsSelected()', class='well well-lg animate-show modalBox')
-          div(class='well well-lg')
-            tabset(justified='true', class='well well-lg')
+        div(ng-show='isSettingsSelected()', class='modalBox')
+          div(class='')
+            tabset(justified='true', class='')
               tab(heading='Profile')
-                div(class='well well-lg')
+                div(class='')
                   #profileLeft
                     form(role='form', novalidate, name='form', class='css-form', enctype='multipart/form-data', ng-submit='updateProfile(user)')
                       h4 My Profile
@@ -507,7 +507,7 @@ block bodycontent
                            br
                            button.btn.btn-submit(type='submit', ng-disabled="form8.$invalid || isUnchanged(myfile)") Update Photo
               tab(heading='Support Test')
-                div(class='well well-lg')
+                div(class='')
                   h3 Checking Browser Compatibility
                   br
                   ul
