@@ -86,6 +86,9 @@ angular.module('kiboRtc.services')
         if (screenSharePCIndex <= pcIndex) {
           RTCConferenceCore.shareScreenToNext(screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
         }
+        else {
+          RTCConferenceCore.setSwitchingScreenShare(false);
+        }
 
       }
 
@@ -94,6 +97,9 @@ angular.module('kiboRtc.services')
         screenSharePCIndex++;
         if (screenSharePCIndex <= pcIndex) {
           RTCConferenceCore.hideScreenToNext(screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
+        }
+        else {
+          RTCConferenceCore.setSwitchingScreenShare(false);
         }
 
       }
@@ -151,8 +157,13 @@ angular.module('kiboRtc.services')
         toUserName = message.FromUser;
         if (message.ToUser == username) {
           //console.log('I RECEIVED ANSWER FROM '+ message.FromUser)
+
           RTCConferenceCore.setToUserName(toUserName);
-          RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
+
+          if(RTCConferenceCore.getSwitchingScreenShare())
+            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+          else
+            RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
         }
       }
 
@@ -160,7 +171,11 @@ angular.module('kiboRtc.services')
         toUserName = message.FromUser;
         if (message.ToUser == username) {
           RTCConferenceCore.setToUserName(toUserName);
-          RTCConferenceCore.addIceCandidate(message.payload, pcIndex);
+
+          if(RTCConferenceCore.getSwitchingScreenShare())
+            RTCConferenceCore.addIceCandidate(message.payload, otherPeers.indexOf(message.FromUser));
+          else
+            RTCConferenceCore.addIceCandidate(message.payload, pcIndex);
         }
       }
 
@@ -230,6 +245,8 @@ angular.module('kiboRtc.services')
               else {
 
                 RTCConferenceCore.shareScreen(stream, screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
+
+                RTCConferenceCore.setSwitchingScreenShare(true);
 
                 cb(null);
 
