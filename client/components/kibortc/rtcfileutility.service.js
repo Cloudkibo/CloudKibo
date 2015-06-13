@@ -124,6 +124,10 @@ angular.module('kiboRtc.services')
        */
       getChunkSize: function () {
         return 16000;//64000;//36000;
+      },
+
+      getChunksPerAck: function () {
+        return 16; /* 16k * 16 = 256k (buffer size in Chrome & seems to work 100% of the time) */
       }
     };
 

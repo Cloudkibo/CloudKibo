@@ -11,7 +11,7 @@ angular.module('kiboRtc.services')
     var pcIndexTemp = 0;
     var pcLength = 4;
 
-    var roomname;
+
     var username;
     var toUserName;
 
@@ -147,7 +147,7 @@ angular.module('kiboRtc.services')
               sendChannel[pcInd] = pc[pcInd].createDataChannel("sendDataChannel", {reliable: true});
             }
             catch (e) {
-              console.log('UNRELIABLE DATA CHANNEL on index '+ pcInd)
+              console.log('UNRELIABLE DATA CHANNEL on index '+ pcInd);
               sendChannel[pcInd] = pc[pcInd].createDataChannel("sendDataChannel", {reliable: false});
             }
             sendChannel[pcInd].onmessage = handleMessage;
@@ -353,12 +353,12 @@ angular.module('kiboRtc.services')
 
         if (otherPeers.indexOf(message.FromUser) == 0) {
           $scope.firstVideoAdded = false;
-          remoteStream1 = null;
+          //remoteStream1 = null;
           remotevideo1.src = null;
         }
         else if (otherPeers.indexOf(message.FromUser) == 1) {
           $scope.secondVideoAdded = false;
-          remoteStream2 = null;
+          //remoteStream2 = null;
           remotevideo2.src = null;
 
           $scope.$apply(function () {
@@ -367,7 +367,7 @@ angular.module('kiboRtc.services')
         }
         else if (otherPeers.indexOf(message.FromUser) == 2) {
           $scope.thirdVideoAdded = false;
-          remoteStream3 = null;
+          //remoteStream3 = null;
           remotevideo3.src = null;
 
           $scope.$apply(function () {
@@ -376,7 +376,7 @@ angular.module('kiboRtc.services')
         }
         else if (otherPeers.indexOf(message.FromUser) == 3) {
           $scope.forthVideoAdded = false;
-          remoteStream4 = null;
+          //remoteStream4 = null;
           remotevideo4.src = null;
 
           $scope.$apply(function () {
@@ -417,7 +417,7 @@ angular.module('kiboRtc.services')
           //console.log('INSIDE CONDITION SCREEN SHARE')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'close'};
-          console.log('SHARING THE SCREEN')
+          console.log('SHARING THE SCREEN');
 
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
@@ -480,7 +480,7 @@ angular.module('kiboRtc.services')
           //console.log('INSIDE CONDITION SCREEN SHARE')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'open'};
-          console.log('SHARING THE SCREEN')
+          console.log('SHARING THE SCREEN');
 
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
@@ -534,6 +534,10 @@ angular.module('kiboRtc.services')
 
       setSwitchingScreenShare : function(value){
         switchingScreenShare = value;
+      },
+
+      getSwitchingScreenShare : function(){
+        return switchingScreenShare;
       },
 
       getDataChannelMessage : function () {
