@@ -21,6 +21,7 @@ angular.module('kiboRtc.services')
     var otherPeers = [];
 
     var switchingScreenShare = false;
+    var switchingAudio = false;
 
     var iJoinLate = false;
 
@@ -172,6 +173,8 @@ angular.module('kiboRtc.services')
         if (message.ToUser == username) {
           RTCConferenceCore.setToUserName(toUserName);
 
+          console.log('value of switching screen share is '+ RTCConferenceCore.getSwitchingScreenShare());
+
           if(RTCConferenceCore.getSwitchingScreenShare())
             RTCConferenceCore.addIceCandidate(message.payload, otherPeers.indexOf(message.FromUser));
           else
@@ -287,6 +290,10 @@ angular.module('kiboRtc.services')
 
       getMessage: function () {
         return RTCConferenceCore.getDataChannelMessage();
+      },
+
+      toggleAudio: function () {
+
       }
 
     };
