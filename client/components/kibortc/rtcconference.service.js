@@ -112,7 +112,6 @@ angular.module('kiboRtc.services')
       }
 
       else if (message.payload.type === 'offer') {
-        console.log(message)
         toUserName = message.FromUser;
         if (!iJoinLate && !isStarted) {
           if (!isInitiator && !isStarted) {
@@ -255,6 +254,8 @@ angular.module('kiboRtc.services')
                 cb(err);
               }
               else {
+
+                console.log(otherPeers)
 
                 RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
 
