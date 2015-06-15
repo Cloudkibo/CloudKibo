@@ -112,6 +112,7 @@ angular.module('kiboRtc.services')
       }
 
       else if (message.payload.type === 'offer') {
+        console.log(message)
         toUserName = message.FromUser;
         if (!iJoinLate && !isStarted) {
           if (!isInitiator && !isStarted) {
