@@ -520,6 +520,8 @@ angular.module('kiboRtc.services')
       },
 
       setSwitchingScreenShare : function(value){
+        console.log(value)
+        console.log('inside this function')
         switchingScreenShare = value;
       },
 
