@@ -52,11 +52,14 @@ angular.module('kiboRtc.services')
       //$scope.meetingData.members = room.otherClients.slice();
       otherPeers = room.otherClients.slice();
 
+      console.log(otherPeers)
       //$scope.meetingData.members.splice( $scope.meetingData.members.indexOf($scope.user.username), 1 );
       var tempInd = otherPeers.indexOf(username);
 
       if(tempInd > -1) {
+        console.log('inside the splice with value '+ tempInd +' and name '+ otherPeers[tempInd])
         otherPeers.splice(tempInd, 1);
+        console.log(otherPeers)
       }
 
       isChannelReady = true;
