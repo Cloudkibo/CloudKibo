@@ -51,6 +51,7 @@ angular.module('kiboRtc.services')
 
       //$scope.meetingData.members = room.otherClients.slice();
       otherPeers = room.otherClients.slice();
+      console.log(otherPeers)
 
       //$scope.meetingData.members.splice( $scope.meetingData.members.indexOf($scope.user.username), 1 );
       var tempInd = otherPeers.indexOf(username);
