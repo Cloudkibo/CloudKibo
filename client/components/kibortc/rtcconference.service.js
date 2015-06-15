@@ -6,7 +6,7 @@
  */
 
 angular.module('kiboRtc.services')
-  .factory('RTCConference', function RTCConference($rootScope, socket, Signalling, RTCConferenceCore, ScreenShare) {
+  .factory('RTCConference', function RTCConference($rootScope, socket, Signalling, RTCConferenceCore, ScreenShare, $timeout) {
 
     var username;
     var room;
@@ -17,7 +17,7 @@ angular.module('kiboRtc.services')
     var isStarted = false;
     var pcIndex = 0;
     var pcLength = 4;
-    var screenSharePCIndex = 0;
+    var switchPCIndex = 0;
     var otherPeers = [];
 
     var switchingScreenShare = false;
@@ -64,8 +64,11 @@ angular.module('kiboRtc.services')
 
       if (room.otherClients.length > 1) {
         iJoinLate = true;
-        otherPeers = room.otherClients.slice();
       }
+
+      otherPeers = room.otherClients.slice();
+      console.log(otherPeers);
+
 
       startCalling();
     });
@@ -83,9 +86,9 @@ angular.module('kiboRtc.services')
 
       else if (message.payload.msg === 'got screen' && message.ToUser == username) {
 
-        screenSharePCIndex++;
-        if (screenSharePCIndex <= pcIndex) {
-          RTCConferenceCore.shareScreenToNext(screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
+        switchPCIndex++;
+        if (switchPCIndex <= pcIndex) {
+          RTCConferenceCore.shareScreenToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
         }
         else {
           RTCConferenceCore.setSwitchingScreenShare(false);
@@ -95,9 +98,9 @@ angular.module('kiboRtc.services')
 
       else if (message.payload.msg === 'screen close' && message.ToUser == username) {
 
-        screenSharePCIndex++;
-        if (screenSharePCIndex <= pcIndex) {
-          RTCConferenceCore.hideScreenToNext(screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
+        switchPCIndex++;
+        if (switchPCIndex <= pcIndex) {
+          RTCConferenceCore.hideScreenToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
         }
         else {
           RTCConferenceCore.setSwitchingScreenShare(false);
@@ -145,6 +148,8 @@ angular.module('kiboRtc.services')
           }
         }
         else if (!iJoinLate && isStarted) {
+          console.log("late joiner has joined "+ message);
+          console.log("my name is "+ username);
           if (message.ToUser == username) {
             RTCConferenceCore.createPeerConnection(pcIndex);
             console.log('I GOT OFFER FROM '+ toUserName);
@@ -173,7 +178,7 @@ angular.module('kiboRtc.services')
         if (message.ToUser == username) {
           RTCConferenceCore.setToUserName(toUserName);
 
-          console.log('value of switching screen share is '+ RTCConferenceCore.getSwitchingScreenShare());
+          //console.log('value of switching screen share is '+ RTCConferenceCore.getSwitchingScreenShare());
 
           if(RTCConferenceCore.getSwitchingScreenShare())
             RTCConferenceCore.addIceCandidate(message.payload, otherPeers.indexOf(message.FromUser));
@@ -235,7 +240,7 @@ angular.module('kiboRtc.services')
         else
           return cb('Invalid value. Value should be either "on" or "off".');
 
-        screenSharePCIndex = 0;
+        switchPCIndex = 0;
 
         if(action === 'on'){
 
@@ -247,7 +252,7 @@ angular.module('kiboRtc.services')
               }
               else {
 
-                RTCConferenceCore.shareScreen(stream, screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
+                RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
 
                 RTCConferenceCore.setSwitchingScreenShare(true);
 
@@ -265,7 +270,7 @@ angular.module('kiboRtc.services')
               }
             }, function (stream) {
 
-              RTCConferenceCore.shareScreen(stream, screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
+              RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
 
               cb(null);
 
@@ -279,8 +284,8 @@ angular.module('kiboRtc.services')
 
           ScreenShare.setSourceIdValue(null);
 
-          screenSharePCIndex = 0;
-          RTCConferenceCore.hideScreen(screenSharePCIndex, username, otherPeers[screenSharePCIndex]);
+          switchPCIndex = 0;
+          RTCConferenceCore.hideScreen(switchPCIndex, username, otherPeers[switchPCIndex]);
 
           cb(null);
         }
@@ -292,7 +297,65 @@ angular.module('kiboRtc.services')
         return RTCConferenceCore.getDataChannelMessage();
       },
 
-      toggleAudio: function () {
+      toggleAudio: function (state, cb) {
+
+        var action;
+        if (state === 'on')
+          action = 'on';
+        else if (state === 'off')
+          action = 'off';
+        else
+          return cb('Invalid value. Value should be either "on" or "off".');
+
+        switchPCIndex = 0;
+
+        if(action === 'on'){
+
+          if (!!navigator.webkitGetUserMedia) {
+
+            shareScreen(function (err, stream) {
+              if (err) {
+                cb(err);
+              }
+              else {
+
+                RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
+
+                RTCConferenceCore.setSwitchingScreenShare(true);
+
+                cb(null);
+
+              }
+            });
+
+          }
+          else if (!!navigator.mozGetUserMedia) {
+            getUserMedia({
+              video: {
+                mozMediaSource: 'window',
+                mediaSource: 'window'
+              }
+            }, function (stream) {
+
+              RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
+
+              cb(null);
+
+            }, function (err) {
+              cb(err);
+            });
+          }
+
+        }
+        else if(action === 'off'){
+
+          ScreenShare.setSourceIdValue(null);
+
+          switchPCIndex = 0;
+          RTCConferenceCore.hideScreen(switchPCIndex, username, otherPeers[switchPCIndex]);
+
+          cb(null);
+        }
 
       }
 
@@ -315,6 +378,8 @@ angular.module('kiboRtc.services')
         RTCConferenceCore.createPeerConnection(pcIndex);
         isStarted = true;
         //console.log('Im about to call')
+        console.log("I have joined late, I have created peer connection index is "+ pcIndex +
+        " and otherUsername is "+ toUserName);
         RTCConferenceCore.createAndSendOffer(pcIndex, toUserName);
         //sendMessage({msg: 'You can join', FromUser : $scope.user.username});//doCall();
       }
@@ -330,8 +395,26 @@ angular.module('kiboRtc.services')
           maybeStart();
         }
         else if(pcIndex < otherPeers.length && iJoinLate && !isStarted){
+          console.log(otherPeers);
           toUserName = otherPeers[pcIndex];
+          console.log("I have joined late, i am going to maybestart()");
           maybeStart();
+
+          $timeout(function(){
+            if (iJoinLate && isStarted) {
+              pcIndex++;
+              if (pcIndex < otherPeers.length) {
+                toUserName = otherPeers[pcIndex];
+                maybeStart();
+              }
+              else {
+                iJoinLate = false;
+                pcIndex--;
+              }
+            }
+          }, 4000);
+
+
         }
 
         $rootScope.$broadcast('localStreamCaptured');
