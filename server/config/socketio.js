@@ -553,7 +553,6 @@ function onConnect(socketio, socket) {
       //log('Request to create or join room ' + room.room + ' from '+ room.username);
 
       var clientsIDs = new Array(numClients);
-      var clientsIDsForOthers = new Array(numClients);
 
       for(var i in clients){
           clientsIDs[i] = clients[i].username;
@@ -575,15 +574,10 @@ function onConnect(socketio, socket) {
 				socket.emit('joined', room);
 
         console.log('room joined');
-        clients = findClientsSocket(room.room);
 
-        for(var i in clients){
-          clientsIDsForOthers[i] = clients[i].username;
-        }
+        clientsIDs.push(room.username);
 
-        console.log('people in room for others: ', clientsIDsForOthers);
-
-				room.otherClients = clientsIDsForOthers;
+				room.otherClients = clientsIDs;
         socketio.in(room.room).emit('join', room);
 
 			} else { // max three clients
