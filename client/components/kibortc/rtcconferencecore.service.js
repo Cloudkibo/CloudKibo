@@ -70,7 +70,7 @@ angular.module('kiboRtc.services')
     var thirdVideoAdded = false;
     var forthVideoAdded = false;
 
-    var switchingScreenShare = false;
+    var switchingScreenShare;
 
     return {
 
