@@ -51,14 +51,11 @@ angular.module('kiboRtc.services')
 
       //$scope.meetingData.members = room.otherClients.slice();
       otherPeers = room.otherClients.slice();
-      console.log(otherPeers)
 
       //$scope.meetingData.members.splice( $scope.meetingData.members.indexOf($scope.user.username), 1 );
       var tempInd = otherPeers.indexOf(username);
 
       if(tempInd > -1) {
-        console.log('inside splicing with name '+ otherPeers[tempInd]);
-        console.log(otherPeers)
         otherPeers.splice(tempInd, 1);
       }
 
@@ -116,6 +113,7 @@ angular.module('kiboRtc.services')
       }
 
       else if (message.payload.type === 'offer') {
+        console.log(message);
         toUserName = message.FromUser;
         if (!iJoinLate && !isStarted) {
           if (!isInitiator && !isStarted) {
