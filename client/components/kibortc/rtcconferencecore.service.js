@@ -1,28 +1,20 @@
 'use strict';
 
-/**
- * This module was intended to make conference call code more modular. This is not used for now and is also
- * incomplete, as rewriting of conference code was delayed.
- */
+
 
 angular.module('kiboRtc.services')
   .factory('RTCConferenceCore', function RTCConference($rootScope, pc_config, pc_constraints, sdpConstraints, audio_constraints, video_constraints, Signalling, $timeout) {
 
+    /* value should be: {username, pc, sendChannel, remoteAudioStream, remoteVideoStream, audioShared, videoShared, audio, video} */
+    var peer = [];
+
     var pcIndexTemp = 0;
     var pcLength = 4;
-
 
     var username;
     var toUserName;
 
     var message;
-
-    var isChannelReady;
-    /* It is used to check Data Channel is ready or not */
-    var isInitiator = false;
-    /* It indicates which peer is the initiator of the call */
-    var isStarted = false;
-    /* It indicates whether the WebRTC session is started or not */
 
     var sendChannel = [];
     var receiveChannel;
@@ -63,12 +55,6 @@ angular.module('kiboRtc.services')
 
     var localvideo;
 
-    var iJoinLate = false;
-
-    var screenSharePCIndex = 0;
-
-    var turnReady;
-
     var AUDIO = 'audio';
     /* Constant defining audio */
     var VIDEO = 'video';
@@ -83,6 +69,7 @@ angular.module('kiboRtc.services')
     var secondVideoAdded = false;
     var thirdVideoAdded = false;
     var forthVideoAdded = false;
+
     var switchingScreenShare = false;
 
     return {
@@ -231,7 +218,7 @@ angular.module('kiboRtc.services')
           sdpMLineIndex: message.label,
           candidate: message.candidate
         });
-        console.log('adding ice candidate ', candidate);
+        //console.log('adding ice candidate ', candidate);
         pc[pcInd].addIceCandidate(candidate);
       },
 
@@ -611,7 +598,7 @@ angular.module('kiboRtc.services')
      * to listen to that message and change the UI accordingly i.e. show video element
      *
      * @param event holds the stream sent by the remote peer
-     * todo this needs some work, remove scopes from here
+     * todo this needs some work
      */
     function handleRemoteStreamAdded(event) {
       console.log('Remote stream added. ', event.stream);//, event);
@@ -776,19 +763,6 @@ angular.module('kiboRtc.services')
       sendChannel[pcIndexTemp].onopen = handleReceiveChannelStateChange;
       sendChannel[pcIndexTemp].onclose = handleReceiveChannelStateChange;
 
-      // todo person who joins late, logic for him would start here
-
-      /*if (iJoinLate && isStarted) {
-        pcIndex++;
-        if (pcIndex < otherPeers.length) {
-          toUserName = otherPeers[pcIndex];
-          maybeStart();
-        }
-        else {
-          iJoinLate = false;
-          pcIndex--;
-        }
-      }*/
     }
 
     /**

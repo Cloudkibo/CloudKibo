@@ -73,7 +73,7 @@ function onDisconnect(socketio,socket) {
 
 		}
 
-	})
+	});
 
   function findClientsSocket(roomId, namespace) {
     var res = []
@@ -144,7 +144,7 @@ function onConnect(socketio, socket) {
 		});
 
 		socket.on('messageformeeting', function (message) {
-			console.log('Got message:', message.msg);
+			//console.log('Got message:', message.msg);
 
 			//socket.broadcast.emit('message', message);
 
@@ -195,6 +195,8 @@ function onConnect(socketio, socket) {
       var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
       var numClients = clients.length;
+
+      var socketid = '';
 
 			var canJoin = true;
 
@@ -539,10 +541,11 @@ function onConnect(socketio, socket) {
 
 		socket.on('create or join meeting', function (room) {
 
-
-      console.log(room)
+      //console.log(room);
 
       var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+
+      //console.log(clients);
 
       var numClients = clients.length;
 
@@ -553,10 +556,10 @@ function onConnect(socketio, socket) {
       var clientsIDsForOthers = new Array(numClients);
 
       for(var i in clients){
-          clientsIDs[i] == clients[i].username;
+          clientsIDs[i] = clients[i].username;
       }
 
-      console.log('people in room: ', numClients);
+      console.log('people in room: ', clientsIDs);
 
 			if (numClients === 0){
 				socket.join(room.room);
@@ -575,8 +578,10 @@ function onConnect(socketio, socket) {
         clients = findClientsSocket(room.room);
 
         for(var i in clients){
-          clientsIDsForOthers[i] == clients[i].username;
+          clientsIDsForOthers[i] = clients[i].username;
         }
+
+        console.log('people in room for others: ', clientsIDsForOthers);
 
 				room.otherClients = clientsIDsForOthers;
         socketio.in(room.room).emit('join', room);
