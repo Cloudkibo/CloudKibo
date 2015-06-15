@@ -92,7 +92,7 @@ angular.module('kiboRtc.services')
         }
       }
 
-      else if (message.payload.msg === 'got screen' && message.ToUser == username) {
+      else if (message.payload === 'got screen' && message.ToUser == username) {
 
         console.log('inside got screen');
 
@@ -106,7 +106,7 @@ angular.module('kiboRtc.services')
 
       }
 
-      else if (message.payload.msg === 'screen close' && message.ToUser == username) {
+      else if (message.payload === 'screen close' && message.ToUser == username) {
 
         switchPCIndex++;
         if (switchPCIndex <= pcIndex) {
