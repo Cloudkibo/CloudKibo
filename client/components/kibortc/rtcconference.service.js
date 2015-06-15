@@ -93,6 +93,8 @@ angular.module('kiboRtc.services')
 
       else if (message.payload.msg === 'got screen' && message.ToUser == username) {
 
+        console.log('inside got screen');
+
         switchPCIndex++;
         if (switchPCIndex <= pcIndex) {
           RTCConferenceCore.shareScreenToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
@@ -259,8 +261,6 @@ angular.module('kiboRtc.services')
                 cb(err);
               }
               else {
-
-                console.log(otherPeers)
 
                 RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
 

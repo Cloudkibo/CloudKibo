@@ -656,10 +656,6 @@ angular.module('kiboRtc.services')
 
           console.log('added in screen');
 
-          $timeout(function(){
-            Signalling.sendMessageForMeeting('got screen', toUserName);
-          }, 3000);
-
           return ;
 
         }
