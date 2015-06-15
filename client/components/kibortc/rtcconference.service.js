@@ -52,8 +52,18 @@ angular.module('kiboRtc.services')
       //$scope.meetingData.members = room.otherClients.slice();
       otherPeers = room.otherClients.slice();
 
+      console.log(otherPeers)
+      console.log(username)
+
       //$scope.meetingData.members.splice( $scope.meetingData.members.indexOf($scope.user.username), 1 );
-      otherPeers.splice(otherPeers.indexOf(username), 1);
+      var tempInd = otherPeers.indexOf(username);
+
+      if(tempInd > -1)
+        otherPeers.splice(tempInd, 1);
+
+      console.log(otherPeers)
+      console.log('is late comer in this part????')
+
 
       isChannelReady = true;
     });
@@ -383,6 +393,25 @@ angular.module('kiboRtc.services')
         RTCConferenceCore.createAndSendOffer(pcIndex, toUserName);
         //sendMessage({msg: 'You can join', FromUser : $scope.user.username});//doCall();
       }
+
+      $timeout(function(){
+        console.log('inside that function iJoinLate: '+ iJoinLate +' isStarted: '+ isStarted);
+        if (iJoinLate && isStarted) {
+          pcIndex++;
+          console.log('inside that if condition pcIndex: '+ pcIndex +' otherPeers: '+ otherPeers);
+          if (pcIndex < otherPeers.length) {
+            console.log('inside other if condition which calls maybestart')
+            toUserName = otherPeers[pcIndex];
+            maybeStart();
+          }
+          else {
+            console.log('i join late becoming false')
+            iJoinLate = false;
+            pcIndex--;
+          }
+        }
+      }, 4000);
+
     }
 
     function startCalling(){
@@ -399,21 +428,6 @@ angular.module('kiboRtc.services')
           toUserName = otherPeers[pcIndex];
           console.log("I have joined late, i am going to maybestart()");
           maybeStart();
-
-          $timeout(function(){
-            if (iJoinLate && isStarted) {
-              pcIndex++;
-              if (pcIndex < otherPeers.length) {
-                toUserName = otherPeers[pcIndex];
-                maybeStart();
-              }
-              else {
-                iJoinLate = false;
-                pcIndex--;
-              }
-            }
-          }, 4000);
-
 
         }
 
