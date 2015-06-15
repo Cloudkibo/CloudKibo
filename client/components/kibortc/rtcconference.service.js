@@ -55,8 +55,11 @@ angular.module('kiboRtc.services')
       //$scope.meetingData.members.splice( $scope.meetingData.members.indexOf($scope.user.username), 1 );
       var tempInd = otherPeers.indexOf(username);
 
-      if(tempInd > -1)
+      if(tempInd > -1) {
+        console.log('inside splicing with name '+ otherPeers[tempInd]);
+        console.log(otherPeers)
         otherPeers.splice(tempInd, 1);
+      }
 
       isChannelReady = true;
     });
