@@ -181,7 +181,7 @@ angular.module('kiboRtc.services')
         if (message.ToUser == username) {
           RTCConferenceCore.setToUserName(toUserName);
 
-          //console.log('value of switching screen share is '+ RTCConferenceCore.getSwitchingScreenShare());
+          console.log('value of switching screen share is '+ RTCConferenceCore.getSwitchingScreenShare());
 
           if(RTCConferenceCore.getSwitchingScreenShare())
             RTCConferenceCore.addIceCandidate(message.payload, otherPeers.indexOf(message.FromUser));
