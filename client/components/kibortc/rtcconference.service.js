@@ -52,18 +52,11 @@ angular.module('kiboRtc.services')
       //$scope.meetingData.members = room.otherClients.slice();
       otherPeers = room.otherClients.slice();
 
-      console.log(otherPeers)
-      console.log(username)
-
       //$scope.meetingData.members.splice( $scope.meetingData.members.indexOf($scope.user.username), 1 );
       var tempInd = otherPeers.indexOf(username);
 
       if(tempInd > -1)
         otherPeers.splice(tempInd, 1);
-
-      console.log(otherPeers)
-      console.log('is late comer in this part????')
-
 
       isChannelReady = true;
     });
@@ -395,17 +388,13 @@ angular.module('kiboRtc.services')
       }
 
       $timeout(function(){
-        console.log('inside that function iJoinLate: '+ iJoinLate +' isStarted: '+ isStarted);
         if (iJoinLate && isStarted) {
           pcIndex++;
-          console.log('inside that if condition pcIndex: '+ pcIndex +' otherPeers: '+ otherPeers);
           if (pcIndex < otherPeers.length) {
-            console.log('inside other if condition which calls maybestart')
             toUserName = otherPeers[pcIndex];
             maybeStart();
           }
           else {
-            console.log('i join late becoming false')
             iJoinLate = false;
             pcIndex--;
           }
