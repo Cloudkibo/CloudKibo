@@ -84,6 +84,7 @@ angular.module('kiboRtc.services')
     socket.on('message', function (message) {
       //console.log('Client received message: '+ JSON.stringify(message));
 
+      console.log(message)
       if (message.payload.msg === 'got user media') {
         if (isInitiator && !isStarted) {
           toUserName = message.FromUser;
