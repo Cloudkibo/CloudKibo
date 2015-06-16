@@ -184,6 +184,8 @@ block bodycontent
               //button.myButton1(ng-click='openInvite()') Hide Me!
             #inviteEmailBox1(class='')
               form(role='form', method="post", novalidate, name='form6', class='css-form', ng-submit='emailInvite(inviteemail)')
+
+                br
                 label Invite your friend to CloudKibo
                 .form-group
                   input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='inviteemail.recipientEmail')
@@ -208,6 +210,7 @@ block bodycontent
             div(ng-show='isUserNameAddSelected()', class='')
               form(role='form', ng-submit='addUserName(add)', novalidate, name='form9', class='css-form')
                 .form-group
+                  br
                   label Add contact by username
                   input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='add.searchusername')
                 a(ng-click='switchAddOption()')
@@ -245,12 +248,13 @@ block bodycontent
             button.myButton1(ng-click='openAddContact()') Hide Me!
 
         div(ng-show='isSettingsSelected()', class='modalBox')
-          div(class='')
-            tabset(justified='true', class='')
+          div(class='lalz')
+            tabset(justified='true', class='tabbable')
               tab(heading='Profile')
-                div(class='')
+                div(class='lalz')
                   #profileLeft
                     form(role='form', novalidate, name='form', class='css-form', enctype='multipart/form-data', ng-submit='updateProfile(user)')
+                      br
                       h4 My Profile
                       br
                       label Unique KiboName
@@ -506,8 +510,10 @@ block bodycontent
                            br
                            br
                            button.btn.btn-submit(type='submit', ng-disabled="form8.$invalid || isUnchanged(myfile)") Update Photo
+                div(style='text-align:right;')
+                  button.myButton1(ng-click='openSettings()') Hide Me!
               tab(heading='Support Test')
-                div(class='')
+                div(class='tabh')
                   h3 Checking Browser Compatibility
                   br
                   ul
@@ -531,9 +537,11 @@ block bodycontent
                   br
                   b Note:
                   | Latest version of Google Chrome is recommended.
-          div(style='text-align:right;')
-            button.myButton1(ng-click='openSettings()') Hide Me!
+                  div(style='text-align:right;')
+                    button.myButton1(ng-click='openSettings()') Hide Me!
         //fullBodyLightCoverShow(ng-show='isCallSelected() || isInviteSelected() || isSettingsSelected() || isMeetingSelected()')
+
+
 
         block appbodycontent
 
