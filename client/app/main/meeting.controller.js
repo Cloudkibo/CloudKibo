@@ -225,23 +225,7 @@ angular.module('cloudKiboApp')
       $scope.chatBoxVisible = !$scope.chatBoxVisible;
     };
 
-    $scope.videoToggleText = 'Show Video';
 
-    $scope.toggleVideo = function () {
-
-      if ($scope.videoToggleText == 'Show Video') {
-        $scope.videoToggleText = 'Hide Video';    // this changes the text of button from 'show' to 'hide' video
-
-      }
-      else {
-        $scope.videoToggleText = 'Show Video';    // this changes the text of button from 'show' to 'hide' video
-
-        localStream.stop();
-
-        doCall();
-      }
-
-    };
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // Signaling Logic                                                                    //
@@ -266,6 +250,44 @@ angular.module('cloudKiboApp')
     });
 
     //-----------------//
+
+    $scope.toggleVideoText = 'Share Video';
+
+    $scope.videoToggle = function () {
+      console.log('in toggle video function')
+      if ($scope.toggleVideoText === 'Share Video') {
+
+        console.log('in toggle video on')
+
+        RTCConference.toggleVideo('on', function(err){
+          if(err) return alert(err);
+
+          console.log('in toggle video on inside')
+
+          $scope.toggleVideoText = 'Hide Video';
+
+          $scope.videoSharedLocal = true;
+
+        });
+
+      }
+      else {
+
+        console.log('we are in toggle off')
+
+        RTCConference.toggleVideo('off', function(err){
+          if(err) return alert(err);
+
+          $scope.toggleVideoText = 'Share Video';
+
+          console.log('we are in toggle off inside')
+
+          $scope.videoSharedLocal = false;
+
+        });
+
+      }
+    };
 
     $scope.showScreenText = 'Share Screen';
 
