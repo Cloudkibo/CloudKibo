@@ -71,6 +71,7 @@ angular.module('kiboRtc.services')
     var forthVideoAdded = false;
 
     var switchingScreenShare = false;
+    var switchingVideo = false;
 
     return {
 
@@ -229,7 +230,8 @@ angular.module('kiboRtc.services')
        * @param cb callback function to notify application if task was not successful
        * todo this needs work
        */
-      toggleVideo: function (cb) {
+      toggleVideo: function (state, cb) {
+
         if (videoShared) {
 
           localVideoStream.stop();
@@ -266,6 +268,8 @@ angular.module('kiboRtc.services')
 
         }
       },
+
+
 
       /**
        * This will toggle the local audio on or off. It will automatically notify other client that
@@ -502,6 +506,79 @@ angular.module('kiboRtc.services')
 
       },
 
+      shareVideo: function (pcInd, username, otherPeer) {
+
+        pcIndexTemp = pcInd;
+
+        pc[pcInd].addStream(localVideoStream);
+
+        pc[pcInd].createOffer(function(sessionDescription){
+          sessionDescription.FromUser = username;
+          sessionDescription.ToUser = otherPeer;
+          //console.log('INSIDE CONDITION SCREEN SHARE')
+
+          var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'open'};
+          console.log('SHARING THE VIDEO');
+
+          // Set Opus as the preferred codec in SDP if Opus is present.
+          pc[pcIndexTemp].setLocalDescription(sessionDescription);
+
+          Signalling.sendMessageForMeeting(payload, otherPeer);
+
+        }, handleCreateOfferError);
+      },
+
+      hideVideo: function (pcInd, username, otherPeer) {
+        localVideoStream.stop();
+
+        if(typeof localScreenStream !== 'undefined' || localScreenStream !== null)
+          localvideo.src = URL.createObjectURL(localScreenStream);
+        else
+          localvideo.src = null;
+
+        pcIndexTemp = pcInd;
+
+        pc[pcInd].removeStream(localVideoStream);
+
+        pc[pcInd].createOffer(function(sessionDescription){
+          sessionDescription.FromUser = username;
+          sessionDescription.ToUser = otherPeer;
+          //console.log('INSIDE CONDITION SCREEN SHARE')
+
+          var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'close'};
+          console.log('Hiding THE Video');
+
+          // Set Opus as the preferred codec in SDP if Opus is present.
+          pc[pcIndexTemp].setLocalDescription(sessionDescription);
+
+          Signalling.sendMessageForMeeting(payload, otherPeer);
+
+        }, handleCreateOfferError);
+
+      },
+
+      hideVideoToNext: function (pcInd, username, otherPeer) {
+
+        pcIndexTemp = pcInd;
+
+        pc[pcInd].removeStream(localVideoStream);
+        pc[pcInd].createOffer(function(sessionDescription){
+          sessionDescription.FromUser = username;
+          sessionDescription.ToUser = otherPeer;
+          //console.log('INSIDE CONDITION SCREEN SHARE')
+
+          var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'close'};
+          console.log('Hiding THE Video');
+
+          // Set Opus as the preferred codec in SDP if Opus is present.
+          pc[pcIndexTemp].setLocalDescription(sessionDescription);
+
+          Signalling.sendMessageForMeeting(payload, otherPeer);
+
+        }, handleCreateOfferError);
+
+      },
+
       /**
        * Application can check if the local stream is fetched or not by calling this function.
        *
@@ -519,9 +596,18 @@ angular.module('kiboRtc.services')
         toUserName = username;
       },
 
-      setSwitchingScreenShare : function(value){
+      setSwitchingVideo : function(value){
         console.log(value)
         console.log('inside this function')
+        switchingVideo = value;
+      },
+
+      getSwitchingVideo : function(){
+        return switchingVideo;
+      },
+
+      setSwitchingScreenShare : function(value){
+
         switchingScreenShare = value;
       },
 
@@ -606,7 +692,7 @@ angular.module('kiboRtc.services')
       console.log('Remote stream added. ', event.stream);//, event);
 
       if (event.stream.getAudioTracks().length) {
-        if(firstAudioAdded == false){
+        if(pcIndexTemp === 0){
           $rootScope.$broadcast('peer1Joined');
 
           console.log('added audio in 1');
@@ -615,7 +701,7 @@ angular.module('kiboRtc.services')
           remoteAudioStream1 = event.stream;
           firstAudioAdded = true;
         }
-        else if(firstAudioAdded == true && secondAudioAdded == false){
+        else if(pcIndexTemp === 1){
           $rootScope.$broadcast('peer2Joined');
 
           console.log('added audio in 2');
@@ -624,7 +710,7 @@ angular.module('kiboRtc.services')
           remoteAudioStream2 = event.stream;
           secondAudioAdded = true;
         }
-        else if(firstAudioAdded == true && secondAudioAdded == true && thirdAudioAdded == false){
+        else if(pcIndexTemp === 2){
           $rootScope.$broadcast('peer3Joined');
 
           console.log('added audio in 3');
@@ -633,7 +719,7 @@ angular.module('kiboRtc.services')
           remoteAudioStream3 = event.stream;
           thirdAudioAdded = true;
         }
-        else if(firstAudioAdded == true && secondAudioAdded == true && thirdAudioAdded == true && forthAudioAdded == false){
+        else if(pcIndexTemp === 3){
           $rootScope.$broadcast('peer4Joined');
 
           console.log('added audio in 4');
@@ -664,42 +750,46 @@ angular.module('kiboRtc.services')
 
         }
 
-        if(firstVideoAdded == false){
-          $rootScope.$broadcast('peer1SharedVideo');
+        if(switchingVideo) {
+          if(pcIndexTemp == 0){
+            $rootScope.$broadcast('peer1SharedVideo');
 
-          console.log('added video in 1');
+            console.log('added video in 1');
 
-          remotevideo1.src = URL.createObjectURL(event.stream);
-          remoteVideoStream1 = event.stream;
-          firstVideoAdded = true;
+            remotevideo1.src = URL.createObjectURL(event.stream);
+            remoteVideoStream1 = event.stream;
+            firstVideoAdded = true;
+          }
+          if(pcIndexTemp == 1){
+            $rootScope.$broadcast('peer2SharedVideo');
+
+            console.log('added video in 2');
+
+            remotevideo2.src = URL.createObjectURL(event.stream);
+            remoteVideoStream2 = event.stream;
+            secondVideoAdded = true;
+          }
+          if(pcIndexTemp == 2){
+            $rootScope.$broadcast('peer3SharedVideo');
+
+            console.log('added video in 3');
+
+            remotevideo3.src = URL.createObjectURL(event.stream);
+            remoteVideoStream3 = event.stream;
+            thirdVideoAdded = true;
+          }
+          if(pcIndexTemp == 3){
+            $rootScope.$broadcast('peer4SharedVideo');
+
+            console.log('added video in 4');
+
+            remotevideo4.src = URL.createObjectURL(event.stream);
+            remoteVideoStream4 = event.stream;
+            forthVideoAdded = true;
+          }
         }
-        else if(firstVideoAdded == true && secondVideoAdded == false){
-          $rootScope.$broadcast('peer2SharedVideo');
 
-          console.log('added video in 2');
 
-          remotevideo2.src = URL.createObjectURL(event.stream);
-          remoteVideoStream2 = event.stream;
-          secondVideoAdded = true;
-        }
-        else if(firstVideoAdded == true && secondVideoAdded == true && thirdVideoAdded == false){
-          $rootScope.$broadcast('peer3SharedVideo');
-
-          console.log('added video in 3');
-
-          remotevideo3.src = URL.createObjectURL(event.stream);
-          remoteVideoStream3 = event.stream;
-          thirdVideoAdded = true;
-        }
-        else if(firstVideoAdded == true && secondVideoAdded == true && thirdVideoAdded == true && forthVideoAdded == false){
-          $rootScope.$broadcast('peer4SharedVideo');
-
-          console.log('added video in 4');
-
-          remotevideo4.src = URL.createObjectURL(event.stream);
-          remoteVideoStream4 = event.stream;
-          forthVideoAdded = true;
-        }
 
       }
 

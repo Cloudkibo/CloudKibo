@@ -56,6 +56,7 @@ div
         a.icon-btn(id='showScreenButton', ng-click='showScreen()')
           i.fa.fa-desktop
           div {{showScreenText}}
+
     .col-sm-4(ng-hide='hasChromeExtension() || isFireFox()')
       .btn-wrapper-kibo
         a.btn.btn-lg.green(ng-click='installExtension()')
@@ -70,8 +71,14 @@ div
       .btn-wrapper-kibo
         label Send File
         input(id='file', type='file')
+
     .col-sm-1(id='0', ng-show='localCameraCaptured()')
     .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')
+    .col-sm-1(ng-show='localCameraCaptured()')
+      .btn-wrapper-kibo
+        a.icon-btn(ng-click='videoToggle()')
+          i.fa.fa-desktop
+          div {{toggleVideoText}}
     .col-sm-1.chatBoxButton(ng-show='localCameraCaptured()')
       .btn-wrapper-kibo
         a.icon-btn(ng-click='toggleChatBoxVisibility()')

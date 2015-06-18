@@ -118,6 +118,32 @@ angular.module('kiboRtc.services')
 
       }
 
+      else if (message.payload === 'got video' && message.ToUser == username) {
+
+
+
+        switchPCIndex++;
+        if (switchPCIndex <= pcIndex) {
+          RTCConferenceCore.shareVideo(switchPCIndex, username, otherPeers[switchPCIndex]);
+        }
+        else {
+          RTCConferenceCore.setSwitchingScreenShare(false);
+        }
+
+      }
+
+      else if (message.payload === 'video close' && message.ToUser == username) {
+
+        switchPCIndex++;
+        if (switchPCIndex <= pcIndex) {
+          RTCConferenceCore.hideVideoToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
+        }
+        else {
+          RTCConferenceCore.setSwitchingScreenShare(false);
+        }
+
+      }
+
       else if (message.payload.type === 'offer') {
         console.log(message);
         toUserName = message.FromUser;
@@ -158,6 +184,36 @@ angular.module('kiboRtc.services')
 
           }
         }
+        else if (message.payload.sharingVideo === 'open') {
+          toUserName = message.FromUser;
+          if (message.ToUser == username) {
+
+            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+
+            console.log('I am in the open condition and offerer number is ', otherPeers.indexOf(message.FromUser));
+
+            RTCConferenceCore.setSwitchingVideo(true);
+            $rootScope.$broadcast("VideoShared");
+
+            RTCConferenceCore.createAndSendAnswer(otherPeers.indexOf(message.FromUser), toUserName);
+
+          }
+        }
+        else if (message.payload.sharingVideo === 'close') {
+          toUserName = message.FromUser;
+          if (message.ToUser == username) {
+
+            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+
+            console.log('I am in the close condition and offerer number is ', otherPeers.indexOf(message.FromUser));
+
+            RTCConferenceCore.setSwitchingVideo(true);
+            $rootScope.$broadcast("VideoRemoved");
+
+            RTCConferenceCore.createAndSendAnswer(otherPeers.indexOf(message.FromUser), toUserName);
+
+          }
+        }
         else if (!iJoinLate && isStarted) {
           console.log("late joiner has joined "+ message);
           console.log("my name is "+ username);
@@ -177,7 +233,7 @@ angular.module('kiboRtc.services')
 
           RTCConferenceCore.setToUserName(toUserName);
 
-          if(RTCConferenceCore.getSwitchingScreenShare())
+          if(RTCConferenceCore.getSwitchingScreenShare() || RTCConferenceCore.getSwitchingVideo())
             RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
           else
             RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
@@ -191,7 +247,7 @@ angular.module('kiboRtc.services')
 
           console.log('value of switching screen share is '+ RTCConferenceCore.getSwitchingScreenShare());
 
-          if(RTCConferenceCore.getSwitchingScreenShare())
+          if(RTCConferenceCore.getSwitchingScreenShare() || RTCConferenceCore.getSwitchingVideo())
             RTCConferenceCore.addIceCandidate(message.payload, otherPeers.indexOf(message.FromUser));
           else
             RTCConferenceCore.addIceCandidate(message.payload, pcIndex);
@@ -253,7 +309,7 @@ angular.module('kiboRtc.services')
 
         switchPCIndex = 0;
 
-        if(action === 'on'){
+        if (action === 'on') {
 
           if (!!navigator.webkitGetUserMedia) {
 
@@ -291,7 +347,7 @@ angular.module('kiboRtc.services')
           }
 
         }
-        else if(action === 'off'){
+        else if (action === 'off') {
 
           ScreenShare.setSourceIdValue(null);
 
@@ -304,11 +360,10 @@ angular.module('kiboRtc.services')
 
       },
 
-      getMessage: function () {
-        return RTCConferenceCore.getDataChannelMessage();
-      },
 
-      toggleAudio: function (state, cb) {
+
+
+      toggleVideo: function(state, cb) {
 
         var action;
         if (state === 'on')
@@ -320,53 +375,39 @@ angular.module('kiboRtc.services')
 
         switchPCIndex = 0;
 
-        if(action === 'on'){
+        if (action === 'on') {
 
-          if (!!navigator.webkitGetUserMedia) {
+          RTCConferenceCore.captureUserMedia('video', function(err){
+            if(err) return alert(err);
 
-            shareScreen(function (err, stream) {
-              if (err) {
-                cb(err);
-              }
-              else {
+            RTCConferenceCore.shareVideo(switchPCIndex, username, otherPeers[switchPCIndex]);
 
-                RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
+            RTCConferenceCore.setSwitchingVideo(true);
 
-                RTCConferenceCore.setSwitchingScreenShare(true);
+            cb(null);
 
-                cb(null);
-
-              }
-            });
-
-          }
-          else if (!!navigator.mozGetUserMedia) {
-            getUserMedia({
-              video: {
-                mozMediaSource: 'window',
-                mediaSource: 'window'
-              }
-            }, function (stream) {
-
-              RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
-
-              cb(null);
-
-            }, function (err) {
-              cb(err);
-            });
-          }
+          }); // there?
 
         }
-        else if(action === 'off'){
+        else if (action === 'off') {
 
-          ScreenShare.setSourceIdValue(null);
+          console.log('hin mei ayo.. for hiding video, this is conf service ')
 
           switchPCIndex = 0;
-          RTCConferenceCore.hideScreen(switchPCIndex, username, otherPeers[switchPCIndex]);
+          RTCConferenceCore.hideVideo(switchPCIndex, username, otherPeers[switchPCIndex]);
+          RTCConferenceCore.setSwitchingVideo(true);
 
           cb(null);
         }
+      },
+
+      getMessage: function () {
+        return RTCConferenceCore.getDataChannelMessage();
+      },
+
+      toggleAudio: function (state, cb) {
+// your logic will go there... this fucniont would be called by meeting controoler on button press
+
 
       }
 
