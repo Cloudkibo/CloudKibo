@@ -144,6 +144,32 @@ angular.module('kiboRtc.services')
 
       }
 
+      else if (message.payload === 'got audio' && message.ToUser == username) {
+
+
+
+        switchPCIndex++;
+        if (switchPCIndex <= pcIndex) {
+          RTCConferenceCore.shareAudio(switchPCIndex, username, otherPeers[switchPCIndex]);
+        }
+        else {
+          RTCConferenceCore.setSwitchingScreenShare(false);
+        }
+
+      }
+
+      else if (message.payload === 'audio close' && message.ToUser == username) {
+
+        switchPCIndex++;
+        if (switchPCIndex <= pcIndex) {
+          RTCConferenceCore.hideAudioToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
+        }
+        else {
+          RTCConferenceCore.setSwitchingScreenShare(false);
+        }
+
+      }
+
       else if (message.payload.type === 'offer') {
         console.log(message);
         toUserName = message.FromUser;
@@ -214,6 +240,36 @@ angular.module('kiboRtc.services')
 
           }
         }
+        else if (message.payload.sharingAudio === 'open') {
+          toUserName = message.FromUser;
+          if (message.ToUser == username) {
+
+            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+
+            console.log('I am in the open condition and offerer number is ', otherPeers.indexOf(message.FromUser));
+
+            RTCConferenceCore.setSwitchingAudio(true);
+            $rootScope.$broadcast("AudioShared");
+
+            RTCConferenceCore.createAndSendAnswer(otherPeers.indexOf(message.FromUser), toUserName);
+
+          }
+        }
+        else if (message.payload.sharingAudio === 'close') {
+          toUserName = message.FromUser;
+          if (message.ToUser == username) {
+
+            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+
+            console.log('I am in the close condition and offerer number is ', otherPeers.indexOf(message.FromUser));
+
+            RTCConferenceCore.setSwitchingAudio(true);
+            $rootScope.$broadcast("AudioRemoved");
+
+            RTCConferenceCore.createAndSendAnswer(otherPeers.indexOf(message.FromUser), toUserName);
+
+          }
+        }
         else if (!iJoinLate && isStarted) {
           console.log("late joiner has joined "+ message);
           console.log("my name is "+ username);
@@ -233,7 +289,7 @@ angular.module('kiboRtc.services')
 
           RTCConferenceCore.setToUserName(toUserName);
 
-          if(RTCConferenceCore.getSwitchingScreenShare() || RTCConferenceCore.getSwitchingVideo())
+          if(RTCConferenceCore.getSwitchingScreenShare() || RTCConferenceCore.getSwitchingVideo() || RTCConferenceCore.getSwitchingAudio())
             RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
           else
             RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
@@ -247,7 +303,7 @@ angular.module('kiboRtc.services')
 
           console.log('value of switching screen share is '+ RTCConferenceCore.getSwitchingScreenShare());
 
-          if(RTCConferenceCore.getSwitchingScreenShare() || RTCConferenceCore.getSwitchingVideo())
+          if(RTCConferenceCore.getSwitchingScreenShare() || RTCConferenceCore.getSwitchingVideo() || RTCConferenceCore.getSwitchingAudio())
             RTCConferenceCore.addIceCandidate(message.payload, otherPeers.indexOf(message.FromUser));
           else
             RTCConferenceCore.addIceCandidate(message.payload, pcIndex);
@@ -360,9 +416,6 @@ angular.module('kiboRtc.services')
 
       },
 
-
-
-
       toggleVideo: function(state, cb) {
 
         var action;
@@ -405,11 +458,42 @@ angular.module('kiboRtc.services')
         return RTCConferenceCore.getDataChannelMessage();
       },
 
-      toggleAudio: function (state, cb) {
-// your logic will go there... this fucniont would be called by meeting controoler on button press
+      toggleAudio: function(state, cb) {
 
+        var action;
+        if (state === 'on')
+          action = 'on';
+        else if (state === 'off')
+          action = 'off';
+        else
+          return cb('Invalid value. Value should be either "on" or "off".');
 
-      }
+        switchPCIndex = 0;
+
+        if (action === 'on') {
+
+          RTCConferenceCore.captureUserMedia('audio', function(err){
+            if(err) return alert(err);
+
+            RTCConferenceCore.shareAudio(switchPCIndex, username, otherPeers[switchPCIndex]);
+            RTCConferenceCore.setSwitchingAudio(true);
+
+            cb(null);
+
+          }); // there?
+
+        }
+        else if (action === 'off') {
+
+          console.log('hin mei ayo.. for hiding video, this is conf service ')
+
+          switchPCIndex = 0;
+          RTCConferenceCore.hideAudio(switchPCIndex, username, otherPeers[switchPCIndex]);
+          RTCConferenceCore.setSwitchingAudio(true);
+
+          cb(null);
+        }
+      },
 
     };
 
