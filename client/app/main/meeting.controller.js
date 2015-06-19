@@ -156,7 +156,7 @@ angular.module('cloudKiboApp')
 
     $scope.$on('peer2Joined', function () {
       $scope.peer2Joined = true;
-      $scope.meetingRemoteVideoWidth = '30%';
+      $scope.meetingRemoteVideoWidth = '170px';
     });
 
     $scope.peer3Joined = false;
@@ -167,7 +167,7 @@ angular.module('cloudKiboApp')
 
     $scope.$on('peer3Joined', function () {
       $scope.peer3Joined = true;
-      $scope.meetingRemoteVideoWidth = '30%';
+      $scope.meetingRemoteVideoWidth = '170px';
     });
 
     $scope.peer4Joined = false;
@@ -178,7 +178,7 @@ angular.module('cloudKiboApp')
 
     $scope.$on('peer4Joined', function () {
       $scope.peer4Joined = true;
-      $scope.meetingRemoteVideoWidth = '30%';
+      $scope.meetingRemoteVideoWidth = '170px';
     });
 
     $scope.peerSharedScreen = false;
@@ -231,7 +231,7 @@ angular.module('cloudKiboApp')
     // Signaling Logic                                                                    //
     ///////////////////////////////////////////////////////////////////////////////////////
 
-    $scope.meetingRemoteVideoWidth = '30%';
+    $scope.meetingRemoteVideoWidth = '170px';
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // Media Stream Logic                                                                 //
