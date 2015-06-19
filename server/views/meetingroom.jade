@@ -76,6 +76,11 @@ div
     .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')
     .col-sm-1(ng-show='localCameraCaptured()')
       .btn-wrapper-kibo
+        a.icon-btn(ng-click='audioToggle()')
+          i.fa.fa-desktop
+          div {{toggleAudioText}}
+    .col-sm-1(ng-show='localCameraCaptured()')
+      .btn-wrapper-kibo
         a.icon-btn(ng-click='videoToggle()')
           i.fa.fa-desktop
           div {{toggleVideoText}}
