@@ -148,10 +148,19 @@ angular.module('cloudKiboApp')
       return $scope.localCameraOn;
     };
 
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // WebRTC User Interface Logic (VIDEO TOGGLING)                                       //
+    ////////////////////////////////////////////////////////////////////////////////////////
+
     $scope.peer1Joined = false;
+    $scope.peer1SharedVideo = false;
 
     $scope.hasPeer1Joined = function () {
       return $scope.peer1Joined;
+    };
+
+    $scope.hasPeer1SharedVideo = function () {
+      return $scope.peer1SharedVideo;
     };
 
     $scope.$on('peer1Joined', function () {
@@ -160,13 +169,22 @@ angular.module('cloudKiboApp')
     });
 
     $scope.$on('peer1SharedVideo', function(){
+      $scope.peer1SharedVideo = true;
+    });
 
+    $scope.$on('peer1HidesVideo', function(){
+      $scope.peer1SharedVideo = false;
     });
 
     $scope.peer2Joined = false;
+    $scope.peer2SharedVideo = false;
 
     $scope.hasPeer2Joined = function () {
       return $scope.peer2Joined;
+    };
+
+    $scope.hasPeer2SharedVideo = function () {
+      return $scope.peer2SharedVideo;
     };
 
     $scope.$on('peer2Joined', function () {
@@ -174,10 +192,23 @@ angular.module('cloudKiboApp')
       $scope.meetingRemoteVideoWidth = '170px';
     });
 
+    $scope.$on('peer2SharedVideo', function(){
+      $scope.peer2SharedVideo = true;
+    });
+
+    $scope.$on('peer2HidesVideo', function(){
+      $scope.peer2SharedVideo = false;
+    });
+
     $scope.peer3Joined = false;
+    $scope.peer3SharedVideo = false;
 
     $scope.hasPeer3Joined = function () {
       return $scope.peer3Joined;
+    };
+
+    $scope.hasPeer3SharedVideo = function () {
+      return $scope.peer3SharedVideo;
     };
 
     $scope.$on('peer3Joined', function () {
@@ -185,15 +216,36 @@ angular.module('cloudKiboApp')
       $scope.meetingRemoteVideoWidth = '170px';
     });
 
+    $scope.$on('peer3SharedVideo', function(){
+      $scope.peer3SharedVideo = true;
+    });
+
+    $scope.$on('peer3HidesVideo', function(){
+      $scope.peer3SharedVideo = false;
+    });
+
     $scope.peer4Joined = false;
+    $scope.peer4SharedVideo = false;
 
     $scope.hasPeer4Joined = function () {
       return $scope.peer4Joined;
     };
 
+    $scope.hasPeer4SharedVideo = function () {
+      return $scope.peer4SharedVideo;
+    };
+
     $scope.$on('peer4Joined', function () {
       $scope.peer4Joined = true;
       $scope.meetingRemoteVideoWidth = '170px';
+    });
+
+    $scope.$on('peer4SharedVideo', function(){
+      $scope.peer4SharedVideo = true;
+    });
+
+    $scope.$on('peer4HidesVideo', function(){
+      $scope.peer4SharedVideo = false;
     });
 
     $scope.peerSharedScreen = false;

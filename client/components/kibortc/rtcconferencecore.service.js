@@ -855,8 +855,59 @@ angular.module('kiboRtc.services')
      */
     function handleRemoteStreamRemoved(event) {
 
+      var closeMessage;
+
+      if(typeof remoteVideoStream1 !== 'undefined')
+        if(remoteVideoStream1.id === event.stream.id) {
+          $rootScope.$broadcast('peer1HidesVideo');
+          closeMessage = 'video close';
+        }
+      if(typeof remoteVideoStream2 !== 'undefined')
+        if(remoteVideoStream2.id === event.stream.id) {
+          $rootScope.$broadcast('peer2HidesVideo');
+          closeMessage = 'video close';
+        }
+      if(typeof remoteVideoStream3 !== 'undefined')
+        if(remoteVideoStream3.id === event.stream.id) {
+          $rootScope.$broadcast('peer3HidesVideo');
+          closeMessage = 'video close';
+        }
+      if(typeof remoteVideoStream4 !== 'undefined')
+        if(remoteVideoStream4.id === event.stream.id) {
+          $rootScope.$broadcast('peer4HidesVideo');
+          closeMessage = 'video close';
+        }
+
+      if(typeof remoteAudioStream1 !== 'undefined')
+        if(remoteAudioStream1.id === event.stream.id) {
+          $rootScope.$broadcast('peer1HidesAudio');
+          closeMessage = 'audio close';
+        }
+      if(typeof remoteAudioStream2 !== 'undefined')
+        if(remoteAudioStream2.id === event.stream.id) {
+          $rootScope.$broadcast('peer2HidesAudio');
+          closeMessage = 'audio close';
+        }
+      if(typeof remoteAudioStream3 !== 'undefined')
+        if(remoteAudioStream3.id === event.stream.id) {
+          $rootScope.$broadcast('peer3HidesAudio');
+          closeMessage = 'audio close';
+        }
+      if(typeof remoteAudioStream4 !== 'undefined')
+        if(remoteAudioStream4.id === event.stream.id) {
+          $rootScope.$broadcast('peer4HidesAudio');
+          closeMessage = 'audio close';
+        }
+
+      if(typeof remoteStreamScreen !== 'undefined')
+        if(remoteStreamScreen.id === event.stream.id) {
+          $rootScope.$broadcast('peerHidesScreen');
+          closeMessage = 'screen close';
+        }
+
+
       $timeout(function () {
-        Signalling.sendMessageForMeeting('screen close', toUserName);
+        Signalling.sendMessageForMeeting(closeMessage, toUserName);
       }, 3000);
 
     }
