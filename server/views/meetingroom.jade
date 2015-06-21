@@ -30,16 +30,16 @@ div
                     video(id='localvideo', autoplay='true', height="150px" ,width='{{meetingRemoteVideoWidth}}', class='videoelement', muted='true', ng-show='isLocalVideoShared() && localCameraCaptured()')
 
                     div(class='hideVideoBox', ng-show='!hasPeer1SharedVideo() && hasPeer1Joined()')
-                    video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true', ng-show='hasPeer1SharedVideo() && hasPeer1Joined()')
+                    video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer1SharedVideo() && hasPeer1Joined()')
 
                     div(class='hideVideoBox', ng-show='!hasPeer2SharedVideo() && hasPeer2Joined()')
-                    video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true', ng-show='hasPeer2SharedVideo() && hasPeer2Joined()')
+                    video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer2SharedVideo() && hasPeer2Joined()')
 
                     div(class='hideVideoBox', ng-show='!hasPeer3SharedVideo() && hasPeer3Joined()')
-                    video(id='remotevideo3', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true', ng-show='hasPeer3SharedVideo() && hasPeer3Joined()')
+                    video(id='remotevideo3', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer3SharedVideo() && hasPeer3Joined()')
 
                     div(class='hideVideoBox', ng-show='!hasPeer4SharedVideo() && hasPeer4Joined()')
-                    video(id='remotevideo4', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', controls='true', ng-show='hasPeer4SharedVideo() && hasPeer4Joined()')
+                    video(id='remotevideo4', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer4SharedVideo() && hasPeer4Joined()')
 
                     audio(id='remoteaudio1', autoplay='true')
                     audio(id='remoteaudio2', autoplay='true')
