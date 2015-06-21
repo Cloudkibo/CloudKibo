@@ -282,6 +282,15 @@ todo need more work
   border: 1px solid;
 }
 
+.endCallDiv{
+  position: fixed;
+  width: 80%;
+  height: 418px;
+  left: 0px;
+  top: 350px;
+  #background: #00dd01;
+}
+
 .videoCallMainBodyPane
 {
   position: fixed;
@@ -348,6 +357,16 @@ todo need more work
   top: 121px;
   #background: #ffffff;
 }
+
+.videoCallChatPane2{
+  position: fixed;
+  width: 80%;
+  height: 180px;
+  left: 0px;
+  top: 140px;
+  #background: #ffffff;
+}
+
 
 .chatArea
 {

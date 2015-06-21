@@ -148,7 +148,7 @@ block appbodycontent
                                 button.btn.btn-send(ng-click='ignoreFeedBack()') Ignore
 
 
-                      div(ng-show='localCameraCaptured() && !hasOtherPartySharedScreen()')
+                      div(ng-show='localCameraCaptured() && !hasOtherPartySharedScreen()' class="videoCallChatPane2")
                         div(style='text-align: center;')
                           video(id='localvideo', autoplay='true', muted='true', width='40%', class='videoelement')
                           video(id='remotevideo', autoplay='true', width='40%', class='videoelement')
@@ -156,10 +156,10 @@ block appbodycontent
                           br
                           //button(ng-click='enterVideoFullScreen()') Full Screen
                           br
-                      div(ng-show='localCameraCaptured() && hasOtherPartySharedScreen()')
+                      div(ng-show='localCameraCaptured() && hasOtherPartySharedScreen()' class="videoCallChatPane2")
                         div(style='text-align: center;')
                           video(id='remotevideoscreen', autoplay='true', width='60%', class='videoelement', controls)
-                      div(ng-show='localCameraCaptured()', style='text-align: center;')
+                      div(ng-show='localCameraCaptured()', style='text-align: center;' class="endCallDiv")
                         button(ng-click='endCall()') End Call
                         br
                         alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
