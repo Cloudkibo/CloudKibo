@@ -272,46 +272,6 @@ angular.module('kiboRtc.services')
       },
 
 
-
-      /**
-       * This will toggle the local audio on or off. It will automatically notify other client that
-       * audio has been turned off or on.
-       *
-       * @param cb callback function to notify application if task was not successful
-       * todo this needs work
-       */
-      toggleAudio: function (cb) {
-        if (audioShared) {
-
-          localAudioStream.stop();
-          pc.removeStream(localAudioStream);
-          pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
-
-          audioShared = false;
-
-          $rootScope.$broadcast('localAudioRemoved');
-
-          cb(null);
-        }
-        else {
-
-          captureMedia(audio_constraints, AUDIO, function (err) {
-            if (err) return cb(err);
-
-            pc.addStream(localAudioStream);
-            pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
-
-            audioShared = true;
-
-            $rootScope.$broadcast('localAudioAdded');
-
-            cb(null);
-
-          });
-
-        }
-      },
-
       /**
        * Capture the User Media. Application must call this function to capture camera and mic. This function
        * uses video_constraints from the configurations. It sets the callback with null on success and err
@@ -700,7 +660,6 @@ angular.module('kiboRtc.services')
       },
 
       sendDataChannelMessage : function (message, pcInd) {
-        console.log('sending data channel msg on index '+ pcInd);
         if (typeof pc[pcInd] != 'undefined' && pc[pcInd] != null && typeof sendChannel[pcInd] != 'undefined' && sendChannel[pcInd] != null) {
           sendChannel[pcInd].send(message);
         }
@@ -772,6 +731,7 @@ angular.module('kiboRtc.services')
       console.log('Remote stream added. ', event.stream);//, event);
 
       if (event.stream.getAudioTracks().length) {
+
         if(pcIndexTemp === 0){
           $rootScope.$broadcast('peer1Joined');
 
@@ -801,8 +761,6 @@ angular.module('kiboRtc.services')
         }
         else if(pcIndexTemp === 3){
           $rootScope.$broadcast('peer4Joined');
-
-          console.log('added audio in 4');
 
           remoteaudio4.src = URL.createObjectURL(event.stream);
           remoteAudioStream4 = event.stream;
@@ -896,7 +854,6 @@ angular.module('kiboRtc.services')
      * todo this needs a lot of work
      */
     function handleRemoteStreamRemoved(event) {
-      console.log('Remote stream removed.');// Event: ', event);
 
       $timeout(function () {
         Signalling.sendMessageForMeeting('screen close', toUserName);

@@ -183,11 +183,11 @@ block bodycontent
             div(style='text-align:right;', class='')
               //button.myButton1(ng-click='openInvite()') Hide Me!
             #inviteEmailBox1(class='')
-              form(role='form', method="post", novalidate, name='form6', class='css-form', ng-submit='emailInvite(inviteemail)')
+              form(role='form', method="post", novalidate, name='form6', class='formcss', ng-submit='emailInvite(inviteemail)')
 
                 br
                 label Invite your friend to CloudKibo
-                .form-group
+                .form-group4
                   input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='inviteemail.recipientEmail')
                 div(ng-show="form6.email.$dirty && !form6.email.$focused")
                   div(ng-show="form6.email.$invalid")
@@ -207,17 +207,17 @@ block bodycontent
 
         div(ng-show='isAddContactSelected()', class='animate-show modalBox')
           div
-            div(ng-show='isUserNameAddSelected()', class='')
+            div(ng-show='isUserNameAddSelected()', class='nameAdd')
               form(role='form', ng-submit='addUserName(add)', novalidate, name='form9', class='css-form')
                 .form-group
                   br
                   label Add contact by username
                   input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='add.searchusername')
-                a(ng-click='switchAddOption()')
+                a(ng-click='switchAddOption()' class="labelAddContact")
                   small Add contact by email
                 br
                 br
-                div
+                div(class="labelAddContact")
                   button.myButton(type='submit', ng-disabled="form9.$invalid") Add
             div(ng-show='!isUserNameAddSelected()', class='')
               form(role='form', ng-submit='addEmail(add)', novalidate, name='form41', class='css-form')

@@ -480,7 +480,7 @@ angular.module('kiboRtc.services')
 
             cb(null);
 
-          }); // there?
+          }); //
 
         }
         else if (action === 'off') {
@@ -493,7 +493,7 @@ angular.module('kiboRtc.services')
 
           cb(null);
         }
-      },
+      }
 
     };
 

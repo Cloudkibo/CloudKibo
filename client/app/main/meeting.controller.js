@@ -148,6 +148,21 @@ angular.module('cloudKiboApp')
       return $scope.localCameraOn;
     };
 
+    $scope.peer1Joined = false;
+
+    $scope.hasPeer1Joined = function () {
+      return $scope.peer1Joined;
+    };
+
+    $scope.$on('peer1Joined', function () {
+      $scope.peer1Joined = true;
+      $scope.meetingRemoteVideoWidth = '170px';
+    });
+
+    $scope.$on('peer1SharedVideo', function(){
+
+    });
+
     $scope.peer2Joined = false;
 
     $scope.hasPeer2Joined = function () {
@@ -208,6 +223,10 @@ angular.module('cloudKiboApp')
     $scope.isLocalScreenShared = function () {
       return $scope.screenSharedLocal;
     };
+
+    $scope.isLocalVideoShared = function(){
+      return $scope.videoSharedLocal;
+    }
 
     $scope.meetingData = {};
 
