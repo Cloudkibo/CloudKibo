@@ -660,7 +660,6 @@ angular.module('kiboRtc.services')
       },
 
       sendDataChannelMessage : function (message, pcInd) {
-        console.log('sending data channel msg on index '+ pcInd);
         if (typeof pc[pcInd] != 'undefined' && pc[pcInd] != null && typeof sendChannel[pcInd] != 'undefined' && sendChannel[pcInd] != null) {
           sendChannel[pcInd].send(message);
         }
@@ -763,8 +762,6 @@ angular.module('kiboRtc.services')
         else if(pcIndexTemp === 3){
           $rootScope.$broadcast('peer4Joined');
 
-          console.log('added audio in 4');
-
           remoteaudio4.src = URL.createObjectURL(event.stream);
           remoteAudioStream4 = event.stream;
           forthAudioAdded = true;
@@ -857,8 +854,6 @@ angular.module('kiboRtc.services')
      * todo this needs a lot of work
      */
     function handleRemoteStreamRemoved(event) {
-      console.log('Remote stream removed.');// Event: ', event);
-      console.log('SHUTUP testing the audio thing here.... for those who mute audio')
 
       $timeout(function () {
         Signalling.sendMessageForMeeting('screen close', toUserName);
