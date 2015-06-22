@@ -26,7 +26,7 @@ block bodycontent
                form(role='form', novalidate, name='form', class='form-horizontal', enctype='multipart/form-data', ng-submit='register(form)')
                  fieldset
                    legend Your Personal Details
-                   .form-group
+                   .form-group11
                      label(for='email', class='col-lg-4 control-label') First Name
                        span(class='require')
                          | *
@@ -40,7 +40,7 @@ block bodycontent
                              | First name is too short.
                            span(ng-show="form.firstname.$error.maxlength")
                              | First name is too big.
-                   .form-group
+                   .form-group11
                      label(for='email', class='col-lg-4 control-label') Last Name
                        span(class='require')
                          | *
@@ -54,7 +54,7 @@ block bodycontent
                              | Last name is too short.
                            span(ng-show="form.lastname.$error.maxlength")
                              | Last name is too big.
-                   .form-group
+                   .form-group11
                      label(for='email', class='col-lg-4 control-label') Email Address
                        span(class='require')
                          | *
@@ -66,7 +66,7 @@ block bodycontent
                              | Enter your email address.
                            span(ng-show="form.email.$error.email")
                              | This is not a valid email address.
-                   .form-group
+                   .form-group11
                      label(for='email', class='col-lg-4 control-label') Phone Number
                        span(class='require')
                          | *
@@ -80,7 +80,7 @@ block bodycontent
                              | This is not a valid phone number.
                  fieldset
                    legend Your Login Details
-                   .form-group
+                   .form-group11
                      label(for='email', class='col-lg-4 control-label') Username
                        span(class='require')
                          | *
@@ -94,7 +94,7 @@ block bodycontent
                              | Username is too short.
                            span(ng-show="form.username.$error.maxlength")
                              | Username is too big.
-                   .form-group
+                   .form-group11
                      label(for='password', class='col-lg-4 control-label') Password
                        span(class='require')
                          | *
@@ -108,7 +108,7 @@ block bodycontent
                              | Length of password should be greater than 6 characters.
 
                  .row
-                   div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
+                   div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-5')
                      button.btn.btn-account.btn-send(type='submit', ng-disabled="form.$invalid || isUnchanged(user)") Submit
                    div(ng-show='underProgress()', style='text-align:center;')
                      img(src='/images/ProgressIcon.gif', width='60px', height='60px')
@@ -116,7 +116,7 @@ block bodycontent
                    div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
                      alert(ng-repeat='alert in alertsRegister', type='alert.type', close='closeAlertRegister($index)') {{alert.msg}}
                  .row
-                     div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-10 padding-right-30')
+                     div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-right-30')
                        hr
                        p(class='text-muted') or login using:
                        div
@@ -202,7 +202,7 @@ block bodycontent
                form(role='form', novalidate, name='form', class='css-form form-horizontal', enctype='multipart/form-data', ng-submit='register(form)')
                  fieldset
                    legend Your Personal Details
-                   .form-group
+                   .form-group11
                      label(for='email', class='col-lg-4 control-label') First Name
                        span(class='require')
                          | *
@@ -216,7 +216,7 @@ block bodycontent
                              | First name is too short.
                            span(ng-show="form.firstname.$error.maxlength")
                              | First name is too big.
-                   .form-group
+                   .form-group11
                      label(for='email', class='col-lg-4 control-label') Last Name
                        span(class='require')
                          | *
@@ -230,7 +230,7 @@ block bodycontent
                              | Last name is too short.
                            span(ng-show="form.lastname.$error.maxlength")
                              | Last name is too big.
-                   .form-group
+                   .form-group11
                      label(for='email', class='col-lg-4 control-label') Email Address
                        span(class='require')
                          | *
@@ -242,7 +242,7 @@ block bodycontent
                              | Enter your email address.
                            span(ng-show="form.email.$error.email")
                              | This is not a valid email address.
-                   .form-group
+                   .form-group11
                      label(for='email', class='col-lg-4 control-label') Phone Number
                        span(class='require')
                          | *
@@ -256,7 +256,7 @@ block bodycontent
                              | This is not a valid phone number.
                  fieldset
                    legend Your Login Details
-                   .form-group
+                   .form-group11
                      label(for='email', class='col-lg-4 control-label') Username
                        span(class='require')
                          | *
@@ -270,7 +270,7 @@ block bodycontent
                              | Username is too short.
                            span(ng-show="form.username.$error.maxlength")
                              | Username is too big.
-                   .form-group
+                   .form-group11
                      label(for='password', class='col-lg-4 control-label') Password
                        span(class='require')
                          | *

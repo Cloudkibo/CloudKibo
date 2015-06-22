@@ -53,11 +53,26 @@ block appbodycontent
                 | Remove
         br
         br
-        p
-         b
-           | Note: 
-         | Deleting any user will remove all of his/her details, profiles, files and courses he/she has created.
-        br
+
+         .row
+          .span8.white-content.post-form
+            .separator
+              .left
+                .lines
+                  div
+                    h2.lines-title Configurations
+            form(method='post')
+              .form-group
+                label.control-label.col-md-3 SendGrid Username
+                .col-md-9
+                  input#maxlength_defaultconfig.form-control(ng-model='supersettings.sendgridusername', placeholder='SendGrid Username')
+
+               .form-group
+                label.control-label.col-md-3 SendGrid Password
+                .col-md-9
+                  input#maxlength_defaultconfig.form-control(ng-model='supersettings.sendgridpassword', placeholder='SendGrid Password')
+                  br
+
         h1 User Feedback
         br
         input(type='text', ng-model='feedbackUserName', placeholder='Search')
