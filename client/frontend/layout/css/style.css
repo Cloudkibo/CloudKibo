@@ -282,6 +282,15 @@ todo need more work
   border: 1px solid;
 }
 
+.endCallDiv{
+  position: fixed;
+  width: 80%;
+  height: 418px;
+  left: 0px;
+  top: 350px;
+  #background: #00dd01;
+}
+
 .videoCallMainBodyPane
 {
   position: fixed;
@@ -348,6 +357,16 @@ todo need more work
   top: 121px;
   #background: #ffffff;
 }
+
+.videoCallChatPane2{
+  position: fixed;
+  width: 80%;
+  height: 180px;
+  left: 0px;
+  top: 140px;
+  #background: #ffffff;
+}
+
 
 .chatArea
 {
@@ -978,6 +997,37 @@ background-color: #78FA89;
   top: 22px;
   height: 150px; #auto;#300px;
   width: 80%;
+  background-color: #ffffff;
+  padding-top: 8px;
+  padding-right: 8px;
+  padding-left: 8px;
+  background-color: #ffffff;
+}
+.form-group10{
+
+  height: 50px; #auto;#300px;
+  width: 100%;
+  background-color: #ffffff;
+  padding-top: 8px;
+  padding-right: 8px;
+  padding-left: 8px;
+  background-color: #ffffff;
+}
+
+.form-group11{
+
+  height: 40px; #auto;#300px;
+  width: 100%;
+  background-color: #ffffff;
+  padding-top: 8px;
+  padding-right: 8px;
+  padding-left: 8px;
+  background-color: #ffffff;
+}
+.form-group12{
+
+  height: 50px; #auto;#300px;
+  width: 100%;
   background-color: #ffffff;
   padding-top: 8px;
   padding-right: 8px;
