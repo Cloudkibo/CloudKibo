@@ -3,6 +3,11 @@
 angular.module('cloudKiboApp')
   .controller('AdminCtrl', function ($scope, $http, Auth, User) {
 
+    $http.get('/api/configurations/fetch')
+      .success(function(data){
+        $scope.supersettings = data;
+      });
+
     // Use the User $resource to fetch all users
     $scope.users = User.query();
 
