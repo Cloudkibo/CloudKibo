@@ -3,6 +3,11 @@
 angular.module('cloudKiboApp')
   .controller('AdminCtrl', function ($scope, $http, Auth, User) {
 
+    $http.get('/api/configurations/fetch')
+      .success(function(data){
+        $scope.supersettings = data;
+      });
+
     // Use the User $resource to fetch all users
     $scope.users = User.query();
 
@@ -21,6 +26,29 @@ angular.module('cloudKiboApp')
 
     $scope.isMeetingPage = function(){
       return false;
+    };
+
+    $scope.saveSuperuserSettings = function(supersettings){
+
+      if(confirm('Are you sure you want to save these changes?')) {
+
+
+        $http.post('/api/configurations/', JSON.stringify(supersettings))
+          .success(function (data) {
+            if(data.status == 'success') {
+
+              alert("Saved.");
+
+              //$scope.addAlertsSuperuserSetting(data.status, 'Changes saved.');
+            }
+            else {
+
+              //$scope.addAlertsSuperuserSetting(data.status, data.msg);
+            }
+          });
+
+      }
+
     };
 
   });

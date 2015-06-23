@@ -64,6 +64,7 @@ module.exports = function(app) {
   app.use('/api/contactslist', require('./api/contactslist'));
   app.use('/api/userchat', require('./api/userchat'));
   app.use('/api/feedback', require('./api/feedback'));
+  app.use('/api/configurations', require('./api/configuration'));
 
   app.use('/auth', require('./auth'));
 

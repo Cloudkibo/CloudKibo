@@ -34,23 +34,15 @@ exports.create = function(req, res) {
   user.findById(req.user._id, function (err, gotUser) {
     if (err) return console.log(err);
 
-    if(gotUser.isOwner == 'Yes') {
+    if(gotUser.role === 'admin') {
 
       Configuration.findOne({}, function (err, gotConfig) {
 
         if (gotConfig == null) {
 
           var newData = new configuration({
-            abandonedscheduleemail1 : req.body.abandonedscheduleemail1,
-            abandonedscheduleemail2 : req.body.abandonedscheduleemail2,
-            abandonedscheduleemail3 : req.body.abandonedscheduleemail3,
-            completedscheduleemail1 : req.body.completedscheduleemail1,
-            completedscheduleemail2 : req.body.completedscheduleemail2,
-            completedscheduleemail3 : req.body.completedscheduleemail3,
-            invitedscheduleemail1 : req.body.invitedscheduleemail1,
-            invitedscheduleemail2 : req.body.invitedscheduleemail2,
-            invitedscheduleemail3 : req.body.invitedscheduleemail3,
-            maxnumberofdepartment : req.body.maxnumberofdepartment,
+            googleid : req.body.googleid,
+            googlesecret : req.body.googlesecret,
             sendgridusername : req.body.sendgridusername,
             sendgridpassword : req.body.sendgridpassword
           });
@@ -63,16 +55,8 @@ exports.create = function(req, res) {
 
         } else {
 
-          gotConfig.abandonedscheduleemail1 = req.body.abandonedscheduleemail1;
-          gotConfig.abandonedscheduleemail2 = req.body.abandonedscheduleemail2;
-          gotConfig.abandonedscheduleemail3 = req.body.abandonedscheduleemail3;
-          gotConfig.completedscheduleemail1 = req.body.completedscheduleemail1;
-          gotConfig.completedscheduleemail2 = req.body.completedscheduleemail2;
-          gotConfig.completedscheduleemail3 = req.body.completedscheduleemail3;
-          gotConfig.invitedscheduleemail1 = req.body.invitedscheduleemail1;
-          gotConfig.invitedscheduleemail2 = req.body.invitedscheduleemail2;
-          gotConfig.invitedscheduleemail3 = req.body.invitedscheduleemail3;
-          gotConfig.maxnumberofdepartment = req.body.maxnumberofdepartment;
+          gotConfig.googleid = req.body.googleid;
+          gotConfig.googlesecret = req.body.googlesecret;
           gotConfig.sendgridusername = req.body.sendgridusername;
           gotConfig.sendgridpassword = req.body.sendgridpassword;
 

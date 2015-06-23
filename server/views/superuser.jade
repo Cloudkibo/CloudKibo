@@ -54,7 +54,7 @@ block appbodycontent
         br
         br
 
-         .row
+        .row
           .span8.white-content.post-form
             .separator
               .left
@@ -67,12 +67,26 @@ block appbodycontent
                 .col-md-9
                   input#maxlength_defaultconfig.form-control(ng-model='supersettings.sendgridusername', placeholder='SendGrid Username')
 
-               .form-group
+              .form-group
                 label.control-label.col-md-3 SendGrid Password
                 .col-md-9
                   input#maxlength_defaultconfig.form-control(ng-model='supersettings.sendgridpassword', placeholder='SendGrid Password')
-                  br
 
+              .form-group
+                label.control-label.col-md-3 Google Id
+                .col-md-9
+                  input#maxlength_defaultconfig.form-control(ng-model='supersettings.googleid', placeholder='Google App Id')
+
+              .form-group
+                label.control-label.col-md-3 SendGrid Password
+                .col-md-9
+                  input#maxlength_defaultconfig.form-control(ng-model='supersettings.googlesecret', placeholder='Google App Secret')
+
+              .actions
+                button.btn.btn-color(tabindex='3', type='submit', ng-click='saveSuperuserSettings(supersettings)') Save
+                  i.fa.fa-check
+
+        br
         h1 User Feedback
         br
         input(type='text', ng-model='feedbackUserName', placeholder='Search')
