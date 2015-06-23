@@ -62,9 +62,17 @@ div
          input(id='file', type='file')
      .col-sm-1(id='0', ng-show='localCameraCaptured()')
      .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')
-     .col-sm-1.chatBoxButton(ng-show='localCameraCaptured()')
+     .col-sm-1(ng-show='localCameraCaptured()')
        .btn-wrapper-kibo
          a.icon-btn(ng-click='toggleVideoStream()')
            i.fa.fa-video-camera
            div(ng-hide='isVideoCaptured()') Show Video
            div(ng-show='isVideoCaptured()') Hide Video
+
+     .col-sm-1(ng-show='localCameraCaptured()')
+       .btn-wrapper-kibo
+         a.icon-btn(ng-click='toggleAudioStream()')
+           i.fa.fa-microphone
+           div(ng-hide='isAudioCaptured()') Unmute
+           div(ng-show='isAudioCaptured()') Mute
+

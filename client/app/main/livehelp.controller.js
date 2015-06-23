@@ -15,6 +15,7 @@ angular.module('cloudKiboApp')
     var screenSharePCIndex;
     var localStream;
     var localVideoStream;
+    var localAudioStream;
     var localStreamScreen;
     $scope.videoTogglingFromOtherSide;
     var pc;
@@ -114,8 +115,15 @@ angular.module('cloudKiboApp')
 
     $scope.localVideoCaptured = false;
 
+
     $scope.isVideoCaptured = function(){
       return $scope.localVideoCaptured;
+    };
+
+    $scope.localAudioCaptured = false;
+
+    $scope.isAudioCaptured = function(){
+      return $scope.localAudioCaptured;
     };
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -212,6 +220,42 @@ angular.module('cloudKiboApp')
           }
           pc.setRemoteDescription(new RTCSessionDescription(message));
           doAnswer();
+
+        }
+        else if(message.sharingAudio === 'open') {
+
+          pc.setRemoteDescription(new RTCSessionDescription(message));
+
+          $scope.audioTogglingFromOtherSide = true;
+
+          pc.createAnswer(function(sessionDescription){
+
+              // Set Opus as the preferred codec in SDP if Opus is present.
+              pc.setLocalDescription(sessionDescription);
+
+              sendMessage(sessionDescription);
+              console.log('Sending answer to audio share true')
+
+            },
+            function (error){console.log(error)}, sdpConstraints);
+
+        }
+        else if(message.sharingAudio === 'close') {
+
+          pc.setRemoteDescription(new RTCSessionDescription(message));
+
+          $scope.audioTogglingFromOtherSide = true;
+
+          pc.createAnswer(function(sessionDescription){
+
+              // Set Opus as the preferred codec in SDP if Opus is present.
+              pc.setLocalDescription(sessionDescription);
+
+              sendMessage(sessionDescription);
+              console.log('Sending answer to audio share false')
+
+            },
+            function (error){console.log(error)}, sdpConstraints);
 
         }
         else if(message.sharingVideo === 'open') {
@@ -476,6 +520,8 @@ angular.module('cloudKiboApp')
 
       localStream = newStream;
 
+      $scope.localAudioCaptured = true;
+
       if($scope.role == 'agent') {
         getUserMedia(video_constraints, handleUserMediaVideo, handleUserMediaError);
       }
@@ -564,6 +610,61 @@ angular.module('cloudKiboApp')
 
 
           $scope.localVideoCaptured = true;
+
+
+        }, function(err){ alert(err); });
+      }
+    };
+
+    $scope.toggleAudioStream = function() {
+      if ($scope.localAudioCaptured) {
+
+        localStream.stop();
+        pc.removeStream(localStream);
+
+        pc.createOffer(function(sessionDescription){
+          //console.log('INSIDE CONDITION SCREEN SHARE')
+
+          var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingAudio : 'close'};
+
+          // Set Opus as the preferred codec in SDP if Opus is present.
+          pc.setLocalDescription(sessionDescription);
+
+          sendMessage(payload);
+
+        }, handleCreateOfferError);
+
+        //localvideo.src = null;
+
+        $scope.localAudioCaptured = false;
+
+
+
+      }
+      else {
+
+        getUserMedia(audio_constraints, function (stream) {
+
+          localStream = stream;
+
+          pc.addStream(localStream);
+
+          pc.createOffer(function(sessionDescription){
+            //console.log('INSIDE CONDITION SCREEN SHARE')
+
+            var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingAudio : 'open'};
+
+            // Set Opus as the preferred codec in SDP if Opus is present.
+            pc.setLocalDescription(sessionDescription);
+
+            sendMessage(payload);
+
+          }, handleCreateOfferError);
+
+          localvideo.src = URL.createObjectURL(localAudioStream);
+
+
+          $scope.localAudioCaptured = true;
 
 
         }, function(err){ alert(err); });
