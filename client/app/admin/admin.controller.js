@@ -28,4 +28,27 @@ angular.module('cloudKiboApp')
       return false;
     };
 
+    $scope.saveSuperuserSettings = function(supersettings){
+
+      if(confirm('Are you sure you want to save these changes?')) {
+
+
+        $http.post('/api/configurations/', JSON.stringify(supersettings))
+          .success(function (data) {
+            if(data.status == 'success') {
+
+              alert("Saved.");
+
+              //$scope.addAlertsSuperuserSetting(data.status, 'Changes saved.');
+            }
+            else {
+
+              //$scope.addAlertsSuperuserSetting(data.status, data.msg);
+            }
+          });
+
+      }
+
+    };
+
   });

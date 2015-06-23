@@ -10,6 +10,7 @@ var verificationtoken = require('../tokens/verificationtoken.model');
 var passwordresettoken = require('../tokens/passwordresettoken.model');
 var contactslist = require('../contactslist/contactslist.model');
 var userchat = require('../userchat/userchat.model');
+var configuration = require('../configuration/configuration.model');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -49,24 +50,29 @@ exports.create = function (req, res, next) {
 		  //console.log('Token Saved')
 	  });
 
+    configuration.findOne({}, function(err, gotConfig) {
 
-	  var sendgrid  = require('sendgrid')('cloudkibo', 'cl0udk1b0');
+      var sendgrid  = require('sendgrid')(gotConfig.sendgridusername, gotConfig.sendgridpassword);
 
-	  var email     = new sendgrid.Email({
-		  to:       user.email,
-		  from:     'support@cloudkibo.com',
-		  subject:  'CloudKibo: Account Verification',
-		  text:     'Welcome to CloudKibo'
-	  });
+      var email     = new sendgrid.Email({
+        to:       user.email,
+        from:     'support@cloudkibo.com',
+        subject:  'CloudKibo: Account Verification',
+        text:     'Welcome to CloudKibo'
+      });
 
-	  email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to verify your account <br><br> http://www.cloudkibo.com/verify/'+ tokenString);
+      email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to verify your account <br><br> http://www.cloudkibo.com/verify/'+ tokenString);
 
-	  sendgrid.send(email, function(err, json) {
-		  if (err) { return console.log(err); }
+      sendgrid.send(email, function(err, json) {
+        if (err) { return console.log(err); }
 
-		  console.log(json);
+        console.log(json);
 
-	  });
+      });
+
+    });
+
+
 
     var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
     res.json({ token: token });
@@ -312,34 +318,40 @@ exports.saveUsernameRoute = function(req, res, next) {
  */
 exports.invitebyemail = function(req, res, next){
 
-	var sendgrid  = require('sendgrid')('cloudkibo', 'cl0udk1b0');
+  configuration.findOne({}, function(err, gotConfig) {
 
-	var email     = new sendgrid.Email({
-	  to:       req.body.recipientEmail,
-	  from:     'support@cloudkibo.com',
-	  subject:  ''+ req.user.firstname +' via CloudKibo: Join my Video Call',
-	  text:     ''
-	});
+    var sendgrid = require('sendgrid')(gotConfig.sendgridusername, gotConfig.sendgridpassword);
+    var email     = new sendgrid.Email({
+      to:       req.body.recipientEmail,
+      from:     'support@cloudkibo.com',
+      subject:  ''+ req.user.firstname +' via CloudKibo: Join my Video Call',
+      text:     ''
+    });
 
-	var message = req.body.shortmessage;
-	if(req.body.shortmessage == null || req.body.shortmessage == 'undefined')
-	   message = 'Hello, I am available on CloudKibo for Video Chat.';
+    var message = req.body.shortmessage;
+    if(req.body.shortmessage == null || req.body.shortmessage == 'undefined')
+      message = 'Hello, I am available on CloudKibo for Video Chat.';
 
-	email.setHtml('<h1>CloudKibo</h1><br><br>'+req.user.firstname+' has invited you to connect on CloudKibo.<br><br>'+
-	'Follow the following URL to make an account on CloudKibo and start Video Conversations in real time in your browser.'+
-	' <br><br><a href="https://www.cloudkibo.com/" target=_blank>http://www.cloudkibo.com/</a><br><br><br>' +
-	'<span style="background:#22DFFF; width:100%; text-align:center;"><b><i>'+ message +'</i></b></span><br><br><br>'+
-	'<p><b>With CloudKibo<b> you can do</b></p><br><ul><li>Video Call</li><li>Audio Call</li><li>File Transfering'+
-	'</li><li>Screen Sharing</li><li>Instant Messaging</li></ul><br><br> Join CloudKibo and talk your dearest ones.');
+    email.setHtml('<h1>CloudKibo</h1><br><br>'+req.user.firstname+' has invited you to connect on CloudKibo.<br><br>'+
+    'Follow the following URL to make an account on CloudKibo and start Video Conversations in real time in your browser.'+
+    ' <br><br><a href="https://www.cloudkibo.com/" target=_blank>http://www.cloudkibo.com/</a><br><br><br>' +
+    '<span style="background:#22DFFF; width:100%; text-align:center;"><b><i>'+ message +'</i></b></span><br><br><br>'+
+    '<p><b>With CloudKibo<b> you can do</b></p><br><ul><li>Video Call</li><li>Audio Call</li><li>File Transfering'+
+    '</li><li>Screen Sharing</li><li>Instant Messaging</li></ul><br><br> Join CloudKibo and talk your dearest ones.');
 
-	sendgrid.send(email, function(err, json) {
-	  if (err) { return console.error(err); }
+    sendgrid.send(email, function(err, json) {
+      if (err) { return console.error(err); }
 
-	  console.log(json);
+      console.log(json);
 
-	});
+    });
 
-	res.send({status: 'success', msg: 'Email Sent Successfully'})
+    res.send({status: 'success', msg: 'Email Sent Successfully'})
+
+  });
+
+
+
 
 };
 
@@ -406,25 +418,32 @@ exports.resetpasswordrequest = function(req, res, next){
 			if (err) return console.log(err)
 		});
 
-		var sendgrid  = require('sendgrid')('cloudkibo', 'cl0udk1b0');
+    configuration.findOne({}, function(err, gotConfig) {
 
-		var email     = new sendgrid.Email({
-		  to:       gotUser.email,
-		  from:     'support@cloudkibo.com',
-		  subject:  'CloudKibo: Password Reset',
-		  text:     'Password Reset'
-		});
+      var sendgrid = require('sendgrid')(gotConfig.sendgridusername, gotConfig.sendgridpassword);
 
-		email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to change your password <br><br> http://www.cloudkibo.com/#resetpassword/'+ tokenString);
 
-		sendgrid.send(email, function(err, json) {
-		  if (err) { return console.error(err); }
+      var email     = new sendgrid.Email({
+        to:       gotUser.email,
+        from:     'support@cloudkibo.com',
+        subject:  'CloudKibo: Password Reset',
+        text:     'Password Reset'
+      });
 
-		  console.log(json);
+      email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to change your password <br><br> http://www.cloudkibo.com/#resetpassword/'+ tokenString);
 
-		  res.send({status:'success', msg:'Password Reset Link has been sent to your email address. Check your spam or junk folder if you have not received our email.'});
+      sendgrid.send(email, function(err, json) {
+        if (err) { return console.error(err); }
 
-		});
+        console.log(json);
+
+        res.send({status:'success', msg:'Password Reset Link has been sent to your email address. Check your spam or junk folder if you have not received our email.'});
+
+      });
+
+    })
+
+
   })
 };
 
