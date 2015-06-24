@@ -2517,6 +2517,15 @@ body.page-header-fixed {
 	top: -40px;
 	right: 10px;
 }
+
+.actions2{
+  height: 40px;
+  width: 100%;
+  padding-top: 18px;
+  padding-right: 18px;
+  padding-left: 308px;
+}
+
 .owl-buttons div {
 	display: inline-block;
 	width: 26px;

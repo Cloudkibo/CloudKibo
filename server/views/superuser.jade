@@ -62,27 +62,27 @@ block appbodycontent
                   div
                     h2.lines-title Configurations
             form(method='post')
-              .form-group
+              .form-group101
                 label.control-label.col-md-3 SendGrid Username
                 .col-md-9
                   input#maxlength_defaultconfig.form-control(ng-model='supersettings.sendgridusername', placeholder='SendGrid Username')
 
-              .form-group
+              .form-group101
                 label.control-label.col-md-3 SendGrid Password
                 .col-md-9
                   input#maxlength_defaultconfig.form-control(ng-model='supersettings.sendgridpassword', placeholder='SendGrid Password')
 
-              .form-group
+              .form-group101
                 label.control-label.col-md-3 Google Id
                 .col-md-9
                   input#maxlength_defaultconfig.form-control(ng-model='supersettings.googleid', placeholder='Google App Id')
 
-              .form-group
+              .form-group101
                 label.control-label.col-md-3 Google Secret
                 .col-md-9
                   input#maxlength_defaultconfig.form-control(ng-model='supersettings.googlesecret', placeholder='Google App Secret')
 
-              .actions
+              .actions2
                 button.btn.btn-color(tabindex='3', type='submit', ng-click='saveSuperuserSettings(supersettings)') Save
                   i.fa.fa-check
 
@@ -145,13 +145,11 @@ block appbodycontent
               | {{log.starttime | date : 'medium'}}
             td
               | {{log.endtime | date : 'medium'}}
-        br
-        br
+
         h3 All Courses
         br
         //| Total Courses : #{courses.length}
-        br
-        br
+
         input(type='text', ng-model='searchCourseText', placeholder='Search')
         //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='courses= #{JSON.stringify(courses)}')
          tr
@@ -184,13 +182,11 @@ block appbodycontent
             td
               a(href = '/removecourse/{{course._id}}', ng-confirm-click='Are you sure???')
                 | Remove
-        br
-        br
+
         h3 Files Uploaded by Users
         br
         //| Total Files : #{fileusers.length}
-        br
-        br
+
         input(type='text', ng-model='searchUserFiles', placeholder='Search')
         //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='fileusers= #{JSON.stringify(fileusers)}')
          tr
@@ -220,12 +216,11 @@ block appbodycontent
               a(href = '/delete{{fileuser.fileid.filephysicalpath}}', ng-confirm-click='Are you sure???')
                 | Remove
          br
-        br
+
         h3 Files Uploaded in Course
         br
         //| Total Files : #{filecourses.length}
-        br
-        br
+
         input(type='text', ng-model='searchCourseFiles', placeholder='Search')
         //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='filecourses= #{JSON.stringify(filecourses)}')
          tr
@@ -254,13 +249,13 @@ block appbodycontent
             td
               a(href = '/deleteClassFile{{filecourse.fileid.filephysicalpath}}', ng-confirm-click='Are you sure???')
                 | Remove
-        br
-        br
+
+
         h3 News Updates
         br
         //| Total Updates : #{news.length}
-        br
-        br
+
+
         //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-controller='NewsControllerSuperUser', ng-init='news= #{JSON.stringify(news)}')
          tr
            th
@@ -274,11 +269,10 @@ block appbodycontent
                | {{newselement.datetime | date:'medium'}}
            td
              | {{newselement.content}}
-        br
+
         br
         h3 Configurations
-        br
-        br
+
         //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
           form(role='form', action="/configPost", method="post", style='max-width: 470px;', novalidate, name='form', class='css-form', ng-init='configData= #{JSON.stringify(configData)}')
             tr
@@ -323,11 +317,9 @@ block appbodycontent
             tr
               td(colspan='3', style='text-align:right;')
                 button.btn.btn-default(type='submit', ng-disabled="form.$invalid || isUnchanged(user)", class='action') Save Changes
-        br
-        br
+
         h3 Database Schemas
-        br
-        br
+
         //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
           form(role='form', action="/configPost", method="post", style='max-width: 470px;', novalidate, name='form', class='css-form', ng-init='configData= #{JSON.stringify(configData)}')
             tr
@@ -445,7 +437,5 @@ block appbodycontent
               td
                 a(href = '/viewschema/Announcements')
                   | View
-        br
- br
- br
+
  br
