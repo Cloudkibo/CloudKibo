@@ -92,9 +92,11 @@ angular.module('kiboRtc.services')
         }
       }
 
-      else if (message.payload === 'got screen' && message.ToUser == username) {
+      else if (message.payload.msg === 'bye' ){
 
-        console.log('inside got screen');
+      }
+
+      else if (message.payload === 'got screen' && message.ToUser == username) {
 
         switchPCIndex++;
         if (switchPCIndex <= pcIndex) {
@@ -593,7 +595,8 @@ angular.module('kiboRtc.services')
       //var endTime = new Date();
       //$scope.meetingData.EndTime = endTime.toUTCString();
       //$scope.recordMeetingData();
-      Signalling.sendMessage('bye');
+
+      Signalling.sendMessageForMeeting({msg: 'bye', FromUser : username});
       // todo this needs work
       //RTCConferenceCore.leaveMeeting();
       //localStream.stop(); // todo this should be in service
