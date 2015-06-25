@@ -336,13 +336,15 @@ todo need more work
 
 }
 
+
+
 .modalBox{
   position: fixed;
-  left: 10px;
+  left: 8px;
   top: 132px;
   overflow: auto;
-  height: 440px;
-  width: 78%;
+  height: 426px;
+  width: 79%;
   z-index: 10;
   border : 1px solid #ffffff;
   background-color: #ffffff;
@@ -3604,12 +3606,7 @@ Notes
 }
 
 
-.tabh{
-  width:90%;
-  position: absolute;
-  left: 25px;
-  top: 45px;
-}
+
 
 
 /***
@@ -4181,17 +4178,8 @@ Demo Utils
   text-decoration: none;
   color: #fff;
 }
-.lalz{
-  background: #ffffff;
-  position : relative;
-  padding: 10px 15px;
 
-}
-.tabbable{
-  background: #ffffff;
-  position : relative;
-  top : 20px;
-}
+
 .faq-tabbable li.active:after {
   content: '';
   display: inline-block;
