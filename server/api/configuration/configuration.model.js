@@ -10,7 +10,8 @@ var ConfigurationSchema = new Schema({
   googlesecret : String,
 
   sendgridusername : String,
-  sendgridpassword : String
+  sendgridpassword : String,
+  selectLogo : { type: String, default: 'Logo 1' }
 
 });
 

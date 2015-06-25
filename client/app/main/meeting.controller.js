@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('MeetingController', function ($scope, RTCConference, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location, RestApi, ScreenShare, FileUtility) {
+  .controller('MeetingController', function ($scope, RTCConference, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location, RestApi, ScreenShare, FileUtility, $window) {
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // Variables for WebRTC Session                                                       //
@@ -168,6 +168,10 @@ angular.module('cloudKiboApp')
       $scope.meetingRemoteVideoWidth = '170px';
     });
 
+    $scope.$on('peer1Leaves', function () {
+      $scope.peer1Joined = false;
+    });
+
     $scope.$on('peer1SharedVideo', function(){
       $scope.peer1SharedVideo = true;
     });
@@ -190,6 +194,10 @@ angular.module('cloudKiboApp')
     $scope.$on('peer2Joined', function () {
       $scope.peer2Joined = true;
       $scope.meetingRemoteVideoWidth = '170px';
+    });
+
+    $scope.$on('peer2Leaves', function () {
+      $scope.peer2Joined = false;
     });
 
     $scope.$on('peer2SharedVideo', function(){
@@ -216,6 +224,10 @@ angular.module('cloudKiboApp')
       $scope.meetingRemoteVideoWidth = '170px';
     });
 
+    $scope.$on('peer3Leaves', function () {
+      $scope.peer3Joined = false;
+    });
+
     $scope.$on('peer3SharedVideo', function(){
       $scope.peer3SharedVideo = true;
     });
@@ -238,6 +250,10 @@ angular.module('cloudKiboApp')
     $scope.$on('peer4Joined', function () {
       $scope.peer4Joined = true;
       $scope.meetingRemoteVideoWidth = '170px';
+    });
+
+    $scope.$on('peer4Leaves', function () {
+      $scope.peer4Joined = false;
     });
 
     $scope.$on('peer4SharedVideo', function(){
@@ -295,6 +311,15 @@ angular.module('cloudKiboApp')
     $scope.toggleChatBoxVisibility = function () {
       $scope.chatBoxVisible = !$scope.chatBoxVisible;
     };
+
+    $window.onbeforeunload = function(){
+
+      console.log('leaving the meeting');
+      RTCConference.leaveMeeting();
+
+    };
+
+
 
 
 

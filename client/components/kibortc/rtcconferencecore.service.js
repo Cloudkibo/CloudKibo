@@ -302,52 +302,13 @@ angular.module('kiboRtc.services')
        * (if accessed) would be stopped. Finally, it closes the peer connection.
        * todo end if for conference needs a lot of work
        */
-      endConnection: function () {
+      endConnection: function (peerIndex) {
 
-        if (otherPeers.indexOf(message.FromUser) == 0) {
-          $scope.firstVideoAdded = false;
-          //remoteStream1 = null;
-          remotevideo1.src = null;
-        }
-        else if (otherPeers.indexOf(message.FromUser) == 1) {
-          $scope.secondVideoAdded = false;
-          //remoteStream2 = null;
-          remotevideo2.src = null;
+        //pc[peerIndex] = null;
+        //sendChannel[peerIndex] = null;
 
-          $scope.$apply(function () {
-            $scope.peer2Joined = false;
-          })
-        }
-        else if (otherPeers.indexOf(message.FromUser) == 2) {
-          $scope.thirdVideoAdded = false;
-          //remoteStream3 = null;
-          remotevideo3.src = null;
-
-          $scope.$apply(function () {
-            $scope.peer3Joined = false;
-          })
-        }
-        else if (otherPeers.indexOf(message.FromUser) == 3) {
-          $scope.forthVideoAdded = false;
-          //remoteStream4 = null;
-          remotevideo4.src = null;
-
-          $scope.$apply(function () {
-            $scope.peer4Joined = false;
-          })
-        }
-
-        if (!$scope.firstVideoAdded && !$scope.secondVideoAdded && !$scope.thirdVideoAdded && !$scope.forthVideoAdded) {
-          localStream.stop();
-          $scope.localCameraOn = false;
-          $scope.callEnded = true;
-          console.log("HIN MEI AYO AAA")
-        }
-
-        pcIndex--;
-
-        pc.splice(pc.indexOf(message.FromUser), 1);
-        sendChannel.splice(sendChannel.indexOf(message.FromUser), 1);
+        pc.splice(peerIndex, 1);
+        sendChannel.splice(peerIndex, 1);
 
       },
 
