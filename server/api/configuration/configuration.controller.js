@@ -44,7 +44,9 @@ exports.create = function(req, res) {
             googleid : req.body.googleid,
             googlesecret : req.body.googlesecret,
             sendgridusername : req.body.sendgridusername,
-            sendgridpassword : req.body.sendgridpassword
+            sendgridpassword : req.body.sendgridpassword,
+            selectLogo : req.body.selectLogo
+
           });
 
           newData.save(function (err) {
@@ -59,6 +61,7 @@ exports.create = function(req, res) {
           gotConfig.googlesecret = req.body.googlesecret;
           gotConfig.sendgridusername = req.body.sendgridusername;
           gotConfig.sendgridpassword = req.body.sendgridpassword;
+          gotConfig.selectLogo = req.body.selectLogo;
 
 
           gotConfig.save(function (err) {

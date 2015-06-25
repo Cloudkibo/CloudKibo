@@ -68,6 +68,15 @@ block appbodycontent
                   input#maxlength_defaultconfig.form-control(ng-model='supersettings.sendgridusername', placeholder='SendGrid Username')
 
               .form-group101
+                label.control-label.col-md-3 Cloudkibo Logo
+                .col-md-9
+                  #spinner1
+                    .input-group.input-small
+                      select.form-control(ng-model='supersettings.selectLogo', required)
+                        option(value="Logo 1") Logo1
+                        option(value="Logo 2") Logo2
+
+              .form-group101
                 label.control-label.col-md-3 SendGrid Password
                 .col-md-9
                   input#maxlength_defaultconfig.form-control(ng-model='supersettings.sendgridpassword', placeholder='SendGrid Password')
