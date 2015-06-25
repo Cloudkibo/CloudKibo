@@ -304,8 +304,11 @@ angular.module('kiboRtc.services')
        */
       endConnection: function (peerIndex) {
 
-        pc[peerIndex] = null;
-        sendChannel[peerIndex] = null;
+        //pc[peerIndex] = null;
+        //sendChannel[peerIndex] = null;
+
+        pc.splice(peerIndex, 1);
+        sendChannel.splice(peerIndex, 1);
 
       },
 

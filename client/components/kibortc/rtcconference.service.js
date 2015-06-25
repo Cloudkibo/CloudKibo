@@ -103,7 +103,13 @@ angular.module('kiboRtc.services')
 
         RTCConferenceCore.endConnection(otherPeers.indexOf(message.FromUser));
 
+        otherPeers.splice(otherPeers.indexOf(message.FromUser), 1);
+        pcIndex--;
 
+        if(pcIndex < 0) {
+          isStarted = false;
+          pcIndex = 0;
+        }
 
       }
 
