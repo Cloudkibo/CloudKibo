@@ -27,6 +27,8 @@ angular.module('kiboRtc.services')
 
     ScreenShare.initialize();
 
+
+
     socket.on('full', function (room) {
       alert('Room ' + room + ' is full. You can not join the meeting.');
     });
@@ -93,6 +95,15 @@ angular.module('kiboRtc.services')
       }
 
       else if (message.payload.msg === 'bye' ){
+
+        console.log(otherPeers.indexOf(message.FromUser));
+        console.log(message);
+
+        $rootScope.$broadcast('peer'+ (otherPeers.indexOf(message.FromUser)+1) +'Leaves');
+
+        RTCConferenceCore.endConnection(otherPeers.indexOf(message.FromUser));
+
+
 
       }
 
@@ -346,6 +357,7 @@ angular.module('kiboRtc.services')
       },
 
       leaveMeeting: function () {
+        Signalling.sendMessageForMeeting({msg: 'bye', FromUser : username});
         socket.emit('leave', {room: room, username: username});
       },
 
@@ -591,16 +603,6 @@ angular.module('kiboRtc.services')
 
     }
 
-    window.onbeforeunload = function(e){
-      //var endTime = new Date();
-      //$scope.meetingData.EndTime = endTime.toUTCString();
-      //$scope.recordMeetingData();
-
-      Signalling.sendMessageForMeeting({msg: 'bye', FromUser : username});
-      // todo this needs work
-      //RTCConferenceCore.leaveMeeting();
-      //localStream.stop(); // todo this should be in service
-    };
 
 
   });
