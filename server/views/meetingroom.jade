@@ -26,8 +26,8 @@ div
               div(class='animate-show', ng-show='localCameraCaptured() && !hasPeerSharedScreen()')
                 center
                   span
-                    div(class='hideVideoBox', ng-show='!isLocalVideoShared() && localCameraCaptured()')
-                    video(id='localvideo', autoplay='true', height="150px" ,width='{{meetingRemoteVideoWidth}}', class='videoelement', muted='true', ng-show='isLocalVideoShared() && localCameraCaptured()')
+                    div(class='hideVideoBox', ng-show='!isLocalVideoShared() && localCameraCaptured() && !isLocalScreenShared()')
+                    video(id='localvideo', autoplay='true', height="150px" ,width='{{meetingRemoteVideoWidth}}', class='videoelement', muted='true', ng-show='isLocalVideoShared() ||2 isLocalScreenShared()')
 
                     div(class='hideVideoBox', ng-show='!hasPeer1SharedVideo() && hasPeer1Joined()')
                     video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer1SharedVideo() && hasPeer1Joined()')
