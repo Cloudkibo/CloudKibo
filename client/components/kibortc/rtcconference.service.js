@@ -298,6 +298,15 @@ angular.module('kiboRtc.services')
             console.log('I GOT OFFER FROM '+ toUserName);
             RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
             RTCConferenceCore.createAndSendAnswer(pcIndex, toUserName);
+
+            if(localScreenShared){
+              console.log('going to inform about screen');
+              $timeout(function(){
+                console.log('4 secs passed to inform about screen')
+                RTCConferenceCore.shareScreenToNext(pcIndex, username, otherPeers[pcIndex]);
+              }, 4000);
+            }
+
           }
         }
       }
@@ -314,13 +323,6 @@ angular.module('kiboRtc.services')
           else
             RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
 
-          if(localScreenShared){
-            console.log('going to inform about screen');
-            $timeout(function(){
-              console.log('4 secs passed to inform about screen')
-              RTCConferenceCore.shareScreenToNext(pcIndex, username, otherPeers[pcIndex]);
-            }, 4000);
-          }
 
         }
       }
