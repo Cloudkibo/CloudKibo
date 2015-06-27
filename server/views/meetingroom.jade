@@ -26,20 +26,35 @@ div
               div(class='animate-show', ng-show='localCameraCaptured() && !hasPeerSharedScreen()')
                 center
                   span
-                    div(class='hideVideoBox', ng-show='!isLocalVideoShared() && localCameraCaptured() && !isLocalScreenShared()')
-                    video(id='localvideo', autoplay='true', height="150px" ,width='{{meetingRemoteVideoWidth}}', class='videoelement', muted='true', ng-show='isLocalVideoShared() || isLocalScreenShared()')
+                    div(class='videoBoxContainer')
+                      div(class='hideVideoBox', ng-show='!isLocalVideoShared() && localCameraCaptured() && !isLocalScreenShared()')
+                      video(id='localvideo', autoplay='true', height="150px" ,width='{{meetingRemoteVideoWidth}}', class='videoelement', muted='true', ng-show='isLocalVideoShared() || isLocalScreenShared()')
+                      span
+                        | {{getLocalUsername()}}
 
-                    div(class='hideVideoBox', ng-show='!hasPeer1SharedVideo() && hasPeer1Joined()')
-                    video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer1SharedVideo() && hasPeer1Joined()')
+                    div(class='videoBoxContainer', ng-show='hasPeer1Joined()')
+                      div(class='hideVideoBox', ng-show='!hasPeer1SharedVideo() && hasPeer1Joined()')
+                      video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer1SharedVideo() && hasPeer1Joined()')
+                      span
+                        | {{peer1UserName()}}
 
-                    div(class='hideVideoBox', ng-show='!hasPeer2SharedVideo() && hasPeer2Joined()')
-                    video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer2SharedVideo() && hasPeer2Joined()')
+                    div(class='videoBoxContainer', ng-show='hasPeer2Joined()')
+                      div(class='hideVideoBox', ng-show='!hasPeer2SharedVideo() && hasPeer2Joined()')
+                      video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer2SharedVideo() && hasPeer2Joined()')
+                      span
+                        | {{peer2UserName()}}
 
-                    div(class='hideVideoBox', ng-show='!hasPeer3SharedVideo() && hasPeer3Joined()')
-                    video(id='remotevideo3', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer3SharedVideo() && hasPeer3Joined()')
+                    div(class='videoBoxContainer', ng-show='hasPeer3Joined()')
+                      div(class='hideVideoBox', ng-show='!hasPeer3SharedVideo() && hasPeer3Joined()')
+                      video(id='remotevideo3', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer3SharedVideo() && hasPeer3Joined()')
+                      span
+                        | {{peer3UserName()}}
 
-                    div(class='hideVideoBox', ng-show='!hasPeer4SharedVideo() && hasPeer4Joined()')
-                    video(id='remotevideo4', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer4SharedVideo() && hasPeer4Joined()')
+                    div(class='videoBoxContainer', ng-show='hasPeer4Joined()')
+                      div(class='hideVideoBox', ng-show='!hasPeer4SharedVideo() && hasPeer4Joined()')
+                      video(id='remotevideo4', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer4SharedVideo() && hasPeer4Joined()')
+                      span
+                        | {{peer4UserName()}}
 
                     audio(id='remoteaudio1', autoplay='true')
                     audio(id='remoteaudio2', autoplay='true')

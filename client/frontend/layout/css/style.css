@@ -675,6 +675,15 @@ textarea
    resize: none;
 }
 
+.videoBoxContainer
+{
+  display: inline-block;
+  margin: 0.5em;
+  width : 170px;
+  height: 190px;
+  #background: #fff000;
+}
+
 .videoelement
 {
   border: 1px solid #badfef;
@@ -690,14 +699,9 @@ textarea
   -moz-border-radius-topleft: 25px;
   border-top-right-radius: 25px;
   border-top-left-radius: 25px;
-  margin: 0.5em;
+//margin: 0.5em;
   width : 170px;
   height: 150px;
-}
-
-.videoelementscreen{
-  border: 1.5px solid #badfef;
-  margin: 0.5em;
 }
 
 .hideVideoBox
@@ -705,11 +709,18 @@ textarea
   display: inline-block;
   background-image: url('/assets/images/avatar.png');
 
-  margin:0.5em;
+//margin:0.5em;
   width : 150px;
   height: 152px;
 
 }
+
+.videoelementscreen{
+  border: 1.5px solid #badfef;
+  margin: 0.5em;
+}
+
+
 
 #sidePanebox
 {

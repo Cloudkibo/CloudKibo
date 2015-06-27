@@ -478,6 +478,11 @@ angular.module('kiboRtc.services')
         return RTCConferenceCore.getDataChannelMessage();
       },
 
+      getPeerName: function (index) {
+        index = index-1;
+        return (otherPeers[index] === null || typeof otherPeers[index] === 'undefined') ? '' : otherPeers[index];
+      },
+
       toggleAudio: function(state, cb) {
 
         var action;
