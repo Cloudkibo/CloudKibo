@@ -315,8 +315,10 @@ angular.module('kiboRtc.services')
             RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
 
           if(localScreenShared){
+            console.log('going to inform about screen');
             $timeout(function(){
-              RTCConferenceCore.shareScreenToNext(switchPCIndex, username, otherPeers[pcIndex]);
+              console.log('4 secs passed to inform about screen')
+              RTCConferenceCore.shareScreenToNext(pcIndex, username, otherPeers[pcIndex]);
             }, 4000);
           }
 
