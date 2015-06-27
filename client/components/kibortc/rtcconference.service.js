@@ -304,7 +304,7 @@ angular.module('kiboRtc.services')
               $timeout(function(){
                 console.log('4 secs passed to inform about screen')
                 RTCConferenceCore.shareScreenToNext(pcIndex, username, otherPeers[pcIndex]);
-              }, 4000);
+              }, 6000);
             }
 
           }
