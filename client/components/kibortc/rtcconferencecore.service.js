@@ -120,6 +120,7 @@ angular.module('kiboRtc.services')
        * pc_config service from the configurations. Furthermore, service attaches some private callback functions
        * to some WebRTC connection events. Application doesn't need to care about them. This function assumes
        * that the local peer has got the camera and mic access and it adds the stream to peer connection object.
+       *
        * todo this needs some work
        */
       createPeerConnection: function (pcInd) {
@@ -895,7 +896,7 @@ angular.module('kiboRtc.services')
      * todo: look for more documentation of this from WebRTC
      */
     function handleSendChannelStateChange() {
-      var readyState = sendChannel[pcIndexTemp].readyState;
+      //var readyState = sendChannel[pcIndexTemp].readyState;
       //trace('Send channel state is: ' + readyState);
     }
 
