@@ -19,6 +19,7 @@ angular.module('kiboRtc.services')
     var pcLength = 4;
     var switchPCIndex = 0;
     var otherPeers = [];
+    var localScreenShared = false;
 
     var switchingScreenShare = false;
     var switchingAudio = false;
@@ -312,6 +313,13 @@ angular.module('kiboRtc.services')
             RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
           else
             RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
+
+          if(localScreenShared){
+            $timeout(function(){
+              RTCConferenceCore.shareScreenToNext(switchPCIndex, username, otherPeers[pcIndex]);
+            }, 4000);
+          }
+
         }
       }
 
@@ -399,6 +407,8 @@ angular.module('kiboRtc.services')
 
                 RTCConferenceCore.setSwitchingScreenShare(true);
 
+                localScreenShared = true;
+
                 cb(null);
 
               }
@@ -415,6 +425,8 @@ angular.module('kiboRtc.services')
 
               RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
 
+              localScreenShared = true;
+
               cb(null);
 
             }, function (err) {
@@ -429,6 +441,8 @@ angular.module('kiboRtc.services')
 
           switchPCIndex = 0;
           RTCConferenceCore.hideScreen(switchPCIndex, username, otherPeers[switchPCIndex]);
+
+          localScreenShared = false;
 
           cb(null);
         }

@@ -922,7 +922,7 @@ angular.module('kiboRtc.services')
      * todo: notify the change to application using a broadcast
      */
     function handleReceiveChannelStateChange() {
-      var readyState = sendChannel[pcIndexTemp].readyState;
+      //var readyState = sendChannel[pcIndexTemp].readyState;
       //trace('Receive channel state is: ' + readyState);
 
     }
