@@ -31,6 +31,11 @@ angular.module('cloudKiboApp')
     var localvideo = document.getElementById("localvideo");
     localvideo.src = null;
 
+    $scope.peer1Name = '';
+    $scope.peer2Name = '';
+    $scope.peer3Name = '';
+    $scope.peer4Name = '';
+
     ////////////////////////////////////////////////////////////////////////////////////////
     // Create or Join Room Logic                                                          //
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -148,6 +153,26 @@ angular.module('cloudKiboApp')
       return $scope.localCameraOn;
     };
 
+    $scope.getLocalUsername = function(){
+      return $scope.user.username;
+    };
+
+    $scope.peer1UserName = function(){
+      return $scope.peer1Name;
+    };
+
+    $scope.peer2UserName = function(){
+      return $scope.peer2Name;
+    };
+
+    $scope.peer3UserName = function(){
+      return $scope.peer3Name;
+    };
+
+    $scope.peer4UserName = function(){
+      return $scope.peer4Name;
+    };
+
     ////////////////////////////////////////////////////////////////////////////////////////
     // WebRTC User Interface Logic (VIDEO TOGGLING)                                       //
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -166,6 +191,7 @@ angular.module('cloudKiboApp')
     $scope.$on('peer1Joined', function () {
       $scope.peer1Joined = true;
       $scope.meetingRemoteVideoWidth = '170px';
+      $scope.peer1Name = RTCConference.getPeerName(1);
     });
 
     $scope.$on('peer1Leaves', function () {
@@ -194,6 +220,7 @@ angular.module('cloudKiboApp')
     $scope.$on('peer2Joined', function () {
       $scope.peer2Joined = true;
       $scope.meetingRemoteVideoWidth = '170px';
+      $scope.peer2Name = RTCConference.getPeerName(2);
     });
 
     $scope.$on('peer2Leaves', function () {
@@ -222,6 +249,7 @@ angular.module('cloudKiboApp')
     $scope.$on('peer3Joined', function () {
       $scope.peer3Joined = true;
       $scope.meetingRemoteVideoWidth = '170px';
+      $scope.peer3Name = RTCConference.getPeerName(3);
     });
 
     $scope.$on('peer3Leaves', function () {
@@ -250,6 +278,7 @@ angular.module('cloudKiboApp')
     $scope.$on('peer4Joined', function () {
       $scope.peer4Joined = true;
       $scope.meetingRemoteVideoWidth = '170px';
+      $scope.peer4Name = RTCConference.getPeerName(4);
     });
 
     $scope.$on('peer4Leaves', function () {
