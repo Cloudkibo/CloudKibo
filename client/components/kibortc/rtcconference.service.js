@@ -77,7 +77,7 @@ angular.module('kiboRtc.services')
       }
 
       otherPeers = room.otherClients.slice();
-      console.log(otherPeers);
+      //console.log(otherPeers);
 
 
       startCalling();
@@ -87,7 +87,7 @@ angular.module('kiboRtc.services')
     socket.on('message', function (message) {
       //console.log('Client received message: '+ JSON.stringify(message));
 
-      console.log(message)
+      //console.log(message)
       if (message.payload.msg === 'got user media') {
         if (isInitiator && !isStarted) {
           toUserName = message.FromUser;
@@ -97,8 +97,11 @@ angular.module('kiboRtc.services')
 
       else if (message.payload.msg === 'bye' ){
 
-        console.log(otherPeers.indexOf(message.FromUser));
-        console.log(message);
+        //console.log(otherPeers.indexOf(message.FromUser));
+        //console.log(message);
+        console.log('bye')
+        console.log(otherPeers)
+
 
         $rootScope.$broadcast('peer'+ (otherPeers.indexOf(message.FromUser)+1) +'Leaves');
 
@@ -111,6 +114,9 @@ angular.module('kiboRtc.services')
           isStarted = false;
           pcIndex = 0;
         }
+
+        console.log(otherPeers)
+        console.log('bye')
 
       }
 
