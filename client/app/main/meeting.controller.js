@@ -173,6 +173,60 @@ angular.module('cloudKiboApp')
       return $scope.peer4Name;
     };
 
+    $scope.localSpeaking = false;
+
+    var localPeerBox = document.getElementById("localPeerId");
+
+    var Peer1Id = document.getElementById("Peer1Id");
+    var Peer2Id = document.getElementById("Peer2Id");
+    var Peer3Id = document.getElementById("Peer3Id");
+    var Peer4Id = document.getElementById("Peer4Id");
+
+    $scope.$on('Speaking', function () {
+      $scope.localSpeaking = true;
+      localPeerBox.style.cssText = 'border : 2px solid #000000;';
+      //console.log('speaking '+ $scope.localSpeaking)
+      RTCConference.sendData(':Speaking:'+ $scope.user.username +':');
+    });
+
+    $scope.$on('Silent', function () {
+      $scope.localSpeaking = false;
+      localPeerBox.style.cssText = 'border : 0px solid #000000;';
+      //console.log('silent '+ $scope.localSpeaking)
+      RTCConference.sendData(':Silent:'+ $scope.user.username +':');
+    });
+
+    $scope.amISpeaking = function(){
+      return $scope.localSpeaking;
+    };
+
+    function handlePeerAudioState(state, name){
+      if(state === 'Silent'){
+
+        if(name === $scope.peer1Name)
+          Peer1Id.style.cssText = 'border : 0px solid #000000;';
+        if(name === $scope.peer2Name)
+          Peer2Id.style.cssText = 'border : 0px solid #000000;';
+        if(name === $scope.peer3Name)
+          Peer3Id.style.cssText = 'border : 0px solid #000000;';
+        if(name === $scope.peer4Name)
+          Peer4Id.style.cssText = 'border : 0px solid #000000;';
+
+      }
+      else if(state === 'Speaking'){
+
+        if(name === $scope.peer1Name)
+          Peer1Id.style.cssText = 'border : 2px solid #000000;';
+        if(name === $scope.peer2Name)
+          Peer2Id.style.cssText = 'border : 2px solid #000000;';
+        if(name === $scope.peer3Name)
+          Peer3Id.style.cssText = 'border : 2px solid #000000;';
+        if(name === $scope.peer4Name)
+          Peer4Id.style.cssText = 'border : 2px solid #000000;';
+
+      }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////
     // WebRTC User Interface Logic (VIDEO TOGGLING)                                       //
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -511,6 +565,9 @@ angular.module('cloudKiboApp')
       }
       else if (message.charAt(0) == '{' && message.charAt(message.length - 1) == '}') {
         process_data(message);
+      }
+      else if (message.charAt(0) == ':' && message.charAt(message.length - 1) == ':'){
+        handlePeerAudioState(message.split(':')[1], message.split(':')[2]);
       }
       else {
         $scope.$apply(function () {

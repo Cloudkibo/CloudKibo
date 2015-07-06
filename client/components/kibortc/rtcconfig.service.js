@@ -88,6 +88,10 @@ angular.module('kiboRtc.services')
     return {video: true, audio: false};
   })
 
+  .factory('audio_threshold', function(){
+    return 18;
+  })
+
 /**
  * Audio Constraints for getUserMedia() of WebRTC API
  *

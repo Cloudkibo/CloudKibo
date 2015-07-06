@@ -3,7 +3,7 @@
 
 
 angular.module('kiboRtc.services')
-  .factory('RTCConferenceCore', function RTCConference($rootScope, pc_config, pc_constraints, sdpConstraints, audio_constraints, video_constraints, Signalling, $timeout) {
+  .factory('RTCConferenceCore', function RTCConference($rootScope, pc_config, audio_threshold, pc_constraints, sdpConstraints, audio_constraints, video_constraints, Signalling, $timeout) {
 
     /* value should be: {username, pc, sendChannel, remoteAudioStream, remoteVideoStream, audioShared, videoShared, audio, video} */
     var peer = [];
@@ -73,6 +73,21 @@ angular.module('kiboRtc.services')
     var switchingScreenShare = false;
     var switchingVideo = false;
     var switchingAudio = false;
+
+    /** Audio Analyser variables **/
+
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    var analyser = audioCtx.createAnalyser();
+    analyser.minDecibels = -90;
+    analyser.maxDecibels = -10;
+    analyser.smoothingTimeConstant = 0.85;
+
+    var drawVisual;
+
+    var speaking = false;
+
+    /** Audio Analyser variables ends **/
 
 
     return {
@@ -626,6 +641,7 @@ angular.module('kiboRtc.services')
           sendChannel[pcInd].send(message);
         }
       }
+
     };
 
     /**
@@ -797,8 +813,6 @@ angular.module('kiboRtc.services')
 
         }
 
-
-
       }
 
     }
@@ -944,6 +958,12 @@ angular.module('kiboRtc.services')
           if (type == AUDIO) {
             localAudioStream = newStream;
             audioShared = true;
+
+            var source = audioCtx.createMediaStreamSource(newStream);
+            source.connect(analyser);
+            //analyser.connect(distortion);
+
+            analyseAudio();
           }
           else if (type == VIDEO) {
             localVideoStream = newStream;
@@ -957,6 +977,51 @@ angular.module('kiboRtc.services')
           cb(err);
         }
       );
+
+    }
+
+    function analyseAudio(){
+
+      analyser.fftSize = 256;
+      var bufferLength = analyser.frequencyBinCount;
+      console.log(bufferLength);
+      var dataArray = new Uint8Array(bufferLength);
+
+      var tempSpeakingValue = false;
+
+      function draw() {
+
+        drawVisual = requestAnimationFrame(draw);
+
+        analyser.getByteFrequencyData(dataArray);
+
+        var sum = 0; // added by sojharo
+
+        for(var i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
+        }
+
+        var averageFrequency = sum/bufferLength;
+
+        if(averageFrequency > audio_threshold)
+          tempSpeakingValue = true;
+        else
+          tempSpeakingValue = false;
+
+        if(tempSpeakingValue !== speaking){
+          speaking = tempSpeakingValue;
+          //console.log(speaking ? 'Speaking' : 'Silent');
+
+          $rootScope.$broadcast(speaking ? 'Speaking' : 'Silent');
+
+        }
+
+
+      };
+
+      draw();
+
+
 
     }
 
