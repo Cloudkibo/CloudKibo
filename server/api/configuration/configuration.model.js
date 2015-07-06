@@ -11,7 +11,9 @@ var ConfigurationSchema = new Schema({
 
   sendgridusername : String,
   sendgridpassword : String,
-  selectLogo : { type: String, default: 'Logo 1' }
+  selectLogo : { type: String, default: 'Logo 1' },
+  numberofpeopleincontactlist: Number,
+  numberofpeopleinconference: Number
 
 });
 

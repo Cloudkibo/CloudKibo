@@ -38,6 +38,7 @@ exports.create = function(req, res) {
 
       Configuration.findOne({}, function (err, gotConfig) {
 
+
         if (gotConfig == null) {
 
           var newData = new configuration({
@@ -45,7 +46,9 @@ exports.create = function(req, res) {
             googlesecret : req.body.googlesecret,
             sendgridusername : req.body.sendgridusername,
             sendgridpassword : req.body.sendgridpassword,
-            selectLogo : req.body.selectLogo
+            selectLogo : req.body.selectLogo,
+            numberofpeopleincontactlist: req.body.numberofpeopleincontactlist,
+            numberofpeopleinconference: req.body.numberofpeopleinconference
 
           });
 
@@ -62,6 +65,8 @@ exports.create = function(req, res) {
           gotConfig.sendgridusername = req.body.sendgridusername;
           gotConfig.sendgridpassword = req.body.sendgridpassword;
           gotConfig.selectLogo = req.body.selectLogo;
+          gotConfig.numberofpeopleincontactlist = req.body.numberofpeopleincontactlist;
+          gotConfig.numberofpeopleinconference = req.body.numberofpeopleinconference;
 
 
           gotConfig.save(function (err) {

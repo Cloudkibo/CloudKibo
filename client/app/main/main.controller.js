@@ -463,6 +463,11 @@ angular.module('cloudKiboApp')
                         $scope.addRequestslist.splice(index, 1);
                         socket.emit('whozonline', {room: 'globalchatroom', user: $scope.user})
                     }
+                    else{
+
+                      alert(data.msg);
+
+                    }
                 });
         };
 

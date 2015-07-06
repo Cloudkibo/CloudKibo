@@ -4,7 +4,7 @@ var contactslist = require('./contactslist.model');
 var User = require('../user/user.model');
 var config = require('../../config/environment');
 var userchat = require('../userchat/userchat.model');
-
+var configuration = require('../configuration/configuration.model');
 
 exports.index = function(req, res) {
 	contactslist.find({userid : req.user._id}).populate('contactid').exec(function(err2, gotContactList){
@@ -39,23 +39,35 @@ exports.addbyusername = function(req, res) {
 					res.send({status: 'danger', msg: gotUserSaved.username +' is already added in your contact list with name '+ gotUserSaved.firstname +' '+ gotUserSaved.lastname});
 				else{
 
-					var contact = new contactslist({
-						userid : gotUser._id,
-						contactid : gotUserSaved._id
-					});
+          configuration.findOne({}, function (err, gotConfig) {
+            if(err) return console.log(err);
 
-					contact.save(function(err2){
-						if (err2) return console.log('Error 2'+ err);
+            contactslist.count({userid : gotUser._id}, function(err, gotFullCount){
+              if(err) return console.log(err);
 
-						contactslist.find({userid : gotUser._id}).populate('contactid').exec(function(err3, gotContactList){
+              if(gotConfig.numberofpeopleincontactlist === gotFullCount){
+                res.send({status: 'danger', msg: 'Your contact list is full.'});
+              }
+              else{
+                var contact = new contactslist({
+                  userid : gotUser._id,
+                  contactid : gotUserSaved._id
+                });
 
-							res.send({status: 'success', msg: gotContactList});
+                contact.save(function(err2){
+                  if (err2) return console.log('Error 2'+ err);
+                  contactslist.find({userid : gotUser._id}).populate('contactid').exec(function(err3, gotContactList){
+                    res.send({status: 'success', msg: gotContactList});
+                  })
+                })
+              }
 
-						})
-					})
+            });
+
+          });
+
 
 				}
-
 			})
 
 		})
@@ -79,20 +91,34 @@ exports.addbyemail = function(req, res) {
 					res.send({status: 'danger', msg: gotUserSaved.username +' is already added in your contact list with name '+ gotUserSaved.firstname +' '+ gotUserSaved.lastname});
 				else{
 
-					var contact = new contactslist({
-						userid : gotUser._id,
-						contactid : gotUserSaved._id
-					});
+          configuration.findOne({}, function (err, gotConfig) {
+            if(err) return console.log(err);
 
-					contact.save(function(err2){
-						if (err2) return console.log('Error 2'+ err);
+            contactslist.count({userid : gotUser._id}, function(err, gotFullCount){
+              if(err) return console.log(err);
 
-						contactslist.find({userid : gotUser._id}).populate('contactid').exec(function(err3, gotContactList){
+              if(gotConfig.numberofpeopleincontactlist === gotFullCount){
+                res.send({status: 'danger', msg: 'Your contact list is full.'});
+              }
+              else{
+                var contact = new contactslist({
+                  userid : gotUser._id,
+                  contactid : gotUserSaved._id
+                });
 
-							res.send({status: 'success', msg: gotContactList});
+                contact.save(function(err2){
+                  if (err2) return console.log('Error 2'+ err);
 
-						})
-					})
+                  contactslist.find({userid : gotUser._id}).populate('contactid').exec(function(err3, gotContactList){
+
+                    res.send({status: 'success', msg: gotContactList});
+
+                  })
+                })
+              }
+            })
+          })
+
 
 				}
 
@@ -120,28 +146,43 @@ exports.approvefriendrequest = function(req, res) {
 					res.send({status: 'danger', msg: gotUserSaved.username +' is already added in your contact list with name '+ gotUserSaved.firstname +' '+ gotUserSaved.lastname});
 				else{
 
-					var contact = new contactslist({
-						userid : gotUser._id,
-						contactid : gotUserSaved._id,
-						detailsshared : 'Yes'
-					});
+          configuration.findOne({}, function (err, gotConfig) {
+            if(err) return console.log(err);
 
-					contact.save(function(err2){
-						if (err2) return console.log('Error 2'+ err);
+            contactslist.count({userid : gotUser._id}, function(err, gotFullCount){
+              if(err) return console.log(err);
 
-						contactslist.find({userid : gotUser._id}).populate('contactid').exec(function(err3, gotContactList){
+              if(gotConfig.numberofpeopleincontactlist === gotFullCount){
+                res.send({status: 'danger', msg: 'Your contact list is full.'});
+              }
+              else{
+                var contact = new contactslist({
+                  userid : gotUser._id,
+                  contactid : gotUserSaved._id,
+                  detailsshared : 'Yes'
+                });
 
-							res.send({status: 'success', msg: gotContactList});
+                contact.save(function(err2){
+                  if (err2) return console.log('Error 2'+ err);
 
-							contactslist.findOne({userid : gotUserSaved._id, contactid : gotUser._id}, function(err6, gotOtherPerson){
+                  contactslist.find({userid : gotUser._id}).populate('contactid').exec(function(err3, gotContactList){
 
-								gotOtherPerson.detailsshared = 'Yes';
+                    res.send({status: 'success', msg: gotContactList});
 
-								gotOtherPerson.save(function(err){});
+                    contactslist.findOne({userid : gotUserSaved._id, contactid : gotUser._id}, function(err6, gotOtherPerson){
 
-							})
-						})
-					})
+                      gotOtherPerson.detailsshared = 'Yes';
+
+                      gotOtherPerson.save(function(err){});
+
+                    })
+                  })
+                })
+              }
+            })
+          })
+
+
 
 				}
 
