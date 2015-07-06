@@ -99,6 +99,9 @@ angular.module('kiboRtc.services')
 
         //console.log(otherPeers.indexOf(message.FromUser));
         //console.log(message);
+        console.log('bye')
+        console.log(otherPeers)
+
 
         $rootScope.$broadcast('peer'+ (otherPeers.indexOf(message.FromUser)+1) +'Leaves');
 
@@ -111,6 +114,9 @@ angular.module('kiboRtc.services')
           isStarted = false;
           pcIndex = 0;
         }
+
+        console.log(otherPeers)
+        console.log('bye')
 
       }
 
