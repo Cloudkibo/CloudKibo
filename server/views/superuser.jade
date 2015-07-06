@@ -77,6 +77,21 @@ block appbodycontent
                         option(value="Logo 2") Logo2
 
               .form-group101
+                label.control-label.col-md-3 Number of people in Conference
+                .col-md-9
+                  #spinner1
+                    .input-group.input-small
+                      input#maxlength_defaultconfig.form-control(ng-model='supersettings.numberofpeopleinconference',type='Number', maxlength='2', name='defaultconfig')
+
+              .form-group101
+                label.control-label.col-md-3 Number of people in contactlist
+                .col-md-9
+                  #spinner1
+                    .input-group.input-small
+                      input#maxlength_defaultconfig.form-control(ng-model='supersettings.numberofpeopleincontactlist',type='Number', maxlength='2', name='defaultconfig')
+
+
+              .form-group101
                 label.control-label.col-md-3 SendGrid Password
                 .col-md-9
                   input#maxlength_defaultconfig.form-control(ng-model='supersettings.sendgridpassword', placeholder='SendGrid Password')
@@ -96,7 +111,7 @@ block appbodycontent
                   i.fa.fa-check
 
         br
-        h1 User Feedback
+        h2 User Feedback
         br
         input(type='text', ng-model='feedbackUserName', placeholder='Search')
         //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='feedback= #{JSON.stringify(feedback)}')
@@ -132,7 +147,7 @@ block appbodycontent
               | {{fb.comment}}
         br
         br
-        h1 Call Log
+        h2 Call Log
         br
         input(type='text', ng-model='callBackName', placeholder='Search')
         //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='call_log= #{JSON.stringify(callrecord)}')
