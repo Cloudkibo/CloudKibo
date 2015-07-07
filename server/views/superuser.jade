@@ -106,6 +106,26 @@ block appbodycontent
                 .col-md-9
                   input#maxlength_defaultconfig.form-control(ng-model='supersettings.googlesecret', placeholder='Google App Secret')
 
+              .form-group101
+                label.control-label.col-md-3 Facebook Id
+                .col-md-9
+                  input#maxlength_defaultconfig.form-control(ng-model='supersettings.facebookid', placeholder='Facebook App Id')
+
+              .form-group101
+                label.control-label.col-md-3 Facebook Secret
+                .col-md-9
+                  input#maxlength_defaultconfig.form-control(ng-model='supersettings.facebooksecret', placeholder='Facebook App Secret')
+
+              .form-group101
+                label.control-label.col-md-3 Windows Id
+                .col-md-9
+                  input#maxlength_defaultconfig.form-control(ng-model='supersettings.windowsid', placeholder='Windows App Id')
+
+              .form-group101
+                label.control-label.col-md-3 Windows Secret
+                .col-md-9
+                  input#maxlength_defaultconfig.form-control(ng-model='supersettings.windowssecret', placeholder='Windows App Secret')
+
               .actions2
                 button.btn.btn-color(tabindex='3', type='submit', ng-click='saveSuperuserSettings(supersettings)') Save
                   i.fa.fa-check
