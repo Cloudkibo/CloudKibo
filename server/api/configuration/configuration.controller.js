@@ -20,6 +20,13 @@ exports.fetch = function(req, res) {
   });
 };
 
+/**
+ * Get Logo Image
+ */
+exports.logo = function(req, res, next) {
+  res.sendfile('logo.png', {root: './logos'});
+};
+
 // Get a single configuration
 exports.show = function(req, res) {
   Configuration.findById(req.params.id, function (err, configuration) {
