@@ -327,6 +327,15 @@ angular.module('kiboRtc.services')
         sendChannel.splice(peerIndex, 1);
 
       },
+      
+      endCall: function (peerIndex) { // sabachanna
+
+        pc[peerIndex] = null;
+        sendChannel[peerIndex] = null;
+
+      
+
+      },
 
       /**
        * Application should call this function whenever the local peer wants to stop sharing the stream. This stops
@@ -638,7 +647,13 @@ angular.module('kiboRtc.services')
 
       sendDataChannelMessage : function (message, pcInd) {
         if (typeof pc[pcInd] != 'undefined' && pc[pcInd] != null && typeof sendChannel[pcInd] != 'undefined' && sendChannel[pcInd] != null) {
+
+          console.log(pcInd)
+          console.log(sendChannel[pcInd])
+
           sendChannel[pcInd].send(message);
+
+
         }
       }
 

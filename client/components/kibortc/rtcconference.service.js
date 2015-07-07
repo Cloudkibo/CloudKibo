@@ -99,6 +99,9 @@ angular.module('kiboRtc.services')
 
         //console.log(otherPeers.indexOf(message.FromUser));
         //console.log(message);
+        console.log('bye')
+        console.log(otherPeers)
+
 
         $rootScope.$broadcast('peer'+ (otherPeers.indexOf(message.FromUser)+1) +'Leaves');
 
@@ -111,6 +114,27 @@ angular.module('kiboRtc.services')
           isStarted = false;
           pcIndex = 0;
         }
+
+        console.log(otherPeers)
+        console.log('bye')
+
+      }
+      
+      else if (message.payload.msg === 'left' ){ // saba channa
+
+
+        $rootScope.$broadcast('peer'+ (otherPeers.indexOf(message.FromUser)+1) +'Leaves');
+
+        RTCConferenceCore.endConnection(otherPeers.indexOf(message.FromUser));
+
+        otherPeers.splice(otherPeers.indexOf(message.FromUser), 1);
+        pcIndex--;
+
+        if(pcIndex <= 0) {
+          isStarted = true;
+          pcIndex = 0;
+        }
+
 
       }
 
