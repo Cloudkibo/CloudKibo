@@ -242,6 +242,7 @@ function onConnect(socketio, socket) {
 
       socket.username= room.user.username;
 			//socket.emit('you are in global chat room', room);
+			console.log(room.user.username +' has joined the room.')
 
 			var myOnlineContacts = [];
 
