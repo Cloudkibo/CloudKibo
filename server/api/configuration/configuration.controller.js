@@ -20,13 +20,6 @@ exports.fetch = function(req, res) {
   });
 };
 
-/**
- * Get Logo Image
- */
-exports.logo = function(req, res, next) {
-  res.sendfile('logo.png', {root: './logos'});
-};
-
 // Get a single configuration
 exports.show = function(req, res) {
   Configuration.findById(req.params.id, function (err, configuration) {
@@ -51,10 +44,6 @@ exports.create = function(req, res) {
           var newData = new configuration({
             googleid : req.body.googleid,
             googlesecret : req.body.googlesecret,
-            facebooksecret : req.body.facebooksecret,
-            facebookid : req.body.facebookid,
-            windowsid : req.body.windowsid,
-            windowssecret : req.body.windowssecret,
             sendgridusername : req.body.sendgridusername,
             sendgridpassword : req.body.sendgridpassword,
             selectLogo : req.body.selectLogo,
@@ -73,10 +62,6 @@ exports.create = function(req, res) {
 
           gotConfig.googleid = req.body.googleid;
           gotConfig.googlesecret = req.body.googlesecret;
-          gotConfig.facebooksecret = req.body.facebooksecret,
-          gotConfig.facebookid = req.body.facebookid,
-          gotConfig.windowsid = req.body.windowsid,
-          gotConfig.windowssecret = req.body.windowssecret,
           gotConfig.sendgridusername = req.body.sendgridusername;
           gotConfig.sendgridpassword = req.body.sendgridpassword;
           gotConfig.selectLogo = req.body.selectLogo;

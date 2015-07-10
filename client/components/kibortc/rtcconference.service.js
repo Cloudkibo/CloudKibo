@@ -119,24 +119,6 @@ angular.module('kiboRtc.services')
         console.log('bye')
 
       }
-      
-      else if (message.payload.msg === 'left' ){ // saba channa
-
-
-        $rootScope.$broadcast('peer'+ (otherPeers.indexOf(message.FromUser)+1) +'Leaves');
-
-        RTCConferenceCore.endConnection(otherPeers.indexOf(message.FromUser));
-
-        otherPeers.splice(otherPeers.indexOf(message.FromUser), 1);
-        pcIndex--;
-
-        if(pcIndex <= 0) {
-          isStarted = true;
-          pcIndex = 0;
-        }
-
-
-      }
 
       else if (message.payload === 'got screen' && message.ToUser == username) {
 

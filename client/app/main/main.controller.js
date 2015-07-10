@@ -711,6 +711,35 @@ angular.module('cloudKiboApp')
             $http.post(RestApi.callrecord.setCallRecordData, JSON.stringify($scope.callData))
         };
 
+        var localPeerHideVideo = document.getElementById("localPeerHideVideo");
+        var remotePeerHideVideo = document.getElementById("remotePeerHideVideo");
+
+        $scope.$on('Speaking', function () {
+          localPeerHideVideo.style.cssText = 'border : 2px solid #000000;';
+          //console.log('speaking '+ $scope.localSpeaking)
+        });
+
+        $scope.$on('Silent', function () {
+          localPeerHideVideo.style.cssText = 'border : 0px solid #000000;';
+          //console.log('silent '+ $scope.localSpeaking)
+        });
+
+        $scope.$on('PeerSpeaking', function () {
+          remotePeerHideVideo.style.cssText = 'border : 2px solid #000000;';
+          //console.log('speaking '+ $scope.localSpeaking)
+        });
+
+        $scope.$on('PeerSilent', function () {
+          remotePeerHideVideo.style.cssText = 'border : 0px solid #000000;';
+          //console.log('silent '+ $scope.localSpeaking)
+        });
+
+        var peerSharedVideo = false;
+
+        $scope.hasPeerSharedVideo = function(){
+          return peerSharedVideo;
+        };
+
         var localVideoCaptured = false;
         var localAudioCaptured = false;
 
@@ -986,9 +1015,11 @@ angular.module('cloudKiboApp')
             }
             else if (message === 'sharing video'){
               WebRTC.setSharingVideo(true);
+              peerSharedVideo = true;
             }
             else if (message === 'hiding video'){
               WebRTC.setHidingVideo(true);
+              peerSharedVideo = false;
             }
             else if (message === 'bye') {
 

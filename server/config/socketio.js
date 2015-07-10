@@ -211,6 +211,7 @@ function onConnect(socketio, socket) {
 			if (numClients === 0){
 				socket.join(room.room);
         socket.username= room.username;
+        console.log(room.username +' joined the room.')
 				socket.emit('created', room);
 			} else if (numClients === 1) {
 				if(canJoin){
