@@ -84,6 +84,29 @@ angular.module('kiboRtc.services')
     var VIDEO = 'video';
     /* Constant defining video */
 
+    /** Audio Analyser variables **/
+
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var audioCtx2 = new (window.AudioContext || window.webkitAudioContext)();
+
+    var analyser = audioCtx.createAnalyser();
+    analyser.minDecibels = -90;
+    analyser.maxDecibels = -10;
+    analyser.smoothingTimeConstant = 0.85;
+
+    var analyser2 = audioCtx2.createAnalyser();
+    analyser2.minDecibels = -90;
+    analyser2.maxDecibels = -10;
+    analyser2.smoothingTimeConstant = 0.85;
+
+    var drawVisual;
+    var drawVisual2;
+
+    var speaking = false;
+    var speaking2 = false;
+
+    /** Audio Analyser variables ends **/
+
     return {
 
       /**
@@ -505,6 +528,12 @@ angular.module('kiboRtc.services')
       if (event.stream.getAudioTracks().length) {
         remoteAudio.src = URL.createObjectURL(event.stream);
         remoteAudioStream = event.stream;
+
+        var source = audioCtx.createMediaStreamSource(newStream);
+        source.connect(analyser2);
+        //analyser.connect(distortion);
+
+        analyseAudio2();
       }
 
       if (event.stream.getVideoTracks().length) {
@@ -536,6 +565,7 @@ angular.module('kiboRtc.services')
         remoteVideoStream.stop();
         remoteVideoStream = null;
         hidingVideo = false;
+        $scope.$broadcast('PeerHidesVideo');
       }
 
       if (typeof remoteStreamScreen != 'undefined' && !hidingVideo) {
@@ -568,6 +598,13 @@ angular.module('kiboRtc.services')
           if (type == AUDIO) {
             localAudioStream = newStream;
             audioShared = true;
+
+            var source = audioCtx.createMediaStreamSource(newStream);
+            source.connect(analyser);
+            //analyser.connect(distortion);
+
+            analyseAudio();
+
           }
           else if (type == VIDEO) {
             localVideoStream = newStream;
@@ -583,6 +620,95 @@ angular.module('kiboRtc.services')
       );
 
     }
+
+
+    function analyseAudio2(){
+
+      analyser2.fftSize = 256;
+      var bufferLength = analyser2.frequencyBinCount;
+      //console.log(bufferLength);
+      var dataArray = new Uint8Array(bufferLength);
+
+      var tempSpeakingValue = false;
+
+      function draw() {
+
+        drawVisual2 = requestAnimationFrame(draw);
+
+        analyser2.getByteFrequencyData(dataArray);
+
+        var sum = 0; // added by sojharo
+
+        for(var i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
+        }
+
+        var averageFrequency = sum/bufferLength;
+
+        if(averageFrequency > audio_threshold)
+          tempSpeakingValue = true;
+        else
+          tempSpeakingValue = false;
+
+        if(tempSpeakingValue !== speaking2){
+          speaking2 = tempSpeakingValue;
+          //console.log(speaking ? 'Speaking' : 'Silent');
+
+          $rootScope.$broadcast(speaking2 ? 'PeerSpeaking' : 'PeerSilent');
+
+        }
+
+
+      };
+
+      draw();
+
+    }
+
+    function analyseAudio(){
+
+      analyser.fftSize = 256;
+      var bufferLength = analyser.frequencyBinCount;
+      //console.log(bufferLength);
+      var dataArray = new Uint8Array(bufferLength);
+
+      var tempSpeakingValue = false;
+
+      function draw() {
+
+        drawVisual = requestAnimationFrame(draw);
+
+        analyser.getByteFrequencyData(dataArray);
+
+        var sum = 0; // added by sojharo
+
+        for(var i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
+        }
+
+        var averageFrequency = sum/bufferLength;
+
+        if(averageFrequency > audio_threshold)
+          tempSpeakingValue = true;
+        else
+          tempSpeakingValue = false;
+
+        if(tempSpeakingValue !== speaking){
+          speaking = tempSpeakingValue;
+          //console.log(speaking ? 'Speaking' : 'Silent');
+
+          $rootScope.$broadcast(speaking ? 'Speaking' : 'Silent');
+
+        }
+
+
+      };
+
+      draw();
+
+    }
+
+
 
 
   });

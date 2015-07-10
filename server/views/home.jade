@@ -150,8 +150,10 @@ block appbodycontent
 
                       div(ng-show='localCameraCaptured() && !hasOtherPartySharedScreen()' class="videoCallChatPane2")
                         div(style='text-align: center;')
-                          video(id='localvideo', autoplay='true', muted='true', width='40%', class='videoelement')
-                          video(id='remotevideo', autoplay='true', width='40%', class='videoelement')
+                          div(id='localPeerHideVideo', class='hideVideoBox', ng-show='!isVideoCaptured() && localCameraCaptured() && !isLocalScreenShared()')
+                          video(id='localvideo', autoplay='true', muted='true', width='40%', class='videoelement', ng-show='isLocalVideoShared() || isLocalScreenShared()')
+                          div(id='remotePeerHideVideo', class='hideVideoBox', ng-show='!hasPeerSharedVideo()')
+                          video(id='remotevideo', autoplay='true', width='40%', class='videoelement', ng-show='hasPeerSharedVideo()')
                           audio(id='remoteaudio', autoplay='true')
                           br
                           //button(ng-click='enterVideoFullScreen()') Full Screen

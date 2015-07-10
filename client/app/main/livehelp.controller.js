@@ -26,6 +26,9 @@ angular.module('cloudKiboApp')
     var bell = new Audio('/sounds/bells_simple.mp3');
     bell.loop = true;
 
+    var localPeerHideBox = document.getElementById("localPeerHideBox");
+    var remotePeerHideBox = document.getElementById("remotePeerHideBox");
+
     var remoteaudio1 = document.getElementById("remoteaudio1");
     remoteaudio1.src = null;
 
@@ -40,6 +43,22 @@ angular.module('cloudKiboApp')
 
 
     var roomid = '';
+
+    /** Audio Analyser variables **/
+
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    var analyser = audioCtx.createAnalyser();
+    analyser.minDecibels = -90;
+    analyser.maxDecibels = -10;
+    analyser.smoothingTimeConstant = 0.85;
+
+    var drawVisual;
+
+    var speaking = false;
+
+    /** Audio Analyser variables ends **/
+
     ////////////////////////////////////////////////////////////////////////////////////////
     // Create or Join Room Logic                                                          //
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -97,6 +116,12 @@ angular.module('cloudKiboApp')
 
     $scope.hasPeerSharedScreen = function(){
       return $scope.peerSharedScreen;
+    };
+
+    $scope.peerSharedVideo = false;
+
+    $scope.hasPeerSharedVideo = function(){
+      return $scope.peerSharedVideo;
     };
 
     $scope.hasChromeExtension = function(){
@@ -463,6 +488,7 @@ angular.module('cloudKiboApp')
           });
 
           remoteVideoStream = event.stream;
+          $scope.peerSharedVideo = true;
           $scope.videoTogglingFromOtherSide = false;
 
           return 0;
@@ -485,6 +511,7 @@ angular.module('cloudKiboApp')
           $scope.$apply(function(){
             remotevideo2.src = URL.createObjectURL(event.stream);
             remoteVideoStream = event.stream;
+            $scope.peerSharedVideo = true;
           })
 
         }
@@ -503,6 +530,7 @@ angular.module('cloudKiboApp')
       if($scope.videoTogglingFromOtherSide && !$scope.switchingScreenShare){
         $scope.videoTogglingFromOtherSide = false;
         remotevideo2.src = null;
+        $scope.peerSharedVideo = false;
       }
 
     }
@@ -522,6 +550,12 @@ angular.module('cloudKiboApp')
 
       $scope.localAudioCaptured = true;
 
+      var source = audioCtx.createMediaStreamSource(newStream);
+      source.connect(analyser);
+      //analyser.connect(distortion);
+
+      analyseAudio();
+
       if($scope.role == 'agent') {
         getUserMedia(video_constraints, handleUserMediaVideo, handleUserMediaError);
       }
@@ -536,7 +570,7 @@ angular.module('cloudKiboApp')
       }
     }
 
-    function handleUserMediaVideo(newStream){
+    function handleUserMediaVideo(newStream) {
 
       localVideoStream = newStream;
 
@@ -556,6 +590,60 @@ angular.module('cloudKiboApp')
     function handleUserMediaError(error){
       //console.log(error);
     }
+
+    function analyseAudio(){
+
+      analyser.fftSize = 256;
+      var bufferLength = analyser.frequencyBinCount;
+      console.log(bufferLength);
+      var dataArray = new Uint8Array(bufferLength);
+
+      var tempSpeakingValue = false;
+
+      function draw() {
+
+        drawVisual = requestAnimationFrame(draw);
+
+        analyser.getByteFrequencyData(dataArray);
+
+        var sum = 0; // added by sojharo
+
+        for(var i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
+        }
+
+        var averageFrequency = sum/bufferLength;
+
+        if(averageFrequency > audio_threshold)
+          tempSpeakingValue = true;
+        else
+          tempSpeakingValue = false;
+
+        if(tempSpeakingValue !== speaking){
+          speaking = tempSpeakingValue;
+          //console.log(speaking ? 'Speaking' : 'Silent');
+
+          if(speaking){
+            localPeerHideBox.style.cssText = 'border : 2px solid #000000;';
+            if(typeof pc != 'undefined'){
+              sendChannel.send(':Speaking:peer:');
+            }
+          }else{
+            localPeerHideBox.style.cssText = 'border : 0px solid #000000;';
+            if(typeof pc != 'undefined'){
+              sendChannel.send(':Silent:peer:');
+            }
+          }
+
+        }
+
+
+      };
+
+      draw();
+
+    }
+
 
     $scope.toggleVideoStream = function() {
       if ($scope.localVideoCaptured) {
@@ -646,6 +734,12 @@ angular.module('cloudKiboApp')
         getUserMedia(audio_constraints, function (stream) {
 
           localStream = stream;
+
+          var source = audioCtx.createMediaStreamSource(stream);
+          source.connect(analyser);
+          //analyser.connect(distortion);
+
+          analyseAudio();
 
           pc.addStream(localStream);
 
@@ -970,6 +1064,14 @@ angular.module('cloudKiboApp')
       }
       else if (message.charAt(0) == '{' && message.charAt(message.length-1) == '}') {
         process_data(message);
+      }
+      else if (message.charAt(0) == ':' && message.charAt(message.length - 1) == ':'){
+        if(message.split(':')[1] === 'Silent'){
+          remotePeerHideBox.style.cssText = 'border : 0px solid #000000;';
+        }
+        else if(message.split(':')[1] === 'Speaking'){
+          remotePeerHideBox.style.cssText = 'border : 2px solid #000000;';
+        }
       }
       else {
         $scope.$apply(function(){

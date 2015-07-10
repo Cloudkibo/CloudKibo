@@ -2,7 +2,6 @@
 
 var path = require('path');
 var _ = require('lodash');
-var configuration = require('../../api/configuration/configuration.model');
 
 function requiredProcessEnv(name) {
   if(!process.env[name]) {
@@ -10,8 +9,6 @@ function requiredProcessEnv(name) {
   }
   return process.env[name];
 }
-
-
 
 // All configurations will extend these options
 // ============================================
@@ -23,7 +20,7 @@ var all = {
 
   // Server port
   port: process.env.PORT || 3000,
-
+  
   // Secure Server port
   secure_port: process.env.SECURE_PORT || 8443,
 
@@ -45,7 +42,6 @@ var all = {
         safe: true
       }
     }
-
   },
 
   facebook: {
@@ -66,30 +62,13 @@ var all = {
     callbackURL:  (process.env.DOMAIN || '') + 'http://www.cloudkibo.com/auth/google/callback',
     scope: 'https://www.google.com/m8/feeds https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
   },
-
+  
   windowslive: {
     clientID:     process.env.GOOGLE_ID || '000000004C10C835',
     clientSecret: process.env.GOOGLE_SECRET || 'Nyyk7O4vZtn6ExbSJLamrtL5BtRadd96',
     callbackURL:  (process.env.DOMAIN || '') + 'http://www.cloudkibo.com/auth/windowslive/callback'
   }
 };
-
-(function(){
-  configuration.findOne({}, function(err, result){
-   // console.log(result);
-
-    all.facebook.clientID = result.facebookid;
-    all.facebook.clientSecret = result.facebooksecret;
-
-    all.google.clientID = result.googleid;
-    all.google.clientSecret = result.googlesecret;
-
-    all.windowslive.clientID = result.windowsid;
-    all.windowslive.clientSecret = result.windowssecret;
-
-    //console.log(all)
-  })
-})();
 
 // Export the config object based on the NODE_ENV
 // ==============================================
