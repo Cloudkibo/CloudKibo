@@ -468,6 +468,7 @@ angular.module('kiboRtc.services')
       },
 
       hideVideo: function (pcInd, username, otherPeer) {
+
         localVideoStream.stop();
 
         if(typeof localScreenStream !== 'undefined' || localScreenStream !== null)

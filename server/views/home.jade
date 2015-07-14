@@ -151,7 +151,7 @@ block appbodycontent
                       div(ng-show='localCameraCaptured() && !hasOtherPartySharedScreen()' class="videoCallChatPane2")
                         div(style='text-align: center;')
                           div(id='localPeerHideVideo', class='hideVideoBox', ng-show='!isVideoCaptured() && localCameraCaptured() && !isLocalScreenShared()')
-                          video(id='localvideo', autoplay='true', muted='true', width='40%', class='videoelement', ng-show='isLocalVideoShared() || isLocalScreenShared()')
+                          video(id='localvideo', autoplay='true', muted='true', width='40%', class='videoelement', ng-show='isVideoCaptured() || isLocalScreenShared()')
                           div(id='remotePeerHideVideo', class='hideVideoBox', ng-show='!hasPeerSharedVideo()')
                           video(id='remotevideo', autoplay='true', width='40%', class='videoelement', ng-show='hasPeerSharedVideo()')
                           audio(id='remoteaudio', autoplay='true')

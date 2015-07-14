@@ -29,7 +29,7 @@
  */
 
 angular.module('kiboRtc.services')
-  .factory('WebRTC', function WebRTC($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, audio_constraints, Signalling) {
+  .factory('WebRTC', function WebRTC($rootScope, pc_config, pc_constraints, audio_threshold, sdpConstraints, video_constraints, audio_constraints, Signalling) {
 
     var isInitiator = false;
     /* It indicates which peer is the initiator of the call */

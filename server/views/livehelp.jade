@@ -22,7 +22,7 @@ div
                 span
                   div()
                     div(id='localPeerHideBox', class='hideVideoBox', ng-show='!isVideoCaptured() && localCameraCaptured() && !isLocalScreenShared()')
-                    video(id='localvideo', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='isLocalVideoShared() || isLocalScreenShared()')
+                    video(id='localvideo', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='isVideoCaptured() || isLocalScreenShared()')
                     div(id='remotePeerHideBox', class='hideVideoBox', ng-show='!hasPeerSharedVideo()')
                     video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeerSharedVideo()')
             div(ng-show='hasPeerSharedScreen()')
