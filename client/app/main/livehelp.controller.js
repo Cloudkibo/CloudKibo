@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, RestApi, $window, ScreenShare){
+  .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, audio_threshold, sdpConstraints, $timeout, RestApi, $window, ScreenShare){
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // Variables for WebRTC Session                                                       //
