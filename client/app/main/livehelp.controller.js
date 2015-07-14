@@ -625,12 +625,12 @@ angular.module('cloudKiboApp')
 
           if(speaking){
             localPeerHideBox.style.cssText = 'border : 2px solid #000000;';
-            if(typeof pc != 'undefined'){
+            if(typeof pc != 'undefined' && sendChannel.readyState === 'open'){
               sendChannel.send(':Speaking:peer:');
             }
           }else{
             localPeerHideBox.style.cssText = 'border : 0px solid #000000;';
-            if(typeof pc != 'undefined'){
+            if(typeof pc != 'undefined' && sendChannel.readyState === 'open'){
               sendChannel.send(':Silent:peer:');
             }
           }
