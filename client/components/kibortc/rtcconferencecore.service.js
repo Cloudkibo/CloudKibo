@@ -640,9 +640,10 @@ angular.module('kiboRtc.services')
         if (typeof pc[pcInd] != 'undefined' && pc[pcInd] != null && typeof sendChannel[pcInd] != 'undefined' && sendChannel[pcInd] != null) {
 
           console.log(pcInd)
-          console.log(sendChannel[pcInd])
+          console.log(sendChannel[pcInd]);
 
-          sendChannel[pcInd].send(message);
+          if(sendChannel[pcInd].readyState === 'open')
+            sendChannel[pcInd].send(message);
 
 
         }
