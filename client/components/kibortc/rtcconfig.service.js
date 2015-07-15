@@ -21,7 +21,11 @@ angular.module('kiboRtc.services')
     return {'iceServers': [
       createIceServer(isChrome
         ? 'stun:stun.l.google.com:19302'
-        : 'stun:23.21.150.121', null, null)
+        : 'stun:23.21.150.121', null, null),
+      createIceServer('stun:stun.anyfirewall.com:3478', null, null),
+      createIceServer('turn:turn.bistri.com:80?transport=udp', 'homeo', 'homeo'),
+      createIceServer('turn:turn.bistri.com:80?transport=tcp', 'homeo', 'homeo'),
+      createIceServer('turn:turn.anyfirewall.com:443?transport=tcp', 'webrtc', 'webrtc')
     ]};
 
     /*
