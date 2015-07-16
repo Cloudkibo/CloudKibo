@@ -19,6 +19,13 @@ angular.module('kiboRtc.services')
     var isChrome = !!navigator.webkitGetUserMedia;
 
     return {'iceServers': [
+      createIceServer('turn:45.55.232.65:3478?transport=udp', 'cloudkibo', 'cloudkibo'),
+      createIceServer('turn:45.55.232.65:3478?transport=tcp', 'cloudkibo', 'cloudkibo')
+    ]};
+
+    // Commented only to test our own turn server with above address and credentials
+/*
+    return {'iceServers': [
       createIceServer(isChrome
         ? 'stun:stun.l.google.com:19302'
         : 'stun:23.21.150.121', null, null),
@@ -27,7 +34,7 @@ angular.module('kiboRtc.services')
       createIceServer('turn:turn.bistri.com:80?transport=tcp', 'homeo', 'homeo'),
       createIceServer('turn:turn.anyfirewall.com:443?transport=tcp', 'webrtc', 'webrtc')
     ]};
-
+*/
     /*
      return {'iceServers': [createIceServer('turn:cloudkibo@162.243.217.34:3478?transport=udp', 'cloudkibo', 'cloudkibo'),
        createIceServer('stun:stun.l.google.com:19302', null, null),
