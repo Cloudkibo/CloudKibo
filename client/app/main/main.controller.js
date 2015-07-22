@@ -1251,15 +1251,18 @@ angular.module('cloudKiboApp')
 
         socket.on('im', function (im) {
 
-            if (im.to == $scope.user.username && im.from == $scope.otherUser.username) {
+            if(typeof $scope.otherUser.username !== 'undefined')
+            {
+              if (im.to == $scope.user.username && im.from == $scope.otherUser.username) {
                 $scope.messages.push(im);
-            }
-            else if (im.to == $scope.user.username && im.from != $scope.otherUser.username) {
+              }
+              else if (im.to == $scope.user.username && im.from != $scope.otherUser.username) {
                 for (i in $scope.contactslist) {
-                    if ($scope.contactslist[i].contactid.username == im.from) {
-                        $scope.contactslist[i].unreadMessage = true;
-                    }
+                  if ($scope.contactslist[i].contactid.username == im.from) {
+                    $scope.contactslist[i].unreadMessage = true;
+                  }
                 }
+              }
             }
 
         });
