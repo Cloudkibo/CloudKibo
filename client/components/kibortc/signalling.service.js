@@ -66,6 +66,7 @@ angular.module('kiboRtc.services')
         message.username = username;
         //console.log('Client sending message: ', message);
         socket.emit('message', message);
+
       },
 
       /**
