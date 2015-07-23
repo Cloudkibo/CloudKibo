@@ -145,6 +145,8 @@ angular.module('kiboRtc.services')
         } catch (e) {
         }
 
+        console.log('FileTransfer Connection closed')
+
       },
 
       /**
@@ -318,6 +320,7 @@ angular.module('kiboRtc.services')
      * @param event holds the candidate
      */
     function handleIceCandidate(event) {
+      console.log(event.candidate)
       if (event.candidate) {
         Signalling.sendMessageForDataChannel({
           type: 'candidate',
@@ -362,7 +365,7 @@ angular.module('kiboRtc.services')
      * @param event contains the data sent by other peer
      */
     function handleMessage(event) {
-      //trace('MESSAGE GOT: ' + event.data);
+      trace('MESSAGE GOT: ' + event.data);
       //document.getElementById("dataChannelReceive").value = event.data;
 
       message = event.data;
@@ -378,7 +381,7 @@ angular.module('kiboRtc.services')
      */
     function handleSendChannelStateChange() {
       var readyState = sendChannel.readyState;
-      //trace('Send channel state is: ' + readyState);
+      trace('Send channel state is: ' + readyState);
     }
 
     /**
@@ -388,7 +391,7 @@ angular.module('kiboRtc.services')
      * @param event holds the channel
      */
     function gotReceiveChannel(event) {
-      //trace('Receive Channel Callback');
+      trace('Receive Channel Callback');
       sendChannel = event.channel;
       sendChannel.onmessage = handleMessage;
       sendChannel.onopen = handleReceiveChannelStateChange;
@@ -403,7 +406,7 @@ angular.module('kiboRtc.services')
      */
     function handleReceiveChannelStateChange() {
       var readyState = sendChannel.readyState;
-      //trace('Receive channel state is: ' + readyState);
+      trace('Receive channel state is: ' + readyState);
     }
 
   });
