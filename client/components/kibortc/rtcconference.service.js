@@ -99,9 +99,6 @@ angular.module('kiboRtc.services')
 
         //console.log(otherPeers.indexOf(message.FromUser));
         //console.log(message);
-        console.log('bye')
-        console.log(otherPeers)
-
 
         $rootScope.$broadcast('peer'+ (otherPeers.indexOf(message.FromUser)+1) +'Leaves');
 
@@ -114,9 +111,6 @@ angular.module('kiboRtc.services')
           isStarted = false;
           pcIndex = 0;
         }
-
-        console.log(otherPeers)
-        console.log('bye')
 
       }
 
@@ -297,20 +291,17 @@ angular.module('kiboRtc.services')
           }
         }
         else if (!iJoinLate && isStarted) {
-          console.log("late joiner has joined "+ message);
-          console.log("my name is "+ username);
+
           if (message.ToUser == username) {
             RTCConferenceCore.createPeerConnection(pcIndex);
-            console.log('I GOT OFFER FROM '+ toUserName);
             RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
             RTCConferenceCore.createAndSendAnswer(pcIndex, toUserName);
 
             if(localScreenShared){
               console.log('going to inform about screen');
               $timeout(function(){
-                console.log('4 secs passed to inform about screen')
                 RTCConferenceCore.shareScreenToNext(pcIndex, username, otherPeers[pcIndex]);
-              }, 6000);
+              }, 6500);
             }
 
           }
