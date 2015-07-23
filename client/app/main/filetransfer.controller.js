@@ -32,6 +32,9 @@ angular.module('cloudKiboApp')
         })
 
       }
+      else{
+        FileTransfer.endConnection();
+      }
     };
 
     $scope.$on('dataChannelMessageReceived', function() {
