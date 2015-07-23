@@ -592,6 +592,7 @@ angular.module('kiboRtc.services')
      */
     function captureMedia(constraints, type, cb) {
 
+      //callback function
       getUserMedia(constraints,
         function (newStream) {
 

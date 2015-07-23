@@ -306,7 +306,7 @@ angular.module('kiboRtc.services')
        * @returns {number}
        */
       getChunkSize: function () {
-        return 16000;//64000;//36000;
+        return 16000;//64000;//36000; //16kb
       }
     };
 
