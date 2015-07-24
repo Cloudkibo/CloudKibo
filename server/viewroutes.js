@@ -42,7 +42,7 @@ exports.homeRoute = function (req, res) {
 
 	  if (typeof req.user == 'undefined')
 	      res.redirect('/');
-      else{
+    else{
 
 		  var title = 'CloudKibo';
 
@@ -55,18 +55,19 @@ exports.homeRoute = function (req, res) {
 				if (err) return console.log(err);
 
 				var role;
-				if (gotUser.isOwner == 'Yes') role = 'Owner';
+				if (gotUser.isOwner == 'Yes')
+          role = 'Owner';
 
 				if(role == 'Owner')
 				  return res.redirect('/superuser');
-				else
+				else if(role != 'Owner' )
 				{
 					res.render('home', { title: title, user: gotUser, role: role});
-			    }
+        }
 
 		  })
 
-      }
+    }
   };
 
 exports.meetingRoute = function (req, res) {
