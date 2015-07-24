@@ -884,6 +884,7 @@ angular.module('kiboRtc.services')
         if(remoteStreamScreen.id === event.stream.id) {
           $rootScope.$broadcast('peerHidesScreen');
           closeMessage = 'screen close';
+          switchingScreenShare = false;
         }
 
 

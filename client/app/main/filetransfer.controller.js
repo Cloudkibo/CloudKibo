@@ -263,6 +263,7 @@ angular.module('cloudKiboApp')
       console.log(meta);
 
       send_meta();
+
       FileTransfer.sendData("You have received a file. Download and Save it.");
       // user 0 is this user!
       create_upload_stop_link(file_to_upload.name, 0);//, username);
