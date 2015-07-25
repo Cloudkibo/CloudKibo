@@ -552,8 +552,8 @@ angular.module('cloudKiboApp')
       $scope.userMessages.push('Me: ' + data);
       $scope.dataChannelSend = '';
 
-      var chatBox = document.getElementById('chatBox');
-      chatBox.scrollTop = 300 + 8 + ($scope.userMessages.length * 240);
+      //var chatBox = document.getElementById('chatBox');
+      //chatBox.scrollTop = 300 + 8 + ($scope.userMessages.length * 240);
 
     };
 
@@ -575,8 +575,8 @@ angular.module('cloudKiboApp')
           $scope.userMessages.push(event.data)
 
         });
-        var chatBox = document.getElementById('chatBox');
-        chatBox.scrollTop = 300 + 8 + ($scope.userMessages.length * 240);
+        //var chatBox = document.getElementById('chatBox');
+        //chatBox.scrollTop = 300 + 8 + ($scope.userMessages.length * 240);
       }
     });
 
