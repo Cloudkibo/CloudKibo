@@ -7,14 +7,14 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
-router.get('/', auth.hasRole('admin'), controller.index);
+router.get('/', auth.hasRole('admin'), controller.index); // www.cloudkibo.com/api/users/ (GET)
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
-router.get('/me', auth.isAuthenticated(), controller.me);
+router.get('/me', auth.isAuthenticated(), controller.me); // www.cloudkibo.com/api/users/me
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.get('/:id', auth.isAuthenticated(), controller.show);
-router.post('/', controller.create);
+router.post('/', controller.create); // www.cloudkibo.com/api/users/ (POST)
 router.post('/userimage/update', auth.isAuthenticated(), controller.updateimage);
-router.get('/userimage/:image', controller.userimage);
+router.get('/userimage/:image', controller.userimage); // www.cloudkibo.com/api/users/userimage/:image
 router.put('/update', auth.isAuthenticated(), controller.update);
 router.post('/searchbyusername', auth.isAuthenticated(), controller.searchbyusername);
 router.post('/searchbyemail', auth.isAuthenticated(), controller.searchbyemail);

@@ -18,7 +18,7 @@ angular.module('cloudKiboApp')
                  * Get list of users
                  *
                  */
-                listUsers: '/api/users/',
+                listUsers: '/api/users/', // www.cloudkibo.com/api/users
 
                 /**
                  * Deletes the user
@@ -124,7 +124,7 @@ angular.module('cloudKiboApp')
                  * Returns contact list of user
                  *
                  */
-                contactListOfUser: '/api/contactslist/',
+                contactListOfUser: '/api/contactslist/', // www.cloudkibo.com/api/contactslist/
 
                 /**
                  * Retrun list of pending add request

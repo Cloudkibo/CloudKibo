@@ -457,7 +457,7 @@ angular.module('kiboRtc.services')
           //console.log('INSIDE CONDITION SCREEN SHARE')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'open'};
-          console.log('SHARING THE VIDEO');
+          //console.log('SHARING THE VIDEO');
 
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
@@ -509,7 +509,7 @@ angular.module('kiboRtc.services')
           //console.log('INSIDE CONDITION SCREEN SHARE')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingAudio : 'open'};
-          console.log('SHARING THE VIDEO');
+
 
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
