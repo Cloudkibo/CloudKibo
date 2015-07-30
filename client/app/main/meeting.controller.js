@@ -547,6 +547,8 @@ angular.module('cloudKiboApp')
 
       var data = $scope.dataChannelSend;
 
+      console.log('SENDING data channel message '+ data);
+
       RTCConference.sendData('' + $scope.user.username + ': ' + data);
 
       $scope.userMessages.push('Me: ' + data);
@@ -573,6 +575,8 @@ angular.module('cloudKiboApp')
         $scope.$apply(function () {
 
           $scope.userMessages.push(event.data)
+
+          console.log('RECEIVED data channel message '+ event.data);
 
         });
         //var chatBox = document.getElementById('chatBox');
