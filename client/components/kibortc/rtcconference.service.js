@@ -216,7 +216,9 @@ angular.module('kiboRtc.services')
           toUserName = message.FromUser;
           if (message.ToUser == username) {
 
-            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+            var payload = {sdp : message.payload.sdp, type : message.payload.type};
+
+            RTCConferenceCore.setRemoteDescription(payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the open condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
@@ -231,7 +233,9 @@ angular.module('kiboRtc.services')
           toUserName = message.FromUser;
           if (message.ToUser == username) {
 
-            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+            var payload = {sdp : message.payload.sdp, type : message.payload.type};
+
+            RTCConferenceCore.setRemoteDescription(payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the close condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
@@ -246,7 +250,9 @@ angular.module('kiboRtc.services')
           toUserName = message.FromUser;
           if (message.ToUser == username) {
 
-            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+            var payload = {sdp : message.payload.sdp, type : message.payload.type};
+
+            RTCConferenceCore.setRemoteDescription(payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the open condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
@@ -261,7 +267,9 @@ angular.module('kiboRtc.services')
           toUserName = message.FromUser;
           if (message.ToUser == username) {
 
-            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+            var payload = {sdp : message.payload.sdp, type : message.payload.type};
+
+            RTCConferenceCore.setRemoteDescription(payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the close condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
@@ -276,7 +284,9 @@ angular.module('kiboRtc.services')
           toUserName = message.FromUser;
           if (message.ToUser == username) {
 
-            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+            var payload = {sdp : message.payload.sdp, type : message.payload.type};
+
+            RTCConferenceCore.setRemoteDescription(payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the open condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
@@ -291,7 +301,9 @@ angular.module('kiboRtc.services')
           toUserName = message.FromUser;
           if (message.ToUser == username) {
 
-            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+            var payload = {sdp : message.payload.sdp, type : message.payload.type};
+
+            RTCConferenceCore.setRemoteDescription(payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the close condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
@@ -334,7 +346,7 @@ angular.module('kiboRtc.services')
             RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
           }
           else {
-            console.log('simple ANSWER handling happenning for '+ message.FromUser)
+            console.log('simple ANSWER handling happening for '+ message.FromUser)
             RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
           }
 
@@ -547,7 +559,7 @@ angular.module('kiboRtc.services')
         }
         else if (action === 'off') {
 
-          console.log('hin mei ayo.. for hiding video, this is conf service ')
+//          console.log('hin mei ayo.. for hiding video, this is conf service ')
 
           switchPCIndex = 0;
           RTCConferenceCore.hideAudio(switchPCIndex, username, otherPeers[switchPCIndex]);
