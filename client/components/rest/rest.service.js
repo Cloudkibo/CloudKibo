@@ -136,13 +136,13 @@ angular.module('cloudKiboApp')
                  * Add contact with cloudkibo username
                  *
                  */
-                addContactByName: '/api/contactslist/addbyusername',
+                addContactByName: '/api/contactslist/addbyusername', //www.cloudkibo.com/api/contactslist/addbyusername
 
                 /**
                  * Add contact with email address
                  *
                  */
-                addContactByEmail: '/api/contactslist/addbyemail',
+                addContactByEmail: '/api/contactslist/addbyemail', //www.cloudkibo.com/api/contactslist/addbyemail
 
                 /**
                  * Accepts the contact add request

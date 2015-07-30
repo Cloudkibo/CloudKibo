@@ -640,8 +640,12 @@ angular.module('kiboRtc.services')
       sendDataChannelMessage : function (message, pcInd) {
         if (typeof pc[pcInd] != 'undefined' && pc[pcInd] != null && typeof sendChannel[pcInd] != 'undefined' && sendChannel[pcInd] != null) {
 
-          if(sendChannel[pcInd].readyState === 'open')
+          if(sendChannel[pcInd].readyState === 'open') {
             sendChannel[pcInd].send(message);
+
+            console.log('Sending message to '+ pcInd)
+
+          }
 
 
         }

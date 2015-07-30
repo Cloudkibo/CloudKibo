@@ -228,7 +228,6 @@ exports.removefriend = function(req, res) {
 
 										})
 
-
 				})
 
 			})
