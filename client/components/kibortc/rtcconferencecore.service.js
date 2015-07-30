@@ -146,6 +146,8 @@ angular.module('kiboRtc.services')
           pc[pcInd].onaddstream = handleRemoteStreamAdded;
           pc[pcInd].onremovestream = handleRemoteStreamRemoved;
 
+          console.log("CREATED PC OBJECT "+ pcInd);
+
           //if (isInitiator) {
           try {
             // Reliable Data Channels not yet supported in Chrome
@@ -157,7 +159,7 @@ angular.module('kiboRtc.services')
               sendChannel[pcInd] = pc[pcInd].createDataChannel("sendDataChannel", {reliable: false});
             }
             sendChannel[pcInd].onmessage = handleMessage;
-            trace('Created send data channel on index '+ pcInd);
+            trace('CREATED send data channel on index '+ pcInd);
           } catch (e) {
             alert('Failed to create data channel. ' +
             'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
@@ -170,11 +172,11 @@ angular.module('kiboRtc.services')
 
           if(audioShared) {
             pc[pcInd].addStream(localAudioStream);
-            console.log('added audio stream to pc', localAudioStream);
+            //console.log('added audio stream to pc', localAudioStream);
           }
           if(videoShared) {
             pc[pcInd].addStream(localVideoStream);
-            console.log('added video stream to pc ', localVideoStream);
+            //console.log('added video stream to pc ', localVideoStream);
           }
 
           // }
@@ -642,9 +644,6 @@ angular.module('kiboRtc.services')
 
           if(sendChannel[pcInd].readyState === 'open') {
             sendChannel[pcInd].send(message);
-
-            console.log('Sending message to '+ pcInd)
-
           }
 
 
@@ -930,8 +929,8 @@ angular.module('kiboRtc.services')
      *
      * @param event holds the channel
      */
-    function gotReceiveChannel(event) {
-      console.log('Receive Channel Callback');
+    function  gotReceiveChannel(event) {
+      console.log('Receive Channel Callback '+ pcIndexTemp);
       sendChannel[pcIndexTemp] = event.channel;
       sendChannel[pcIndexTemp].onmessage = handleMessage;
       sendChannel[pcIndexTemp].onopen = handleReceiveChannelStateChange;
