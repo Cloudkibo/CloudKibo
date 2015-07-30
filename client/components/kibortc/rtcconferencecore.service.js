@@ -218,7 +218,7 @@ angular.module('kiboRtc.services')
         toUserName = toUser;
         pc[pcInd].createAnswer(setLocalAndSendMessage, function (error) {
           console.log(error)
-        }, sdpConstraints);
+        });
       },
 
       /**
