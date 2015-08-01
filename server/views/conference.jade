@@ -6,14 +6,9 @@ div
         | #{title}
       a(href='javascript:void(0);', class='mobi-toggler')
         i(class='fa fa-bars')
-      //div(class='header-navigation pull-right font-transform-inherit')
-              ul
-                li
-                  a.btn.btn-account.btn-send(ng-click='closeWindow()')
-                    | Leave Conference
   .meetingFullBodyPane.row(class='animate-show')
     .meetingMainBodyPane
-      div(class='animate-show', ng-hide='localCameraCaptured()')
+      //div(class='animate-show', ng-hide='localCameraCaptured()')
         center
           div(ng-show='isConnected()', class='animate-show')
             br
@@ -23,43 +18,10 @@ div
             h4 {{roomname}}
             br
             br
-      div(class='animate-show', ng-show='localCameraCaptured() && !hasPeerSharedScreen()')
+      div(class='animate-show')
         center
           span
-            div(class='videoBoxContainer')
-              div(id='localPeerId', class='hideVideoBox', ng-show='!isLocalVideoShared() && localCameraCaptured() && !isLocalScreenShared()')
-              video(id='localvideo', autoplay='true', height="150px" ,width='{{meetingRemoteVideoWidth}}', class='videoelement', muted='true', ng-show='isLocalVideoShared() || isLocalScreenShared()')
-              span
-                | {{getLocalUsername()}}
-
-            div(class='videoBoxContainer', ng-show='hasPeer1Joined()')
-              div(id='Peer1Id', class='hideVideoBox', ng-show='!hasPeer1SharedVideo() && hasPeer1Joined()')
-              video(id='remotevideo1', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer1SharedVideo() && hasPeer1Joined()')
-              span
-                | {{peer1UserName()}}
-
-            div(class='videoBoxContainer', ng-show='hasPeer2Joined()')
-              div(id='Peer2Id', class='hideVideoBox', ng-show='!hasPeer2SharedVideo() && hasPeer2Joined()')
-              video(id='remotevideo2', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer2SharedVideo() && hasPeer2Joined()')
-              span
-                | {{peer2UserName()}}
-
-            div(class='videoBoxContainer', ng-show='hasPeer3Joined()')
-              div(id='Peer3Id', class='hideVideoBox', ng-show='!hasPeer3SharedVideo() && hasPeer3Joined()')
-              video(id='remotevideo3', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer3SharedVideo() && hasPeer3Joined()')
-              span
-                | {{peer3UserName()}}
-
-            div(class='videoBoxContainer', ng-show='hasPeer4Joined()')
-              div(id='Peer4Id', class='hideVideoBox', ng-show='!hasPeer4SharedVideo() && hasPeer4Joined()')
-              video(id='remotevideo4', autoplay='true', width='{{meetingRemoteVideoWidth}}', class='videoelement', ng-show='hasPeer4SharedVideo() && hasPeer4Joined()')
-              span
-                | {{peer4UserName()}}
-
-            audio(id='remoteaudio1', autoplay='true')
-            audio(id='remoteaudio2', autoplay='true')
-            audio(id='remoteaudio3', autoplay='true')
-            audio(id='remoteaudio4', autoplay='true')
+            video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', aud-src='{{peer.audStream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}')
       div(ng-show='hasPeerSharedScreen()')
         center
           span
@@ -75,7 +37,7 @@ div
         form
           input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
           button(ng-click='sendData()') Send
-  .meetingBottomPane.row
+  //.meetingBottomPane.row
     .col-sm-1(ng-show='localCameraCaptured()')
       .btn-wrapper-kibo
         a.icon-btn(id='showScreenButton', ng-click='showScreen()')
