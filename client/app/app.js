@@ -16,9 +16,14 @@ angular.module('cloudKiboApp', [
 	  })
 
 	  .when('/meeting/:mname', {
-			templateUrl: function(params){ return '/meeting/'+ params.mname},
-			controller: 'MeetingController'
-	  })
+        templateUrl: function(params){ return '/meeting/'+ params.mname},
+        controller: 'MeetingController'
+    })
+
+    .when('/conference/:mname', {
+        templateUrl: function(params){ return '/conference/'+ params.mname},
+        controller: 'ConferenceController'
+    })
 
     .when('/livehelp/:mname', {
       templateUrl: function(params){ console.log(params); return '/livehelp/'+ params.mname +'?role='+ params.role},

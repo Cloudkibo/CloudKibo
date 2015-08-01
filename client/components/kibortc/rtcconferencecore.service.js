@@ -169,16 +169,6 @@ angular.module('kiboRtc.services')
           sendChannel[pcInd].onclose = handleSendChannelStateChange;
           // } else {
           pc[pcInd].ondatachannel = gotReceiveChannel;
-
-          if(audioShared) {
-            pc[pcInd].addStream(localAudioStream);
-            //console.log('added audio stream to pc', localAudioStream);
-          }
-          if(videoShared) {
-            pc[pcInd].addStream(localVideoStream);
-            //console.log('added video stream to pc ', localVideoStream);
-          }
-
           // }
         } catch (e) {
           console.log('Failed to create PeerConnection, exception: ' + e.message);
@@ -194,6 +184,14 @@ angular.module('kiboRtc.services')
        *
        */
       createAndSendOffer: function (pcInd, toUser) {
+        if(audioShared) {
+          pc[pcInd].addStream(localAudioStream);
+          //console.log('added audio stream to pc', localAudioStream);
+        }
+        if(videoShared) {
+          pc[pcInd].addStream(localVideoStream);
+          //console.log('added video stream to pc ', localVideoStream);
+        }
         pcIndexTemp = pcInd;
         toUserName = toUser;
         pc[pcInd].createOffer(setLocalAndSendMessage, handleCreateOfferError);
@@ -208,6 +206,14 @@ angular.module('kiboRtc.services')
        *
        */
       createAndSendAnswer: function (pcInd, toUser) {
+        if(audioShared) {
+          pc[pcInd].addStream(localAudioStream);
+          //console.log('added audio stream to pc', localAudioStream);
+        }
+        if(videoShared) {
+          pc[pcInd].addStream(localVideoStream);
+          //console.log('added video stream to pc ', localVideoStream);
+        }
         pcIndexTemp = pcInd;
         toUserName = toUser;
         pc[pcInd].createAnswer(setLocalAndSendMessage, function (error) {
@@ -534,7 +540,7 @@ angular.module('kiboRtc.services')
           //console.log('INSIDE CONDITION SCREEN SHARE')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingAudio : 'close'};
-          console.log('Hiding THE Video');
+          console.log('Hiding THE Audio');
 
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);

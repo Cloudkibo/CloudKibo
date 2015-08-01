@@ -470,25 +470,25 @@ angular.module('cloudKiboApp')
 
     $scope.toggleAudioText = 'Mute Audio';
     $scope.audioToggle = function () {
-      console.log('in toggle Audio function')
+      //console.log('in toggle Audio function')
       if ($scope.toggleAudioText === 'Share Audio') {
 
-        console.log('in toggle audio on')
+        //console.log('in toggle audio on')
         RTCConference.toggleAudio('on', function(err){
           if(err) return alert(err);
 
-          console.log('in toggle Audio on inside')
+          //console.log('in toggle Audio on inside')
           $scope.toggleAudioText = 'Mute Audio';
 
         });
       }
       else {
-        console.log('we are in toggle off')
+        //console.log('we are in toggle off')
         RTCConference.toggleAudio('off', function(err){
           if(err) return alert(err);
 
           $scope.toggleAudioText = 'Share Audio';
-          console.log('we are in toggle off inside')
+          //console.log('we are in toggle off inside')
 
         });
 

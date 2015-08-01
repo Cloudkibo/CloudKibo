@@ -1,0 +1,78 @@
+div
+  .header
+    .container
+      a(class='site-logo', href='/')
+        img(src='/images/logo_small.png')
+        | #{title}
+      a(href='javascript:void(0);', class='mobi-toggler')
+        i(class='fa fa-bars')
+  .meetingFullBodyPane.row(class='animate-show')
+    .meetingMainBodyPane
+      //div(class='animate-show', ng-hide='localCameraCaptured()')
+        center
+          div(ng-show='isConnected()', class='animate-show')
+            br
+            br
+            h3 Share the following room name with Participants
+            br
+            h4 {{roomname}}
+            br
+            br
+      div(class='animate-show')
+        center
+          span
+            video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', aud-src='{{peer.audStream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}')
+      div(ng-show='hasPeerSharedScreen()')
+        center
+          span
+            video(id='remoteVideoScreen', autoplay='true', width='80%', class='videoelementscreen', controls='true')
+      br
+      alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
+      br
+    .meetingSidePane(ng-show='showChatBox()')
+      div(ng-show='localCameraCaptured()', class='animate-show')
+        div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages')
+          .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
+            | {{userMessage}}
+        form
+          input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
+          button(ng-click='sendData()') Send
+  //.meetingBottomPane.row
+    .col-sm-1(ng-show='localCameraCaptured()')
+      .btn-wrapper-kibo
+        a.icon-btn(id='showScreenButton', ng-click='showScreen()')
+          i.fa.fa-desktop
+          div {{showScreenText}}
+
+    .col-sm-4(ng-hide='hasChromeExtension() || isFireFox()')
+      .btn-wrapper-kibo
+        a.btn.btn-lg.green(ng-click='installExtension()')
+          i.fa.fa-plus-square-o
+          div Add Chrome Screen Sharing Extension
+    .col-sm-4(ng-show='isFireFox()')
+      .btn-wrapper-kibo
+        a.btn.btn-lg.green(target='self', ng-href='https://addons.mozilla.org/en-US/firefox/addon/cloudkibo-screen-capturing-in-/')
+          i.fa.fa-plus-square-o
+          div Add FireFox Screen Sharing Extension
+    .col-sm-1(ng-show='localCameraCaptured()')
+      .btn-wrapper-kibo
+        label Send File
+        input(id='file', type='file')
+
+    .col-sm-1(id='0', ng-show='localCameraCaptured()')
+    .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')
+    .col-sm-1(ng-show='localCameraCaptured()')
+      .btn-wrapper-kibo
+        a.icon-btn(ng-click='audioToggle()')
+          i.fa.fa-microphone
+          div {{toggleAudioText}}
+    .col-sm-1(ng-show='localCameraCaptured()')
+      .btn-wrapper-kibo
+        a.icon-btn(ng-click='videoToggle()')
+          i.fa.fa-desktop
+          div {{toggleVideoText}}
+    .col-sm-1.chatBoxButton(ng-show='localCameraCaptured()')
+      .btn-wrapper-kibo
+        a.icon-btn(ng-click='toggleChatBoxVisibility()')
+          i.fa.fa-envelope-o
+          div Chat
