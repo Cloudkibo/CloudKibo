@@ -20,6 +20,18 @@ var fs = require('fs');
 
 
 
+var dir = __dirname + "/../server/log";
+var file = dir + '/client';
+
+require('fs').writeFile(file, 'utf8\\n', function (err) {
+  if (err) {
+    console.log('Error: ' + err);
+    return;
+  }
+
+});
+
+
 
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
