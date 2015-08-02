@@ -10,30 +10,37 @@ angular.module('cloudKiboApp')
 
     $scope.openFileSendView = function () {
       return $scope.openFileView;
+      console.log("Opening file share view")
     };
 
     $scope.startFileChat = function () {
-
+      console.log("Inside file chat")
       $scope.openFileView = !$scope.openFileView;
 
       if (!FileTransfer.getIsStarted()) {
 
         FileTransfer.createPeerConnection(function (err) {
+          console.log("Creating peer connection");
           if(err){
             alert('Failed to create connection. Make sure you are using latest browser.');
+            console.log("Failed Creating peer connection");
             $scope.openFileView = !$scope.openFileView;
           } else {
 
             Signalling.initialize($scope.otherUser.username, $scope.user.username, 'globalchatroom');
+            console.log("Initializing signalling");
 
             FileTransfer.setIsStarted(true);
+            console.log("File trnsfer set to TRUE");
             FileTransfer.createAndSendOffer();
+            console.log("Calling create and send offer function");
           }
         })
 
       }
       else{
         FileTransfer.endConnection();
+        console.log("File transfer connection ended");
       }
     };
 
@@ -41,11 +48,13 @@ angular.module('cloudKiboApp')
 
       var message = FileTransfer.getMessage();
 
-      console.log(message);
+
+      console.log("file transfer msg: "+message);
 
 
       if (message.byteLength  || typeof message !== 'string') {
         process_binary(0, message, 0);
+        console.log("breaking into bytes");
       }
       else if (message.charAt(0) == '{' && message.charAt(message.length - 1) == '}') {
         process_data(message);
@@ -64,9 +73,11 @@ angular.module('cloudKiboApp')
 
       if (message === 'bye') {
         FileTransfer.endConnection();
+        console.log("File transfer connection ended");
       }
       else if (message === 'hangup') {
         FileTransfer.endConnection();
+        console.log("File transfer connection hungup");
       }
       else if (message.type === 'offer') {
         if (!FileTransfer.getIsStarted()) {
@@ -74,10 +85,12 @@ angular.module('cloudKiboApp')
           FileTransfer.createPeerConnection(function (err) {
             if(err){
               alert('Failed to create connection. Make sure you are using latest browser.');
+              console.log("File transfer Failed");
               $scope.openFileView = !$scope.openFileView;
             } else {
 
               Signalling.initialize($scope.otherUser.username, $scope.user.username, 'globalchatroom');
+              console.log("File transfer signalling initialized");
 
               FileTransfer.setIsStarted(true);
 
@@ -147,12 +160,14 @@ angular.module('cloudKiboApp')
 
     // stop the uploading!
     function upload_stop() {
-      // remove data
+
+      console.log("Stop uploading and remove data")
       chunks = {};
       meta = {};
 
       // also clear the container
       create_or_clear_container(0);
+      console.log("Clearing container")
 
       // firefox and chrome specific I think, but clear the file input
       document.getElementById('file').value = '';
@@ -167,10 +182,13 @@ angular.module('cloudKiboApp')
 
       // store our chunk temporarily in memory
       recievedChunks[user_id][chunk_num % chunksPerACK] = chunk_data;
+      console.log("Storing chunk temporary")
 
       // once done recieving all chunks for this ack, start writing to memory
       if (chunk_num % chunksPerACK == (chunksPerACK - 1) || recieved_meta[user_id].numOfChunksInFile == (chunk_num + 1)) {
+        console.log("Ack that all chunks received")
         store_in_fs(user_id, hash);
+        console.log("Chunks writing to memory")
       }
     }
 
@@ -191,10 +209,10 @@ angular.module('cloudKiboApp')
         function (fileEntry) {
           // create a writer that can put data in the file
           fileEntry.createWriter(function (writer) {
-
+          console.log("creating writer to put data in file")
             // once we have written all chunks per ack
             writer.onwriteend = function () {
-
+              console.log("written. Requesting next chunk")
               // request the next chunk
               recievedChunks[user_id] = [];
               requestedChunksWritePointer[user_id] += chunksPerACK;
@@ -231,6 +249,7 @@ angular.module('cloudKiboApp')
 
               // stop accepting file info
               downloading[user_id] = false;
+              console.log("Stop accepting file!");
 
               // on encrypted completion here, send hash back to other user who verifies it, then sends the OK to finish back
               //if (encryption_type != "NONE") {
@@ -265,6 +284,7 @@ angular.module('cloudKiboApp')
       send_meta();
 
       FileTransfer.sendData("You have received a file. Download and Save it.");
+      console.log("can download and save file now")
       // user 0 is this user!
       create_upload_stop_link(file_to_upload.name, 0);//, username);
     }
@@ -314,7 +334,7 @@ angular.module('cloudKiboApp')
 
     function process_data(data) {
       data = JSON.parse(data).data;
-      //console.log('process_data function: ', data)
+      console.log('process_data function: ', data)
       if (data.file_meta) {
         // we are recieving file meta data
 
@@ -336,7 +356,7 @@ angular.module('cloudKiboApp')
         // if auto-download, start the process
 
 
-        console.log(recieved_meta[0]);
+        console.log("dowanload link "+recieved_meta[0]);
       } else if (data.kill) {
         // if it is a kill msg, then the user on the other end has stopped uploading!
 
@@ -356,6 +376,7 @@ angular.module('cloudKiboApp')
           // one little idb.filesystem.js quirk
           saved_fileEntry[0].file(function (file) {
             create_file_link(recieved_meta[0], 0, file); // <-- file, not fileEntry
+            console.log("Save file");
           });
         }
       } else {
@@ -486,6 +507,7 @@ angular.module('cloudKiboApp')
       if (fs[id]) {
         delete_file(id);
       }
+
     }
 
     /////////////
@@ -513,7 +535,7 @@ angular.module('cloudKiboApp')
       //append link!
       filecontainer.appendChild(span);
       filecontainer.appendChild(a);
-
+      console.log("created link ");
     }
 
     // create a link that will let the user start the download
@@ -533,7 +555,7 @@ angular.module('cloudKiboApp')
       a.href = 'javascript:void(0);';
       a.textContent = 'Download : ' + meta.name + ' ' + FileTransfer.getReadableFileSizeString(meta.size);
       a.draggable = true;
-
+      console.log("creating file link to download");
       //append link!
       filecontainer.appendChild(span);
       filecontainer.appendChild(a);

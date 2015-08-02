@@ -6,6 +6,7 @@
  * call procedure. Here it is mostly same as standard procedure of a WebRTC call, but this service hides much of the
  * details from application.
  */
+
 angular.module('kiboRtc.services')
   .factory('FileTransfer', function FileTransfer($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
 
@@ -33,7 +34,8 @@ angular.module('kiboRtc.services')
        * peer wants to send the file to other peer. We try to open the data channel on reliable protocol,
        * if failed we fall back to unreliable. Furthermore, service attaches some private callback functions
        * to some WebRTC connection events. Application doesn't need to care about them.             *
-       */
+       **/
+
       createPeerConnection: function (cb) {
         try {
 
@@ -75,6 +77,7 @@ angular.module('kiboRtc.services')
        *
        * @param data data or message which should be sent to other peer
        */
+
       sendData: function (data) {
         sendChannel.send(data);
       },
@@ -86,6 +89,7 @@ angular.module('kiboRtc.services')
        * and handle the create offer error. Application doesn't need to care about these functions.
        *
        */
+
       createAndSendOffer: function () {
         pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
       },
@@ -98,6 +102,7 @@ angular.module('kiboRtc.services')
        * Subsequently, application must call this function to send answer.
        *
        */
+
       createAndSendAnswer: function () {
         pc.createAnswer(setLocalAndSendMessage, function (error) {
           console.log(error)
@@ -122,6 +127,7 @@ angular.module('kiboRtc.services')
        *
        * @param message It is the remote candidate sent to the local peer
        */
+
       addIceCandidate: function (message) {
         var candidate = new RTCIceCandidate({
           sdpMLineIndex: message.label,
@@ -136,6 +142,7 @@ angular.module('kiboRtc.services')
        * clean or change the UI itself. Both the peers should call this function to end the connection.
        *
        */
+
       endConnection: function () {
         isStarted = false;
         isInitiator = false;
@@ -144,9 +151,7 @@ angular.module('kiboRtc.services')
           pc.close();
         } catch (e) {
         }
-
         console.log('FileTransfer Connection closed')
-
       },
 
       /**
@@ -259,7 +264,6 @@ angular.module('kiboRtc.services')
             msg = 'Unknown Error';
             break;
         }
-
         console.error('Error: ' + msg);
       },
 
@@ -328,7 +332,7 @@ angular.module('kiboRtc.services')
           id: event.candidate.sdpMid,
           candidate: event.candidate.candidate
         });
-      } else {
+      } else{
         //console.log('End of candidates.');
       }
     }
@@ -403,7 +407,8 @@ angular.module('kiboRtc.services')
      * modify the UI depending on whether the data channel is opened or not.
      *
      * todo: notify the change to application using a broadcast
-     */
+     **/
+
     function handleReceiveChannelStateChange() {
       var readyState = sendChannel.readyState;
       trace('Receive channel state is: ' + readyState);

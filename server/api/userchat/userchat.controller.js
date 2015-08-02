@@ -29,7 +29,7 @@ exports.removechathistory = function(req, res) {
 	 User.findById(req.user._id, function (err, gotUser) {
 		if (err) return console.log('Error 1'+ err);
 
-		//console.log(req.body);
+		console.log("removing chat history");
 
 		User.findOne({username : req.body.contact.username}, function (err, gotUserSaved) {
 			userchat.remove({owneruser : gotUser.username, $or: [ { to : gotUserSaved.username, from : gotUser.username },
@@ -73,6 +73,7 @@ exports.save = function(req, res) {
 
 					})
 			  });
+      console.log("saved new user chat")
 
 
 
@@ -108,5 +109,6 @@ exports.markasread = function(req, res) {
 			})
 
 		})
+    console.log("mark chat as read")
 	})
 };
