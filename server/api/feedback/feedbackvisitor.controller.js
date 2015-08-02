@@ -15,6 +15,8 @@ exports.saveVisitorFeedback = function(req, res) {
         datetime : {type: Date, default: Date.now }
     });
 
+  console.log("saved visitors feedback")
+
     feedback.save(function(err2){
         if (err2) return console.log('Error 2'+ err);
 

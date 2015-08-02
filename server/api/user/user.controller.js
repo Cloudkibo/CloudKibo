@@ -52,6 +52,7 @@ exports.create = function (req, res, next) {
 
     configuration.findOne({}, function(err, gotConfig) {
 
+
       var sendgrid  = require('sendgrid')(gotConfig.sendgridusername, gotConfig.sendgridpassword);
 
       var email     = new sendgrid.Email({
@@ -66,7 +67,7 @@ exports.create = function (req, res, next) {
       sendgrid.send(email, function(err, json) {
         if (err) { return console.log(err); }
 
-        console.log(json);
+        console.log("new user verification link sent");
 
       });
 
@@ -77,6 +78,7 @@ exports.create = function (req, res, next) {
     var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
     res.json({ token: token });
   });
+  console.log("created new user")
 };
 
 /**
@@ -135,13 +137,15 @@ exports.update = function(req, res, next) {
 		})
 	});
   });
+
+  console.log("update new user profile")
 };
 
 /**
  * Update User Image
  */
 exports.updateimage = function(req, res, next){
-	console.log(req.files);
+	console.log("uploading file request "+req.files);
 	User.findById(req.user._id, function (err, gotUser) {
 		if (err) return console.log('Error 1'+ err);
 
@@ -168,6 +172,7 @@ exports.updateimage = function(req, res, next){
 						  return 0;
 					   }
 				   }
+
 			  );
 
 			  gotUser.picture = serverPath;
@@ -183,6 +188,7 @@ exports.updateimage = function(req, res, next){
 					})
 
 				});
+      console.log("saved image")
 
 		  }
 		  else
@@ -249,6 +255,7 @@ exports.searchbyusername = function(req, res, next){
 	User.findOne({username : req.body.searchusername}, function (err, gotUser) {
 		res.json(gotUser);
 	})
+
 };
 
 
@@ -280,10 +287,10 @@ exports.saveUsernameRoute = function(req, res, next) {
 							res.json({status : 'danger', msg: 'This contact number is already taken'});
 						}else{
 
-							console.log(req.body);
+							//console.log(req.body);
 							User.findById(req.body._id, function(err, gotUser){
 
-								console.log(gotUser);
+								//console.log(gotUser);
 
 								gotUser.username = req.body.username;
 								gotUser.email = req.body.email;
@@ -342,7 +349,7 @@ exports.invitebyemail = function(req, res, next){
     sendgrid.send(email, function(err, json) {
       if (err) { return console.error(err); }
 
-      console.log(json);
+      console.log("sending email for invitation");
 
     });
 
@@ -394,6 +401,7 @@ exports.setstatusmessage = function(req, res, next){
 				if (err2) return console.log('Error 2'+ err2);
 				res.send({status : 'success', msg : 'stored the message'});
 		 });
+    console.log("status msg set ")
 	})
 };
 
@@ -403,6 +411,8 @@ exports.setstatusmessage = function(req, res, next){
  * Password reset request route
  */
 exports.resetpasswordrequest = function(req, res, next){
+
+  console.log("reset password request sent")
 	User.findOne({email : req.body.email}, function(err, gotUser){
 	  if(err) return console.log(err);
 	  if(!gotUser) return res.send({status:'danger', msg:'Sorry! No such account exists in our database.'});
@@ -435,7 +445,7 @@ exports.resetpasswordrequest = function(req, res, next){
       sendgrid.send(email, function(err, json) {
         if (err) { return console.error(err); }
 
-        console.log(json);
+        console.log("sending link for reset password as in email");
 
         res.send({status:'success', msg:'Password Reset Link has been sent to your email address. Check your spam or junk folder if you have not received our email.'});
 
@@ -465,6 +475,7 @@ exports.authCallback = function(req, res, next) {
  */
 exports.destroy = function(req, res) {
 
+  console.log("removing user")
 	User.findById(req.params.id, function(err, gotUser) {
 		if(err) return res.send(500, err);
 
@@ -483,6 +494,8 @@ exports.destroy = function(req, res) {
 
 
 		});
+
+    console.log("removed user")
 
 	});
 
@@ -507,6 +520,7 @@ exports.changePassword = function(req, res, next) {
       res.send(403);
     }
   });
+  console.log("changed password")
 };
 
 // Make this res.send({status: null, msg: null}) format in future

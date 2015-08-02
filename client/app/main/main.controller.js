@@ -12,11 +12,14 @@ angular.module('cloudKiboApp')
 
         $scope.logout = function () {
 
+
             if (Auth.isLoggedIn()) {
                 //socket.emit('leave', {room: Auth.getCurrentUser().username, username: Auth.getCurrentUser().username});
                 socket.emit('leaveChat', {room: 'globalchatroom', user: Auth.getCurrentUser()});
+
             }
 
+            console.log("Left gloal chat room");
             Auth.logout();
 
             $location.path('/login');
@@ -71,7 +74,7 @@ angular.module('cloudKiboApp')
                     }
 
                 })
-
+          console.log("New user account saved");
         };
 
         $scope.user = $scope.getCurrentUser();
@@ -116,7 +119,7 @@ angular.module('cloudKiboApp')
                 testvideo2.src = URL.createObjectURL(newStream);
                 localStreamTest = newStream;
                 $scope.deviceAccess = true;
-
+              console.log("testing video ");
             }, function (error) {
 
                 $scope.deviceAccess = false;
@@ -135,7 +138,7 @@ angular.module('cloudKiboApp')
 
             $http.post(RestApi.user.initialTesting, {initialTesting: 'Yes'})
                 .success(function (data) {
-                    console.log(data);
+                    //console.log(data);
                     if (data.status == 'success') {
                         $scope.user.initialTesting = data.msg.initialTesting;
                     }
@@ -159,6 +162,7 @@ angular.module('cloudKiboApp')
             $scope.userFound = '';
 
             $scope.meetingSelected = !$scope.meetingSelected;
+          console.log("Meeting is opened");
         };
 
         $scope.isMeetingSelected = function () {
@@ -183,6 +187,7 @@ angular.module('cloudKiboApp')
             $scope.userFound = '';
 
             $scope.inviteSelected = !$scope.inviteSelected;
+          console.log("invite selected");
         };
 
         $scope.isInviteSelected = function () {
@@ -205,6 +210,8 @@ angular.module('cloudKiboApp')
             $scope.settingsSelected = !$scope.settingsSelected;
             if (localStreamTest)
                 localStreamTest.stop();
+
+          console.log("Settings selected");
         };
 
         $scope.isSettingsSelected = function () {
@@ -230,6 +237,7 @@ angular.module('cloudKiboApp')
             $scope.callSelected = !$scope.callSelected;
             if (localStreamTest)
                 localStreamTest.stop();
+          console.log("call selected");
         };
 
         $scope.isCallSelected = function () {
@@ -248,7 +256,9 @@ angular.module('cloudKiboApp')
                 $scope.settingsSelected = !$scope.settingsSelected;
                 if (localStreamTest)
                     localStreamTest.stop();
+
             }
+          console.log("Add contact selected");
 
             $scope.userFound = '';
 
@@ -299,6 +309,7 @@ angular.module('cloudKiboApp')
                         $scope.addAlert(data.status, data.msg)
                     }
                 })
+          console.log("Email invite selected");
         };
 
         $scope.userFound = '';
@@ -333,6 +344,7 @@ angular.module('cloudKiboApp')
                         $scope.userFound = null;
                     }
                 })
+          console.log("Search contact by email");
         };
 
         $scope.contactslist = {};
@@ -352,6 +364,7 @@ angular.module('cloudKiboApp')
                                 userid: $scope.user,
                                 contact: add.searchusername
                             })
+                          console.log("contact added by username");
 
                         }
                         else {
@@ -383,6 +396,7 @@ angular.module('cloudKiboApp')
                                 contact: add.searchemail
                             })
 
+                          console.log("contact added by email");
                         }
                         else {
                             $scope.userFound = null;
@@ -391,6 +405,7 @@ angular.module('cloudKiboApp')
                     else if (data.status == 'danger') {
                         $scope.addUserResponseMessage = data.msg;
                         $scope.userFound = 'danger';
+                      console.log("contact NOT found by email");
                     }
                 })
         };
@@ -404,6 +419,7 @@ angular.module('cloudKiboApp')
                 .error(function (data) {
                     console.log(data)
                 });
+          console.log("contact profile updated");
 
         };
 
@@ -418,6 +434,7 @@ angular.module('cloudKiboApp')
 
         $scope.isOnline = function (index) {
             return $scope.contactslist[index].online;
+
         };
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -441,6 +458,7 @@ angular.module('cloudKiboApp')
         $http.get(RestApi.contacts.contactListOfUser).success(function (data) {
             $scope.contactslist = data;
             $scope.fetchChatNow();
+          console.log("contact list data and chat fetched");
         }).error(function (err) {
             console.log('error ', err)
         });
@@ -449,6 +467,7 @@ angular.module('cloudKiboApp')
 
         $http.get(RestApi.contacts.pendingAddRequest).success(function (data) {
             $scope.addRequestslist = data;
+          console.log("pending requests shown "+ $scope.addRequestslist);
         });
 
         socket.on('friendrequest', function (data) {
@@ -462,6 +481,7 @@ angular.module('cloudKiboApp')
                         $scope.contactslist = data.msg;
                         $scope.addRequestslist.splice(index, 1);
                         socket.emit('whozonline', {room: 'globalchatroom', user: $scope.user})
+                      console.log("Friend request accepted")
                     }
                     else{
 
@@ -476,6 +496,7 @@ angular.module('cloudKiboApp')
                 .success(function (data) {
                     if (data.status == 'success') {
                         $scope.addRequestslist.splice(index, 1);
+                      console.log("Friend request rejected")
                     }
                 });
         };
@@ -483,7 +504,8 @@ angular.module('cloudKiboApp')
         $scope.removeFriend = function (index) {
             $http.post(RestApi.contacts.removeFromContactList, {contact: index})
                 .success(function (data) {
-                    console.log(data);
+                    //console.log(data);
+                console.log("Friend removed")
                     if (data.status == 'success') {
                         $location.path('/app');
                     }
@@ -496,6 +518,7 @@ angular.module('cloudKiboApp')
                     console.log(data);
                     if (data.status == 'success') {
                         $location.path('/app');
+                      console.log("Chat history removed")
                     }
                 });
         };
@@ -586,6 +609,7 @@ angular.module('cloudKiboApp')
             $http.post(RestApi.feedback.feedbackByUser, JSON.stringify($scope.feedback))
                 .success(function (data) {
                     $scope.feedBackSent = true;
+                console.log("Call feedback sent")
                 })
                 .error(function (data) {
                     console.log('Error:', data)
@@ -594,6 +618,7 @@ angular.module('cloudKiboApp')
 
         $scope.isOtherPeerOffline = function () {
             return $scope.otherPeersOfflineStatus;
+          console.log("Status of call"+ $scope.otherPeersOfflineStatus )
         };
 
         $scope.isOtherPeerBusy = false;
@@ -613,6 +638,7 @@ angular.module('cloudKiboApp')
             $scope.$apply(function(){
                 $scope.otherScreenShared = true;
             })
+          console.log("Screen shared by other")
 
         });
 
@@ -621,6 +647,7 @@ angular.module('cloudKiboApp')
             $scope.$apply(function(){
                 $scope.otherScreenShared = false;
             })
+          console.log("Screen remoed/hidden by other")
 
         });
 
@@ -639,6 +666,7 @@ angular.module('cloudKiboApp')
                     callee: calleeusername,
                     caller: $scope.user.username
                 });
+              console.log("Calling person "+ calleeusername)
 
                 $scope.OutgoingCallStatement = 'Outgoing Call to : ' + calleeusername;
 
@@ -648,16 +676,24 @@ angular.module('cloudKiboApp')
         };
 
         $scope.endCall = function () {
-
+          console.log("end call selected")
             WebRTC.endConnection();
+          console.log("connetion ended")
 
             $scope.firstVideoAdded = false;
+          console.log("stop 1st video")
+
             $scope.screenSharedLocal = false;
+          console.log("stop shared screen")
+
             $scope.screenSharedByPeer = false;
+          console.log("stop other person's shared screen")
 
             $scope.localCameraOn = false;
+          console.log("stop local camera capture")
 
             Signalling.sendMessage('hangup');
+          console.log("STOP signalling msg sent ")
 
             //noinspection UnnecessaryLocalVariableJS
           var endTime = new Date();
@@ -716,22 +752,22 @@ angular.module('cloudKiboApp')
 
         $scope.$on('Speaking', function () {
           localPeerHideVideo.style.cssText = 'border : 2px solid #000000;';
-          //console.log('speaking '+ $scope.localSpeaking)
+          console.log('speaking '+ $scope.localSpeaking)
         });
 
         $scope.$on('Silent', function () {
           localPeerHideVideo.style.cssText = 'border : 0px solid #000000;';
-          //console.log('silent '+ $scope.localSpeaking)
+          console.log('silent '+ $scope.localSpeaking)
         });
 
         $scope.$on('PeerSpeaking', function () {
           remotePeerHideVideo.style.cssText = 'border : 2px solid #000000;';
-          //console.log('speaking '+ $scope.localSpeaking)
+          console.log('speaking '+ $scope.localSpeaking)
         });
 
         $scope.$on('PeerSilent', function () {
           remotePeerHideVideo.style.cssText = 'border : 0px solid #000000;';
-          //console.log('silent '+ $scope.localSpeaking)
+          console.log('silent '+ $scope.localSpeaking)
         });
 
         var peerSharedVideo = false;
@@ -745,16 +781,18 @@ angular.module('cloudKiboApp')
 
         $scope.isVideoCaptured = function(){
           return localVideoCaptured;
+          console.log("localVideoCaptured")
         };
 
         $scope.isAudioCaptured = function(){
           return localAudioCaptured;
+          console.log("localVideoCaptured")
         };
 
         $scope.toggleVideoStream = function() {
           WebRTC.toggleVideo(function(err){
             if (err) return alert('Permission denied.');
-
+            console.log("video toggled")
             localVideoCaptured = WebRTC.isLocalVideoShared();
 
           })
@@ -763,7 +801,7 @@ angular.module('cloudKiboApp')
         $scope.toggleAudioStream = function() {
           WebRTC.toggleAudio(function(err){
             if (err) return alert('Permission denied.');
-
+            console.log("Audio toggled")
             localAudioCaptured = WebRTC.isLocalAudioShared();
 
           })
@@ -784,12 +822,19 @@ angular.module('cloudKiboApp')
             $scope.connected = true;
 
             var remotevideo = document.getElementById("remotevideo");
+          console.log("Remote video captured")
+
             var remotevideoscreen = document.getElementById("remotevideoscreen");
+          console.log("Remote video Screen captured")
+
             var localvideo = document.getElementById("localvideo");
+          console.log("Local video captured")
+
             var remoteaudio = document.getElementById('remoteaudio');
+          console.log("Local Audio captured")
 
             WebRTC.initialize(localvideo, localvideo, remotevideo, remoteaudio, remotevideoscreen);
-
+          console.log("Initializing meeting call")
         };
 
         $timeout($scope.connectTimeOut, 1000);
@@ -804,14 +849,16 @@ angular.module('cloudKiboApp')
 
             // todo put it in signalling service, it is also linked with above connectTimeOut
             socket.emit('leaveChat', {room: roomid, user: $scope.user});
+          console.log("leave chatRoom to rejoin")
 
             // Rejoin the room... (temporary fix)
 
             socket.emit('join global chatroom', {room: roomid, user: $scope.user});
+          console.log("Joining Chat Room")
         };
 
         $scope.LeaveRoom = function () {
-            //console.log('Leave room', {room: roomid, username: $scope.user.username});
+            console.log('Leaving room', {room: roomid, username: $scope.user.username});
 
             socket.emit('leaveChat', {room: 'globalchatroom', user: $scope.user});
         };
@@ -822,7 +869,7 @@ angular.module('cloudKiboApp')
                 if ($scope.user.status.trim() != '') {
 
                     socket.emit('status', {room: 'globalchatroom', user: $scope.user});
-
+                  console.log("Status set")
                     $http.post(RestApi.user.statusMessage, $scope.user).success(function (data) {
                     });
                 }
@@ -834,6 +881,7 @@ angular.module('cloudKiboApp')
             for (i in $scope.contactslist) {
                 if ($scope.contactslist[i].contactid.username == friend.username) {
                     $scope.contactslist[i].online = true;
+                  console.log("show online friends "+ $scope.contactslist[i].online)
                 }
             }
         });
@@ -842,6 +890,7 @@ angular.module('cloudKiboApp')
             for (i in $scope.contactslist) {
                 if ($scope.contactslist[i].contactid.username == friend.username) {
                     $scope.contactslist[i].online = false;
+                  console.log("show Offline friends "+ $scope.contactslist[i].online)
                 }
             }
         });
@@ -851,6 +900,7 @@ angular.module('cloudKiboApp')
                 for (var j in $scope.contactslist) {
                     if ($scope.contactslist[j].contactid.username == friends[i].username) {
                         $scope.contactslist[j].online = true;
+                      console.log("show online to "+ $scope.contactslist[j].online)
                         break;
                     }
                 }
@@ -862,6 +912,7 @@ angular.module('cloudKiboApp')
                 for (var j in $scope.contactslist) {
                     if ($scope.contactslist[j].contactid.username == friends[i].username) {
                         $scope.contactslist[j].online = true;
+
                         break;
                     }
                 }
@@ -870,7 +921,7 @@ angular.module('cloudKiboApp')
 
         socket.on('calleeisoffline', function (nickname) {
 
-            //console.log('Callee is OFFLINE')
+            console.log('Callee is OFFLINE')
 
             $scope.OutgoingCallStatement = nickname + ' is offline.';
 
@@ -884,7 +935,7 @@ angular.module('cloudKiboApp')
 
         socket.on('calleeisbusy', function (data) {
 
-            //console.log('Callee is OFFLINE')
+            console.log('Callee is OFFLINE')
 
             $scope.OutgoingCallStatement = data.callee + ' is busy on other call.';
 
@@ -927,6 +978,7 @@ angular.module('cloudKiboApp')
                 $scope.amInCallWith = data.caller;
 
                 Signalling.initialize(data.caller, $scope.user.username, roomid);
+              console.log("checking if callee is free for call")
             }
             else {
                 socket.emit('noiambusy', {mycaller: data.caller, me: $scope.user.username})
@@ -961,7 +1013,7 @@ angular.module('cloudKiboApp')
             if(typeof message == 'string'){
                 try {
                     message = JSON.parse(message);
-                    console.log(message);
+                    console.log("sending msg: ' "+message+" ' ");
                 }catch(e){}
             }
 
@@ -999,6 +1051,7 @@ angular.module('cloudKiboApp')
 
                 $scope.otherSideRinging = false;
                 $scope.areYouCallingSomeone = false;
+              console.log("Accepting call")
 
                 getMedia();
 
@@ -1010,39 +1063,37 @@ angular.module('cloudKiboApp')
                 $scope.amInCall = false;
                 $scope.amInCallWith = '';
 
+
                 Signalling.destroy();
+              console.log("Rejecting call")
             }
             else if (message === 'sharing video'){
               WebRTC.setSharingVideo(true);
               peerSharedVideo = true;
+              console.log("Sharing Video")
             }
             else if (message === 'hiding video'){
               WebRTC.setHidingVideo(true);
               peerSharedVideo = false;
+              console.log("Hidding Video")
             }
             else if (message === 'bye') {
 
                 WebRTC.endConnection();
-
+              console.log("received msg to end connection /call")
                 $scope.screenSharedLocal = false;
                 $scope.screenSharedByPeer = false;
-
                 $scope.firstVideoAdded = false;
-
                 $scope.localCameraOn = false;
-
                 $scope.userMessages = [];
-
                 $scope.callEnded = true;
-
                 $scope.amInCall = false;
-
                 $scope.amInCallWith = '';
             }
             else if (message === 'hangup') {
 
                 WebRTC.endConnection();
-
+              console.log("received msg to end/hangup connection /call")
                 $scope.firstVideoAdded = false;
                 $scope.screenSharedLocal = false;
                 $scope.screenSharedByPeer = false;
@@ -1054,6 +1105,7 @@ angular.module('cloudKiboApp')
                 $scope.callData.EndTime = endTime.toUTCString();
 
                 $scope.recordCallData();
+              console.log("call data recorded")
 
                 $scope.userMessages = [];
 
@@ -1102,12 +1154,13 @@ angular.module('cloudKiboApp')
 
                 if (err) {
                     $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.');
-
+                    console.log("Could not access your microphone or webcam")
                     $scope.ringing = false;
                     $scope.amInCall = false;
                     $scope.amInCallWith = '';
 
                     WebRTC.endConnection();
+                  console.log("Connection ended")
 
                 } else {
 
@@ -1117,12 +1170,14 @@ angular.module('cloudKiboApp')
 
                         if (err) {
                             $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.');
+                          console.log("Could not access your microphone or webcam")
 
                             $scope.ringing = false;
                             $scope.amInCall = false;
                             $scope.amInCallWith = '';
 
                             WebRTC.endConnection();
+                          console.log("Connection ended")
                         }
                         else {
 
@@ -1131,10 +1186,12 @@ angular.module('cloudKiboApp')
                             $scope.localCameraOn = true;
 
                             Signalling.sendMessage('got user media');
+                          console.log("Accessed your microphone or webcam")
 
                             if (!WebRTC.getInitiator()) {
 
                                 maybeStart();
+                              console.log("Can start a call ")
 
                             }
                         }
@@ -1153,6 +1210,7 @@ angular.module('cloudKiboApp')
             $scope.amInCall = false;
             $scope.amInCallWith = '';
             $scope.OutgoingCallStatement = 'Calling stopped';
+          console.log("Calling stopped")
 
         };
 
@@ -1165,6 +1223,7 @@ angular.module('cloudKiboApp')
             var startTime = new Date();
 
             $scope.callData.StartTime = startTime.toUTCString();
+          console.log("received call data")
         };
 
         $scope.AcceptCall = function () {
@@ -1173,6 +1232,7 @@ angular.module('cloudKiboApp')
             Sound.load();
             Sound.pause();
             $scope.ringing = false;
+          console.log("Accepting call")
         };
 
         $scope.RejectCall = function () {
@@ -1183,6 +1243,7 @@ angular.module('cloudKiboApp')
             $scope.ringing = false;
             $scope.amInCall = false;
             $scope.amInCallWith = '';
+          console.log("Rejecting call")
         };
 
 
@@ -1203,9 +1264,11 @@ angular.module('cloudKiboApp')
 
                             for (i in data.msg) {
                                 $scope.messages.push(data.msg[i]);
+
                             }
 
                             $scope.isUnderProgress = false;
+                          console.log("Fetched chat")
 
                         }
                     });
@@ -1216,7 +1279,9 @@ angular.module('cloudKiboApp')
                         $http.post(RestApi.userchat.markMessageAsRead, {
                             user1: $scope.user._id,
                             user2: $scope.otherUser._id
+
                         }).success();
+                      console.log("Marking chat as read");
                     }
                 }
 
@@ -1241,6 +1306,7 @@ angular.module('cloudKiboApp')
                     /*$http.post(RestApi.userchat.saveChats, $scope.im).success(function (data) {
                     });
                     */
+                  console.log("Sending chat msgs");
 
                     $scope.im = {};
                 }
@@ -1254,6 +1320,8 @@ angular.module('cloudKiboApp')
             {
               if (im.to == $scope.user.username && im.from == $scope.otherUser.username) {
                 $scope.messages.push(im);
+                console.log("Sending chat msgs to "+ $scope.user.username);
+                console.log("Sending chat From "+ $scope.otherUser.username);
               }
               else if (im.to == $scope.user.username && im.from != $scope.otherUser.username) {
                 for (i in $scope.contactslist) {
@@ -1281,6 +1349,7 @@ angular.module('cloudKiboApp')
             for (var i in $scope.contactslist) {
                 if ($scope.contactslist[i].contactid.username == $scope.otherUser.username) {
                     return $scope.contactslist[i].detailsshared != 'No';
+
                 }
             }
             return false;
@@ -1297,11 +1366,14 @@ angular.module('cloudKiboApp')
 
             if ($scope.showScreenText == 'Share Screen') {
 
+              console.log("Inside share screen")
+
               if(!!navigator.webkitGetUserMedia){
 
                 shareScreen(function (err, stream) {
                   if(err) {
                     $scope.addAlertCallStart('danger', err);
+                    console.log("Error in sharing screen")
                   }
                   else {
 
@@ -1311,6 +1383,7 @@ angular.module('cloudKiboApp')
 
                     $scope.showScreenText = 'Hide Screen';
                     $scope.screenSharedLocal = true;
+                    console.log("Screen shared")
 
                   }
                 });
@@ -1329,6 +1402,7 @@ angular.module('cloudKiboApp')
 
                   $scope.showScreenText = 'Hide Screen';
                   $scope.screenSharedLocal = true;
+                  console.log("Screen shared by Firefox")
 
                 }, function(err){
                   alert(err)
@@ -1345,6 +1419,7 @@ angular.module('cloudKiboApp')
 
                 $scope.showScreenText = 'Share Screen';
                 $scope.screenSharedLocal = false;
+              console.log("Hide screen screen")
             }
 
         };
@@ -1388,6 +1463,7 @@ angular.module('cloudKiboApp')
 
         ScreenShare.isChromeExtensionAvailable(function (status){
             $scope.extensionAvailable = status;
+          console.log("Check chhrome extension status : "+$scope.extensionAvailable)
         });
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1397,7 +1473,7 @@ angular.module('cloudKiboApp')
         $scope.installExtension = function () {
 
           ScreenShare.installChromeExtension();
-
+          console.log("installing chrome extension");
         };
 
     })

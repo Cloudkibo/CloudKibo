@@ -51,6 +51,7 @@ exports.create = function(req, res) {
             numberofpeopleinconference: req.body.numberofpeopleinconference
 
           });
+          console.log("update configuration for superuser")
 
           newData.save(function (err) {
             if (err) return console.log(err);
@@ -95,8 +96,10 @@ exports.update = function(req, res) {
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       return res.json(200, configuration);
+
     });
   });
+  console.log("update configuration")
 };
 
 // Deletes a configuration from the DB.
@@ -109,6 +112,8 @@ exports.destroy = function(req, res) {
       return res.send(204);
     });
   });
+
+  console.log("delete configuration")
 };
 
 function handleError(res, err) {

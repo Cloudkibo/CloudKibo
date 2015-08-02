@@ -18,8 +18,12 @@ exports.pendingcontacts = function(req, res) {
 	contactslist.find({contactid : req.user._id, detailsshared : 'No'}).populate('userid').exec(function(err2, gotContactList){
 		if (err2) return next(err2);
 		if (!gotContactList) return res.json(401);
-		res.json(200, gotContactList);
+    console.log("pending contacts "+ gotContactList);
+    res.json(200, gotContactList);
+
 	})
+
+
 };
 
 exports.addbyusername = function(req, res) {
@@ -28,6 +32,7 @@ exports.addbyusername = function(req, res) {
 
 		User.findOne({username : req.body.searchusername}, function (err, gotUserSaved) {
 
+      console.log("Add contact by user")
 			if(gotUserSaved == null)
 				return res.send({status: 'success', msg: null});
 
@@ -46,7 +51,9 @@ exports.addbyusername = function(req, res) {
               if(err) return console.log(err);
 
               if(gotConfig.numberofpeopleincontactlist === gotFullCount){
+                console.log("contact list full");
                 res.send({status: 'danger', msg: 'Your contact list is full.'});
+
               }
               else{
                 var contact = new contactslist({
@@ -60,6 +67,7 @@ exports.addbyusername = function(req, res) {
                     res.send({status: 'success', msg: gotContactList});
                   })
                 })
+
               }
 
             });
@@ -68,6 +76,7 @@ exports.addbyusername = function(req, res) {
 
 
 				}
+        console.log("contact add by username");
 			})
 
 		})
@@ -77,7 +86,7 @@ exports.addbyusername = function(req, res) {
 exports.addbyemail = function(req, res) {
 	User.findById(req.user._id, function (err, gotUser) {
 		if (err) return console.log('Error 1'+ err);
-
+    console.log("contact add by email")
 		User.findOne({email : req.body.searchemail}, function (err, gotUserSaved) {
 
 			if(gotUserSaved == null)
@@ -88,7 +97,7 @@ exports.addbyemail = function(req, res) {
 				if(gotUser.username == gotUserSaved.username)
 					res.send({status: 'danger', msg: 'You can not add your self as a contact.'});
 				else if(gotCount > 0)
-					res.send({status: 'danger', msg: gotUserSaved.username +' is already added in your contact list with name '+ gotUserSaved.firstname +' '+ gotUserSaved.lastname});
+					res.send({status: 'danger', msg: gotUserSaved.username +' is already added in your contact list with name '+ gotUserSaved.firstname +' '+ gotUserSaved.lastname})
 				else{
 
           configuration.findOne({}, function (err, gotConfig) {
@@ -99,6 +108,7 @@ exports.addbyemail = function(req, res) {
 
               if(gotConfig.numberofpeopleincontactlist === gotFullCount){
                 res.send({status: 'danger', msg: 'Your contact list is full.'});
+                console.log("contact list full")
               }
               else{
                 var contact = new contactslist({
@@ -115,6 +125,7 @@ exports.addbyemail = function(req, res) {
 
                   })
                 })
+                console.log("contact add by email ")
               }
             })
           })
@@ -132,7 +143,7 @@ exports.addbyemail = function(req, res) {
 exports.approvefriendrequest = function(req, res) {
 	 User.findById(req.user._id, function (err, gotUser) {
 		if (err) return console.log('Error 1'+ err);
-
+     console.log("accepting contact request");
 		User.findOne({username : req.body.username}, function (err, gotUserSaved) {
 
 			if(gotUserSaved == null)
@@ -143,8 +154,9 @@ exports.approvefriendrequest = function(req, res) {
 				if(gotUser.username == gotUserSaved.username)
 					res.send({status: 'danger', msg: 'You can not add your self as a contact.'});
 				else if(gotCount > 0)
+
 					res.send({status: 'danger', msg: gotUserSaved.username +' is already added in your contact list with name '+ gotUserSaved.firstname +' '+ gotUserSaved.lastname});
-				else{
+        else{
 
           configuration.findOne({}, function (err, gotConfig) {
             if(err) return console.log(err);
@@ -153,7 +165,9 @@ exports.approvefriendrequest = function(req, res) {
               if(err) return console.log(err);
 
               if(gotConfig.numberofpeopleincontactlist === gotFullCount){
+                console.log("contact can not accept. List is full");
                 res.send({status: 'danger', msg: 'Your contact list is full.'});
+
               }
               else{
                 var contact = new contactslist({
@@ -178,6 +192,8 @@ exports.approvefriendrequest = function(req, res) {
                     })
                   })
                 })
+
+                console.log("accepted contact request")
               }
             })
           })
@@ -193,6 +209,7 @@ exports.approvefriendrequest = function(req, res) {
 };
 
 exports.rejectfriendrequest = function(req, res) {
+  console.log("Rejecting contact request")
 	 User.findById(req.user._id, function (err, gotUser) {
 		if (err) return console.log('Error 1'+ err);
 
@@ -205,19 +222,22 @@ exports.rejectfriendrequest = function(req, res) {
 			})
 
 		})
+     console.log("Rejected contact request")
 	})
 };
 
 
 exports.removefriend = function(req, res) {
+
+  console.log("Removing contact request")
 	 User.findById(req.user._id, function (err, gotUser) {
 		if (err) return console.log('Error 1'+ err);
 
 		User.findOne({username : req.body.contact.username}, function (err, gotUserSaved) {
-
-			contactslist.remove({userid : gotUserSaved._id, contactid : gotUser._id}, function(err6){ //dost jee list mei ma ahya
-
-				contactslist.remove({userid : gotUser._id, contactid : gotUserSaved._id}, function(err6){ //munji list mei dost aa
+			contactslist.remove({userid : gotUserSaved._id, contactid : gotUser._id}, function(err6){
+        console.log("Is in friend's list")
+				contactslist.remove({userid : gotUser._id, contactid : gotUserSaved._id}, function(err6){
+          console.log("Is in my list")
 
 					userchat.remove({$or: [ { to : gotUserSaved.username, from : gotUser.username },
 										{ to : gotUser.username, from : gotUserSaved.username } ]},
@@ -225,6 +245,8 @@ exports.removefriend = function(req, res) {
 											if(err1) return console.log(err1);
 
 											res.send({status: 'success', msg: 'Friend is removed'});
+
+                      console.log("Removed friend")
 
 										})
 

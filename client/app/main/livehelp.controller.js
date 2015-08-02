@@ -86,12 +86,15 @@ angular.module('cloudKiboApp')
 
     $scope.hasCallEnded = function () {
       return $scope.callEnded;
+
+      console.log("Check if Live help call ended");
     };
 
     $scope.connectTimeOut = function(){
       $scope.roomname = roomid;
       $scope.createOrJoinMeeting();
       $scope.connected = true;
+      console.log("Check if Live help call time out");
     };
 
     $timeout($scope.connectTimeOut, 500);
@@ -157,22 +160,24 @@ angular.module('cloudKiboApp')
 
     $scope.createOrJoinMeeting = function(){
       socket.emit('create or join livehelp', {room: roomid});
+      console.log("create or join livehelp call");
     };
 
     $scope.LeaveRoom = function(){
       console.log('Leave room', {room: roomid});
       $scope.callEnded = true;
       socket.emit('leave', {room: roomid});
+      console.log("Leaving room: Live help call ended");
     };
 
     socket.on('created', function (room){
-      console.log('Created room ' + room);
+      console.log('Created room for live help ' + room);
 
       isInitiator = true;
     });
 
     socket.on('full', function (room){
-      console.log('Room ' + room + ' is full');
+      console.log('Room for livehelp ' + room + ' is full');
     });
 
     socket.on('left', function (room){
@@ -193,17 +198,18 @@ angular.module('cloudKiboApp')
       /*$timeout(function () {
        location.reload();
        }, 400)*/
+      console.log("Left room: Live help call ended");
     });
 
     socket.on('join', function (room){
-      //console.log('Another peer made a request to join room ' + room);
+      console.log('Another peer made a request to join room ' + room);
       //console.log('This peer is the initiator of room ' + room + '!');
 
       isChannelReady = true;
     });
 
     socket.on('joined', function (room){
-      //console.log('This peer has joined room ' + room.room + ' '+ room.username +' '+ room.otherClients);
+      console.log('This peer has joined room ' + room.room + ' '+ room.username +' '+ room.otherClients);
       isChannelReady = true;
 
       $scope.startCalling();
@@ -220,7 +226,7 @@ angular.module('cloudKiboApp')
     function sendMessage(message){
       message = {msg:message};
       message.room = roomid;
-      //console.log('Client sending message: ', message);
+      console.log('Client sending message: ', message);
       socket.emit('messageformeeting', message);
     }
 
@@ -230,7 +236,7 @@ angular.module('cloudKiboApp')
     ///////////////////////////////////////////////////////////////////////////////////////
 
     socket.on('message', function (message) {
-      //console.log('Client received message: '+ JSON.stringify(message));
+      console.log('Client received message: '+ JSON.stringify(message));
 
       if (message.msg === 'got user media') {
         if (isInitiator && !isStarted) {
@@ -238,7 +244,7 @@ angular.module('cloudKiboApp')
         }
       }
       else if (message.type === 'offer') {
-        console.log(message)
+        console.log("msg is "+message)
         if(!isStarted){
           if (!isInitiator && !isStarted) {
             maybeStart();
@@ -250,6 +256,7 @@ angular.module('cloudKiboApp')
         else if(message.sharingAudio === 'open') {
 
           pc.setRemoteDescription(new RTCSessionDescription(message));
+          console.log("Audio share open ");
 
           $scope.audioTogglingFromOtherSide = true;
 
@@ -281,6 +288,7 @@ angular.module('cloudKiboApp')
 
             },
             function (error){console.log(error)}, sdpConstraints);
+          console.log("Audio share STOPPED ");
 
         }
         else if(message.sharingVideo === 'open') {
@@ -298,8 +306,9 @@ angular.module('cloudKiboApp')
               console.log('Sending answer to video share true')
 
             },
-            function (error){console.log(error)}, sdpConstraints);
 
+            function (error){console.log(error)}, sdpConstraints);
+          console.log("Video share open ");
         }
         else if(message.sharingVideo === 'close') {
 
@@ -328,6 +337,7 @@ angular.module('cloudKiboApp')
 
           $scope.meetingRemoteVideoWidth = '60%';
 
+          console.log("Screen share OPEN ");
           pc.createAnswer(function(sessionDescription){
 
               // Set Opus as the preferred codec in SDP if Opus is present.
@@ -341,7 +351,7 @@ angular.module('cloudKiboApp')
         }
         else if(message.sharingScreen === 'close') {
           pc.setRemoteDescription(new RTCSessionDescription(message));
-
+          console.log("Screen share Stopped ");
           $scope.peerSharedScreen = false;
           $scope.switchingScreenShare = true;
 
@@ -370,7 +380,7 @@ angular.module('cloudKiboApp')
     });
 
     function maybeStart() {
-      //console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
+      console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
       if (!isStarted && typeof localStream != 'undefined' && isChannelReady) {
 
         createPeerConnection();
@@ -433,7 +443,7 @@ angular.module('cloudKiboApp')
 
     function handleIceCandidate(event) {
       if (event.candidate) {
-        //console.log('I got candidate...');
+        console.log('I got candidate...');
         sendMessage({
           type: 'candidate',
           label: event.candidate.sdpMLineIndex,
@@ -441,7 +451,7 @@ angular.module('cloudKiboApp')
           candidate: event.candidate.candidate
         })
       } else {
-        //console.log('End of candidates.');
+        console.log('End of candidates.');
       }
     }
 
@@ -465,9 +475,9 @@ angular.module('cloudKiboApp')
       // Set Opus as the preferred codec in SDP if Opus is present.
       pc.setLocalDescription(sessionDescription);
 
-      //console.log('setLocalAndSendMessage sending message' , sessionDescription);
+      console.log('setLocalAndSendMessage sending message' , sessionDescription);
 
-      //console.log(''+ sessionDescription.FromUser +' sending Offer or Answer to ', toUserName)
+      console.log(''+ sessionDescription.FromUser +' sending Offer or Answer to ', toUserName)
       sendMessage(sessionDescription);
     }
 
@@ -482,6 +492,8 @@ angular.module('cloudKiboApp')
       else if(event.stream.getVideoTracks().length){
 
         if($scope.videoTogglingFromOtherSide && !$scope.switchingScreenShare){
+
+          console.log("Toggleing video");
 
           $scope.$apply(function(){
             remotevideo2.src = URL.createObjectURL(event.stream);
@@ -525,12 +537,14 @@ angular.module('cloudKiboApp')
         remotevideo1.src = null;
         $scope.switchingScreenShare = false;
         $scope.screenSharedByPeer = false;
+        console.log("Removed remote stream when screen shared but video");
       }
 
       if($scope.videoTogglingFromOtherSide && !$scope.switchingScreenShare){
         $scope.videoTogglingFromOtherSide = false;
         remotevideo2.src = null;
         $scope.peerSharedVideo = false;
+        console.log("Removed remote stream when Video shared but Screen");
       }
 
     }
@@ -563,6 +577,7 @@ angular.module('cloudKiboApp')
         $scope.localCameraOn = true;
 
         sendMessage({msg: 'got user media'});
+        console.log("got user media");
 
         if (isInitiator) {
           maybeStart();
@@ -582,13 +597,14 @@ angular.module('cloudKiboApp')
 
       sendMessage({msg: 'got user media'});
 
+      console.log("got user media video");
       if (isInitiator) {
         maybeStart();
       }
     }
 
     function handleUserMediaError(error){
-      //console.log(error);
+      console.log(error);
     }
 
     function analyseAudio(){
@@ -627,11 +643,13 @@ angular.module('cloudKiboApp')
             localPeerHideBox.style.cssText = 'border : 2px solid #000000;';
             if(typeof pc != 'undefined' && sendChannel.readyState === 'open'){
               sendChannel.send(':Speaking:peer:');
+              console.log("Peer is Speaking ");
             }
           }else{
             localPeerHideBox.style.cssText = 'border : 0px solid #000000;';
             if(typeof pc != 'undefined' && sendChannel.readyState === 'open'){
               sendChannel.send(':Silent:peer:');
+              console.log("Peer is NOT Speaking ");
             }
           }
 
@@ -652,7 +670,7 @@ angular.module('cloudKiboApp')
         pc.removeStream(localVideoStream);
 
         pc.createOffer(function(sessionDescription){
-          //console.log('INSIDE CONDITION SCREEN SHARE')
+          console.log('INSIDE CONDITION SCREEN SHARE')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'close'};
           console.log('CLOSING THE VIDEO');
@@ -666,10 +684,7 @@ angular.module('cloudKiboApp')
         }, handleCreateOfferError);
 
         //localvideo.src = null;
-
         $scope.localVideoCaptured = false;
-
-
 
       }
       else {
@@ -685,7 +700,7 @@ angular.module('cloudKiboApp')
 
             var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'open'};
             console.log('SHARING THE VIDEO');
-            console.log(payload)
+            console.log("payload "+payload)
 
             // Set Opus as the preferred codec in SDP if Opus is present.
             pc.setLocalDescription(sessionDescription);
@@ -712,7 +727,7 @@ angular.module('cloudKiboApp')
 
         pc.createOffer(function(sessionDescription){
           //console.log('INSIDE CONDITION SCREEN SHARE')
-
+          console.log("toggle audio ");
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingAudio : 'close'};
 
           // Set Opus as the preferred codec in SDP if Opus is present.
@@ -811,6 +826,7 @@ angular.module('cloudKiboApp')
           // "cancel" button is clicked
           if (data == 'PermissionDeniedError') {
             DetectRTC.screen.chromeMediaSource = 'PermissionDeniedError';
+            console.log("cancel extension button clicked ");
             if (screenCallback) return screenCallback('PermissionDeniedError');
             else throw new Error('PermissionDeniedError');
           }
@@ -822,6 +838,7 @@ angular.module('cloudKiboApp')
 
           // extension shared temp sourceId
           if (data.sourceId) {
+            console.log("extension shared temp sourceId ");
             DetectRTC.screen.sourceId = data.sourceId;
             if (screenCallback) screenCallback(DetectRTC.screen.sourceId);
           }
@@ -833,6 +850,7 @@ angular.module('cloudKiboApp')
         DetectRTC.screen.isChromeExtensionAvailable(function(status){
           $scope.$apply(function(){
             $scope.extensionAvailable = status;
+            console.log("is extension installed "+ $scope.extensionAvailable )
           })
 
         });
@@ -845,7 +863,7 @@ angular.module('cloudKiboApp')
         return;
       }
 
-      //console.log('THIS IS THE EVENT')
+      console.log('THIS IS THE EVENT'+ event)
       //console.log(event)
 
       DetectRTC.screen.onMessageCallback(event.data);
@@ -874,6 +892,7 @@ angular.module('cloudKiboApp')
           // if exception occurred or access denied
           if (error && error == 'PermissionDeniedError') {
             alert('PermissionDeniedError: User denied to share content of his screen.');
+            console.log("PermissionDeniedError: User denied to share content of his screen");
           }
 
           captureUserMedia(onStreamApproved);
@@ -886,6 +905,7 @@ angular.module('cloudKiboApp')
       // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
       if (DetectRTC.screen.chromeMediaSource == 'desktop') {
         screen_constraints.mandatory.chromeMediaSourceId = DetectRTC.screen.sourceId;
+        console.log("get source id and set chrome media source id")
       }
 
       // it is the session that we want to be captured
@@ -910,6 +930,8 @@ angular.module('cloudKiboApp')
     $scope.showScreen = function(){
 
       if($scope.showScreenText == 'Share Screen'){
+
+        consol.log("Share screen selected");
         //getUserMedia(screen_constraints, handleUserMediaShowScreen, handleUserMediaErrorShowScreen)
 
 
@@ -941,11 +963,12 @@ angular.module('cloudKiboApp')
           localvideo.src = URL.createObjectURL(localVideoStream);
 
           $scope.closingScreenShare = true;
+          consol.log("Sharing screen set TRUE");
 
           if(typeof pc != 'undefined'){
             pc.removeStream(localStreamScreen);
             pc.createOffer(function(sessionDescription){
-              //console.log('INSIDE CONDITION SCREEN SHARE')
+              console.log('INSIDE CONDITION SCREEN SHARE')
               var payload;
               if($scope.closingScreenShare == false){
                 payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'open'};
