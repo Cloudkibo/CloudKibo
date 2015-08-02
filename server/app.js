@@ -20,7 +20,7 @@ var fs = require('fs');
 
 
 
-var dir = __dirname + "/../server/log";
+var dir = __dirname + "/../log";
 var file = dir + '/client';
 
 require('fs').writeFile(file, 'utf8\\n', function (err) {
