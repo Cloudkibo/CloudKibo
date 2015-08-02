@@ -20,8 +20,8 @@ var fs = require('fs');
 
 
 
-require('./components/logger/logger').clientLog('Testing Client Log');
-//require('./components/logger/logger').serverLog('Testing Server Log');
+require('./components/logger/logger').clientLog('====Server Started====');
+require('./components/logger/logger').serverLog('====Server Started====');
 
 
 
