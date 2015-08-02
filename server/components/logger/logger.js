@@ -13,7 +13,7 @@ exports.clientLog = function(data) {
       return;
     }
 
-    configFile += ''+ Date.now() +': '+ data +'\n';
+    configFile += ''+ Date.now().toISOString() +': '+ data +'\n';
 
     fs.writeFile(clientFile, configFile, function (err) {
       if (err) {
@@ -35,7 +35,7 @@ exports.serverLog = function(data) {
       return;
     }
 
-    configFile += ''+ Date.now() +': '+ data +'\n';
+    configFile += ''+ Date.now().toISOString() +': '+ data +'\n';
 
     fs.writeFile(serverFile, configFile, function (err) {
       if (err) {
