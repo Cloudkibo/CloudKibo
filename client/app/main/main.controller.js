@@ -1196,7 +1196,8 @@ angular.module('cloudKiboApp')
 
         $scope.fetchChatNow = function () {
             if (typeof $scope.otherUser != 'undefined') {
-                $http.post(RestApi.userchat.userChats, {user1: $scope.user.username, user2: $scope.otherUser.username}).success(
+                $http.post(RestApi.userchat.userChats, {user1: $scope.user.username, user2: $scope.otherUser.username})
+                  .success(
                     function (data) {
                         if (data.status == 'success') {
 

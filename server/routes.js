@@ -94,6 +94,9 @@ module.exports = function(app) {
   app.route('/meeting/*')
 	.get(viewroutes.meetingRoute);
 
+  app.route('/conference/*')
+    .get(viewroutes.conferenceRoute);
+
   app.route('/livehelp/*')
 	.get(viewroutes.liveHelpRoute);
 

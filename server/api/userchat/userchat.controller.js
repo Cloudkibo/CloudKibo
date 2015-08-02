@@ -37,7 +37,7 @@ exports.removechathistory = function(req, res) {
 										function(err1){
 											if(err1) return console.log(err1);
 
-											res.send({status: 'success', msg: 'Friend is removed'});
+											res.send({status: 'success', msg: 'Chat is removed'});
 
 										})
 		})

@@ -146,6 +146,8 @@ angular.module('kiboRtc.services')
           pc[pcInd].onaddstream = handleRemoteStreamAdded;
           pc[pcInd].onremovestream = handleRemoteStreamRemoved;
 
+          console.log("CREATED PC OBJECT "+ pcInd);
+
           //if (isInitiator) {
           try {
             // Reliable Data Channels not yet supported in Chrome
@@ -157,7 +159,7 @@ angular.module('kiboRtc.services')
               sendChannel[pcInd] = pc[pcInd].createDataChannel("sendDataChannel", {reliable: false});
             }
             sendChannel[pcInd].onmessage = handleMessage;
-            trace('Created send data channel on index '+ pcInd);
+            trace('CREATED send data channel on index '+ pcInd);
           } catch (e) {
             alert('Failed to create data channel. ' +
             'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
@@ -167,16 +169,6 @@ angular.module('kiboRtc.services')
           sendChannel[pcInd].onclose = handleSendChannelStateChange;
           // } else {
           pc[pcInd].ondatachannel = gotReceiveChannel;
-
-          if(audioShared) {
-            pc[pcInd].addStream(localAudioStream);
-            console.log('added audio stream to pc', localAudioStream);
-          }
-          if(videoShared) {
-            pc[pcInd].addStream(localVideoStream);
-            console.log('added video stream to pc ', localVideoStream);
-          }
-
           // }
         } catch (e) {
           console.log('Failed to create PeerConnection, exception: ' + e.message);
@@ -192,6 +184,14 @@ angular.module('kiboRtc.services')
        *
        */
       createAndSendOffer: function (pcInd, toUser) {
+        if(audioShared) {
+          pc[pcInd].addStream(localAudioStream);
+          //console.log('added audio stream to pc', localAudioStream);
+        }
+        if(videoShared) {
+          pc[pcInd].addStream(localVideoStream);
+          //console.log('added video stream to pc ', localVideoStream);
+        }
         pcIndexTemp = pcInd;
         toUserName = toUser;
         pc[pcInd].createOffer(setLocalAndSendMessage, handleCreateOfferError);
@@ -206,6 +206,14 @@ angular.module('kiboRtc.services')
        *
        */
       createAndSendAnswer: function (pcInd, toUser) {
+        if(audioShared) {
+          pc[pcInd].addStream(localAudioStream);
+          //console.log('added audio stream to pc', localAudioStream);
+        }
+        if(videoShared) {
+          pc[pcInd].addStream(localVideoStream);
+          //console.log('added video stream to pc ', localVideoStream);
+        }
         pcIndexTemp = pcInd;
         toUserName = toUser;
         pc[pcInd].createAnswer(setLocalAndSendMessage, function (error) {
@@ -437,7 +445,9 @@ angular.module('kiboRtc.services')
           //console.log('INSIDE CONDITION SCREEN SHARE')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'open'};
+
           console.log('SHARING THE VIDEO');
+
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
           Signalling.sendMessageForMeeting(payload, otherPeer);
@@ -483,7 +493,7 @@ angular.module('kiboRtc.services')
           //console.log('INSIDE CONDITION SCREEN SHARE')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingAudio : 'open'};
-          console.log('SHARING THE VIDEO');
+
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
           Signalling.sendMessageForMeeting(payload, otherPeer);
@@ -504,6 +514,8 @@ angular.module('kiboRtc.services')
           //console.log('INSIDE CONDITION SCREEN SHARE')
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingAudio : 'close'};
           console.log('Hiding THE Video');
+          console.log('Hiding THE Audio');
+
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
 
@@ -604,8 +616,11 @@ angular.module('kiboRtc.services')
       sendDataChannelMessage : function (message, pcInd) {
         if (typeof pc[pcInd] != 'undefined' && pc[pcInd] != null && typeof sendChannel[pcInd] != 'undefined' && sendChannel[pcInd] != null) {
 
-          if(sendChannel[pcInd].readyState === 'open')
+          if(sendChannel[pcInd].readyState === 'open') {
             sendChannel[pcInd].send(message);
+
+          }
+
         }
       }
 
@@ -894,8 +909,8 @@ angular.module('kiboRtc.services')
      *
      * @param event holds the channel
      */
-    function gotReceiveChannel(event) {
-      console.log('Receive Channel Callback');
+    function  gotReceiveChannel(event) {
+      console.log('Receive Channel Callback '+ pcIndexTemp);
       sendChannel[pcIndexTemp] = event.channel;
       sendChannel[pcIndexTemp].onmessage = handleMessage;
       sendChannel[pcIndexTemp].onopen = handleReceiveChannelStateChange;

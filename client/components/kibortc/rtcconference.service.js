@@ -116,82 +116,94 @@ angular.module('kiboRtc.services')
 
       else if (message.payload === 'got screen' && message.ToUser == username) {
 
-        switchPCIndex++;
-        if (switchPCIndex <= pcIndex) {
-          RTCConferenceCore.shareScreenToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
+        if(RTCConferenceCore.getSwitchingScreenShare()){
+          switchPCIndex++;
+          if (switchPCIndex <= pcIndex) {
+            RTCConferenceCore.shareScreenToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
+          }
+          else {
+            RTCConferenceCore.setSwitchingScreenShare(false);
+          }
         }
-        else {
-          RTCConferenceCore.setSwitchingScreenShare(false);
-        }
+
 
       }
 
       else if (message.payload === 'screen close' && message.ToUser == username) {
 
-        switchPCIndex++;
-        if (switchPCIndex <= pcIndex) {
-          RTCConferenceCore.hideScreenToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
+        if(RTCConferenceCore.getSwitchingScreenShare()){
+          switchPCIndex++;
+          if (switchPCIndex <= pcIndex) {
+            RTCConferenceCore.hideScreenToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
+          }
+          else {
+            RTCConferenceCore.setSwitchingScreenShare(false);
+          }
         }
-        else {
-          RTCConferenceCore.setSwitchingScreenShare(false);
-        }
+
 
       }
 
       else if (message.payload === 'got video' && message.ToUser == username) {
 
-
-
-        switchPCIndex++;
-        if (switchPCIndex <= pcIndex) {
-          RTCConferenceCore.shareVideo(switchPCIndex, username, otherPeers[switchPCIndex]);
+        if(RTCConferenceCore.getSwitchingVideo()){
+          switchPCIndex++;
+          if (switchPCIndex <= pcIndex) {
+            RTCConferenceCore.shareVideo(switchPCIndex, username, otherPeers[switchPCIndex]);
+          }
+          else {
+            RTCConferenceCore.setSwitchingVideo(false);
+          }
         }
-        else {
-          RTCConferenceCore.setSwitchingScreenShare(false);
-        }
+
 
       }
 
       else if (message.payload === 'video close' && message.ToUser == username) {
 
-        switchPCIndex++;
-        if (switchPCIndex <= pcIndex) {
-          RTCConferenceCore.hideVideoToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
+        if(RTCConferenceCore.getSwitchingVideo()){
+          switchPCIndex++;
+          if (switchPCIndex <= pcIndex) {
+            RTCConferenceCore.hideVideoToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
+          }
+          else {
+            RTCConferenceCore.setSwitchingVideo(false);
+          }
         }
-        else {
-          RTCConferenceCore.setSwitchingScreenShare(false);
-        }
+
 
       }
 
       else if (message.payload === 'got audio' && message.ToUser == username) {
 
-
-
-        switchPCIndex++;
-        if (switchPCIndex <= pcIndex) {
-          RTCConferenceCore.shareAudio(switchPCIndex, username, otherPeers[switchPCIndex]);
-        }
-        else {
-          RTCConferenceCore.setSwitchingScreenShare(false);
+        if(RTCConferenceCore.getSwitchingAudio()){
+          switchPCIndex++;
+          if (switchPCIndex <= pcIndex) {
+            RTCConferenceCore.shareAudio(switchPCIndex, username, otherPeers[switchPCIndex]);
+          }
+          else {
+            RTCConferenceCore.setSwitchingAudio(false);
+          }
         }
 
       }
 
       else if (message.payload === 'audio close' && message.ToUser == username) {
 
-        switchPCIndex++;
-        if (switchPCIndex <= pcIndex) {
-          RTCConferenceCore.hideAudioToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
-        }
-        else {
-          RTCConferenceCore.setSwitchingScreenShare(false);
+        if(RTCConferenceCore.getSwitchingAudio()){
+          switchPCIndex++;
+          if (switchPCIndex <= pcIndex) {
+            RTCConferenceCore.hideAudioToNext(switchPCIndex, username, otherPeers[switchPCIndex]);
+          }
+          else {
+            RTCConferenceCore.setSwitchingAudio(false);
+          }
         }
 
       }
 
       else if (message.payload.type === 'offer') {
-        console.log(message);
+        //console.log(message);
         toUserName = message.FromUser;
         if (!iJoinLate && !isStarted) {
           if (!isInitiator && !isStarted) {
@@ -204,7 +216,9 @@ angular.module('kiboRtc.services')
           toUserName = message.FromUser;
           if (message.ToUser == username) {
 
-            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+            var payload = {sdp : message.payload.sdp, type : message.payload.type};
+
+            RTCConferenceCore.setRemoteDescription(payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the open condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
@@ -219,7 +233,9 @@ angular.module('kiboRtc.services')
           toUserName = message.FromUser;
           if (message.ToUser == username) {
 
-            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+            var payload = {sdp : message.payload.sdp, type : message.payload.type};
+
+            RTCConferenceCore.setRemoteDescription(payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the close condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
@@ -234,7 +250,9 @@ angular.module('kiboRtc.services')
           toUserName = message.FromUser;
           if (message.ToUser == username) {
 
-            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+            var payload = {sdp : message.payload.sdp, type : message.payload.type};
+
+            RTCConferenceCore.setRemoteDescription(payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the open condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
@@ -249,7 +267,9 @@ angular.module('kiboRtc.services')
           toUserName = message.FromUser;
           if (message.ToUser == username) {
 
-            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+            var payload = {sdp : message.payload.sdp, type : message.payload.type};
+
+            RTCConferenceCore.setRemoteDescription(payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the close condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
@@ -264,7 +284,9 @@ angular.module('kiboRtc.services')
           toUserName = message.FromUser;
           if (message.ToUser == username) {
 
-            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+            var payload = {sdp : message.payload.sdp, type : message.payload.type};
+
+            RTCConferenceCore.setRemoteDescription(payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the open condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
@@ -279,7 +301,9 @@ angular.module('kiboRtc.services')
           toUserName = message.FromUser;
           if (message.ToUser == username) {
 
-            RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
+            var payload = {sdp : message.payload.sdp, type : message.payload.type};
+
+            RTCConferenceCore.setRemoteDescription(payload, otherPeers.indexOf(message.FromUser));
 
             console.log('I am in the close condition and offerer number is ', otherPeers.indexOf(message.FromUser));
 
@@ -293,6 +317,7 @@ angular.module('kiboRtc.services')
         else if (!iJoinLate && isStarted) {
 
           if (message.ToUser == username) {
+            console.log('received OFFER from late joiner '+ toUserName)
             RTCConferenceCore.createPeerConnection(pcIndex);
             RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
             RTCConferenceCore.createAndSendAnswer(pcIndex, toUserName);
@@ -309,16 +334,21 @@ angular.module('kiboRtc.services')
       }
 
       else if (message.payload.type === 'answer' && isStarted) {
+        console.log('I '+ message.ToUser +' RECEIVED ANSWER FROM '+ message.FromUser)
+
         toUserName = message.FromUser;
         if (message.ToUser == username) {
-          //console.log('I RECEIVED ANSWER FROM '+ message.FromUser)
 
           RTCConferenceCore.setToUserName(toUserName);
 
-          if(RTCConferenceCore.getSwitchingScreenShare() || RTCConferenceCore.getSwitchingVideo() || RTCConferenceCore.getSwitchingAudio())
+          if(RTCConferenceCore.getSwitchingScreenShare() || RTCConferenceCore.getSwitchingVideo() || RTCConferenceCore.getSwitchingAudio()) {
+            console.log('audio, video or screen switch happenning for ANSWER for '+ message.FromUser)
             RTCConferenceCore.setRemoteDescription(message.payload, otherPeers.indexOf(message.FromUser));
-          else
+          }
+          else {
+            console.log('simple ANSWER handling happening for '+ message.FromUser)
             RTCConferenceCore.setRemoteDescription(message.payload, pcIndex);
+          }
 
 
         }
@@ -329,12 +359,14 @@ angular.module('kiboRtc.services')
         if (message.ToUser == username) {
           RTCConferenceCore.setToUserName(toUserName);
 
-          console.log('value of switching screen share is '+ RTCConferenceCore.getSwitchingScreenShare());
-
-          if(RTCConferenceCore.getSwitchingScreenShare() || RTCConferenceCore.getSwitchingVideo() || RTCConferenceCore.getSwitchingAudio())
+          if(RTCConferenceCore.getSwitchingScreenShare() || RTCConferenceCore.getSwitchingVideo() || RTCConferenceCore.getSwitchingAudio()) {
+            console.log('audio, video or screen switch happenning for CANDIDATE for '+ message.FromUser)
             RTCConferenceCore.addIceCandidate(message.payload, otherPeers.indexOf(message.FromUser));
-          else
+          }
+          else {
+            console.log('simple CANDIDATE handling happenning for '+ message.FromUser)
             RTCConferenceCore.addIceCandidate(message.payload, pcIndex);
+          }
         }
       }
 
@@ -425,6 +457,8 @@ angular.module('kiboRtc.services')
             }, function (stream) {
 
               RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
+
+              RTCConferenceCore.setSwitchingScreenShare(true);
 
               localScreenShared = true;
 
@@ -525,7 +559,7 @@ angular.module('kiboRtc.services')
         }
         else if (action === 'off') {
 
-          console.log('hin mei ayo.. for hiding video, this is conf service ')
+//          console.log('hin mei ayo.. for hiding video, this is conf service ')
 
           switchPCIndex = 0;
           RTCConferenceCore.hideAudio(switchPCIndex, username, otherPeers[switchPCIndex]);

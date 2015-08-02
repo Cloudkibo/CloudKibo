@@ -595,7 +595,7 @@ angular.module('cloudKiboApp')
 
       analyser.fftSize = 256;
       var bufferLength = analyser.frequencyBinCount;
-      console.log(bufferLength);
+      //console.log(bufferLength);
       var dataArray = new Uint8Array(bufferLength);
 
       var tempSpeakingValue = false;

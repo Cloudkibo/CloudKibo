@@ -69,7 +69,7 @@ div
               br
             .meetingSidePane(ng-show='showChatBox()')
               div(ng-show='localCameraCaptured()', class='animate-show')
-                div(class='meetingChatBox', scroll-if)
+                div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages')
                   .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
                     | {{userMessage}}
                 form

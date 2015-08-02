@@ -5,75 +5,44 @@
 'use strict';
 
 var config = require('./environment');
-var _ = require('lodash-node');  // from phonertc
-
-var users = [];   // from phonertc
 
 
 // When the user disconnects.. perform this
 function onDisconnect(socketio,socket) {
 
-	///////////////////////////////////////////////////////////
-	// PHONERTC EXAMPLE SIGNALLING
-	///////////////////////////////////////////////////////////
+  var clients = findClientsSocket('globalchatroom');//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+  var socketid = '';
+  var user = require('./../api/user/user.model.js');
 
-	try {
-		var index = _.findIndex(users, {socket: socket.id});
-		if (index !== -1) {
-			socket.broadcast.emit('offline', users[index].name);
-			console.log(users[index].name + ' disconnected');
+  user.findOne({username : socket.username}, function(err, gotuser){
 
-			users.splice(index, 1);
-		}
-		return ;
-	}catch(e){
+    if(gotuser != null) {
 
-	}
+      var contactslist = require('./../api/contactslist/contactslist.model.js');
 
+      contactslist.find({userid : gotuser._id}).populate('contactid').exec(function(err3, gotContactList){
+        console.log(gotContactList);
+        if(gotContactList != null){
 
-	var socketid = '';
-
-	socket.get('nickname', function(err, nickname) {
-
-    var clients = findClientsSocket('globalchatroom');//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
-		var socketid = '';
-		var user = require('./../api/user/user.model.js');
-
-		if(nickname != null){
-
-				user.findOne({username : nickname}, function(err, gotuser){
-
-					if(gotuser != null){
-
-						var contactslist = require('./../api/contactslist/contactslist.model.js');
-
-						contactslist.find({userid : gotuser._id}).populate('contactid').exec(function(err3, gotContactList){
-						console.log(gotContactList);
-							if(gotContactList != null){
-
-                for(var i in clients){
-                  for(var j in gotContactList){
-                    if(gotContactList[j].contactid != null){
-                      if(clients[i].username == gotContactList[j].contactid.username){
-                        socketid = clients[i].id;
-                        socketio.to(socketid).emit('offline', gotuser);
-                      }
-                    }
-                  }
+          for(var i in clients){
+            for(var j in gotContactList){
+              if(gotContactList[j].contactid != null){
+                if(clients[i].username == gotContactList[j].contactid.username){
+                  socketid = clients[i].id;
+                  socketio.to(socketid).emit('offline', gotuser);
                 }
+              }
+            }
+          }
 
-							}
+        }
 
-						})
+      })
 
-					}
+    }
 
+  });
 
-			});
-
-		}
-
-	});
 
   function findClientsSocket(roomId, namespace) {
     var res = []
@@ -582,7 +551,7 @@ function onConnect(socketio, socket) {
 				room.otherClients = clientsIDs;
         socketio.in(room.room).emit('join', room);
 
-			} else { // max three clients
+			} else { // max five clients
 				socket.emit('full', room.room);
 			}
 
@@ -615,48 +584,6 @@ function onConnect(socketio, socket) {
 		});
 
 
-
-
-	////////////////////////////////////////////////////////////////////////////////////////
-	// PHONERTC SERVER SIGNALLING FOR TESTING
-	////////////////////////////////////////////////////////////////////////////////////////
-
-	socket.on('login', function (name) {
-		// if this socket is already connected,
-		// send a failed login message
-		if (_.findIndex(users, { socket: socket.id }) !== -1) {
-			socket.emit('login_error', 'You are already connected.');
-		}
-
-		// if this name is already registered,
-		// send a failed login message
-		if (_.findIndex(users, { name: name }) !== -1) {
-			socket.emit('login_error', 'This name already exists.');
-			return;
-		}
-
-		users.push({
-			name: name,
-			socket: socket.id
-		});
-
-		socket.emit('login_successful', _.pluck(users, 'name'));
-		socket.broadcast.emit('online', name);
-
-		console.log(name + ' logged in');
-	});
-
-	socket.on('sendMessage', function (name, message) {
-		var currentUser = _.find(users, { socket: socket.id });
-		if (!currentUser) { return; }
-
-		var contact = _.find(users, { name: name });
-		if (!contact) { return; }
-
-		socketio.sockets.socket(contact.socket)
-			.emit('messageReceived', currentUser.name, message);
-	});
-
   function findClientsSocket(roomId, namespace) {
     var res = []
       , ns = socketio.of(namespace ||"/");    // the default namespace is "/"
@@ -678,7 +605,7 @@ function onConnect(socketio, socket) {
   }
 
 
-	/* Socket.io 0.9.x
+	/* Socket.io 0.9.x (don't use them, they are compatible with old version)
 	 // send to current request socket client
 	 socket.emit('message', "this is a test");
 
@@ -707,7 +634,8 @@ function onConnect(socketio, socket) {
 
 
 
-
+var rooms = {};
+var userIds = {};
 
 
 module.exports = function (socketio) {
@@ -736,11 +664,82 @@ module.exports = function (socketio) {
     // Call onDisconnect.
     socket.on('disconnect', function () {
       onDisconnect(socketio, socket);
+      conferenceDisconnect(socketio, socket);
       console.info('[%s] DISCONNECTED', socket.address);
     });
 
     // Call onConnect.
     onConnect(socketio, socket);
     console.info('[%s] CONNECTED', socket.address);
+
+    /**
+     *
+     * New Conference Code
+     *
+     */
+
+    var currentRoom, id;
+
+    socket.on('init', function (data, fn) {
+      currentRoom = (data || {}).room || uuid.v4();
+      var room = rooms[currentRoom];
+      console.log(room)
+      console.log(data);
+      console.log(currentRoom);
+      if (!room) {
+        socket.username = data.username;
+        rooms[currentRoom] = [socket];
+        id = userIds[currentRoom] = 0;
+        fn(currentRoom, id);
+        console.log('Room created, with #', currentRoom);
+      } else {
+        if (!room) {
+          return;
+        }
+        userIds[currentRoom] += 1;
+        id = userIds[currentRoom];
+        fn(currentRoom, id);
+        room.forEach(function (s) {
+          s.emit('peer.connected', { id: id, username: data.username });
+        });
+        socket.username = data.username;
+        room[id] = socket;
+        console.log('Peer connected to room', currentRoom, 'with #', id);
+      }
+    });
+
+    socket.on('msg', function (data) {
+      var to = parseInt(data.to, 10);
+      if (rooms[currentRoom] && rooms[currentRoom][to]) {
+        console.log('Redirecting message to', to, 'by', data.by);
+        rooms[currentRoom][to].emit('msg', data);
+      } else {
+        console.warn('Invalid user');
+      }
+    });
+
+    function conferenceDisconnect(socketio, socket){
+      if (!currentRoom || !rooms[currentRoom]) {
+        return;
+      }
+      delete rooms[currentRoom][rooms[currentRoom].indexOf(socket)];
+      rooms[currentRoom].forEach(function (socket) {
+        if (socket) {
+          socket.emit('peer.disconnected', { id: id });
+        }
+      });
+      userIds[currentRoom] -= 1;
+      if(userIds[currentRoom] < 0){
+        delete userIds[currentRoom];
+        delete rooms[currentRoom];
+      }
+    }
+
+    /**
+     *
+     * End New Conference Code
+     *
+     */
+
   });
 };

@@ -12,6 +12,7 @@
     "angular-animate": "1.2.6",
     "angular-touch": "1.2.6",
     "angular-bootstrap": "0.10.0",
+    "eventEmitter": "~4.2.11",
     "angular-socket-io": "0.6.1"
   },
   "devDependencies": {
