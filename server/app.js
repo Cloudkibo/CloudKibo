@@ -23,13 +23,29 @@ var fs = require('fs');
 var dir = __dirname + "/../log";
 var file = dir + '/client';
 
-require('fs').writeFile(file, 'utf8\\n', function (err) {
+
+require('fs').readFile(file, 'utf8', function (err, configFile) {
   if (err) {
     console.log('Error: ' + err);
     return;
   }
 
+  console.log(configFile);
+
+  configFile += 'sojharo\\n';
+
+  require('fs').writeFile(file, configFile, function (err) {
+    if (err) {
+      console.log('Error: ' + err);
+      return;
+    }
+
+
+  });
+
 });
+
+
 
 
 
