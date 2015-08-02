@@ -21,7 +21,7 @@ exports.clientLog = function(data) {
         return;
       }
 
-      fs.close(clientFile, function(){
+      fs.close(configFile, function(){
         console.log('file is updated');
       });
 
@@ -46,7 +46,7 @@ exports.serverLog = function(data) {
         return;
       }
 
-      fs.close(serverFile, function(){
+      fs.close(configFile, function(){
         console.log('file is updated');
       });
 
