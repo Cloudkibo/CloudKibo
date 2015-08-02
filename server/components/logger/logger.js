@@ -13,7 +13,9 @@ exports.clientLog = function(data) {
       return;
     }
 
-    configFile += ''+ Date.now().toISOString() +': '+ data +'\n';
+    var dateString = ''+ today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate() + '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
+
+    configFile += ''+ dateString +' : '+ data +'\n';
 
     fs.writeFile(clientFile, configFile, function (err) {
       if (err) {
@@ -35,7 +37,9 @@ exports.serverLog = function(data) {
       return;
     }
 
-    configFile += ''+ Date.now().toISOString() +': '+ data +'\n';
+    var dateString = ''+ today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate() + '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
+
+    configFile += ''+ dateString +' : '+ data +'\n';
 
     fs.writeFile(serverFile, configFile, function (err) {
       if (err) {
