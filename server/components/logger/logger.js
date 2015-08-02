@@ -1,7 +1,7 @@
 var fs = require('fs');
 
 
-var dir = __dirname + "/../log";
+var dir = __dirname + "/../../../log";
 var clientFile = dir + '/client';
 var serverFile = dir + '/server';
 
