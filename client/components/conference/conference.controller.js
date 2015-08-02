@@ -3,15 +3,9 @@
  */
 'use strict';
 
-/**
- * @ngdoc function
- * @name publicApp.controller:RoomCtrl
- * @description
- * # RoomCtrl
- * Controller of the publicApp
- */
+
 angular.module('cloudKiboApp')
-  .controller('ConferenceController', function ($sce, VideoStream, $location, $routeParams, $scope, Room, $timeout) {
+  .controller('ConferenceController', function ($sce, VideoStream, $location, $routeParams, $scope, Room, $timeout, logger) {
 
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
@@ -38,6 +32,7 @@ angular.module('cloudKiboApp')
     var stream;
 
     $scope.connect = function(){
+      logger.log($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
       VideoStream.get()
         .then(function (s) {
           stream = s;

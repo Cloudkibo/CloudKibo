@@ -1,12 +1,5 @@
 'use strict';
 
-/**
- * @ngdoc service
- * @name publicApp.VideoStream
- * @description
- * # VideoStream
- * Factory in the publicApp.
- */
 angular.module('cloudKiboApp')
   .factory('VideoStream', function ($q) {
     var stream;

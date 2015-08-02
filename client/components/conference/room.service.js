@@ -1,13 +1,7 @@
 /* global RTCIceCandidate, RTCSessionDescription, RTCPeerConnection, EventEmitter */
 'use strict';
 
-/**
- * @ngdoc service
- * @name publicApp.Room
- * @description
- * # Room
- * Factory in the publicApp.
- */
+
 angular.module('cloudKiboApp')
   .factory('Room', function ($rootScope, $q, socket) {
 

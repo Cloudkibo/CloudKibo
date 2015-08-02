@@ -18,10 +18,10 @@ var config = require('./config/environment');
 
 var fs = require('fs');
 
+var logger = require('./components/logger/logger');
 
-
-require('./components/logger/logger').clientLog('====Server Started====');
-require('./components/logger/logger').serverLog('====Server Started====');
+logger.clientLog('====Server Started====');
+logger.serverLog('====Server Started====');
 
 
 
