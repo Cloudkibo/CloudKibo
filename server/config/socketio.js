@@ -5,6 +5,7 @@
 'use strict';
 
 var config = require('./environment');
+var logger = require('../components/logger/logger');
 
 
 // When the user disconnects.. perform this
@@ -582,6 +583,10 @@ function onConnect(socketio, socket) {
 			//console.log(room)
 
 		});
+
+  socket.on('logClient', function(data){
+    logger.clientLog(data);
+  });
 
 
   function findClientsSocket(roomId, namespace) {

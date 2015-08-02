@@ -4,6 +4,7 @@
 var User = require('./user.model');
 var passport = require('passport');
 var config = require('../../config/environment');
+var logger = require('../../components/logger/logger');
 var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var verificationtoken = require('../tokens/verificationtoken.model');
@@ -23,6 +24,7 @@ var validationError = function(res, err) {
 exports.index = function(req, res) {
   User.find({}, '-salt -hashedPassword', function (err, users) {
     if(err) return res.send(500, err);
+    logger.serverLog('Users data sent to client');
     res.json(200, users);
   });
 };
