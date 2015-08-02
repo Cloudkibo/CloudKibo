@@ -794,7 +794,6 @@ angular.module('cloudKiboApp')
 
         $timeout($scope.connectTimeOut, 1000);
 
-
         ////////////////////////////////////////////////////////////////////////////////////////
         // Signaling Logic                                                                    //
         ///////////////////////////////////////////////////////////////////////////////////////
@@ -1223,7 +1222,6 @@ angular.module('cloudKiboApp')
             }
         };
 
-
         $scope.sendIM = function () {
 
             if ($scope.im.msg != null) {
@@ -1264,7 +1262,6 @@ angular.module('cloudKiboApp')
                 }
               }
             }
-
         });
 
         socket.on('statusUpdate', function (user) {

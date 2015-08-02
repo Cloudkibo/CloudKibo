@@ -231,7 +231,7 @@ angular.module('kiboRtc.services')
        * candidates.
        *
        * @param message It is the remote candidate sent to the local peer
-       */
+       **/
       addIceCandidate: function (message, pcInd) {
         var candidate = new RTCIceCandidate({
           sdpMLineIndex: message.label,
@@ -258,9 +258,7 @@ angular.module('kiboRtc.services')
           pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
 
           localVideo.src = null;
-
           videoShared = false;
-
           $rootScope.$broadcast('localVideoRemoved');
 
           cb(null);
@@ -273,15 +271,11 @@ angular.module('kiboRtc.services')
             pc.addStream(localVideoStream);
             Signalling.sendMessage('sharing video');
             pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
-
             localVideo.src = URL.createObjectURL(localVideoStream);
-
             videoShared = true;
-
             $rootScope.$broadcast('localVideoAdded');
 
             cb(null);
-
           });
 
         }
@@ -334,11 +328,10 @@ angular.module('kiboRtc.services')
        * of application to call createAndSendOffer() function afterwards to let other peer know about this.
        */
       hideScreen: function (pcInd, username, otherPeer) {
+
         localScreenStream.stop();
         localvideo.src = URL.createObjectURL(localVideoStream);
-
         pcIndexTemp = pcInd;
-
         pc[pcInd].removeStream(localScreenStream);
 
         pc[pcInd].createOffer(function(sessionDescription){
@@ -363,7 +356,6 @@ angular.module('kiboRtc.services')
         if(typeof pc[pcInd] != 'undefined'){
 
           pcIndexTemp = pcInd;
-
           pc[pcInd].removeStream(localScreenStream);
 
           pc[pcInd].createOffer(function(sessionDescription){
@@ -376,32 +368,26 @@ angular.module('kiboRtc.services')
 
             // Set Opus as the preferred codec in SDP if Opus is present.
             pc[pcIndexTemp].setLocalDescription(sessionDescription);
-
             Signalling.sendMessageForMeeting(payload, otherPeer);
 
           }, handleCreateOfferError);
-
         }
-
       },
-
       /**
        * Adds the screen stream to peer connection object and video element. There is a complete screen sharing
        * service in this library which talks to screen sharing extension and returns the stream.
-       *
        * Currently, screen sharing service is used by application and application get the stream using screen
        * sharing service and add it to peer connection object by calling this function
        *
-       * todo: Use the screen sharing service inside this service and don't depend  on application
+       * todo: Use the screen sharing service inside this service and don't depend on application
        *
        * @param stream Screen sharing stream
        */
       shareScreen: function (stream, pcInd, username, otherPeer) {
+
         localScreenStream = stream;
         localvideo.src = URL.createObjectURL(stream);
-
         pcIndexTemp = pcInd;
-
         pc[pcInd].addStream(stream);
 
         pc[pcInd].createOffer(function(sessionDescription){
@@ -414,9 +400,7 @@ angular.module('kiboRtc.services')
 
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
-
           Signalling.sendMessageForMeeting(payload, otherPeer);
-
         }, handleCreateOfferError);
       },
 
@@ -426,7 +410,6 @@ angular.module('kiboRtc.services')
           pcIndexTemp = pcInd;
 
           pc[pcInd].addStream(localScreenStream);
-
           pc[pcInd].createOffer(function(sessionDescription){
             sessionDescription.FromUser = username;
             sessionDescription.ToUser = otherPeer;
@@ -434,10 +417,8 @@ angular.module('kiboRtc.services')
 
             var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'open'};
             console.log('SHARING THE SCREEN');
-
             // Set Opus as the preferred codec in SDP if Opus is present.
             pc[pcIndexTemp].setLocalDescription(sessionDescription);
-
             Signalling.sendMessageForMeeting(payload, otherPeer);
 
           }, handleCreateOfferError);
@@ -448,7 +429,6 @@ angular.module('kiboRtc.services')
       shareVideo: function (pcInd, username, otherPeer) {
 
         pcIndexTemp = pcInd;
-
         pc[pcInd].addStream(localVideoStream);
 
         pc[pcInd].createOffer(function(sessionDescription){
@@ -458,10 +438,8 @@ angular.module('kiboRtc.services')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'open'};
           console.log('SHARING THE VIDEO');
-
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
-
           Signalling.sendMessageForMeeting(payload, otherPeer);
 
         }, handleCreateOfferError);
@@ -477,7 +455,6 @@ angular.module('kiboRtc.services')
           localvideo.src = null;
 
         pcIndexTemp = pcInd;
-
         pc[pcInd].removeStream(localVideoStream);
 
         pc[pcInd].createOffer(function(sessionDescription){
@@ -487,10 +464,8 @@ angular.module('kiboRtc.services')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'close'};
           console.log('Hiding THE Video');
-
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
-
           Signalling.sendMessageForMeeting(payload, otherPeer);
 
         }, handleCreateOfferError);
@@ -500,7 +475,6 @@ angular.module('kiboRtc.services')
       shareAudio: function (pcInd, username, otherPeer) {
 
         pcIndexTemp = pcInd;
-
         pc[pcInd].addStream(localAudioStream);
 
         pc[pcInd].createOffer(function(sessionDescription){
@@ -510,10 +484,8 @@ angular.module('kiboRtc.services')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingAudio : 'open'};
           console.log('SHARING THE VIDEO');
-
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
-
           Signalling.sendMessageForMeeting(payload, otherPeer);
 
         }, handleCreateOfferError);
@@ -530,10 +502,8 @@ angular.module('kiboRtc.services')
           sessionDescription.FromUser = username;
           sessionDescription.ToUser = otherPeer;
           //console.log('INSIDE CONDITION SCREEN SHARE')
-
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingAudio : 'close'};
           console.log('Hiding THE Video');
-
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
 
@@ -552,13 +522,10 @@ angular.module('kiboRtc.services')
           sessionDescription.FromUser = username;
           sessionDescription.ToUser = otherPeer;
           //console.log('INSIDE CONDITION SCREEN SHARE')
-
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingAudio : 'close'};
           console.log('Hiding THE Video');
-
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
-
           Signalling.sendMessageForMeeting(payload, otherPeer);
 
         }, handleCreateOfferError);
@@ -577,10 +544,8 @@ angular.module('kiboRtc.services')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'close'};
           console.log('Hiding THE Video');
-
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc[pcIndexTemp].setLocalDescription(sessionDescription);
-
           Signalling.sendMessageForMeeting(payload, otherPeer);
 
         }, handleCreateOfferError);
@@ -625,7 +590,6 @@ angular.module('kiboRtc.services')
       },
 
       setSwitchingScreenShare : function(value){
-
         switchingScreenShare = value;
       },
 
@@ -642,8 +606,6 @@ angular.module('kiboRtc.services')
 
           if(sendChannel[pcInd].readyState === 'open')
             sendChannel[pcInd].send(message);
-
-
         }
       }
 
@@ -658,8 +620,9 @@ angular.module('kiboRtc.services')
      *
      * @param event holds the candidate
      *
-     * todo this needs work and also injecting the values in this won't work
-     */
+     * todo: this needs work and also injecting the values in this won't work
+     **/
+
     function handleIceCandidate(event) {
       if (event.candidate) {
         console.log('I got candidate...');
@@ -681,10 +644,10 @@ angular.module('kiboRtc.services')
      *
      * @param sessionDescription description about the session
      */
+
     function setLocalAndSendMessage(sessionDescription) {
 
       pc[pcIndexTemp].setLocalDescription(sessionDescription);
-
       //console.log(''+ sessionDescription.FromUser +' sending Offer or Answer to ', toUserName)
       Signalling.sendMessageForMeeting(sessionDescription, toUserName);
     }
@@ -693,8 +656,8 @@ angular.module('kiboRtc.services')
      * Handle the Create Offer Error. This callback function is called by createOffer() function of the
      * peer connection object whenever there is an error while creating the offer.
      *
-     * @param error information about the error which occurred while creating offer
-     */
+     *  @param error information about the error which occurred while creating offer
+     **/
     function handleCreateOfferError(error) {
       console.log('createOffer() error: ', error);
     }
@@ -708,7 +671,7 @@ angular.module('kiboRtc.services')
      * to listen to that message and change the UI accordingly i.e. show video element
      *
      * @param event holds the stream sent by the remote peer
-     * todo this needs some work
+     * todo: this needs some work
      */
     function handleRemoteStreamAdded(event) {
       console.log('Remote stream added. ', event.stream);//, event);
@@ -756,7 +719,7 @@ angular.module('kiboRtc.services')
 
       if (event.stream.getVideoTracks().length) {
 
-        // todo screen switching would need work
+        // todo: screen switching would need work
         if(switchingScreenShare == true){
           $rootScope.$broadcast('ScreenShared');
 
@@ -784,6 +747,7 @@ angular.module('kiboRtc.services')
             remoteVideoStream1 = event.stream;
             firstVideoAdded = true;
           }
+
           if(pcIndexTemp == 1){
             $rootScope.$broadcast('peer2SharedVideo');
 
@@ -793,6 +757,7 @@ angular.module('kiboRtc.services')
             remoteVideoStream2 = event.stream;
             secondVideoAdded = true;
           }
+
           if(pcIndexTemp == 2){
             $rootScope.$broadcast('peer3SharedVideo');
 
@@ -802,6 +767,7 @@ angular.module('kiboRtc.services')
             remoteVideoStream3 = event.stream;
             thirdVideoAdded = true;
           }
+
           if(pcIndexTemp == 3){
             $rootScope.$broadcast('peer4SharedVideo');
 
@@ -817,9 +783,7 @@ angular.module('kiboRtc.services')
           }, 3000);
 
         }
-
       }
-
     }
 
     /**
@@ -843,16 +807,19 @@ angular.module('kiboRtc.services')
           $rootScope.$broadcast('peer1HidesVideo');
           closeMessage = 'video close';
         }
+
       if(typeof remoteVideoStream2 !== 'undefined')
         if(remoteVideoStream2.id === event.stream.id) {
           $rootScope.$broadcast('peer2HidesVideo');
           closeMessage = 'video close';
         }
+
       if(typeof remoteVideoStream3 !== 'undefined')
         if(remoteVideoStream3.id === event.stream.id) {
           $rootScope.$broadcast('peer3HidesVideo');
           closeMessage = 'video close';
         }
+
       if(typeof remoteVideoStream4 !== 'undefined')
         if(remoteVideoStream4.id === event.stream.id) {
           $rootScope.$broadcast('peer4HidesVideo');
@@ -864,16 +831,19 @@ angular.module('kiboRtc.services')
           $rootScope.$broadcast('peer1HidesAudio');
           closeMessage = 'audio close';
         }
+
       if(typeof remoteAudioStream2 !== 'undefined')
         if(remoteAudioStream2.id === event.stream.id) {
           $rootScope.$broadcast('peer2HidesAudio');
           closeMessage = 'audio close';
         }
+
       if(typeof remoteAudioStream3 !== 'undefined')
         if(remoteAudioStream3.id === event.stream.id) {
           $rootScope.$broadcast('peer3HidesAudio');
           closeMessage = 'audio close';
         }
+
       if(typeof remoteAudioStream4 !== 'undefined')
         if(remoteAudioStream4.id === event.stream.id) {
           $rootScope.$broadcast('peer4HidesAudio');
@@ -886,7 +856,6 @@ angular.module('kiboRtc.services')
           closeMessage = 'screen close';
           switchingScreenShare = false;
         }
-
 
       $timeout(function () {
         Signalling.sendMessageForMeeting(closeMessage, toUserName);
@@ -905,7 +874,6 @@ angular.module('kiboRtc.services')
       //document.getElementById("dataChannelReceive").value = event.data;
 
       message = event.data;
-
       $rootScope.$broadcast("DataChannelMessageReceived");
 
     }
