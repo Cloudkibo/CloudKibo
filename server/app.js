@@ -20,30 +20,8 @@ var fs = require('fs');
 
 
 
-var dir = __dirname + "/../log";
-var file = dir + '/client';
-
-
-require('fs').readFile(file, 'utf8', function (err, configFile) {
-  if (err) {
-    console.log('Error: ' + err);
-    return;
-  }
-
-  console.log(configFile);
-
-  configFile += 'saba\n';
-
-  require('fs').writeFile(file, configFile, function (err) {
-    if (err) {
-      console.log('Error: ' + err);
-      return;
-    }
-
-
-  });
-
-});
+require('./components/logger/logger').clientLog('Testing Client Log');
+require('./components/logger/logger').serverLog('Testing Server Log');
 
 
 
