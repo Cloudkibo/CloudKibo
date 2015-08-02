@@ -13,6 +13,7 @@ exports.clientLog = function(data) {
       return;
     }
 
+    var today = new Date();
     var dateString = ''+ today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate() + '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
 
     configFile += ''+ dateString +' : '+ data +'\n';
@@ -37,6 +38,7 @@ exports.serverLog = function(data) {
       return;
     }
 
+    var today = new Date();
     var dateString = ''+ today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate() + '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
 
     configFile += ''+ dateString +' : '+ data +'\n';
