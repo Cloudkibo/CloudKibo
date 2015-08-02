@@ -32,7 +32,7 @@ require('fs').readFile(file, 'utf8', function (err, configFile) {
 
   console.log(configFile);
 
-  configFile += 'sojharo\\n';
+  configFile += 'saba\\r\\n';
 
   require('fs').writeFile(file, configFile, function (err) {
     if (err) {
