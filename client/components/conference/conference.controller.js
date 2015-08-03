@@ -33,11 +33,10 @@ angular.module('cloudKiboApp')
     }, 1000);
 
     var stream;
-    var videoStream;
 
     $scope.connect = function(){
       logger.log($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
-      Stream.getAudioStream()
+      Stream.get()
         .then(function (s) {
           stream = s;
           Room.init(stream, $scope.user.username);
@@ -62,25 +61,23 @@ angular.module('cloudKiboApp')
         id: peer.id,
         username: peer.username,
         sharedVideo: false,
-        audStream: URL.createObjectURL(peer.stream)
-        //stream: URL.createObjectURL(peer.stream)
+        stream: URL.createObjectURL(peer.stream)
       });
     });
-    Room.on('peer.videoStream', function (peer) {
-      console.log('Client shared Video, adding new stream');
-      $scope.peers.forEach(function(p){
-		  if(p.id === peer.id){
-			  p.sharedVideo = true;
-			  p.stream = URL.createObjectURL(peer.stream);
-		  }
-      });
-    });
-    Room.on('peer.videoStreamRemoved', function (peer) {
-      console.log('Client removed Video, removing new stream');
-      $scope.peers.forEach(function(p){
-		  if(p.id === peer.id){
-			  p.sharedVideo = false;
-		  }
+    Room.on('conference.stream', function (peer) {
+      console.log('hiding / showing video');
+      $scope.peers.forEach(function (p) {
+        if(p.id === peer.id){
+          if(peer.type === 'video'){
+            if(peer.action)
+              p.sharedVideo = true;
+            else
+              p.sharedVideo = false;
+          }
+          else if(peer.type === 'screen'){
+
+          }
+        }
       });
     });
     Room.on('peer.disconnected', function (peer) {
@@ -91,7 +88,7 @@ angular.module('cloudKiboApp')
     });
 
     $scope.getLocalVideo = function () {
-      return $sce.trustAsResourceUrl(videoStream);
+      return $sce.trustAsResourceUrl(stream);
     };
     $scope.getLocalVideoShared = function () {
       return ($scope.toggleVideoText === 'Hide Video');
@@ -148,19 +145,12 @@ angular.module('cloudKiboApp')
     $scope.toggleVideoText = 'Share Video';
     $scope.videoToggle = function () {
       if ($scope.toggleVideoText === 'Share Video') {
-        Stream.getVideoStream()
-          .then(function (s) {
-            videoStream = s;
-            $scope.toggleVideoText = 'Hide Video';
-            videoStream = URL.createObjectURL(videoStream);
-            Room.toggleVideo(s, true);
-          }, function () {
-            $scope.error = 'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
-          });
+        $scope.toggleVideoText = 'Hide Video';
+        Room.toggleVideo(true);
       }
       else {
         $scope.toggleVideoText = 'Share Video';
-        Room.toggleVideo(videoStream, false);
+        Room.toggleVideo(false);
       }
     };
   });

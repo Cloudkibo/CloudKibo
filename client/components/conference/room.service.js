@@ -8,7 +8,7 @@ angular.module('cloudKiboApp')
     var iceConfig = { 'iceServers': [{ 'url': 'stun:stun.l.google.com:19302' }]},
         peerConnections = {}, userNames = {},
         currentId, roomId,
-        stream, videoStream, username;
+        stream, username;
 
     function getPeerConnection(id) {
       if (peerConnections[id]) {
@@ -22,26 +22,9 @@ angular.module('cloudKiboApp')
       };
       pc.onaddstream = function (evnt) {
         console.log('Received new stream');
-        if(event.stream.getAudioTracks().length){
-          api.trigger('peer.stream', [{
-            id: id,
-            username: userNames[id],
-            stream: evnt.stream
-          }]);
-        }
-        else{
-          api.trigger('peer.videoStream', [{
-            id: id,
-            stream: evnt.stream
-          }]);
-        }
-        if (!$rootScope.$$digest) {
-          $rootScope.$apply();
-        }
-      };
-      pc.onremovestream = function (evnt) {
-        api.trigger('peer.videoStreamRemoved', [{
+        api.trigger('peer.stream', [{
           id: id,
+          username: userNames[id],
           stream: evnt.stream
         }]);
         if (!$rootScope.$$digest) {
@@ -105,7 +88,6 @@ angular.module('cloudKiboApp')
           $rootScope.$apply();
         }
         delete userNames[data.id];
-        console.log(userNames);
       });
       socket.on('msg', function (data) {
         handleMessage(data);
@@ -114,6 +96,14 @@ angular.module('cloudKiboApp')
         api.trigger('conference.chat', [{
           username: data.username,
           message: data.message
+        }]);
+      });
+      socket.on('conference.stream', function(data){
+        api.trigger('conference.stream', [{
+          username: data.username,
+          type: data.type,
+          action: data.action,
+          id: data.id
         }]);
       });
     }
@@ -148,31 +138,8 @@ angular.module('cloudKiboApp')
       toggleAudio: function () {
         stream.getAudioTracks()[0].enabled = !(stream.getAudioTracks()[0].enabled);
       },
-      toggleVideo: function (s, p) {
-        for (var key in peerConnections) {
-			var tick = function(i) {
-				return function() {
-					if (peerConnections.hasOwnProperty(key)) {
-						if(p) {
-						  videoStream = s;
-						  peerConnections[key].addStream(videoStream);
-						}
-						else {
-						  peerConnections[key].removeStream(videoStream);
-						}
-						peerConnections[key].createOffer(function (sdp) {
-							peerConnections[key].setLocalDescription(sdp);
-							console.log('Creating an offer for', key);
-							socket.emit('msg', {by: currentId, to: key, sdp: sdp, type: 'sdp-offer', username: username});
-						  }, function (e) {
-							console.log(e);
-						  },
-						  {mandatory: {OfferToReceiveVideo: true, OfferToReceiveAudio: true}});
-					}
-				}
-			};
-			setTimeout(tick(key), 2000);
-        }
+      toggleVideo: function (p) {
+        socket.emit('conference.stream', { username: username, type: 'video', action: p, id: currentId });
       }
     };
     EventEmitter.call(api);

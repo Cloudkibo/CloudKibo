@@ -726,6 +726,12 @@ module.exports = function (socketio) {
       });
     });
 
+    socket.on('conference.stream', function(data){
+      rooms[currentRoom].forEach(function (s) {
+        s.emit('conference.stream', { username: data.username, type: data.type, action: data.action, id: data.id });
+      });
+    });
+
     function conferenceDisconnect(socketio, socket){
       if (!currentRoom || !rooms[currentRoom]) {
         return;

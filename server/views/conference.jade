@@ -8,21 +8,14 @@ div
         i(class='fa fa-bars')
   .meetingFullBodyPane.row(class='animate-show')
     .meetingMainBodyPane
-      //div(class='animate-show', ng-hide='localCameraCaptured()')
-        center
-          div(ng-show='isConnected()', class='animate-show')
-            br
-            br
-            h3 Share the following room name with Participants
-            br
-            h4 {{roomname}}
-            br
-            br
       div(class='animate-show')
         center
           span
-            video-player(vid-src='{{getLocalVideo()}}', aud-src='{{}}', user-name='{{getUsername()}}', shared-vid='{{getLocalVideoShared()}}')
-            video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', aud-src='{{peer.audStream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}')
+            .videoBoxContainer
+              .hideVideoBox(ng-hide='getLocalVideoShared()')
+              video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='170px', ng-show='getLocalVideoShared()' muted)
+              span {{getUsername()}}
+            video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}')
       div(ng-show='hasPeerSharedScreen()')
         center
           span
