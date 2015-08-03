@@ -21,6 +21,7 @@ div
       div(class='animate-show')
         center
           span
+            video-player(vid-src='{{getLocalVideo()}}', aud-src='{{}}', user-name='{{getUsername()}}', shared-vid='{{getLocalVideoShared()}}')
             video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', aud-src='{{peer.audStream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}')
       div(ng-show='hasPeerSharedScreen()')
         center
@@ -30,14 +31,14 @@ div
       alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
       br
     .meetingSidePane(ng-show='showChatBox()')
-      div(ng-show='localCameraCaptured()', class='animate-show')
+      div(class='animate-show')
         div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages')
           .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
             | {{userMessage}}
         form
           input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
           button(ng-click='sendData()') Send
-  //.meetingBottomPane.row
+  .meetingBottomPane.row
     .col-sm-1(ng-show='localCameraCaptured()')
       .btn-wrapper-kibo
         a.icon-btn(id='showScreenButton', ng-click='showScreen()')
@@ -61,17 +62,17 @@ div
 
     .col-sm-1(id='0', ng-show='localCameraCaptured()')
     .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')
-    .col-sm-1(ng-show='localCameraCaptured()')
+    .col-sm-1(ng-show='meetingStarted()')
       .btn-wrapper-kibo
         a.icon-btn(ng-click='audioToggle()')
           i.fa.fa-microphone
           div {{toggleAudioText}}
-    .col-sm-1(ng-show='localCameraCaptured()')
+    .col-sm-1(ng-show='meetingStarted()')
       .btn-wrapper-kibo
         a.icon-btn(ng-click='videoToggle()')
           i.fa.fa-desktop
           div {{toggleVideoText}}
-    .col-sm-1.chatBoxButton(ng-show='localCameraCaptured()')
+    .col-sm-1.chatBoxButton(ng-show='meetingStarted()')
       .btn-wrapper-kibo
         a.icon-btn(ng-click='toggleChatBoxVisibility()')
           i.fa.fa-envelope-o
