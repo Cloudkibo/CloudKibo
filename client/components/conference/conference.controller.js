@@ -5,7 +5,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('ConferenceController', function ($sce, VideoStream, $location, $routeParams, $scope, Room, $timeout, logger) {
+  .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger) {
 
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
@@ -15,6 +15,9 @@ angular.module('cloudKiboApp')
     $scope.user = $scope.getCurrentUser();
     $scope.isUserNameDefined = function () {
       return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
+    };
+    $scope.getUsername = function(){
+      return $scope.user.username;
     };
 
     $timeout(function(){
@@ -30,10 +33,11 @@ angular.module('cloudKiboApp')
     }, 1000);
 
     var stream;
+    var videoStream;
 
     $scope.connect = function(){
       logger.log($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
-      VideoStream.get()
+      Stream.getAudioStream()
         .then(function (s) {
           stream = s;
           Room.init(stream, $scope.user.username);
@@ -57,7 +61,26 @@ angular.module('cloudKiboApp')
       $scope.peers.push({
         id: peer.id,
         username: peer.username,
-        stream: URL.createObjectURL(peer.stream)
+        sharedVideo: false,
+        audStream: URL.createObjectURL(peer.stream)
+        //stream: URL.createObjectURL(peer.stream)
+      });
+    });
+    Room.on('peer.videoStream', function (peer) {
+      console.log('Client shared Video, adding new stream');
+      $scope.peers.forEach(function(p){
+		  if(p.id === peer.id){
+			  p.sharedVideo = true;
+			  p.stream = URL.createObjectURL(peer.stream);
+		  }
+      });
+    });
+    Room.on('peer.videoStreamRemoved', function (peer) {
+      console.log('Client removed Video, removing new stream');
+      $scope.peers.forEach(function(p){
+		  if(p.id === peer.id){
+			  p.sharedVideo = false;
+		  }
       });
     });
     Room.on('peer.disconnected', function (peer) {
@@ -68,6 +91,76 @@ angular.module('cloudKiboApp')
     });
 
     $scope.getLocalVideo = function () {
-      return $sce.trustAsResourceUrl(stream);
+      return $sce.trustAsResourceUrl(videoStream);
+    };
+    $scope.getLocalVideoShared = function () {
+      return ($scope.toggleVideoText === 'Hide Video');
+    };
+    $scope.meetingStarted = function(){
+      return ($scope.peers.length > 0)
+    };
+
+    $scope.extensionAvailable = false;
+    $scope.hasChromeExtension = function () {
+      return $scope.extensionAvailable;
+    };
+    $scope.isFireFox = function () {
+      return typeof navigator.mozGetUserMedia !== 'undefined';
+    };
+    $scope.isMeetingPage = function () {
+      return true;
+    };
+
+    $scope.chatBoxVisible = false;
+    $scope.showChatBox = function () {
+      return $scope.chatBoxVisible;
+    };
+    $scope.toggleChatBoxVisibility = function () {
+      $scope.chatBoxVisible = !$scope.chatBoxVisible;
+    };
+
+    $scope.userMessages = [];
+    $scope.sendData = function () {
+      var data = $scope.dataChannelSend;
+      Room.sendChat(data);
+      $scope.userMessages.push('Me: ' + data);
+      $scope.dataChannelSend = '';
+    };
+    Room.on('conference.chat', function(data){
+      if(data.username !== $scope.user.username) {
+        $scope.$apply(function () {
+          $scope.userMessages.push(data.username +': '+ data.message);
+        });
+      }
+    });
+
+    $scope.toggleAudioText = 'Mute Audio';
+    $scope.audioToggle = function () {
+      if ($scope.toggleAudioText === 'Share Audio') {
+        $scope.toggleAudioText = 'Mute Audio';
+        Room.toggleAudio();
+      }
+      else {
+        $scope.toggleAudioText = 'Share Audio';
+        Room.toggleAudio();
+      }
+    };
+    $scope.toggleVideoText = 'Share Video';
+    $scope.videoToggle = function () {
+      if ($scope.toggleVideoText === 'Share Video') {
+        Stream.getVideoStream()
+          .then(function (s) {
+            videoStream = s;
+            $scope.toggleVideoText = 'Hide Video';
+            videoStream = URL.createObjectURL(videoStream);
+            Room.toggleVideo(s, true);
+          }, function () {
+            $scope.error = 'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
+          });
+      }
+      else {
+        $scope.toggleVideoText = 'Share Video';
+        Room.toggleVideo(videoStream, false);
+      }
     };
   });

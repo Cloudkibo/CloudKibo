@@ -7,8 +7,8 @@ angular.module('cloudKiboApp')
   .directive('videoPlayer', function ($sce) {
     return {
       template: '<div class="videoBoxContainer">' +
-      '<div class="hideVideoBox" ng-hide="{{hasSharedVideo()}}"></div>' +
-      '<video ng-src="{{trustSrc()}}" autoplay width="170px" ng-show="{{hasSharedVideo()}}" class="videoelement"></video>' +
+      '<div class="hideVideoBox" ng-hide="hasSharedVideo()"></div>' +
+      '<video ng-src="{{trustSrc()}}" autoplay width="170px" ng-show="hasSharedVideo()" class="videoelement"></video>' +
       '<span>{{peerUserName()}}</span>' +
       '<audio autoplay ng-src="{{trustAudSrc()}}"></audio>' +
       '</div>',
@@ -41,7 +41,7 @@ angular.module('cloudKiboApp')
           if (!scope.userName) {
             return undefined;
           }
-          return $sce.trustAsResourceUrl(scope.userName);
+          return scope.userName;//$sce.trustAsResourceUrl(scope.userName);
         };
       }
     };

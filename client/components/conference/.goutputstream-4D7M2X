@@ -40,14 +40,8 @@ angular.module('cloudKiboApp')
         }
       };
       pc.onremovestream = function (evnt) {
-        api.trigger('peer.videoStreamRemoved', [{
-          id: id,
-          stream: evnt.stream
-        }]);
-        if (!$rootScope.$$digest) {
-          $rootScope.$apply();
-        }
-      };
+		  
+	  };
       return pc;
     }
 
@@ -150,28 +144,23 @@ angular.module('cloudKiboApp')
       },
       toggleVideo: function (s, p) {
         for (var key in peerConnections) {
-			var tick = function(i) {
-				return function() {
-					if (peerConnections.hasOwnProperty(key)) {
-						if(p) {
-						  videoStream = s;
-						  peerConnections[key].addStream(videoStream);
-						}
-						else {
-						  peerConnections[key].removeStream(videoStream);
-						}
-						peerConnections[key].createOffer(function (sdp) {
-							peerConnections[key].setLocalDescription(sdp);
-							console.log('Creating an offer for', key);
-							socket.emit('msg', {by: currentId, to: key, sdp: sdp, type: 'sdp-offer', username: username});
-						  }, function (e) {
-							console.log(e);
-						  },
-						  {mandatory: {OfferToReceiveVideo: true, OfferToReceiveAudio: true}});
-					}
-				}
-			};
-			setTimeout(tick(key), 2000);
+          if (peerConnections.hasOwnProperty(key)) {
+            if(p) {
+              videoStream = s;
+              peerConnections[key].addStream(videoStream);
+            }
+            else {
+              peerConnections[key].removeStream(videoStream);
+            }
+            peerConnections[key].createOffer(function (sdp) {
+                peerConnections[key].setLocalDescription(sdp);
+                console.log('Creating an offer for', key);
+                socket.emit('msg', {by: currentId, to: key, sdp: sdp, type: 'sdp-offer', username: username});
+              }, function (e) {
+                console.log(e);
+              },
+              {mandatory: {OfferToReceiveVideo: true, OfferToReceiveAudio: true}});
+          }
         }
       }
     };
