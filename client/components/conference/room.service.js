@@ -69,6 +69,7 @@ angular.module('cloudKiboApp')
           });
           break;
         case 'sdp-answer':
+          console.log('answer by '+ data.by);
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             console.log('Setting remote description by answer');
           }, function (e) {
