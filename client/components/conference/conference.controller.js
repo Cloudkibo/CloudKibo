@@ -153,6 +153,7 @@ angular.module('cloudKiboApp')
       }
     };
 
+    ScreenShare.initialize();
     $scope.peerSharedScreen = false;
     $scope.hasPeerSharedScreen = function () {
       return $scope.peerSharedScreen;
