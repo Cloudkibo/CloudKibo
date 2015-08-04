@@ -174,7 +174,7 @@ angular.module('cloudKiboApp')
               }
             }
           };
-          $timeout(tick(key), 2000);
+          $timeout(tick(key), 4000);
         }
       }
     };
