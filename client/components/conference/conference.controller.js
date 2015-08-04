@@ -165,8 +165,11 @@ angular.module('cloudKiboApp')
     });
     $scope.showScreenText = 'Share Screen';
     $scope.showScreen = function () {
-      if ($scope.showScreenText == 'Share Screen') {
+      console.log('function called');
+      if ($scope.showScreenText === 'Share Screen') {
+        console.log('going to capture scree');
         if (!!navigator.webkitGetUserMedia) {
+          console.log('in chrome condition')
           shareScreen(function (err, stream) {
             if (err) {
               alert('Permission denied or could not capture the screen.');
