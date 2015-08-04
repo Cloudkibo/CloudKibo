@@ -109,14 +109,16 @@ angular.module('cloudKiboApp')
         }]);
       });
       socket.on('conference.stream', function(data){
-        if(data.type === 'screen') screenSwitch = true;
-        api.trigger('conference.stream', [{
-          username: data.username,
-          type: data.type,
-          action: data.action,
-          id: data.id
-        }]);
-        makeOffer(data.id);
+        if(data.by !== currentId){
+          if(data.type === 'screen') screenSwitch = true;
+          api.trigger('conference.stream', [{
+            username: data.username,
+            type: data.type,
+            action: data.action,
+            id: data.id
+          }]);
+          makeOffer(data.id);
+        }
       });
     }
 
