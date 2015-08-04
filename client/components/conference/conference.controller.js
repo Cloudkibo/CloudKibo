@@ -154,7 +154,7 @@ angular.module('cloudKiboApp')
     };
 
     ScreenShare.initialize();
-    var screenstream;
+    var screenStream;
     $scope.peerSharedScreen = false;
     $scope.hasPeerSharedScreen = function () {
       return $scope.peerSharedScreen;
@@ -174,8 +174,11 @@ angular.module('cloudKiboApp')
               alert('Permission denied or could not capture the screen.');
             }
             else {
-              $scope.showScreenText = 'Hide Screen';
-              $scope.screenSharedLocal = true;
+              screenStream = stream;
+              $scope.$apply(function(){
+                $scope.showScreenText = 'Hide Screen';
+                $scope.screenSharedLocal = true;
+              });
               //RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
               //RTCConferenceCore.setSwitchingScreenShare(true);
             }
@@ -188,8 +191,11 @@ angular.module('cloudKiboApp')
               mediaSource: 'screen'
             }
           }, function (stream) {
-            $scope.showScreenText = 'Hide Screen';
-            $scope.screenSharedLocal = true;
+            screenStream = stream;
+            $scope.$apply(function(){
+              $scope.showScreenText = 'Hide Screen';
+              $scope.screenSharedLocal = true;
+            });
             //RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
             //RTCConferenceCore.setSwitchingScreenShare(true);
           }, function (err) {
@@ -199,7 +205,7 @@ angular.module('cloudKiboApp')
       }
       else {
         ScreenShare.setSourceIdValue(null);
-        screenstream.stop();
+        screenStream.stop();
         $scope.showScreenText = 'Share Screen';
         $scope.screenSharedLocal = false;
       }
