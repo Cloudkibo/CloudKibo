@@ -116,6 +116,7 @@ angular.module('cloudKiboApp')
           action: data.action,
           id: data.id
         }]);
+        makeOffer(data.id);
       });
     }
 
@@ -153,25 +154,15 @@ angular.module('cloudKiboApp')
         socket.emit('conference.stream', { username: username, type: 'video', action: p, id: currentId });
       },
       toggleScreen: function (s, p) {
-        socket.emit('conference.stream', { username: username, type: 'screen', action: p, id: currentId });
         for (var key in peerConnections) {
-          if (peerConnections.hasOwnProperty(key)) {
-            if (p) {
-              peerConnections[key].addStream(s);
-            }
-            else {
-              peerConnections[key].removeStream(s);
-            }
-            peerConnections[key].createOffer(function (sdp) {
-                peerConnections[key].setLocalDescription(sdp);
-                console.log('Creating an offer for', key);
-                socket.emit('msg', {by: currentId, to: key, sdp: sdp, type: 'sdp-offer', username: username});
-              }, function (e) {
-                console.log(e);
-              },
-              {mandatory: {OfferToReceiveVideo: true, OfferToReceiveAudio: true}});
+          if (p) {
+            peerConnections[key].addStream(s);
+          }
+          else {
+            peerConnections[key].removeStream(s);
           }
         }
+        socket.emit('conference.stream', { username: username, type: 'screen', action: p, id: currentId });
       }
     };
     EventEmitter.call(api);

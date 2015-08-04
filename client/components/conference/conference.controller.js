@@ -179,46 +179,50 @@ angular.module('cloudKiboApp')
     });
     $scope.showScreenText = 'Share Screen';
     $scope.showScreen = function () {
-      if ($scope.showScreenText === 'Share Screen') {
-        if (!!navigator.webkitGetUserMedia) {
-          shareScreen(function (err, stream) {
-            if (err) {
-              alert('Permission denied or could not capture the screen.');
-            }
-            else {
+      if($scope.peerSharedScreen){
+        alert('Other person is already sharing screen');
+      } else {
+        if ($scope.showScreenText === 'Share Screen') {
+          if (!!navigator.webkitGetUserMedia) {
+            shareScreen(function (err, stream) {
+              if (err) {
+                alert('Permission denied or could not capture the screen.');
+              }
+              else {
+                screenStream = stream;
+                $scope.$apply(function(){
+                  $scope.showScreenText = 'Hide Screen';
+                  $scope.screenSharedLocal = true;
+                });
+                Room.toggleScreen(stream, true);
+              }
+            });
+          }
+          else if (!!navigator.mozGetUserMedia) {
+            getUserMedia({
+              video: {
+                mozMediaSource: 'screen',
+                mediaSource: 'screen'
+              }
+            }, function (stream) {
               screenStream = stream;
               $scope.$apply(function(){
                 $scope.showScreenText = 'Hide Screen';
                 $scope.screenSharedLocal = true;
               });
               Room.toggleScreen(stream, true);
-            }
-          });
-        }
-        else if (!!navigator.mozGetUserMedia) {
-          getUserMedia({
-            video: {
-              mozMediaSource: 'screen',
-              mediaSource: 'screen'
-            }
-          }, function (stream) {
-            screenStream = stream;
-            $scope.$apply(function(){
-              $scope.showScreenText = 'Hide Screen';
-              $scope.screenSharedLocal = true;
+            }, function (err) {
+              alert('Permission denied or could not capture the screen.');
             });
-            Room.toggleScreen(stream, true);
-          }, function (err) {
-            alert('Permission denied or could not capture the screen.');
-          });
+          }
         }
-      }
-      else {
-        ScreenShare.setSourceIdValue(null);
-        screenStream.stop();
-        Room.toggleScreen(screenStream, false);
-        $scope.showScreenText = 'Share Screen';
-        $scope.screenSharedLocal = false;
+        else {
+          ScreenShare.setSourceIdValue(null);
+          screenStream.stop();
+          Room.toggleScreen(screenStream, false);
+          $scope.showScreenText = 'Share Screen';
+          $scope.screenSharedLocal = false;
+        }
       }
     };
     function shareScreen(cb) {
