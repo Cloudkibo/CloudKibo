@@ -154,28 +154,22 @@ angular.module('cloudKiboApp')
       toggleScreen: function (s, p) {
         socket.emit('conference.stream', { username: username, type: 'screen', action: p, id: currentId });
         for (var key in peerConnections) {
-          var tick = function (i) {
-            return function () {
-              if (peerConnections.hasOwnProperty(key)) {
-                if (p) {
-                  peerConnections[key].addStream(s);
-                }
-                else {
-                  peerConnections[key].removeStream(s);
-                }
-                peerConnections[key].createOffer(function (sdp) {
-                    peerConnections[key].setLocalDescription(sdp);
-                    console.log('Creating an offer for', key);
-                    socket.emit('msg', {by: currentId, to: key, sdp: sdp, type: 'sdp-offer', username: username});
-                  }, function (e) {
-                    console.log(e);
-                  },
-                  {mandatory: {OfferToReceiveVideo: true, OfferToReceiveAudio: true}});
-              }
+          if (peerConnections.hasOwnProperty(key)) {
+            if (p) {
+              peerConnections[key].addStream(s);
             }
-          };
-          console.log(key)
-          $timeout(tick(key), 4000);
+            else {
+              peerConnections[key].removeStream(s);
+            }
+            peerConnections[key].createOffer(function (sdp) {
+                peerConnections[key].setLocalDescription(sdp);
+                console.log('Creating an offer for', key);
+                socket.emit('msg', {by: currentId, to: key, sdp: sdp, type: 'sdp-offer', username: username});
+              }, function (e) {
+                console.log(e);
+              },
+              {mandatory: {OfferToReceiveVideo: true, OfferToReceiveAudio: true}});
+          }
         }
       }
     };
