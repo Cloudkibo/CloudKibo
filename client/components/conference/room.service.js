@@ -110,7 +110,7 @@ angular.module('cloudKiboApp')
       });
       socket.on('conference.stream', function(data){
         if(data.by !== currentId){
-          if(data.type === 'screen') screenSwitch = true;
+          if(data.type === 'screen' && data.action) screenSwitch = true;
           api.trigger('conference.stream', [{
             username: data.username,
             type: data.type,
