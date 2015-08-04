@@ -3,9 +3,9 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('Room', function ($rootScope, $q, socket, $timeout) {
+  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config) {
 
-    var iceConfig = { 'iceServers': [{ 'url': 'stun:stun.l.google.com:19302' }]},
+    var iceConfig = pc_config,
         peerConnections = {}, userNames = {},
         currentId, roomId,
         stream, username, screenSwitch = false;
