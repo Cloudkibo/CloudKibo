@@ -3,12 +3,12 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('Room', function ($rootScope, $q, socket) {
+  .factory('Room', function ($rootScope, $q, socket, $timeout) {
 
     var iceConfig = { 'iceServers': [{ 'url': 'stun:stun.l.google.com:19302' }]},
         peerConnections = {}, userNames = {},
         currentId, roomId,
-        stream, username;
+        stream, username, screenSwitch = false;
 
     function getPeerConnection(id) {
       if (peerConnections[id]) {
@@ -22,11 +22,20 @@ angular.module('cloudKiboApp')
       };
       pc.onaddstream = function (evnt) {
         console.log('Received new stream');
-        api.trigger('peer.stream', [{
-          id: id,
-          username: userNames[id],
-          stream: evnt.stream
-        }]);
+        if(screenSwitch){
+          api.trigger('peer.screenStream', [{
+            id: id,
+            username: userNames[id],
+            stream: evnt.stream
+          }]);
+          screenSwitch = false;
+        } else {
+          api.trigger('peer.stream', [{
+            id: id,
+            username: userNames[id],
+            stream: evnt.stream
+          }]);
+        }
         if (!$rootScope.$$digest) {
           $rootScope.$apply();
         }
@@ -99,6 +108,7 @@ angular.module('cloudKiboApp')
         }]);
       });
       socket.on('conference.stream', function(data){
+        if(data.type === 'screen') screenSwitch = true;
         api.trigger('conference.stream', [{
           username: data.username,
           type: data.type,
@@ -141,8 +151,31 @@ angular.module('cloudKiboApp')
       toggleVideo: function (p) {
         socket.emit('conference.stream', { username: username, type: 'video', action: p, id: currentId });
       },
-      toggleScreen: function (stream) {
-
+      toggleScreen: function (s, p) {
+        socket.emit('conference.stream', { username: username, type: 'screen', action: p, id: currentId });
+        for (var key in peerConnections) {
+          var tick = function (i) {
+            return function () {
+              if (peerConnections.hasOwnProperty(key)) {
+                if (p) {
+                  peerConnections[key].addStream(s);
+                }
+                else {
+                  peerConnections[key].removeStream(s);
+                }
+                peerConnections[key].createOffer(function (sdp) {
+                    peerConnections[key].setLocalDescription(sdp);
+                    console.log('Creating an offer for', key);
+                    socket.emit('msg', {by: currentId, to: key, sdp: sdp, type: 'sdp-offer', username: username});
+                  }, function (e) {
+                    console.log(e);
+                  },
+                  {mandatory: {OfferToReceiveVideo: true, OfferToReceiveAudio: true}});
+              }
+            }
+          };
+          $timeout(tick(key), 2000);
+        }
       }
     };
     EventEmitter.call(api);

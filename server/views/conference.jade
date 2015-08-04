@@ -19,7 +19,7 @@ div
       div(ng-show='hasPeerSharedScreen()')
         center
           span
-            video(id='remoteVideoScreen', autoplay='true', width='80%', class='videoelementscreen', controls='true')
+            video(ng-src='{{getPeerScreen()}}',autoplay='true', width='80%', class='videoelementscreen', controls='true')
       br
       alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
       br

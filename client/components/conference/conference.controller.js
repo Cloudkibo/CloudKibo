@@ -64,6 +64,10 @@ angular.module('cloudKiboApp')
         stream: URL.createObjectURL(peer.stream)
       });
     });
+    Room.on('peer.screenStream', function (peer) {
+      console.log('Client shared screen, adding stream');
+      peerScreenStream = peer.stream;
+    });
     Room.on('conference.stream', function (peer) {
       console.log('hiding / showing video');
       $scope.peers.forEach(function (p) {
@@ -75,7 +79,10 @@ angular.module('cloudKiboApp')
               p.sharedVideo = false;
           }
           else if(peer.type === 'screen'){
-
+            if(peer.action)
+              $scope.peerSharedScreen = true;
+            else
+              $scope.peerSharedScreen = false;
           }
         }
       });
@@ -155,9 +162,14 @@ angular.module('cloudKiboApp')
 
     ScreenShare.initialize();
     var screenStream;
+    var peerScreenStream;
+
     $scope.peerSharedScreen = false;
     $scope.hasPeerSharedScreen = function () {
       return $scope.peerSharedScreen;
+    };
+    $scope.getPeerScreen = function () {
+      return $sce.trustAsResourceUrl(peerScreenStream);
     };
     $scope.installExtension = function () {
       ScreenShare.installChromeExtension();
@@ -202,7 +214,6 @@ angular.module('cloudKiboApp')
             alert('Permission denied or could not capture the screen.');
           });
         }
-        screenStream.onended = function() {alert('removed screen')};
       }
       else {
         ScreenShare.setSourceIdValue(null);
