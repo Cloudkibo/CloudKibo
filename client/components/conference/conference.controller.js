@@ -161,7 +161,7 @@ angular.module('cloudKiboApp')
       ScreenShare.installChromeExtension();
     };
     ScreenShare.isChromeExtensionAvailable(function (status) {
-      $scope.extensionAvailable = !status;
+      $scope.extensionAvailable = status;
     });
     $scope.showScreenText = 'Share Screen';
     $scope.showScreen = function () {
