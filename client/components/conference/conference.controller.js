@@ -154,6 +154,7 @@ angular.module('cloudKiboApp')
     };
 
     ScreenShare.initialize();
+    var screenstream;
     $scope.peerSharedScreen = false;
     $scope.hasPeerSharedScreen = function () {
       return $scope.peerSharedScreen;
@@ -166,11 +167,8 @@ angular.module('cloudKiboApp')
     });
     $scope.showScreenText = 'Share Screen';
     $scope.showScreen = function () {
-      console.log('function called');
       if ($scope.showScreenText === 'Share Screen') {
-        console.log('going to capture scree');
         if (!!navigator.webkitGetUserMedia) {
-          console.log('in chrome condition')
           shareScreen(function (err, stream) {
             if (err) {
               alert('Permission denied or could not capture the screen.');
@@ -190,6 +188,8 @@ angular.module('cloudKiboApp')
               mediaSource: 'screen'
             }
           }, function (stream) {
+            $scope.showScreenText = 'Hide Screen';
+            $scope.screenSharedLocal = true;
             //RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
             //RTCConferenceCore.setSwitchingScreenShare(true);
           }, function (err) {
@@ -199,7 +199,7 @@ angular.module('cloudKiboApp')
       }
       else {
         ScreenShare.setSourceIdValue(null);
-        // Hide Screen Logic
+        screenstream.stop();
         $scope.showScreenText = 'Share Screen';
         $scope.screenSharedLocal = false;
       }
