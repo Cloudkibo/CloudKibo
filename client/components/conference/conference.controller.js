@@ -69,7 +69,7 @@ angular.module('cloudKiboApp')
       peerScreenStream = URL.createObjectURL(peer.stream);
     });
     Room.on('conference.stream', function (peer) {
-      console.log('hiding / showing video');
+      console.log('hiding / showing video or screen    ');
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
           if(peer.type === 'video'){
