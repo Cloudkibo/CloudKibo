@@ -234,4 +234,5 @@ angular.module('cloudKiboApp')
         });
       }
     }
+    screenStream.onended = function() {alert('removed screen')};
   });
