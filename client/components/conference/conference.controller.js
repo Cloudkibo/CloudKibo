@@ -66,7 +66,7 @@ angular.module('cloudKiboApp')
     });
     Room.on('peer.screenStream', function (peer) {
       console.log('Client shared screen, adding stream');
-      peerScreenStream = peer.stream;
+      peerScreenStream = URL.createObjectURL(peer.stream);
     });
     Room.on('conference.stream', function (peer) {
       console.log('hiding / showing video');
