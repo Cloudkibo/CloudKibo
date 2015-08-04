@@ -377,7 +377,7 @@ angular.module('cloudKiboApp')
 
     $scope.isLocalVideoShared = function(){
       return $scope.videoSharedLocal;
-    }
+    };
 
     $scope.meetingData = {};
 

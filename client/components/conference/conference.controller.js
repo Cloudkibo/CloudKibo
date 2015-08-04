@@ -5,7 +5,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger) {
+  .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare) {
 
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
@@ -35,7 +35,7 @@ angular.module('cloudKiboApp')
     var stream;
 
     $scope.connect = function(){
-      logger.log($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
+      //logger.log($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
       Stream.get()
         .then(function (s) {
           stream = s;
@@ -115,7 +115,6 @@ angular.module('cloudKiboApp')
     $scope.toggleChatBoxVisibility = function () {
       $scope.chatBoxVisible = !$scope.chatBoxVisible;
     };
-
     $scope.userMessages = [];
     $scope.sendData = function () {
       var data = $scope.dataChannelSend;
@@ -153,4 +152,76 @@ angular.module('cloudKiboApp')
         Room.toggleVideo(false);
       }
     };
+
+    $scope.peerSharedScreen = false;
+    $scope.hasPeerSharedScreen = function () {
+      return $scope.peerSharedScreen;
+    };
+    $scope.installExtension = function () {
+      ScreenShare.installChromeExtension();
+    };
+    ScreenShare.isChromeExtensionAvailable(function (status) {
+      $scope.extensionAvailable = status;
+    });
+    $scope.showScreenText = 'Share Screen';
+    $scope.showScreen = function () {
+      if ($scope.showScreenText == 'Share Screen') {
+        if (!!navigator.webkitGetUserMedia) {
+          shareScreen(function (err, stream) {
+            if (err) {
+              alert('Permission denied or could not capture the screen.');
+            }
+            else {
+              $scope.showScreenText = 'Hide Screen';
+              $scope.screenSharedLocal = true;
+              //RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
+              //RTCConferenceCore.setSwitchingScreenShare(true);
+            }
+          });
+        }
+        else if (!!navigator.mozGetUserMedia) {
+          getUserMedia({
+            video: {
+              mozMediaSource: 'screen',
+              mediaSource: 'screen'
+            }
+          }, function (stream) {
+            //RTCConferenceCore.shareScreen(stream, switchPCIndex, username, otherPeers[switchPCIndex]);
+            //RTCConferenceCore.setSwitchingScreenShare(true);
+          }, function (err) {
+            alert('Permission denied or could not capture the screen.');
+          });
+        }
+      }
+      else {
+        ScreenShare.setSourceIdValue(null);
+        // Hide Screen Logic
+        $scope.showScreenText = 'Share Screen';
+        $scope.screenSharedLocal = false;
+      }
+    };
+    function shareScreen(cb) {
+      // this statement verifies chrome extension availability
+      // if installed and available then it will invoke extension API
+      // otherwise it will fallback to command-line based screen capturing API
+      if (ScreenShare.getChromeMediaSource() == 'desktop' && !ScreenShare.getSourceIdValue()) {
+        ScreenShare.getSourceId(function (error) {
+          // if exception occurred or access denied
+          if (error && error == 'PermissionDeniedError') {
+            alert('PermissionDeniedError: User denied to share content of his/her screen.');
+          }
+          // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
+          if (ScreenShare.getChromeMediaSource() == 'desktop') {
+            ScreenShare.setSourceIdInConstraints();
+          }
+          // now invoking native getUserMedia API
+          navigator.webkitGetUserMedia(ScreenShare.session(),
+            function (newStream) {
+              cb(null, newStream);
+            }, function (err) {
+              cb(err);
+            });
+        });
+      }
+    }
   });

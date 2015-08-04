@@ -140,6 +140,9 @@ angular.module('cloudKiboApp')
       },
       toggleVideo: function (p) {
         socket.emit('conference.stream', { username: username, type: 'video', action: p, id: currentId });
+      },
+      toggleScreen: function (stream) {
+
       }
     };
     EventEmitter.call(api);
