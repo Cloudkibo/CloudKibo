@@ -202,6 +202,7 @@ angular.module('cloudKiboApp')
             alert('Permission denied or could not capture the screen.');
           });
         }
+        screenStream.onended = function() {alert('removed screen')};
       }
       else {
         ScreenShare.setSourceIdValue(null);
@@ -234,5 +235,4 @@ angular.module('cloudKiboApp')
         });
       }
     }
-    screenStream.onended = function() {alert('removed screen')};
   });
