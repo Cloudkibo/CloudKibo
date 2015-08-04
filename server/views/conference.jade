@@ -32,7 +32,7 @@ div
           input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
           button(ng-click='sendData()') Send
   .meetingBottomPane.row
-    .col-sm-1(ng-show='localCameraCaptured()')
+    .col-sm-1(ng-show='meetingStarted()')
       .btn-wrapper-kibo
         a.icon-btn(id='showScreenButton', ng-click='showScreen()')
           i.fa.fa-desktop
