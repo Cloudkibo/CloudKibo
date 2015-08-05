@@ -1,629 +1,28 @@
+/**
+ * Created by sojharo on 6/12/2015.
+ */
 'use strict';
 
+/**
+ * This is the core File Transfer service. It is independent of the video call service. It depends on Signalling service
+ * for doing Signalling. Furthermore, it uses services from configuration too. To use this, one should follow the WebRTC
+ * call procedure. Here it is mostly same as standard procedure of a WebRTC call, but this service hides much of the
+ * details from application.
+ */
 angular.module('cloudKiboApp')
-  .controller('MeetingController', function ($scope, RTCConference, $http, socket, pc_config, pc_constraints, sdpConstraints, $timeout, $location, RestApi, ScreenShare, FileUtility, $window) {
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // Variables for WebRTC Session                                                       //
-    ////////////////////////////////////////////////////////////////////////////////////////
-
-    var remoteaudio1 = document.getElementById("remoteaudio1");
-    remoteaudio1.src = null;
-    var remoteaudio2 = document.getElementById("remoteaudio2");
-    remoteaudio2.src = null;
-    var remoteaudio3 = document.getElementById("remoteaudio3");
-    remoteaudio3.src = null;
-    var remoteaudio4 = document.getElementById("remoteaudio4");
-    remoteaudio4.src = null;
-
-    var remotevideo1 = document.getElementById("remotevideo1");
-    remotevideo1.src = null;
-    var remotevideo2 = document.getElementById("remotevideo2");
-    remotevideo2.src = null;
-    var remotevideo3 = document.getElementById("remotevideo3");
-    remotevideo3.src = null;
-    var remotevideo4 = document.getElementById("remotevideo4");
-    remotevideo4.src = null;
-
-    var remoteVideoScreen = document.getElementById("remoteVideoScreen");
-    remoteVideoScreen.src = null;
-
-    var localvideo = document.getElementById("localvideo");
-    localvideo.src = null;
-
-    $scope.peer1Name = '';
-    $scope.peer2Name = '';
-    $scope.peer3Name = '';
-    $scope.peer4Name = '';
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // Create or Join Room Logic                                                          //
-    ////////////////////////////////////////////////////////////////////////////////////////
-
-    $scope.user = $scope.getCurrentUser();
-
-    $scope.isUserNameDefined = function () {
-
-      return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
-    };
-
-    $scope.isMeetingPage = function () {
-      return true;
-    };
-
-    var roomid = $location.url().split('/')[2];
-
-    $scope.connectTimeOut = function () {
-
-      $scope.roomname = roomid;
-
-      var audioelements = {
-        remote1: remoteaudio1,
-        remote2: remoteaudio2,
-        remote3: remoteaudio3,
-        remote4: remoteaudio4
-      };
-
-      var videoelements = {
-        remote1: remotevideo1,
-        remote2: remotevideo2,
-        remote3: remotevideo3,
-        remote4: remotevideo4,
-        remoteScreen: remoteVideoScreen,
-        local: localvideo
-      };
-
-      if ($scope.isUserNameDefined()) {
-
-        RTCConference.joinMeeting({
-          username: $scope.user.username,
-          room: $scope.roomname,
-          video_elements: videoelements,
-          audio_elements: audioelements
-        });
-
-      }
-      else {
-
-        var sampleName = "user_" + Math.random().toString(36).substring(7);
-
-        $scope.user.username = window.prompt("Please write your username", sampleName);
-
-        if ($scope.user.username == null)
-          $scope.user.username = sampleName;
-
-        RTCConference.joinMeeting({
-          username: $scope.user.username,
-          room: $scope.roomname,
-          video_elements: videoelements,
-          audio_elements: audioelements
-        });
-
-      }
-
-      $scope.connected = true;
-
-    };
-
-    $timeout($scope.connectTimeOut, 1000);
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // WebRTC User Interface Logic                                                        //
-    ////////////////////////////////////////////////////////////////////////////////////////
-
-    $scope.connected = false;
-
-    $scope.roomname = '';
-
-    $scope.localCameraOn = false;
-
-    $scope.isConnected = function () {
-      return $scope.connected;
-    };
-
-    $scope.callEnded = false;
-
-    $scope.hasCallEnded = function () {
-      return $scope.callEnded;
-    };
-
-    $scope.alertsCallStart = [];
-
-    $scope.addAlertCallStart = function (newtype, newMsg) {
-      $scope.$apply(function () {
-        $scope.alertsCallStart.push({type: newtype, msg: newMsg});
-      })
-    };
-
-    $scope.closeAlertCallStart = function (index) {
-      $scope.alertsCallStart.splice(index, 1);
-    };
-
-    $scope.extensionAvailable = false;
-
-    $scope.hasChromeExtension = function () {
-      return $scope.extensionAvailable;
-    };
-
-    $scope.isFireFox = function () {
-      return typeof navigator.mozGetUserMedia !== 'undefined';
-    };
-
-    $scope.localCameraCaptured = function () {
-      return $scope.localCameraOn;
-    };
-
-    $scope.getLocalUsername = function(){
-      return $scope.user.username;
-    };
-
-    $scope.peer1UserName = function(){
-      return $scope.peer1Name;
-    };
-
-    $scope.peer2UserName = function(){
-      return $scope.peer2Name;
-    };
-
-    $scope.peer3UserName = function(){
-      return $scope.peer3Name;
-    };
-
-    $scope.peer4UserName = function(){
-      return $scope.peer4Name;
-    };
-
-    $scope.localSpeaking = false;
-
-    var localPeerBox = document.getElementById("localPeerId");
-
-    var Peer1Id = document.getElementById("Peer1Id");
-    var Peer2Id = document.getElementById("Peer2Id");
-    var Peer3Id = document.getElementById("Peer3Id");
-    var Peer4Id = document.getElementById("Peer4Id");
-
-    $scope.$on('Speaking', function () {
-      $scope.localSpeaking = true;
-      localPeerBox.style.cssText = 'border : 2px solid #000000;';
-      //console.log('speaking '+ $scope.localSpeaking)
-      RTCConference.sendData(':Speaking:'+ $scope.user.username +':');
-    });
-
-    $scope.$on('Silent', function () {
-      $scope.localSpeaking = false;
-      localPeerBox.style.cssText = 'border : 0px solid #000000;';
-      //console.log('silent '+ $scope.localSpeaking)
-      RTCConference.sendData(':Silent:'+ $scope.user.username +':');
-    });
-
-    $scope.amISpeaking = function(){
-      return $scope.localSpeaking;
-    };
-
-    function handlePeerAudioState(state, name){
-      if(state === 'Silent'){
-
-        if(name === $scope.peer1Name)
-          Peer1Id.style.cssText = 'border : 0px solid #000000;';
-        if(name === $scope.peer2Name)
-          Peer2Id.style.cssText = 'border : 0px solid #000000;';
-        if(name === $scope.peer3Name)
-          Peer3Id.style.cssText = 'border : 0px solid #000000;';
-        if(name === $scope.peer4Name)
-          Peer4Id.style.cssText = 'border : 0px solid #000000;';
-
-      }
-      else if(state === 'Speaking'){
-
-        if(name === $scope.peer1Name)
-          Peer1Id.style.cssText = 'border : 2px solid #000000;';
-        if(name === $scope.peer2Name)
-          Peer2Id.style.cssText = 'border : 2px solid #000000;';
-        if(name === $scope.peer3Name)
-          Peer3Id.style.cssText = 'border : 2px solid #000000;';
-        if(name === $scope.peer4Name)
-          Peer4Id.style.cssText = 'border : 2px solid #000000;';
-
-      }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // WebRTC User Interface Logic (VIDEO TOGGLING)                                       //
-    ////////////////////////////////////////////////////////////////////////////////////////
-
-    $scope.peer1Joined = false;
-    $scope.peer1SharedVideo = false;
-
-    $scope.hasPeer1Joined = function () {
-      return $scope.peer1Joined;
-    };
-
-    $scope.hasPeer1SharedVideo = function () {
-      return $scope.peer1SharedVideo;
-    };
-
-    $scope.$on('peer1Joined', function () {
-      $scope.peer1Joined = true;
-      $scope.meetingRemoteVideoWidth = '170px';
-      $scope.peer1Name = RTCConference.getPeerName(1);
-    });
-
-    $scope.$on('peer1Leaves', function () {
-      $scope.peer1Joined = false;
-    });
-
-    $scope.$on('peer1SharedVideo', function(){
-      $scope.peer1SharedVideo = true;
-    });
-
-    $scope.$on('peer1HidesVideo', function(){
-      $scope.peer1SharedVideo = false;
-    });
-
-    $scope.peer2Joined = false;
-    $scope.peer2SharedVideo = false;
-
-    $scope.hasPeer2Joined = function () {
-      return $scope.peer2Joined;
-    };
-
-    $scope.hasPeer2SharedVideo = function () {
-      return $scope.peer2SharedVideo;
-    };
-
-    $scope.$on('peer2Joined', function () {
-      $scope.peer2Joined = true;
-      $scope.meetingRemoteVideoWidth = '170px';
-      $scope.peer2Name = RTCConference.getPeerName(2);
-    });
-
-    $scope.$on('peer2Leaves', function () {
-      $scope.peer2Joined = false;
-    });
-
-    $scope.$on('peer2SharedVideo', function(){
-      $scope.peer2SharedVideo = true;
-    });
-
-    $scope.$on('peer2HidesVideo', function(){
-      $scope.peer2SharedVideo = false;
-    });
-
-    $scope.peer3Joined = false;
-    $scope.peer3SharedVideo = false;
-
-    $scope.hasPeer3Joined = function () {
-      return $scope.peer3Joined;
-    };
-
-    $scope.hasPeer3SharedVideo = function () {
-      return $scope.peer3SharedVideo;
-    };
-
-    $scope.$on('peer3Joined', function () {
-      $scope.peer3Joined = true;
-      $scope.meetingRemoteVideoWidth = '170px';
-      $scope.peer3Name = RTCConference.getPeerName(3);
-    });
-
-    $scope.$on('peer3Leaves', function () {
-      $scope.peer3Joined = false;
-    });
-
-    $scope.$on('peer3SharedVideo', function(){
-      $scope.peer3SharedVideo = true;
-    });
-
-    $scope.$on('peer3HidesVideo', function(){
-      $scope.peer3SharedVideo = false;
-    });
-
-    $scope.peer4Joined = false;
-    $scope.peer4SharedVideo = false;
-
-    $scope.hasPeer4Joined = function () {
-      return $scope.peer4Joined;
-    };
-
-    $scope.hasPeer4SharedVideo = function () {
-      return $scope.peer4SharedVideo;
-    };
-
-    $scope.$on('peer4Joined', function () {
-      $scope.peer4Joined = true;
-      $scope.meetingRemoteVideoWidth = '170px';
-      $scope.peer4Name = RTCConference.getPeerName(4);
-    });
-
-    $scope.$on('peer4Leaves', function () {
-      $scope.peer4Joined = false;
-    });
-
-    $scope.$on('peer4SharedVideo', function(){
-      $scope.peer4SharedVideo = true;
-    });
-
-    $scope.$on('peer4HidesVideo', function(){
-      $scope.peer4SharedVideo = false;
-    });
-
-    $scope.peerSharedScreen = false;
-
-    $scope.hasPeerSharedScreen = function () {
-      return $scope.peerSharedScreen;
-    };
-
-    $scope.$on('ScreenShared', function () {
-      $scope.peerSharedScreen = true;
-
-      var showScreenButton = document.getElementById("showScreenButton");
-      showScreenButton.disabled = true;
-
-    });
-
-    $scope.$on('ScreenSharedRemoved', function () {
-      $scope.peerSharedScreen = false;
-
-      var showScreenButton = document.getElementById("showScreenButton");
-      showScreenButton.disabled = false;
-
-    });
-
-    $scope.screenSharedLocal = false;
-
-    $scope.isLocalScreenShared = function () {
-      return $scope.screenSharedLocal;
-    };
-
-    $scope.isLocalVideoShared = function(){
-      return $scope.videoSharedLocal;
-    };
-
-    $scope.meetingData = {};
-
-    $scope.recordMeetingData = function () {
-      $http.post(RestApi.meetingrecord.setMeetingRecord, JSON.stringify($scope.meetingData))
-    };
-
-    $scope.chatBoxVisible = false;
-
-    $scope.showChatBox = function () {
-      return $scope.chatBoxVisible;
-    };
-
-    $scope.toggleChatBoxVisibility = function () {
-      $scope.chatBoxVisible = !$scope.chatBoxVisible;
-    };
-
-    $window.onbeforeunload = function(){
-
-      console.log('leaving the meeting');
-      RTCConference.leaveMeeting();
-
-    };
-
-
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // Signaling Logic                                                                    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-
-    $scope.meetingRemoteVideoWidth = '170px';
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // Media Stream Logic                                                                 //
-    ///////////////////////////////////////////////////////////////////////////////////////
-
-    $scope.$on('localStreamCaptured', function () {
-      $scope.localCameraOn = true;
-    });
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // Screen Sharing Logic                                                               //
-    ///////////////////////////////////////////////////////////////////////////////////////
-
-    RTCConference.chromeExtensionInstalled(function(status){
-      $scope.extensionAvailable = status;
-    });
-
-    //-----------------//
-
-    $scope.toggleVideoText = 'Share Video';
-
-    $scope.videoToggle = function () {
-      console.log('in toggle video function')
-      if ($scope.toggleVideoText === 'Share Video') {
-
-        console.log('in toggle video on')
-
-        RTCConference.toggleVideo('on', function(err){
-          if(err) return alert(err);
-
-          console.log('in toggle video on inside')
-
-          $scope.toggleVideoText = 'Hide Video';
-
-          $scope.videoSharedLocal = true;
-
-        });
-
-      }
-      else {
-
-        console.log('we are in toggle off')
-
-        RTCConference.toggleVideo('off', function(err){
-          if(err) return alert(err);
-
-          $scope.toggleVideoText = 'Share Video';
-
-          console.log('we are in toggle off inside')
-
-          $scope.videoSharedLocal = false;
-
-        });
-
-      }
-    };
-
-    $scope.toggleAudioText = 'Mute Audio';
-    $scope.audioToggle = function () {
-      //console.log('in toggle Audio function')
-      if ($scope.toggleAudioText === 'Share Audio') {
-
-        //console.log('in toggle audio on')
-        RTCConference.toggleAudio('on', function(err){
-          if(err) return alert(err);
-
-          //console.log('in toggle Audio on inside')
-          $scope.toggleAudioText = 'Mute Audio';
-
-        });
-      }
-      else {
-        //console.log('we are in toggle off')
-        RTCConference.toggleAudio('off', function(err){
-          if(err) return alert(err);
-
-          $scope.toggleAudioText = 'Share Audio';
-          //console.log('we are in toggle off inside')
-
-        });
-
-      }
-    };
-
-    $scope.showScreenText = 'Share Screen';
-
-    $scope.showScreen = function () {
-
-      if ($scope.showScreenText == 'Share Screen') {
-
-        RTCConference.toggleScreenSharing('on', function(err){
-          if(err) return alert(err);
-
-          $scope.showScreenText = 'Hide Screen';
-          $scope.screenSharedLocal = true;
-
-        });
-
-      }
-      else {
-
-        RTCConference.toggleScreenSharing('off', function(err){
-          if(err) return alert(err);
-
-          $scope.showScreenText = 'Share Screen';
-          $scope.screenSharedLocal = false;
-
-        });
-
-      }
-
-    };
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // INSTALLATION OF EXTENSION                                                                                           //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $scope.installExtension = function () {
-
-      ScreenShare.installChromeExtension();
-
-    };
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // WebRTC DataChannel logic (Text Messages)                                           //
-    ///////////////////////////////////////////////////////////////////////////////////////
-
-    $scope.userMessages = [];
-
-    $scope.sendData = function () {
-
-      var data = $scope.dataChannelSend;
-
-      console.log('SENDING data channel message '+ data);
-
-      RTCConference.sendData('' + $scope.user.username + ': ' + data);
-
-      $scope.userMessages.push('Me: ' + data);
-      $scope.dataChannelSend = '';
-
-      //var chatBox = document.getElementById('chatBox');
-      //chatBox.scrollTop = 300 + 8 + ($scope.userMessages.length * 240);
-
-    };
-
-    $scope.$on('DataChannelMessageReceived', function(){
-      var message = RTCConference.getMessage();
-
-      if (message.byteLength  || typeof message !== 'string') {
-        process_binary(0, message, 0);
-      }
-      else if (message.charAt(0) == '{' && message.charAt(message.length - 1) == '}') {
-        process_data(message);
-      }
-      else if (message.charAt(0) == ':' && message.charAt(message.length - 1) == ':'){
-        handlePeerAudioState(message.split(':')[1], message.split(':')[2]);
-      }
-      else {
-        $scope.$apply(function () {
-
-          $scope.userMessages.push(event.data)
-
-          console.log('RECEIVED data channel message '+ event.data);
-
-        });
-        //var chatBox = document.getElementById('chatBox');
-        //chatBox.scrollTop = 300 + 8 + ($scope.userMessages.length * 240);
-      }
-    });
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // File Sharing Logic                                                                 //
-    ///////////////////////////////////////////////////////////////////////////////////////
+  .factory('FileHangout', function FileHangout($rootScope, Room, FileUtility) {
 
     var isChrome = !!navigator.webkitGetUserMedia;
 
-    window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
     window.URL = window.URL || window.webkitURL;
-    accept_inbound_files();
-
-    /* event delegation
-     * -we need to do this to form a chrome app - see https://developer.chrome.com/extensions/contentSecurityPolicy#H2-3
-     * -huge thanks to http://stackoverflow.com/questions/13142664/are-multiple-elements-each-with-an-addeventlistener-allowed
-     */
-    function fileEventHandler(e) {
-      e = e || window.event;
-      var target = e.target || e.srcElement;
-      if (target.id.search('-download') != -1) {
-        download_file(target.id.replace("-download", ""));
-      } else if (target.id.search('-cancel') != -1) {
-        cancel_file(target.id.replace("-cancel", ""));
-      } else if (target.id == 'upload_stop') {
-        upload_stop();
-      }
-    }
-
-    document.body.addEventListener('click', fileEventHandler, false);
-
     /* sending functionality, only allow 1 file to be sent out at a time */
     var chunks = {};
     var meta = {};
     var filesysteminuse = false;
     var FSdebug = false;
-
     /* Used in Chrome to handle larger files (and firefox with idb.filesystem.js) */
     window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-    var file_to_upload;
-    /* "pointer" to external file */
-
+    var file_to_upload;    /* "pointer" to external file */
     /* recieving functionality, values stored per user id */
     var fs = [];
     /* hold our filesystems for download files */
@@ -642,6 +41,23 @@ angular.module('cloudKiboApp')
     var requestedChunksWritePointer = [];
     /* stores the value of the next chunk to be requested */
 
+    /* event delegation
+     * -we need to do this to form a chrome app - see https://developer.chrome.com/extensions/contentSecurityPolicy#H2-3
+     * -huge thanks to http://stackoverflow.com/questions/13142664/are-multiple-elements-each-with-an-addeventlistener-allowed
+     */
+    function fileEventHandler(e) {
+      e = e || window.event;
+      var target = e.target || e.srcElement;
+      if (target.id.search('-download') != -1) {
+        download_file(target.id.replace("-download", ""));
+      } else if (target.id.search('-cancel') != -1) {
+        cancel_file(target.id.replace("-cancel", ""));
+      } else if (target.id == 'upload_stop') {
+        upload_stop();
+      }
+    }
+    document.body.addEventListener('click', fileEventHandler, false);
+
     /* stop the uploading! */
     function upload_stop() {
       /* remove data */
@@ -659,12 +75,9 @@ angular.module('cloudKiboApp')
      * FF does have a limitation in that we cannot load files directly out of idb.filesystem.js, we must first load them into memory :(
      */
     function write_to_file(user_id, chunk_data, chunk_num, hash) {
-
       //console.log('got Chunks : ', chunk_data)
-
       /* store our chunk temporarily in memory */
       recievedChunks[user_id][chunk_num % FileUtility.getChunksPerAck()] = chunk_data;
-
       /* once done recieving all chunks for this ack, start writing to memory */
       if (chunk_num % FileUtility.getChunksPerAck() == (FileUtility.getChunksPerAck() - 1) || recieved_meta[user_id].numOfChunksInFile == (chunk_num + 1)) {
         store_in_fs(user_id, hash);
@@ -757,22 +170,10 @@ angular.module('cloudKiboApp')
 
       send_meta();
 
-      RTCConference.sendData("You have received a file. Download and Save it.");
+      Room.sendChat("You have received a file. Download and Save it.");
 
       /* user 0 is this user! */
       create_upload_stop_link(file_to_upload.name, 0);//, username);
-    }
-
-    /* Document bind's to accept files copied. Don't accept until we have a connection */
-    function accept_inbound_files() {
-
-      document.getElementById('file').addEventListener('change', function (e) {
-        if (e.target.files.length == 1) {
-          var file = e.target.files[0];
-
-          process_inbound_files(file);
-        }
-      }, false);
     }
 
     /* inbound - recieve binary data (from a file)
@@ -870,7 +271,6 @@ angular.module('cloudKiboApp')
       }
     }
 
-
     /* request chunk # chunk_num from id, at this point just used to request the first chunk */
     function request_chunk(id, chunk_num, hash) {
       if (FSdebug) {
@@ -879,7 +279,7 @@ angular.module('cloudKiboApp')
 
       console.log('Function which actually asks for chunk');
 
-      RTCConference.sendData(JSON.stringify({ //id, JSON.stringify({
+      Room.sendDataChannelMessage(JSON.stringify({ //id, JSON.stringify({
         "eventName": "request_chunk",
         "data": {
           "chunk": chunk_num,
@@ -930,7 +330,6 @@ angular.module('cloudKiboApp')
       recievedChunks[id] = [];
     }
 
-
     /* delete a file - should be called when cancel is requested or kill is called */
     function delete_file(user_id) {
       if (fs[user_id]) {
@@ -952,7 +351,6 @@ angular.module('cloudKiboApp')
       /* create a new download link */
       create_pre_file_link(recieved_meta[id], id);
     }
-
 
     /* creates an entry in our filelist for a user, if it doesn't exist already - TODO: move this to script.js? */
     function create_or_clear_container(id) {
@@ -991,7 +389,6 @@ angular.module('cloudKiboApp')
       }
     }
 
-
     /* creates an entry in our filelist for a user, if it doesn't exist already */
     function remove_container(id) {
       var filecontainer = document.getElementById(id);
@@ -1003,9 +400,6 @@ angular.module('cloudKiboApp')
       }
     }
 
-    /////////////
-    // TODO Will see this later, commenting for now
-    /////////////
     /* create a link that will let the user start the download */
     function create_upload_stop_link(filename, id) {//, username) {
 
@@ -1054,7 +448,7 @@ angular.module('cloudKiboApp')
       filecontainer.appendChild(a);
 
       //append to chat
-      RTCConference.sendMessage($scope.user.username + " is now offering file " + meta.name);
+      //Room.sendChat($scope.user.username + " is now offering file " + meta.name);
     }
 
     /* update a file container with a DL % */
@@ -1068,7 +462,6 @@ angular.module('cloudKiboApp')
       span.innerHTML = percentage.toFixed(1) + "% of " + FileUtility.getReadableFileSizeString(total_size) + ' ';
 
     }
-
 
     /* create a link to this file */
     function create_file_link(meta, id, fileEntry) {
@@ -1118,9 +511,8 @@ angular.module('cloudKiboApp')
       filecontainer.appendChild(can);
 
       //append to chat
-      RTCConference.sendMessage("File " + meta.name + " is ready to save locally");
+      Room.sendChat("File " + meta.name + " is ready to save locally");
     }
-
 
     /* send out meta data, allow for id to be empty = broadcast */
     function send_meta(id) {
@@ -1131,7 +523,7 @@ angular.module('cloudKiboApp')
       //console.log("sending meta data");
       //console.log(meta);
 
-      RTCConference.sendData(JSON.stringify({
+      Room.sendDataChannelMessage(JSON.stringify({
         eventName: "data_msg",
         data: {
           file_meta: meta
@@ -1168,7 +560,7 @@ angular.module('cloudKiboApp')
             console.log('sending: ' + CryptoJS.SHA256(FileUtility._arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
           }
 
-          RTCConference.sendData(event.target.result);
+          Room.sendDataChannelMessage(event.target.result);
 
         }
 
@@ -1189,13 +581,33 @@ angular.module('cloudKiboApp')
       sendchunk(id, chunk_num, other_browser, rand, hash);
     }
 
+    return {
 
-    ////////////////////////////////////////////////////////////////////////////////////////
-    // File Sharing Logic End                                                              //
-    ////////////////////////////////////////////////////////////////////////////////////////
+      accept_inbound_files : function(){
+
+        document.getElementById('file').addEventListener('change', function (e) {
+          if (e.target.files.length == 1) {
+            var file = e.target.files[0];
+
+            process_inbound_files(file);
+          }
+        }, false);
+
+      },
+
+      dataChannelMessage: function(id, data){
+        if (data.byteLength  || typeof data !== 'string') {
+          process_binary(0, data, 0);
+        }
+        else if (data.charAt(0) == '{' && data.charAt(data.length - 1) == '}') {
+          process_data(data);
+        }
+      }
+
+    };
+
+
+
 
 
   });
-
-
-

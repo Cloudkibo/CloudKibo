@@ -6,9 +6,9 @@ angular.module('cloudKiboApp')
   .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config) {
 
     var iceConfig = pc_config,
-        peerConnections = {}, userNames = {},
-        currentId, roomId,
-        stream, username, screenSwitch = false;
+      peerConnections = {}, userNames = {},
+      dataChannels = {}, currentId, roomId,
+      stream, username, screenSwitch = false;
 
     function getPeerConnection(id) {
       if (peerConnections[id]) {
@@ -40,19 +40,58 @@ angular.module('cloudKiboApp')
           $rootScope.$apply();
         }
       };
+      pc.ondatachannel = function (evnt) {
+        console.log('Received DataChannel from '+ id);
+        dataChannels[id] = evnt.channel;
+        dataChannels[id].onmessage = function (evnt) {
+          handleDataChannelMessage(id, evnt.data);
+        };
+      };
       return pc;
     }
 
     function makeOffer(id) {
       var pc = getPeerConnection(id);
+      makeDataChannel(id);
       pc.createOffer(function (sdp) {
-        pc.setLocalDescription(sdp);
-        console.log('Creating an offer for', id);
-        socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'sdp-offer', username: username });
-      }, function (e) {
-        console.log(e);
-      },
-      { mandatory: { OfferToReceiveVideo: true, OfferToReceiveAudio: true }});
+          pc.setLocalDescription(sdp);
+          console.log('Creating an offer for', id);
+          socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'sdp-offer', username: username });
+        }, function (e) {
+          console.log(e);
+        },
+        { mandatory: { OfferToReceiveVideo: true, OfferToReceiveAudio: true }});
+    }
+
+    function makeDataChannel (id) {
+      var pc = getPeerConnection(id);
+      try {
+        // Reliable Data Channels not yet supported in Chrome
+        try {
+          dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: true});
+        }
+        catch (e) {
+          console.log('Unreliable DataChannel for '+ id);
+          dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: false});
+        }
+        dataChannels[id].onmessage = function (evnt) {
+          handleDataChannelMessage(id, evnt.data);
+        };
+        console.log('Created DataChannel for '+ id);
+      } catch (e) {
+        alert('Failed to create data channel. ' +
+        'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
+        console.log('createDataChannel() failed with exception: ' + e.message);
+      }
+    }
+
+    function handleDataChannelMessage(id, data) {
+      console.log('datachannel message '+ data);
+      api.trigger('dataChannel.message', [{
+        id: id,
+        username: userNames[id],
+        data: data
+      }]);
     }
 
     function handleMessage(data) {
@@ -148,6 +187,11 @@ angular.module('cloudKiboApp')
       },
       sendChat: function (m) {
         socket.emit('conference.chat', { message: m, username: username });
+      },
+      sendDataChannelMessage: function (m) {
+        for (var key in dataChannels) {
+          dataChannels[key].send(m);
+        }
       },
       toggleAudio: function () {
         stream.getAudioTracks()[0].enabled = !(stream.getAudioTracks()[0].enabled);

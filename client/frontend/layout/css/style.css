@@ -113,7 +113,13 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 /* Custon CSS                                                                   */
 /********************************************************************************/
 
-
+.topPane{
+  z-index: 20;
+  top: 0px;
+  width: 100%;
+  height: 15px;
+  background: #fff000;
+}
 
 #userNameBox
 {
