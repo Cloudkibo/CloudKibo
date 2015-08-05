@@ -1,4 +1,7 @@
 div
+  div(class='topPane row' ng-show='isLocalScreenShared()')
+    center
+      b You are sharing you computer screen.
   .header
     .container
       a(class='site-logo', href='/')
@@ -12,8 +15,8 @@ div
         center
           span
             .videoBoxContainer
-              .hideVideoBox(ng-hide='getLocalVideoShared()')
-              video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='170px', ng-show='getLocalVideoShared()' muted)
+              .hideVideoBox(ng-hide='isLocalVideoShared()')
+              video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='170px', ng-show='isLocalVideoShared()' muted)
               span {{getUsername()}}
             video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}')
       div(ng-show='hasPeerSharedScreen()')
@@ -48,12 +51,12 @@ div
         a.btn.btn-lg.green(target='self', ng-href='https://addons.mozilla.org/en-US/firefox/addon/cloudkibo-screen-capturing-in-/')
           i.fa.fa-plus-square-o
           div Add FireFox Screen Sharing Extension
-    .col-sm-1(ng-show='localCameraCaptured()')
+    .col-sm-1(ng-show='meetingStarted()')
       .btn-wrapper-kibo
         label Send File
         input(id='file', type='file')
 
-    .col-sm-1(id='0', ng-show='localCameraCaptured()')
+    .col-sm-1(id='0', ng-show='meetingStarted()')
     .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')
     .col-sm-1(ng-show='meetingStarted()')
       .btn-wrapper-kibo

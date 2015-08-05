@@ -5,7 +5,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare) {
+  .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout) {
 
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
@@ -49,7 +49,8 @@ angular.module('cloudKiboApp')
           } else {
             Room.joinRoom($routeParams.mname);
           }
-        }, function () {
+        }, function (err) {
+          console.error(err);
           $scope.error = 'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
         });
     };
@@ -57,6 +58,8 @@ angular.module('cloudKiboApp')
     $scope.peers = [];
     Room.on('peer.stream', function (peer) {
       console.log('Client connected, adding new stream');
+      // Inform the new joiner that you are sharing video
+      if($scope.isLocalVideoShared()) Room.toggleVideo($scope.isLocalVideoShared());
       $scope.peers.push({
         id: peer.id,
         username: peer.username,
@@ -69,7 +72,7 @@ angular.module('cloudKiboApp')
       peerScreenStream = URL.createObjectURL(peer.stream);
     });
     Room.on('conference.stream', function (peer) {
-      console.log('hiding / showing video or screen    ');
+      console.log('hiding / showing video or screen');
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
           if(peer.type === 'video'){
@@ -97,7 +100,7 @@ angular.module('cloudKiboApp')
     $scope.getLocalVideo = function () {
       return $sce.trustAsResourceUrl(stream);
     };
-    $scope.getLocalVideoShared = function () {
+    $scope.isLocalVideoShared = function () {
       return ($scope.toggleVideoText === 'Hide Video');
     };
     $scope.meetingStarted = function(){
@@ -168,6 +171,9 @@ angular.module('cloudKiboApp')
     $scope.hasPeerSharedScreen = function () {
       return $scope.peerSharedScreen;
     };
+    $scope.isLocalScreenShared = function () {
+      return $scope.screenSharedLocal;
+    };
     $scope.getPeerScreen = function () {
       return $sce.trustAsResourceUrl(peerScreenStream);
     };
@@ -184,7 +190,7 @@ angular.module('cloudKiboApp')
       } else {
         if ($scope.showScreenText === 'Share Screen') {
           if (!!navigator.webkitGetUserMedia) {
-            shareScreen(function (err, stream) {
+            shareScreenUsingChromeExtension(function (err, stream) {
               if (err) {
                 alert('Permission denied or could not capture the screen.');
               }
@@ -225,7 +231,7 @@ angular.module('cloudKiboApp')
         }
       }
     };
-    function shareScreen(cb) {
+    function shareScreenUsingChromeExtension(cb) {
       // this statement verifies chrome extension availability
       // if installed and available then it will invoke extension API
       // otherwise it will fallback to command-line based screen capturing API
@@ -249,4 +255,9 @@ angular.module('cloudKiboApp')
         });
       }
     }
+
+    FileHangout.accept_inbound_files();
+    Room.on('dataChannel.message', function(data){
+      FileHangout.dataChannelMessage(data.id, data.data);
+    });
   });
