@@ -1,16 +1,16 @@
 ## Operation Guide
 ### Overview
 Cloudkibo is developed with strategy  to separate server from client. 
-Server side code is separated from Client side code.To build Cloudkibo application, we should use Grunt (http://gruntjs.com/) commands.
+Server side code is separated from Client side code.And to build Cloudkibo application, use Grunt (http://gruntjs.com/) commands.
 The built application is stored in dist folder. Then this folder is deployed to server for production.
 
 Cloudkio uses Nodejs (https://nodejs.org/) as its server and Angularjs (https://angularjs.org/) as its Client. 
 All server side libraries are istalled using npm install command, these libraries are saved in node_modules folder. 
 On server side, libraries are defined in package.json. 
 
-Client side libraries can be installed using bower install command and are defined in bower.json.
+Client side libraries can be installed using [bower install] command and are defined in bower.json.
 
-Our database is managed by moongoDB. After defining database in mongodb, 
+Our database is managed by moongoDB. Define database in mongodb to 
 write the respective database connection strings in files in server/config/environment
 
 ## Architecture
@@ -39,7 +39,7 @@ Run bower install command to install angularjs dependencies
 >Step-5
 To run development version: node server/app.js
 
->Step-5
+>Step-6
 To run production version: node dist/server/app.js
 
 
@@ -52,9 +52,9 @@ SSL certificates are stored in server/security and can be defined in app.js file
 ## Administration
 
 Cloudkibo super user account is for Cloudkibo owner. 
-This is administrator account and administrator sets application configurtions for sepecific Cloudkibo features.
-Super user can modify certain cloudkibo features from there, or remove user accounts. It can see accounts created and can view happenings n Cloudkibbo application.
-There is no way to make super user account from user interface, this is secure and one needs to create manual user account at cloudkibo first, then we can change the role from database manually for that user to be super user.
+This is administrator account and administrator sets application configurtion for sepecific Cloudkibo features.
+Super user can modify certain cloudkibo features and can remove user accounts. It can see accounts created and can view happenings in Cloudkibbo application.
+There is no way to make super user account from user interface, this is secure. One needs to create manual user account at cloudkibo first, then we can change the role from database manually for that user to be super user.
 This is for security reasons.
 
 ## Integration
