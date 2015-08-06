@@ -6,8 +6,36 @@
    
 
 CloudKibo is a next generation communication technology. It’s intuitive, cost effective, and rich with functionality. It can be used both for internal and external communications. It provides integrated and unified voice, video, and data communication across web.
-User Guide
-# Features
+
+### Cloudkibo Documentation 
+•	User Guide (this for who will use the product)
+    o	Application use
+    o	Features
+•	Operations Guide (this is for who would implement the product)
+    o	Overview
+    o	Architecture
+    o	Design
+    o	Implementation 
+    o	Administration
+    o	Integration
+•	Developers guide (this is for who would modify the product)
+    o	Overview
+    o	Architecture
+    o	Design
+    o	Rest APIs
+    o	Server side code
+    o	Client side code
+    o	Integration
+    o	Libraries
+      	Client-side libraries 
+      	Server-side libraries
+    o	Database
+•	Application
+    o	Kibosupport
+
+
+#User Guide
+## Features
 ### Click to Call
 CloudKibo lets you invite your friend with a click of a button into a call. Don’t get tied down to a clumsy keypad and cryptic codes to control and manage your calls.
 ### Web Meeting
