@@ -159,17 +159,37 @@ angular.module('cloudKiboApp')
           makeOffer(data.id);
         }
       });
+      socket.on('connect', function(){
+        console.log('connected')
+        api.trigger('connection.status', [{
+          status : true
+        }]);
+        connectRoom(roomId);
+      });
+      socket.on('disconnect', function () {
+        console.log('disconnected')
+        api.trigger('connection.status', [{
+          status: false
+        }]);
+        peerConnections = {};
+        userNames = {};
+        dataChannels = {};
+        connected = false;
+      });
     }
 
+    function connectRoom (r){
+      if (!connected) {
+        socket.emit('init', { room: r, username: username }, function (roomid, id) {
+          currentId = id;
+          roomId = roomid;
+        });
+        connected = true;
+      }
+    }
     var api = {
       joinRoom: function (r) {
-        if (!connected) {
-          socket.emit('init', { room: r, username: username }, function (roomid, id) {
-            currentId = id;
-            roomId = roomid;
-          });
-          connected = true;
-        }
+        connectRoom(r);
       },
       createRoom: function () {
         var d = $q.defer();
