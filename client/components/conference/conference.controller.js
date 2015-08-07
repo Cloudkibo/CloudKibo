@@ -41,14 +41,7 @@ angular.module('cloudKiboApp')
           stream = s;
           Room.init(stream, $scope.user.username);
           stream = URL.createObjectURL(stream);
-          if (!$routeParams.mname) {
-            Room.createRoom()
-              .then(function (roomId) {
-                $location.path('/conference/' + roomId);
-              });
-          } else {
-            Room.joinRoom($routeParams.mname);
-          }
+          Room.joinRoom($routeParams.mname);
         }, function (err) {
           console.error(err);
           $scope.error = 'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
