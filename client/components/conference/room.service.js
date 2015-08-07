@@ -160,21 +160,22 @@ angular.module('cloudKiboApp')
         }
       });
       socket.on('connect', function(){
-        /*console.log('connected')
+        console.log('connected')
         api.trigger('connection.status', [{
           status : true
-        }]);*/
+        }]);
+        console.log(roomId);
         //connectRoom(roomId);
       });
       socket.on('disconnect', function () {
-        /*console.log('disconnected')
+        console.log('disconnected')
         api.trigger('connection.status', [{
           status: false
         }]);
         peerConnections = {};
         userNames = {};
         dataChannels = {};
-        connected = false;*/
+        connected = false;
       });
     }
 
@@ -191,7 +192,7 @@ angular.module('cloudKiboApp')
           connected = true;
         }
       },
-      createRoom: function () {
+      createRoom: function () { // DEPRECATED, not using anymore.
         var d = $q.defer();
         socket.emit('init', null, function (roomid, id) {
           d.resolve(roomid);
