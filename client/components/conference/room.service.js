@@ -164,7 +164,7 @@ angular.module('cloudKiboApp')
         api.trigger('connection.status', [{
           status : true
         }]);
-        connectRoom(roomId);
+        //connectRoom(roomId);
       });
       socket.on('disconnect', function () {
         console.log('disconnected')
