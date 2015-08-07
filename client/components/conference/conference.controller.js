@@ -44,7 +44,7 @@ angular.module('cloudKiboApp')
           if (!$routeParams.mname) {
             Room.createRoom()
               .then(function (roomId) {
-                $location.path('/room/' + roomId);
+                $location.path('/conference/' + roomId);
               });
           } else {
             Room.joinRoom($routeParams.mname);
