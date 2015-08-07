@@ -2,6 +2,9 @@ div
   div(class='topPane row' ng-show='isLocalScreenShared()')
     center
       b You are sharing you computer screen.
+  div(class='topPane row' ng-hide='isConnected()')
+    center
+      b You are disconnnected. We are trying to connect again. Please check your Internet connection.
   .header
     .container
       a(class='site-logo', href='/')
