@@ -180,17 +180,17 @@ angular.module('cloudKiboApp')
     }
 
     function connectRoom (r){
-
+      if (!connected) {
+        socket.emit('init', { room: r, username: username }, function (roomid, id) {
+          currentId = id;
+          roomId = roomid;
+        });
+        connected = true;
+      }
     }
     var api = {
       joinRoom: function (r) {
-        if (!connected) {
-          socket.emit('init', { room: r, username: username }, function (roomid, id) {
-            currentId = id;
-            roomId = roomid;
-          });
-          connected = true;
-        }
+        connectRoom(r);
       },
       createRoom: function () { // DEPRECATED, not using anymore.
         var d = $q.defer();
