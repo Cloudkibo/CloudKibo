@@ -164,8 +164,8 @@ angular.module('cloudKiboApp')
         api.trigger('connection.status', [{
           status : true
         }]);
-        console.log(roomId);
-        //connectRoom(roomId);
+        if(typeof roomId !== 'undefined' && typeof username !== 'undefined')
+          connectRoom(roomId);
       });
       socket.on('disconnect', function () {
         console.log('disconnected')
