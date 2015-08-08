@@ -3,12 +3,49 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config) {
+  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, audio_threshold) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
       dataChannels = {}, currentId, roomId,
       stream, username, screenSwitch = false;
+
+    /** Audio Analyser variables **/
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var analyser = audioCtx.createAnalyser();
+    analyser.minDecibels = -90;
+    analyser.maxDecibels = -10;
+    analyser.smoothingTimeConstant = 0.85;
+    var drawVisual;
+    var speaking = false;
+    /** Audio Analyser variables ends **/
+
+    function analyseAudio(){
+      analyser.fftSize = 256;
+      var bufferLength = analyser.frequencyBinCount;
+      console.log(bufferLength);
+      var dataArray = new Uint8Array(bufferLength);
+      var tempSpeakingValue = false;
+      function draw() {
+        drawVisual = requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
+        var sum = 0; // added by sojharo
+        for(var i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
+        }
+        var averageFrequency = sum/bufferLength;
+        if(averageFrequency > audio_threshold)
+          tempSpeakingValue = true;
+        else
+          tempSpeakingValue = false;
+        if(tempSpeakingValue !== speaking){
+          speaking = tempSpeakingValue;
+          //console.log(speaking ? 'Speaking' : 'Silent');
+          $rootScope.$broadcast(speaking ? 'Speaking' : 'Silent');
+        }
+      };
+      draw();
+    }
 
     function getPeerConnection(id) {
       if (peerConnections[id]) {
@@ -86,7 +123,7 @@ angular.module('cloudKiboApp')
     }
 
     function handleDataChannelMessage(id, data) {
-      console.log('datachannel message '+ data);
+      //console.log('datachannel message '+ data);
       api.trigger('dataChannel.message', [{
         id: id,
         username: userNames[id],
@@ -209,6 +246,9 @@ angular.module('cloudKiboApp')
       init: function (s, n) {
         stream = s;
         username = n;
+        var source = audioCtx.createMediaStreamSource(stream);
+        source.connect(analyser);
+        analyseAudio()
       },
       sendChat: function (m) {
         socket.emit('conference.chat', { message: m, username: username });

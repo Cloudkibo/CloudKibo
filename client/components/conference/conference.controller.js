@@ -57,6 +57,7 @@ angular.module('cloudKiboApp')
         id: peer.id,
         username: peer.username,
         sharedVideo: false,
+        divClass: 'hideVideoBox',
         stream: URL.createObjectURL(peer.stream)
       });
     });
@@ -251,7 +252,39 @@ angular.module('cloudKiboApp')
 
     FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
+      if (typeof data.data === 'string') {
+        if (data.data === 'Speaking') {
+          $scope.peers.forEach(function (p) {
+            if(p.id === data.id){
+              $scope.$apply(function(){
+                p.divClass = 'hideVideoBoxSpeaking';
+              });
+            }
+          });
+        } else {
+          $scope.peers.forEach(function (p) {
+            if(p.id === data.id){
+              $scope.$apply(function(){
+                p.divClass = 'hideVideoBox';
+              });
+            }
+          });
+        }
+      }
       FileHangout.dataChannelMessage(data.id, data.data);
+    });
+    $scope.divBoxClass = 'hideVideoBox';
+    $scope.$on('Speaking', function () {
+      $scope.$apply(function(){
+        $scope.divBoxClass = 'hideVideoBoxSpeaking';
+      });
+      Room.sendDataChannelMessage('Speaking');
+    });
+    $scope.$on('Silent', function () {
+      $scope.$apply(function(){
+        $scope.divBoxClass = 'hideVideoBox';
+      });
+      Room.sendDataChannelMessage('Silent');
     });
 
     $scope.connected = true;

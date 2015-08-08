@@ -7,7 +7,7 @@ angular.module('cloudKiboApp')
   .directive('videoPlayer', function ($sce) {
     return {
       template: '<div class="videoBoxContainer">' +
-      '<div class="hideVideoBox" ng-hide="hasSharedVideo()"></div>' +
+      '<div class="{{divBoxClass}}" ng-hide="hasSharedVideo()"></div>' +
       '<video ng-src="{{trustSrc()}}" autoplay width="170px" ng-show="hasSharedVideo()" class="videoelement"></video>' +
       '<span>{{peerUserName()}}</span>' +
       '</div>',
@@ -16,7 +16,8 @@ angular.module('cloudKiboApp')
       scope: {
         vidSrc: '@',
         userName: '@',
-        sharedVid: '@'
+        sharedVid: '@',
+        divBoxClass: '@'
       },
       link: function (scope) {
         console.log('Initializing video-player');

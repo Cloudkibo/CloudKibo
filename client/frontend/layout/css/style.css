@@ -686,11 +686,18 @@ textarea
 {
   display: inline-block;
   background-image: url('/assets/images/avatar.png');
-
 //margin:0.5em;
   width : 150px;
   height: 152px;
-
+}
+.hideVideoBoxSpeaking
+{
+  display: inline-block;
+  background-image: url('/assets/images/avatar.png');
+//margin:0.5em;
+  width : 150px;
+  height: 152px;
+  border : 2px solid #000000;
 }
 
 .videoelementscreen{
