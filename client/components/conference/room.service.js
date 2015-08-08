@@ -60,7 +60,7 @@ angular.module('cloudKiboApp')
         }, function (e) {
           console.log(e);
         },
-        { mandatory: { OfferToReceiveVideo: true, OfferToReceiveAudio: true }});
+        { mandatory: { offerToReceiveVideo: true, offerToReceiveAudio: true }});
     }
 
     function makeDataChannel (id) {
@@ -104,7 +104,11 @@ angular.module('cloudKiboApp')
             pc.createAnswer(function (sdp) {
               pc.setLocalDescription(sdp);
               socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'sdp-answer' });
+            }, function (e) {
+              console.log(e);
             });
+          }, function (e) {
+            console.log(e);
           });
           break;
         case 'sdp-answer':
