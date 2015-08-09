@@ -100,6 +100,9 @@ angular.module('cloudKiboApp')
       joinRoom: function (r) {
         if (!connected) {
           socket.emit('init', { room: r, username: username }, function (roomid, id) {
+            if(id === null){
+              alert('You cannot join the conference. Room is full.');
+            }
             currentId = id;
             roomId = roomid;
           });
