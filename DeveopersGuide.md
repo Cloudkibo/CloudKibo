@@ -39,10 +39,41 @@ In socketio.js, we have all the server side code of socket.io. This code is ofte
 App.js is the main file of server side application and serves as starting point of our code. ViewRoutes has controllers for all the views requested by client.
 Routes has all the API route handlers and other 404 route handlers
 
-To see Cloudkibo Server side code: https://github.com/Cloudkibo/CloudKibo/wiki/Cloukibo-Server-Structure
+To see Cloudkibo Server side structure: https://github.com/Cloudkibo/CloudKibo/wiki/Cloukibo-Server-Structure
 
 ## Client side code 
+
+In separate md file, we would give details of client side code.
+On client side, we are using angularjs so most of the client application follows the angularjs patter of modularity.
+We have dependencies which are injected into each other when required. We have defined controllers, services, directives and filters.
+We have a separate module for webrtc code called KiboRTC. Conference code in this module is deprecated and has been replaced by new conference logic which is defined in /components/conference/app/main contains all the main application code it has angularjs controllers.
+
+Cloudkibo is single-page-application therefore we often request views from the server according to route.
+Client side routes are handled separately by angularjs and server side routes are not exposed to normal user.
+All the authentication and password management logic can be found in /app/account folder.
+Super user code on client side is defined in the /app/admin folder
+Most of the services are defined in the components folder
+All the other folders are related to theme templates and images.
+Bower_components folder is automatically created and managed by bower. We don’t need to do anything with this folder.
+
+/components/kibortc is the code of our webrtc angularjs library. The conference code of this library is not used anymore and is deprecated. Instead for conference, we use cod inside folder /components/conference.
+
+/components/auth has the angularjs services for maintaining authentication and user related information.
+
+/components/sound is used to control sounds in application.
+
+/components/rest is angularjs service written to separate addresses of REST API URIs at one place, application uses this whenever there is need to make http request.
+
+To see Cloudkibo Client side structure: https://github.com/Cloudkibo/CloudKibo/wiki/Cloudkibo-Client-Structure
+
 ## Integration
+
+It only require us to run npm install and bower install commands and this install all libraries. All the server side libraries are defined in package.json file. All the client side libraries are defined in bower.json. Sendgrid api is accessed using nodejs library and Cloudkibo has username and password which can be changed from super user account. Cloudkibo can define addresses of TURN server in client/components/kibortc/rtcconfig.service.js.
+
+Cloudkibo has feature to register with Windos, Facebook and Google accounts. The integration with facebook, google and windows is done on server side and all the credentials are defined on the super user UI. Super user has all right to change the configuration.
+
+Application is integrated with shippable which automatically runs all the tests on each github commit and sends the email on test failure. Shippable uses the grunt file to run the tests. All the automated processes run by shippable are defined in grunt file.
+
 ## Libraries
 ### Client-side libraries 
 ### Server-side libraries
