@@ -255,7 +255,8 @@ angular.module('cloudKiboApp')
       },
       sendDataChannelMessage: function (m) {
         for (var key in dataChannels) {
-          dataChannels[key].send(m);
+          if(dataChannels[key].readyState === 'open')
+            dataChannels[key].send(m);
         }
       },
       toggleAudio: function () {
