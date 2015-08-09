@@ -688,9 +688,6 @@ module.exports = function (socketio) {
     socket.on('init', function (data, fn) {
       currentRoom = (data || {}).room || uuid.v4();
       var room = rooms[currentRoom];
-      console.log(room)
-      console.log(data);
-      console.log(currentRoom);
       if (!room) {
         socket.username = data.username;
         rooms[currentRoom] = [socket];
@@ -727,6 +724,18 @@ module.exports = function (socketio) {
       }
     });
 
+    socket.on('conference.chat', function(data){
+      rooms[currentRoom].forEach(function (s) {
+        s.emit('conference.chat', { username: data.username, message: data.message });
+      });
+    });
+
+    socket.on('conference.stream', function(data){
+      rooms[currentRoom].forEach(function (s) {
+        s.emit('conference.stream', { username: data.username, type: data.type, action: data.action, id: data.id });
+      });
+    });
+
     function conferenceDisconnect(socketio, socket){
       if (!currentRoom || !rooms[currentRoom]) {
         return;
@@ -737,11 +746,11 @@ module.exports = function (socketio) {
           socket.emit('peer.disconnected', { id: id });
         }
       });
-      userIds[currentRoom] -= 1;
+      /*userIds[currentRoom] -= 1;
       if(userIds[currentRoom] < 0){
         delete userIds[currentRoom];
         delete rooms[currentRoom];
-      }
+      }*/
     }
 
     /**

@@ -3,12 +3,49 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('Room', function ($rootScope, $q, socket) {
+  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, audio_threshold) {
 
-    var iceConfig = { 'iceServers': [{ 'url': 'stun:stun.l.google.com:19302' }]},
-        peerConnections = {}, userNames = {},
-        currentId, roomId,
-        stream, username;
+    var iceConfig = pc_config,
+      peerConnections = {}, userNames = {},
+      dataChannels = {}, currentId, roomId,
+      stream, username, screenSwitch = false;
+
+    /** Audio Analyser variables **/
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var analyser = audioCtx.createAnalyser();
+    analyser.minDecibels = -90;
+    analyser.maxDecibels = -10;
+    analyser.smoothingTimeConstant = 0.85;
+    var drawVisual;
+    var speaking = false;
+    /** Audio Analyser variables ends **/
+
+    function analyseAudio(){
+      analyser.fftSize = 256;
+      var bufferLength = analyser.frequencyBinCount;
+      console.log(bufferLength);
+      var dataArray = new Uint8Array(bufferLength);
+      var tempSpeakingValue = false;
+      function draw() {
+        drawVisual = requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
+        var sum = 0; // added by sojharo
+        for(var i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
+        }
+        var averageFrequency = sum/bufferLength;
+        if(averageFrequency > audio_threshold)
+          tempSpeakingValue = true;
+        else
+          tempSpeakingValue = false;
+        if(tempSpeakingValue !== speaking){
+          speaking = tempSpeakingValue;
+          //console.log(speaking ? 'Speaking' : 'Silent');
+          $rootScope.$broadcast(speaking ? 'Speaking' : 'Silent');
+        }
+      };
+      draw();
+    }
 
     function getPeerConnection(id) {
       if (peerConnections[id]) {
@@ -22,28 +59,76 @@ angular.module('cloudKiboApp')
       };
       pc.onaddstream = function (evnt) {
         console.log('Received new stream');
-        api.trigger('peer.stream', [{
-          id: id,
-          username: userNames[id],
-          stream: evnt.stream
-        }]);
+        if(screenSwitch){
+          api.trigger('peer.screenStream', [{
+            id: id,
+            username: userNames[id],
+            stream: evnt.stream
+          }]);
+          screenSwitch = false;
+        } else {
+          api.trigger('peer.stream', [{
+            id: id,
+            username: userNames[id],
+            stream: evnt.stream
+          }]);
+        }
         if (!$rootScope.$$digest) {
           $rootScope.$apply();
         }
+      };
+      pc.ondatachannel = function (evnt) {
+        console.log('Received DataChannel from '+ id);
+        dataChannels[id] = evnt.channel;
+        dataChannels[id].onmessage = function (evnt) {
+          handleDataChannelMessage(id, evnt.data);
+        };
       };
       return pc;
     }
 
     function makeOffer(id) {
       var pc = getPeerConnection(id);
+      makeDataChannel(id);
       pc.createOffer(function (sdp) {
-        pc.setLocalDescription(sdp);
-        console.log('Creating an offer for', id);
-        socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'sdp-offer', username: username });
-      }, function (e) {
-        console.log(e);
-      },
-      { mandatory: { OfferToReceiveVideo: true, OfferToReceiveAudio: true }});
+          pc.setLocalDescription(sdp);
+          console.log('Creating an offer for', id);
+          socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'sdp-offer', username: username });
+        }, function (e) {
+          console.log(e);
+        },
+        { mandatory: { offerToReceiveVideo: true, offerToReceiveAudio: true }});
+    }
+
+    function makeDataChannel (id) {
+      var pc = getPeerConnection(id);
+      try {
+        // Reliable Data Channels not yet supported in Chrome
+        try {
+          dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: true});
+        }
+        catch (e) {
+          console.log('Unreliable DataChannel for '+ id);
+          dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: false});
+        }
+        dataChannels[id].onmessage = function (evnt) {
+          handleDataChannelMessage(id, evnt.data);
+        };
+        console.log('Created DataChannel for '+ id);
+      } catch (e) {
+        alert('Failed to create data channel. ' +
+        'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
+        console.log('createDataChannel() failed with exception: ' + e.message);
+      }
+    }
+
+    function handleDataChannelMessage(id, data) {
+      //console.log('datachannel message '+ data);
+      api.trigger('dataChannel.message', [{
+        id: id,
+        username: userNames[id],
+        data: data
+      }]);
     }
 
     function handleMessage(data) {
@@ -56,10 +141,15 @@ angular.module('cloudKiboApp')
             pc.createAnswer(function (sdp) {
               pc.setLocalDescription(sdp);
               socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'sdp-answer' });
+            }, function (e) {
+              console.log(e);
             });
+          }, function (e) {
+            console.log(e);
           });
           break;
         case 'sdp-answer':
+          console.log('answer by '+ data.by);
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             console.log('Setting remote description by answer');
           }, function (e) {
@@ -80,7 +170,6 @@ angular.module('cloudKiboApp')
     function addHandlers(socket) {
       socket.on('peer.connected', function (params) {
         userNames[params.id] = params.username;
-        console.log(userNames);
         makeOffer(params.id);
       });
       socket.on('peer.disconnected', function (data) {
@@ -89,15 +178,60 @@ angular.module('cloudKiboApp')
           $rootScope.$apply();
         }
         delete userNames[data.id];
-        console.log(userNames);
       });
       socket.on('msg', function (data) {
         handleMessage(data);
       });
+      socket.on('conference.chat', function(data){
+        api.trigger('conference.chat', [{
+          username: data.username,
+          message: data.message
+        }]);
+      });
+      socket.on('conference.stream', function(data){
+        if(data.id !== currentId){
+          if(data.type === 'screen' && data.action) screenSwitch = true;
+          api.trigger('conference.stream', [{
+            username: data.username,
+            type: data.type,
+            action: data.action,
+            id: data.id
+          }]);
+          makeOffer(data.id);
+        }
+      });
+      socket.on('connect', function(){
+        console.log('connected')
+        api.trigger('connection.status', [{
+          status : true
+        }]);
+        if(typeof roomId !== 'undefined' && typeof username !== 'undefined')
+          connectRoom(roomId);
+      });
+      socket.on('disconnect', function () {
+        console.log('disconnected')
+        api.trigger('connection.status', [{
+          status: false
+        }]);
+        peerConnections = {};
+        userNames = {};
+        dataChannels = {};
+        connected = false;
+      });
     }
 
+    function connectRoom (r){
+      if (!connected) {
+        socket.emit('init', { room: r, username: username }, function (roomid, id) {
+          currentId = id;
+          roomId = roomid;
+        });
+        connected = true;
+      }
+    }
     var api = {
       joinRoom: function (r) {
+<<<<<<< HEAD
         if (!connected) {
           socket.emit('init', { room: r, username: username }, function (roomid, id) {
             if(id === null){
@@ -108,8 +242,11 @@ angular.module('cloudKiboApp')
           });
           connected = true;
         }
+=======
+        connectRoom(r);
+>>>>>>> 0e76afb18a2d942322e39954304b04d1c13b23f9
       },
-      createRoom: function () {
+      createRoom: function () { // DEPRECATED, not using anymore.
         var d = $q.defer();
         socket.emit('init', null, function (roomid, id) {
           d.resolve(roomid);
@@ -122,6 +259,35 @@ angular.module('cloudKiboApp')
       init: function (s, n) {
         stream = s;
         username = n;
+        var source = audioCtx.createMediaStreamSource(stream);
+        source.connect(analyser);
+        analyseAudio()
+      },
+      sendChat: function (m) {
+        socket.emit('conference.chat', { message: m, username: username });
+      },
+      sendDataChannelMessage: function (m) {
+        for (var key in dataChannels) {
+          if(dataChannels[key].readyState === 'open')
+            dataChannels[key].send(m);
+        }
+      },
+      toggleAudio: function () {
+        stream.getAudioTracks()[0].enabled = !(stream.getAudioTracks()[0].enabled);
+      },
+      toggleVideo: function (p) {
+        socket.emit('conference.stream', { username: username, type: 'video', action: p, id: currentId });
+      },
+      toggleScreen: function (s, p) {
+        for (var key in peerConnections) {
+          if (p) {
+            peerConnections[key].addStream(s);
+          }
+          else {
+            peerConnections[key].removeStream(s);
+          }
+        }
+        socket.emit('conference.stream', { username: username, type: 'screen', action: p, id: currentId });
       }
     };
     EventEmitter.call(api);

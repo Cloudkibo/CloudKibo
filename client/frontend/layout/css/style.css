@@ -113,7 +113,13 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 /* Custon CSS                                                                   */
 /********************************************************************************/
 
-
+.topPane{
+  z-index: 20;
+  top: 0px;
+  width: 100%;
+  height: 15px;
+  background: #fff000;
+}
 
 #userNameBox
 {
@@ -680,11 +686,18 @@ textarea
 {
   display: inline-block;
   background-image: url('/assets/images/avatar.png');
-
 //margin:0.5em;
   width : 150px;
   height: 152px;
-
+}
+.hideVideoBoxSpeaking
+{
+  display: inline-block;
+  background-image: url('/assets/images/avatar.png');
+//margin:0.5em;
+  width : 150px;
+  height: 152px;
+  border : 2px solid #000000;
 }
 
 .videoelementscreen{

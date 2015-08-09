@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .factory('VideoStream', function ($q) {
-    var stream;
+  .factory('Stream', function ($q) {
+    var stream, videoStream;
     return {
       get: function () {
         if (stream) {

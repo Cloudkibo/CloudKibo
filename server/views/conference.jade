@@ -1,4 +1,10 @@
 div
+  div(class='topPane row' ng-show='isLocalScreenShared()')
+    center
+      b You are sharing you computer screen.
+  div(class='topPane row' ng-hide='isConnected()')
+    center
+      b You are disconnnected. We are trying to connect again. Please check your Internet connection.
   .header
     .container
       a(class='site-logo', href='/')
@@ -8,37 +14,31 @@ div
         i(class='fa fa-bars')
   .meetingFullBodyPane.row(class='animate-show')
     .meetingMainBodyPane
-      //div(class='animate-show', ng-hide='localCameraCaptured()')
-        center
-          div(ng-show='isConnected()', class='animate-show')
-            br
-            br
-            h3 Share the following room name with Participants
-            br
-            h4 {{roomname}}
-            br
-            br
-      div(class='animate-show')
+      div(class='animate-show', ng-hide='hasPeerSharedScreen()')
         center
           span
-            video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', aud-src='{{peer.audStream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}')
+            .videoBoxContainer
+              div(class='{{divBoxClass}}', ng-hide='isLocalVideoShared()')
+              video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='170px', ng-show='isLocalVideoShared()' muted)
+              span {{getUsername()}}
+            video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}', div-box-class='{{peer.divClass}}')
       div(ng-show='hasPeerSharedScreen()')
         center
           span
-            video(id='remoteVideoScreen', autoplay='true', width='80%', class='videoelementscreen', controls='true')
+            video(ng-src='{{getPeerScreen()}}',autoplay='true', width='80%', class='videoelementscreen', controls='true')
       br
       alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
       br
     .meetingSidePane(ng-show='showChatBox()')
-      div(ng-show='localCameraCaptured()', class='animate-show')
+      div(class='animate-show')
         div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages')
           .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
             | {{userMessage}}
         form
           input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
           button(ng-click='sendData()') Send
-  //.meetingBottomPane.row
-    .col-sm-1(ng-show='localCameraCaptured()')
+  .meetingBottomPane.row
+    .col-sm-1(ng-show='meetingStarted()')
       .btn-wrapper-kibo
         a.icon-btn(id='showScreenButton', ng-click='showScreen()')
           i.fa.fa-desktop
@@ -54,24 +54,24 @@ div
         a.btn.btn-lg.green(target='self', ng-href='https://addons.mozilla.org/en-US/firefox/addon/cloudkibo-screen-capturing-in-/')
           i.fa.fa-plus-square-o
           div Add FireFox Screen Sharing Extension
-    .col-sm-1(ng-show='localCameraCaptured()')
+    .col-sm-1(ng-show='meetingStarted()')
       .btn-wrapper-kibo
         label Send File
         input(id='file', type='file')
 
-    .col-sm-1(id='0', ng-show='localCameraCaptured()')
+    .col-sm-1(id='0', ng-show='meetingStarted()')
     .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')
-    .col-sm-1(ng-show='localCameraCaptured()')
+    .col-sm-1(ng-show='meetingStarted()')
       .btn-wrapper-kibo
         a.icon-btn(ng-click='audioToggle()')
           i.fa.fa-microphone
           div {{toggleAudioText}}
-    .col-sm-1(ng-show='localCameraCaptured()')
+    .col-sm-1(ng-show='meetingStarted()')
       .btn-wrapper-kibo
         a.icon-btn(ng-click='videoToggle()')
           i.fa.fa-desktop
           div {{toggleVideoText}}
-    .col-sm-1.chatBoxButton(ng-show='localCameraCaptured()')
+    .col-sm-1.chatBoxButton(ng-show='meetingStarted()')
       .btn-wrapper-kibo
         a.icon-btn(ng-click='toggleChatBoxVisibility()')
           i.fa.fa-envelope-o

@@ -34,10 +34,10 @@ angular.module('cloudKiboApp', [
       redirectTo: '/'
     });
 
-    $locationProvider.html5Mode({
+   /* $locationProvider.html5Mode({
 	  enabled: true,
 	  requireBase: false
-	});
+	});*/
 
     $httpProvider.interceptors.push('authInterceptor');
   })
