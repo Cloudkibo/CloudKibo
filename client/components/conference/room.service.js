@@ -223,6 +223,11 @@ angular.module('cloudKiboApp')
     function connectRoom (r){
       if (!connected) {
         socket.emit('init', { room: r, username: username }, function (roomid, id) {
+          if(id === null){
+            alert('You cannot join conference. Room is full');
+            connected = false;
+            return;
+          }
           currentId = id;
           roomId = roomid;
         });
@@ -231,20 +236,7 @@ angular.module('cloudKiboApp')
     }
     var api = {
       joinRoom: function (r) {
-<<<<<<< HEAD
-        if (!connected) {
-          socket.emit('init', { room: r, username: username }, function (roomid, id) {
-            if(id === null){
-              alert('You cannot join the conference. Room is full.');
-            }
-            currentId = id;
-            roomId = roomid;
-          });
-          connected = true;
-        }
-=======
         connectRoom(r);
->>>>>>> 0e76afb18a2d942322e39954304b04d1c13b23f9
       },
       createRoom: function () { // DEPRECATED, not using anymore.
         var d = $q.defer();
