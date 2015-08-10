@@ -36,13 +36,13 @@ angular.module('kiboRtc.services')
        * to some WebRTC connection events. Application doesn't need to care about them.             *
        **/
 
-      createPeerConnection: function (cb) {
+      createPeerConnection: function (initiator, cb) {
         try {
 
           pc = new RTCPeerConnection(pc_config, {optional: []});//pc_constraints);
           pc.onicecandidate = handleIceCandidate;
 
-          //if (!$scope.isInitiator_DC) {
+          if (initiator) {
           try {
             // Reliable Data Channels not yet supported in Chrome
             try {
@@ -59,13 +59,14 @@ angular.module('kiboRtc.services')
             trace('createDataChannel() failed with exception: ' + e.message);
             return;
           }
+            cb(null);
           sendChannel.onopen = handleSendChannelStateChange;
           sendChannel.onclose = handleSendChannelStateChange;
-          //} else {
+          } else {
           pc.ondatachannel = gotReceiveChannel;
 
           cb(null);
-          //}
+          }
         } catch (e) {
           cb(e);
           console.log('Failed to create PeerConnection, exception: ' + e.message);
