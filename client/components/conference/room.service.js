@@ -197,7 +197,7 @@ angular.module('cloudKiboApp')
             action: data.action,
             id: data.id
           }]);
-          makeOffer(data.id);
+          if(data.type === 'screen') makeOffer(data.id);
         }
       });
       socket.on('connect', function(){
@@ -223,6 +223,11 @@ angular.module('cloudKiboApp')
     function connectRoom (r){
       if (!connected) {
         socket.emit('init', { room: r, username: username }, function (roomid, id) {
+          if(id === null){
+            alert('You cannot join conference. Room is full');
+            connected = false;
+            return;
+          }
           currentId = id;
           roomId = roomid;
         });
