@@ -511,7 +511,7 @@ angular.module('cloudKiboApp')
       filecontainer.appendChild(can);
 
       //append to chat
-      Room.sendChat("File " + meta.name + " is ready to save locally");
+      //Room.sendChat("File " + meta.name + " is ready to save locally");
     }
 
     /* send out meta data, allow for id to be empty = broadcast */
