@@ -21,7 +21,7 @@ angular.module('cloudKiboApp')
 
       if (!FileTransfer.getIsStarted()) {
 
-        FileTransfer.createPeerConnection(function (err) {
+        FileTransfer.createPeerConnection(true, function (err) {
           console.log("Creating peer connection");
           logger.log("Creating peer connection");
           if(err){
@@ -96,7 +96,7 @@ angular.module('cloudKiboApp')
       else if (message.type === 'offer') {
         if (!FileTransfer.getIsStarted()) {
 
-          FileTransfer.createPeerConnection(function (err) {
+          FileTransfer.createPeerConnection(false, function (err) {
             if(err){
               alert('Failed to create connection. Make sure you are using latest browser.');
               console.log("File transfer Failed");
@@ -608,7 +608,7 @@ angular.module('cloudKiboApp')
       filecontainer.appendChild(a);
 
       //append to chat
-      Signalling.sendMessageForDataChannel($scope.user.username + " is now offering file " + meta.name);
+      //Signalling.sendMessageForDataChannel($scope.user.username + " is now offering file " + meta.name);
     }
 
     // update a file container with a DL %
