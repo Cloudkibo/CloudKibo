@@ -223,6 +223,11 @@ angular.module('cloudKiboApp')
     function connectRoom (r){
       if (!connected) {
         socket.emit('init', { room: r, username: username }, function (roomid, id) {
+          if(id === null){
+            alert('You cannot join conference. Room is full');
+            connected = false;
+            return;
+          }
           currentId = id;
           roomId = roomid;
         });
