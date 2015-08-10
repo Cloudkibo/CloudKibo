@@ -197,7 +197,7 @@ angular.module('cloudKiboApp')
             action: data.action,
             id: data.id
           }]);
-          makeOffer(data.id);
+          if(data.type === 'screen') makeOffer(data.id);
         }
       });
       socket.on('connect', function(){
