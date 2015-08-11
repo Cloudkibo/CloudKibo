@@ -66,7 +66,7 @@ exports.serverLog = function(label, data) {
   }
 
   if (development) {
-    winston.log(label, data);
+    winston.log('info', data);
     console.log('development log');
   }
   else if (testing) {
