@@ -297,4 +297,8 @@ angular.module('cloudKiboApp')
         $scope.peers = [];
       }
     });
+
+    $scope.$on('$routeChangeStart', function () {
+      location.reload();
+    });
   });
