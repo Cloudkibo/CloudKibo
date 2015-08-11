@@ -47,6 +47,7 @@ angular.module('cloudKiboApp')
       }
       else{
         FileTransfer.endConnection();
+        Signalling.sendMessageForDataChannel({type : 'bye'});
         console.log("File transfer connection ended");
         logger.log("File transfer connection ended");
       }
@@ -56,10 +57,8 @@ angular.module('cloudKiboApp')
 
       var message = FileTransfer.getMessage();
 
-
       console.log("file transfer msg: "+message);
       logger.log("file transfer msg: "+message);
-
 
       if (message.byteLength  || typeof message !== 'string') {
         process_binary(0, message, 0);
@@ -83,13 +82,15 @@ angular.module('cloudKiboApp')
       //if(message.split(' ')[1] === 'is' && message.split(' ')[2] === 'now' && message.split(' ')[3] === 'offering')
       //$scope.openFileView = true;
 
-      if (message === 'bye') {
+      if (message.type === 'bye') {
         FileTransfer.endConnection();
+        $scope.openFileView = !$scope.openFileView;
         console.log("File transfer connection ended");
         logger.log("File transfer connection ended");
       }
       else if (message === 'hangup') {
         FileTransfer.endConnection();
+        $scope.openFileView = !$scope.openFileView;
         console.log("File transfer connection hungup");
         logger.log("File transfer connection hungup");
       }
@@ -671,7 +672,7 @@ angular.module('cloudKiboApp')
       filecontainer.appendChild(can);
 
       //append to chat
-      Signalling.sendMessageForDataChannel("File " + meta.name + " is ready to save locally");
+      //Signalling.sendMessageForDataChannel("File " + meta.name + " is ready to save locally");
     }
 
 

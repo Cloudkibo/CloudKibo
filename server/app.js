@@ -20,8 +20,7 @@ var fs = require('fs');
 
 var logger = require('./components/logger/logger');
 
-logger.clientLog('====Server Started====');
-logger.serverLog('====Server Started====');
+logger.serverLog('Informational', 'Server started');
 
 
 

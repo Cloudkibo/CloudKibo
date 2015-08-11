@@ -586,7 +586,7 @@ function onConnect(socketio, socket) {
 		});
 
   socket.on('logClient', function(data){
-    logger.clientLog(data);
+    //logger.clientLog(data);
   });
 
 
