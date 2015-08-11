@@ -176,7 +176,6 @@ angular.module('kiboRtc.services')
           failureInstallCallback
         );
       }
-
     };
 
     /**
