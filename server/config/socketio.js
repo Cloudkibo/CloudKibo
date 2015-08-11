@@ -699,10 +699,6 @@ module.exports = function (socketio) {
         if (!room) {
           return;
         }
-        if(userIds[currentRoom] === 2 ) {
-          fn(null, null);
-          return;
-        }
         userIds[currentRoom] += 1;
         id = userIds[currentRoom];
         fn(currentRoom, id);
