@@ -19,7 +19,119 @@ Our database is running in same droplet as of our application. For sending email
 Turn server is running on IP address 45.55.232.65 and this droplet is named as “kibosupporttest”
 
 ## Design
-(Design Diagram for operations would go here)
+![Implementation steps](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/Design.PNG)
+
+### Install nodejs
+
+In order to get this version, we just have to use the apt package manager. We should refresh our local package index prior and then install from the repositories:
+
+
+    sudo apt-get update
+    sudo apt-get install nodejs
+
+install npm, which is the Node.js package manager
+
+    sudo apt-get install npm
+
+source: https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-an-ubuntu-14-04-server
+
+
+
+### Install MongoDB
+
+First have to import they key for the official MongoDB repository
+
+    $ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+
+After successfully importing the key you will see:
+
+    Output
+    gpg: Total number processed: 1
+    gpg:              imported: 1  (RSA: 1)
+
+Issue the following command to create a list file for MongoDB
+    echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | sudo tee          /etc/apt/sources.list.d/mongodb-org-3.0.list
+
+After adding the repository details, we need to update the packages list
+
+    sudo apt-get update
+
+Now we can install the MongoDB package itself.
+
+    sudo apt-get install -y mongodb-org
+
+After package installation MongoDB will be automatically started. You can check this by running the following command.
+
+    service mongod status
+
+If MongoDB is running, you'll see an output like this (with a different process ID).
+
+    Output
+    mongod start/running, process 1611
+
+You can also stop, start, and restart MongoDB using the service command (e.g. service mongod stop, server mongod start).
+
+source: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-14-04
+
+### Install Forever
+
+To install forever run the following command:
+
+    npm install forever -g
+
+### Install Grunt
+To install grunt run the following command:
+
+    npm install -g grunt-cli
+
+### Install Bower
+
+To install bower run the following command:
+
+    npm install -g bower
+
+### Clone the application on server from github:
+    git clone https://www.github.com/Cloudkibo/CloudKibo
+
+Install server side libraries using:
+
+    npm install
+
+Now, install client side libraries using:
+
+    bower install
+
+Now, build the application using grunt command (make sure in app.js file, mode is set to production)
+
+    grunt
+
+In order to run the application, use forever:
+
+    forever start dist/server/app.js
+
+### Redirect the ports to our application ports
+Run following two commands
+
+    iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000
+    iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 8443
+
+### Updates
+
+If there is update in code, then we need to pull the code. Go to folder of CloudKibo using "cd Cloudkibo". Run following commands
+
+    git pull origin master
+
+Now build the application again using command:
+
+    grunt
+
+Stop the server using command: 
+
+    forever stop dist/server/app.js
+
+Start the server again using command:
+
+    forever start dist/server/app.js
 
 ## Implementation
 
