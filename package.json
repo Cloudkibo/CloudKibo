@@ -31,7 +31,9 @@
     "serve-favicon": "~2.0.1",
     "socket.io": "^1.0.6",
     "socket.io-client": "^1.0.6",
-    "socketio-jwt": "^2.0.2"
+    "socketio-jwt": "^2.0.2",
+    "winston": "^1.0.1",
+    "winston-loggly": "^1.1.0"
   },
   "devDependencies": {
     "connect-livereload": "~0.4.0",
