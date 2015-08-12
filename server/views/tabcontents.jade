@@ -3,7 +3,7 @@ extends header
 block bodycontent
  .header(ng-show='isLoggedIn()')
     .container
-      a(class='site-logo', href='/app')
+      a(class='site-logo', href='#app')
         img(src='/images/logo_small.png')
         | #{title}
       a(href='javascript:void(0);', class='mobi-toggler')
@@ -132,7 +132,7 @@ block bodycontent
           br
           br
           center
-            a(href='/meeting/{{meetingroom}}')
+            a(href='#meeting/{{meetingroom}}')
               h4 Join My Meeting Room
           br
           br
