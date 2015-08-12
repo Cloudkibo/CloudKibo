@@ -4,6 +4,7 @@ var userchat = require('./userchat.model');
 var User = require('../user/user.model');
 var contactslist = require('../contactslist/contactslist.model');
 var config = require('../../config/environment');
+var logger = require('../../components/logger/logger');
 
 
 exports.index = function(req, res) {
@@ -16,6 +17,8 @@ exports.index = function(req, res) {
 																	  { to : req.body.user2, from : req.body.user1 } ]},
 																		function(err1, gotMessages){
 																			if(err1) return console.log(err1);
+
+                                      logger.serverLog('info', 'userchat.controller : Chat data sent to client');
 
 																			res.send({status : 'success', msg : gotMessages});
 
@@ -36,6 +39,8 @@ exports.removechathistory = function(req, res) {
 										{ to : gotUser.username, from : gotUserSaved.username } ]},
 										function(err1){
 											if(err1) return console.log(err1);
+
+                      logger.serverLog('info', 'userchat.controller : Chat data removed');
 
 											res.send({status: 'success', msg: 'Chat is removed'});
 
@@ -108,7 +113,7 @@ exports.markasread = function(req, res) {
 
 			})
 
-		})
-    console.log("mark chat as read")
+		});
+    logger.serverLog('info', "mark chat as read");
 	})
 };

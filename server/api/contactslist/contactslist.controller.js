@@ -5,11 +5,13 @@ var User = require('../user/user.model');
 var config = require('../../config/environment');
 var userchat = require('../userchat/userchat.model');
 var configuration = require('../configuration/configuration.model');
+var logger = require('../../components/logger/logger');
 
 exports.index = function(req, res) {
 	contactslist.find({userid : req.user._id}).populate('contactid').exec(function(err2, gotContactList){
 		if (err2) return next(err2);
 		if (!gotContactList) return res.json(401);
+    logger.serverLog('info', 'contactslist.controller : Contacts data sent to client');
 		res.json(200, gotContactList);
 	});
 };
@@ -19,6 +21,7 @@ exports.pendingcontacts = function(req, res) {
 		if (err2) return next(err2);
 		if (!gotContactList) return res.json(401);
     console.log("pending contacts "+ gotContactList);
+    logger.serverLog('info', 'contactslist.controller : Pending contacts data sent to client');
     res.json(200, gotContactList);
 
 	})
@@ -51,7 +54,7 @@ exports.addbyusername = function(req, res) {
               if(err) return console.log(err);
 
               if(gotConfig.numberofpeopleincontactlist === gotFullCount){
-                console.log("contact list full");
+                logger.serverLog("warn", "contact list full");
                 res.send({status: 'danger', msg: 'Your contact list is full.'});
 
               }
@@ -108,7 +111,7 @@ exports.addbyemail = function(req, res) {
 
               if(gotConfig.numberofpeopleincontactlist === gotFullCount){
                 res.send({status: 'danger', msg: 'Your contact list is full.'});
-                console.log("contact list full")
+                logger.serverLog('warn',"contact list full")
               }
               else{
                 var contact = new contactslist({
@@ -165,7 +168,7 @@ exports.approvefriendrequest = function(req, res) {
               if(err) return console.log(err);
 
               if(gotConfig.numberofpeopleincontactlist === gotFullCount){
-                console.log("contact can not accept. List is full");
+                logger.serverLog('warn', "contact can not accept. List is full");
                 res.send({status: 'danger', msg: 'Your contact list is full.'});
 
               }
@@ -186,6 +189,8 @@ exports.approvefriendrequest = function(req, res) {
                     contactslist.findOne({userid : gotUserSaved._id, contactid : gotUser._id}, function(err6, gotOtherPerson){
 
                       gotOtherPerson.detailsshared = 'Yes';
+
+                      logger.serverLog('info', 'contactslist.controller : Add request approved');
 
                       gotOtherPerson.save(function(err){});
 
@@ -219,10 +224,12 @@ exports.rejectfriendrequest = function(req, res) {
 
 				res.send({status: 'success', msg: 'Request is rejected'});
 
+        logger.serverLog('info', 'contactslist.controller : Add request rejected');
+
 			})
 
 		})
-     console.log("Rejected contact request")
+
 	})
 };
 
@@ -246,7 +253,7 @@ exports.removefriend = function(req, res) {
 
 											res.send({status: 'success', msg: 'Friend is removed'});
 
-                      console.log("Removed friend")
+                      logger.serverLog('info', 'contactslist.controller : Friend removed from contactlist');
 
 										})
 

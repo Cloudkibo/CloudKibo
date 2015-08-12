@@ -24,7 +24,7 @@ var validationError = function(res, err) {
 exports.index = function(req, res) {
   User.find({}, '-salt -hashedPassword', function (err, users) {
     if(err) return res.send(500, err);
-    logger.serverLog('Users data sent to client');
+    logger.serverLog('info', 'user.controller : Users data sent to client');
     res.json(200, users);
   });
 };
@@ -41,6 +41,8 @@ exports.create = function (req, res, next) {
 
 	  var tokenString = crypto.randomBytes(12).toString('hex');
 
+    logger.serverLog('info', 'user.controller : Users created');
+
 	  var newToken = new verificationtoken({
 		  user : user._id,
 		  token : tokenString
@@ -53,7 +55,9 @@ exports.create = function (req, res, next) {
 	  });
 
     configuration.findOne({}, function(err, gotConfig) {
+      if(err) logger.serverLog('error', 'user.controller (create user) : ', err);
 
+      if(!gotConfig) logger.serverLog('error', 'user.controller (create user) : No configuration defined by super user');
 
       var sendgrid  = require('sendgrid')(gotConfig.sendgridusername, gotConfig.sendgridpassword);
 
@@ -69,7 +73,7 @@ exports.create = function (req, res, next) {
       sendgrid.send(email, function(err, json) {
         if (err) { return console.log(err); }
 
-        console.log("new user verification link sent");
+        logger.serverLog('info', "new user verification link sent");
 
       });
 
@@ -140,7 +144,7 @@ exports.update = function(req, res, next) {
 	});
   });
 
-  console.log("update new user profile")
+  logger.serverLog('info', "update new user profile");
 };
 
 /**
@@ -168,6 +172,7 @@ exports.updateimage = function(req, res, next){
 				 dir + "/" + serverPath,
 				  function(error) {
 					   if(error) {
+               logger.serverLog('error', 'user.controller (update image) : '+ error);
 						  res.send({
 							  error: 'Server Error: Could not upload the file'
 						  });
@@ -201,7 +206,10 @@ exports.updateimage = function(req, res, next){
 				if(gotUser.picture)
 				{
 					require('fs').unlink(dir, function (err) {
-						  if (err) throw err;
+						  if (err) {
+                logger.serverLog('error', 'user.controller (update image) : '+ err);
+                throw err;
+              }
 
 
 						  var today = new Date();
@@ -219,6 +227,7 @@ exports.updateimage = function(req, res, next){
 							 dir + "/" + serverPath,
 							  function(error) {
 								   if(error) {
+                     logger.serverLog('error', 'user.controller (update image 2) : '+ error);
 									  res.send({
 										  error: 'Server Error: Could not upload the file'
 									  });
@@ -351,7 +360,7 @@ exports.invitebyemail = function(req, res, next){
     sendgrid.send(email, function(err, json) {
       if (err) { return console.error(err); }
 
-      console.log("sending email for invitation");
+      logger.serverLog('info', "sending email for invitation");
 
     });
 

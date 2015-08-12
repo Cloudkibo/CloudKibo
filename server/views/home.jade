@@ -42,7 +42,7 @@ block appbodycontent
 
 
                         if(otherUser)
-                          div(ng-if='getlocation() != "/app"')
+                          div(ng-if='getlocation() != "#app"')
                             div(ng-controller='FileSharingController')
                               div(class="friendInfoBoxContainer")
                                 #pictureBoxForFriend
@@ -97,7 +97,7 @@ block appbodycontent
                                     center {{otherUser.firstname}} {{otherUser.lastname}} has not shared details with you.
 
                         if(!otherUser)
-                          div(ng-if='getlocation() == "/app"')
+                          div(ng-if='getlocation() == "#app"')
                             center
                               .animate-show(ng-show='isConnected()')
                                 br
@@ -204,7 +204,7 @@ block appbodycontent
                                           img(ng-if='contact.userid.windows_photo != null', src='{{contact.userid.windows_photo}}', width='32px', height='32px')
                                           img(ng-if='contact.userid.fb_photo == null && contact.userid.google_photo == null && contact.userid.windows_photo == null', src='/images/displayPic.jpg', width='32px', height='32px')
                                       td(width='55%')
-                                        a(href='/contact/{{contact.userid.username}}')
+                                        a(href='#contact/{{contact.userid.username}}')
                                           b {{contact.userid.firstname}} {{contact.userid.lastname}}
                                       td(width='20%', align='center')
                                         a(href='', ng-click='approveFriendRequest($index)')
@@ -219,7 +219,7 @@ block appbodycontent
                          input.form-control(type='text', placeholder='Search Contacts', ng-model='searchContactText')
                        .contacts
                         .contact(ng-controller='ContactsListController', ng-repeat='contact in contactslist | filter: {contactid.firstname: searchContactText}')
-                          a(href='/contact/{{contact.contactid.username}}')
+                          a(href='#contact/{{contact.contactid.username}}')
                             table(width='100%')
                               tr
                                 td(width='20%')
