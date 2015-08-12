@@ -4,7 +4,7 @@ block append head
 block bodycontent
   .header(ng-show='isLoggedIn()')
         .container
-            a(class='site-logo', href='/')
+            a(class='site-logo', href='#')
                 if(title == 'CloudKibo')
                     img(src='/images/logo_small.png')
                     | #{title}
@@ -15,7 +15,7 @@ block bodycontent
             div(class='header-navigation pull-right font-transform-inherit')
                 ul
                     li
-                        a(ng-href='/app')
+                        a(ng-href='#app')
                             | Application Home
   div
     .container.slider
@@ -93,7 +93,7 @@ block bodycontent
                 span
                     | Make Your FREE Account Now!
             div(class='col-md-3 text-right')
-                a(class='btn-transparent', href='/register')
+                a(class='btn-transparent', href='#register')
                     i(class='fa fa-check margin-right-10')
                     | Register
         div(class='row recent-work margin-bottom-40')
