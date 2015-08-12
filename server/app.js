@@ -20,7 +20,7 @@ var fs = require('fs');
 
 var logger = require('./components/logger/logger');
 
-logger.serverLog('Informational', 'Server started');
+logger.serverLog('info', 'Server started');
 
 
 
@@ -35,7 +35,6 @@ mongoose.connect(config.mongo.uri, config.mongo.options);
 // Setup server
 var httpapp = express();
 var app = express();
-
 
 var options = {
   ca: fs.readFileSync('server/security/gd_bundle-g2-g1.crt'),

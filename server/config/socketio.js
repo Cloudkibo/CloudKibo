@@ -16,6 +16,7 @@ function onDisconnect(socketio,socket) {
   var user = require('./../api/user/user.model.js');
 
   user.findOne({username : socket.username}, function(err, gotuser){
+    if(err) logger.serverLog('error', 'socketio.js onDisconnect : '+ err);
 
     if(gotuser != null) {
 
@@ -87,7 +88,9 @@ function onConnect(socketio, socket) {
 
       try {
         message.msg.from = socket.id;
-      }catch(e){}
+      }catch(e){
+        if(e) logger.serverLog('warn', 'socketio.js on(message) : '+ e);
+      }
 
 
       var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
@@ -120,7 +123,9 @@ function onConnect(socketio, socket) {
 
       try {
         message.msg.from = socket.id;
-      }catch(e){}
+      }catch(e){
+        if(e) logger.serverLog('warn', 'socketio.js on(messageformeeting) : '+ e);
+      }
 
 			//io2.sockets.in(message.room).emit('message', message.msg);
 			socket.broadcast.to(message.room).emit('message', message.msg);
@@ -130,31 +135,38 @@ function onConnect(socketio, socket) {
 		});
 
 		socket.on('messagefordatachannel', function (message) {
-			//console.log('Got message:', message);
+      //console.log('Got message:', message);
 
-			//socket.broadcast.emit('message', message);
+      //socket.broadcast.emit('message', message);
 
       try {
         message.msg.from = socket.id;
-      }catch(e){}
+      } catch (e) {
+        if (e) logger.serverLog('warn', 'socketio.js on(messagefordatachannel) : ' + e);
+      }
 
       var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-			var socketid = '';
+      var socketid = '';
 
-      for(var i in clients){
-        if(clients[i].username == message.to){
+      for (var i in clients) {
+        if (clients[i].username == message.to) {
           socketid = clients[i].id;
         }
       }
 
       var msgToSend = message.msg;
 
-      console.log(msgToSend);
-      if(typeof msgToSend != 'object')
-        msgToSend = JSON.parse(msgToSend);
+      try {
+        if (typeof msgToSend != 'object')
+          msgToSend = JSON.parse(msgToSend);
+      }catch(e){
+        if(e) logger.serverLog('error', 'socketio.js on(messagefordatachannel) : '+ e);
+      }
 
-      msgToSend.from = message.from;
+      try {
+        msgToSend.from = message.from;
+      }catch(e) {if(e) logger.serverLog('warn', 'socketio.js on(messagefordatachannel) : '+ e);}
 
       socketio.to(socketid).emit('messagefordatachannel', msgToSend);
 			//socketio.sockets.socket(socketid).emit('messagefordatachannel', msgToSend);
@@ -175,13 +187,14 @@ function onConnect(socketio, socket) {
         if(clients[i].username == room.username){
           socketid = clients[i].id;
           canJoin = false;
-          console.info('CASE OF JOINING TWICE');
+          logger.serverLog('info', 'socketio.js on(create or join) Joining twice');
         }
       }
 
 			if (numClients === 0){
 				socket.join(room.room);
         socket.username= room.username;
+        logger.serverLog('info', 'socketio.js on(create or join) : '+room.username +' created the room.');
         //console.log(room.username +' joined the room.')
 				socket.emit('created', room);
 			} else if (numClients === 1) {
@@ -190,6 +203,7 @@ function onConnect(socketio, socket) {
 					socket.join(room.room);
           socket.username= room.sername;
 					socket.emit('joined', room);
+          logger.serverLog('info', 'socketio.js on(create or join) : '+room.username +' joined the room.');
 				}
 				else{
 					//socket.join(room.room);
@@ -224,6 +238,7 @@ function onConnect(socketio, socket) {
 			var contactslist = require('./../api/contactslist/contactslist.model.js');
 
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
+        if(err3) logger.serverLog('error', 'socketio.js on(join global chatroom) : '+ err3);
 
 				if(gotContactList != null){
 
@@ -242,6 +257,8 @@ function onConnect(socketio, socket) {
 
 					socket.emit('youareonline', myOnlineContacts);
 
+          logger.serverLog('info', 'socketio.js on(create or join) : '+room.user.username +' logged in.');
+
 				}
 
 			});
@@ -258,9 +275,12 @@ function onConnect(socketio, socket) {
 
 			var socketid = '';
 
+      logger.serverLog('info', 'socketio.js on(whozonline) : client asks about online peers');
+
 			var contactslist = require('./../api/contactslist/contactslist.model.js');
 
 			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
+        if(err3) logger.serverLog('error', 'socketio.js on(whozonline) : '+ err3);
 
 				if(gotContactList != null){
 
@@ -285,147 +305,170 @@ function onConnect(socketio, socket) {
 		});
 
 		socket.on('callthisperson', function(message){
+      try {
 
-			var socketidSender = socket.id;
+        var socketidSender = socket.id;
 
-      var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+        var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-			var socketid = '';
+        var socketid = '';
 
-      for(var i in clients){
-        if(clients[i].username == message.callee){
-          socketid = clients[i].id;
+        for (var i in clients) {
+          if (clients[i].username == message.callee) {
+            socketid = clients[i].id;
+          }
         }
-      }
 
-			if(socketid == ''){
-				socket.emit('calleeisoffline', message.callee);
-			}
-			else{
-        socketio.to(socketid).emit('areyoufreeforcall', {caller : message.caller, sendersocket: socketidSender});
-			}
+        if (socketid == '') {
+          socket.emit('calleeisoffline', message.callee);
+        }
+        else {
+          socketio.to(socketid).emit('areyoufreeforcall', {caller: message.caller, sendersocket: socketidSender});
+        }
+      }catch(e){
+        logger.serverLog('error', 'socketio.js on(callthisperson) : '+ e);
+      }
 
 		});
 
 		socket.on('noiambusy', function(message){
 
-      var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      try {
+        var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-			var socketid = '';
+        var socketid = '';
 
-      for(var i in clients){
-        if(clients[i].username == message.mycaller){
-          socketid = clients[i].id;
+        for (var i in clients) {
+          if (clients[i].username == message.mycaller) {
+            socketid = clients[i].id;
+          }
         }
-      }
 
-			if(socketid == ''){
-				//socket.emit('calleeisoffline', message.callee);
-			}
-			else{
-        socketio.to(socketid).emit('calleeisbusy', {callee : message.me});
-				//socketio.sockets.socket(socketid).emit('calleeisbusy', {callee : message.me});
-			}
+        if (socketid == '') {
+          //socket.emit('calleeisoffline', message.callee);
+        }
+        else {
+          socketio.to(socketid).emit('calleeisbusy', {callee: message.me});
+          //socketio.sockets.socket(socketid).emit('calleeisbusy', {callee : message.me});
+        }
+      }catch(e){
+        logger.serverLog('error', 'socketio.js on(noiambusy) : '+ e);
+      }
 
 		});
 
 		socket.on('yesiamfreeforcall', function(message){
 
-      var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      try {
+        var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-			var socketid = '';
+        var socketid = '';
 
-      for(var i in clients){
-        if(clients[i].username == message.mycaller){
-          socketid = clients[i].id;
+        for (var i in clients) {
+          if (clients[i].username == message.mycaller) {
+            socketid = clients[i].id;
+          }
         }
-      }
 
-			if(socketid == ''){
-				socket.emit('disconnected', message.mycaller);
-			}
-			else{
-        socketio.to(socketid).emit('othersideringing', {callee : message.me});
-				//socketio.sockets.socket(socketid).emit('othersideringing', {callee : message.me});
-			}
+        if (socketid == '') {
+          socket.emit('disconnected', message.mycaller);
+        }
+        else {
+          socketio.to(socketid).emit('othersideringing', {callee: message.me});
+          //socketio.sockets.socket(socketid).emit('othersideringing', {callee : message.me});
+        }
+      }catch(e){
+        logger.serverLog('error', 'socketio.js on(yesiamfreeforcall) : '+ e);
+      }
 
 		});
 
 		socket.on('im', function(im){
 
-      var clients = findClientsSocket(im.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      try {
 
-			var socketid = '';
+        var clients = findClientsSocket(im.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-      for(var i in clients){
-        if(clients[i].username == im.stanza.to){
-          socketid = clients[i].id;
+        var socketid = '';
+
+        for (var i in clients) {
+          if (clients[i].username == im.stanza.to) {
+            socketid = clients[i].id;
+          }
         }
+
+        // saving to the database
+
+        var contactslist = require('./../api/contactslist/contactslist.model.js');
+
+        var userchat = require('./../api/userchat/userchat.model.js');
+
+        var newUserChat = new userchat({
+          to: im.stanza.to,
+          from: im.stanza.from,
+          fromFullName: im.stanza.fromFullName,
+          msg: im.stanza.msg,
+          owneruser: im.stanza.to
+        });
+
+        newUserChat.save(function (err2) {
+          if (err2) return console.log('Error 2' + err2);
+
+          contactslist.findOne({
+            userid: im.stanza.to_id,
+            contactid: im.stanza.from_id
+          }).exec(function (err3, gotContact) {
+
+            gotContact.unreadMessage = true;
+
+            gotContact.save(function (err) {
+
+            })
+
+          })
+        });
+
+
+        newUserChat = new userchat({
+          to: im.stanza.to,
+          from: im.stanza.from,
+          fromFullName: im.stanza.fromFullName,
+          msg: im.stanza.msg,
+          owneruser: im.stanza.from
+        });
+
+        newUserChat.save(function (err2) {
+          if (err2) return console.log('Error 2' + err2);
+        });
+
+        socketio.to(socketid).emit('im', im.stanza);
+        //socketio.sockets.socket(socketid).emit('im', im.stanza);
+      }catch(e){
+        logger.serverLog('error', 'socketio.js on(im) : '+ e);
       }
-
-			// saving to the database
-
-			var contactslist = require('./../api/contactslist/contactslist.model.js');
-
-			var userchat = require('./../api/userchat/userchat.model.js');
-
-			var newUserChat = new userchat({
-				to : im.stanza.to,
-				from : im.stanza.from,
-				fromFullName : im.stanza.fromFullName,
-				msg : im.stanza.msg,
-				owneruser : im.stanza.to
-			});
-
-			newUserChat.save(function (err2) {
-				if (err2) return console.log('Error 2'+ err2);
-
-				contactslist.findOne({userid : im.stanza.to_id, contactid : im.stanza.from_id}).exec(function(err3, gotContact){
-
-					gotContact.unreadMessage = true;
-
-					gotContact.save(function(err){
-
-					})
-
-				})
-			});
-
-
-
-			newUserChat = new userchat({
-				to : im.stanza.to,
-				from : im.stanza.from,
-				fromFullName : im.stanza.fromFullName,
-				msg : im.stanza.msg,
-				owneruser : im.stanza.from
-			});
-
-			newUserChat.save(function (err2) {
-				if (err2) return console.log('Error 2'+ err2);
-			});
-
-      socketio.to(socketid).emit('im', im.stanza);
-			//socketio.sockets.socket(socketid).emit('im', im.stanza);
 
 		});
 
 		socket.on('friendrequest', function(im){
+      try {
 
-			//console.log("GOT THIS MESSAGE", im);
+        //console.log("GOT THIS MESSAGE", im);
 
-      var clients = findClientsSocket(im.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+        var clients = findClientsSocket(im.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-			var socketid = '';
+        var socketid = '';
 
-      for(var i in clients){
-        if(clients[i].username == im.contact){
-          socketid = clients[i].id;
+        for (var i in clients) {
+          if (clients[i].username == im.contact) {
+            socketid = clients[i].id;
+          }
         }
-      }
 
-      socketio.to(socketid).emit('friendrequest', im);
-			//socketio.sockets.socket(socketid).emit('friendrequest', im);
+        socketio.to(socketid).emit('friendrequest', im);
+        //socketio.sockets.socket(socketid).emit('friendrequest', im);
+      }catch(e){
+        logger.serverLog('error', 'socketio.js on(friendrequest) : '+ e);
+      }
 
 		});
 
@@ -442,76 +485,43 @@ function onConnect(socketio, socket) {
 
 		});
 
-		socket.on('leaveChat', function (room) {
-
-			socket.leave(room.room);
-			/*
-			var clients = socketio.sockets.clients(room.room)
-
-			var socketid = '';
-
-			var contactslist = require('./../api/contactslist/contactslist.model.js');
-
-			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
-
-				if(gotContactList != null){
-
-					var i = 0;
-					clients.forEach(function(client) {
-						client.get('nickname', function(err, nickname) {
-
-							for(var j in gotContactList){
-									if(nickname == gotContactList[j].contactid.username){
-										socketid = client.id;
-										socketio.sockets.socket(socketid).emit('offline', room.user);
-									}
-							}
-
-							i++;
-						})
-					});
-
-				}
-
-			})
-
-			console.log('I LEFT CHAT')
-			console.log(socketio.sockets.manager.rooms)
-			*/
-		});
-
 		socket.on('status', function (room) {
+      try {
 
-      var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+        var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-			var socketid = '';
+        var socketid = '';
 
-			var contactslist = require('./../api/contactslist/contactslist.model.js');
+        var contactslist = require('./../api/contactslist/contactslist.model.js');
 
-			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
+        contactslist.find({userid: room.user._id}).populate('contactid').exec(function (err3, gotContactList) {
 
-				if(gotContactList != null){
+          if (gotContactList != null) {
 
-          for(var i in clients){
-            for(var j in gotContactList){
-              if(gotContactList[j].contactid != null){
-                if(clients[i].username == gotContactList[j].contactid.username){
-                  socketid = clients[i].id;
-                  socketio.to(socketid).emit('statusUpdate', room.user);
+            for (var i in clients) {
+              for (var j in gotContactList) {
+                if (gotContactList[j].contactid != null) {
+                  if (clients[i].username == gotContactList[j].contactid.username) {
+                    socketid = clients[i].id;
+                    socketio.to(socketid).emit('statusUpdate', room.user);
+                  }
                 }
               }
             }
+
           }
 
-				}
+        });
 
-			});
-
-	//		 socket.broadcast.to(room.room).emit('statusUpdate', room.user);
-			//console.log(socketio.sockets.manager.rooms)
+        //		 socket.broadcast.to(room.room).emit('statusUpdate', room.user);
+        //console.log(socketio.sockets.manager.rooms)
+      }catch(e){
+        logger.serverLog('error', 'socketio.js on(status) : '+ e);
+      }
 
 		});
 
+  /* TODO Remove this code, this is deprecated now */
 		socket.on('create or join meeting', function (room) {
 
       //console.log(room);
@@ -562,26 +572,30 @@ function onConnect(socketio, socket) {
 		});
 
 		socket.on('create or join livehelp', function (room) {
-      var clients = findClientsSocket(room.room);
-			var numClients = clients.length;
+      try {
+        var clients = findClientsSocket(room.room);
+        var numClients = clients.length;
 
-			if (numClients === 0){
-				socket.join(room.room);
-        socket.username= room.username;
-				socket.emit('created', room);
-			} else if (numClients < 2) {
-				socket.join(room.room);
-        socket.username= room.username;
-				socket.emit('joined', room);
+        if (numClients === 0) {
+          socket.join(room.room);
+          socket.username = room.username;
+          socket.emit('created', room);
+        } else if (numClients < 2) {
+          socket.join(room.room);
+          socket.username = room.username;
+          socket.emit('joined', room);
 
-				socket.broadcast.to(room.room).emit('join', room);
+          socket.broadcast.to(room.room).emit('join', room);
 
-			} else { // max three clients
-				socket.emit('full', room.room);
-			}
+        } else { // max three clients
+          socket.emit('full', room.room);
+        }
 
-			//console.log(socketio.sockets.manager.rooms);
-			//console.log(room)
+        //console.log(socketio.sockets.manager.rooms);
+        //console.log(room)
+      }catch(e){
+        logger.serverLog('error', 'socketio.js on(create or join livehelp) : '+ e);
+      }
 
 		});
 
@@ -694,7 +708,7 @@ module.exports = function (socketio) {
         rooms[currentRoom] = [socket];
         id = userIds[currentRoom] = 0;
         fn(currentRoom, id);
-        console.log('Room created, with #', currentRoom);
+        logger.serverLog('info', 'Room created, with #', currentRoom);
       } else {
         if (!room) {
           return;
@@ -707,17 +721,17 @@ module.exports = function (socketio) {
         });
         socket.username = data.username;
         room[id] = socket;
-        console.log('Peer connected to room', currentRoom, 'with #', id);
+        logger.serverLog('info', 'Peer connected to room', currentRoom, 'with #', id);
       }
     });
 
     socket.on('msg', function (data) {
       var to = parseInt(data.to, 10);
       if (rooms[currentRoom] && rooms[currentRoom][to]) {
-        console.log('Redirecting message to', to, 'by', data.by);
+        logger.serverLog('info', 'Redirecting message to', to, 'by', data.by);
         rooms[currentRoom][to].emit('msg', data);
       } else {
-        console.warn('Invalid user');
+        logger.serverLog('warn', 'Invalid user');
       }
     });
 

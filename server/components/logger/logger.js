@@ -17,8 +17,14 @@ var serverFile = dir + '/server';
 5 Notice: normal but significant
 6 Informational: informational
 7 Debug: debug-level messages
+
+0 error
+1 warn
+2 info
 */
 
+
+var mode = 'Development'; // Production or Testing
 
 var winston = require('winston');
 require('winston-loggly');
@@ -26,16 +32,15 @@ require('winston-loggly');
 winston.add(winston.transports.Loggly, {
   token: "09f00942-9bbd-444a-8b8c-de37fef8bb50",
   subdomain: "sabachanna",
-  tags: ["Winston-NodeJS"],
+  tags: [""+ mode +"-Server"],
   json:true
 });
 
-var development = true, testing = false, production = false;
 
 exports.serverLog = function(label, data) {
 
   var labelNumber = 0;
-
+/*
   switch (label) {
     case 'Emergency':
       labelNumber = 0;
@@ -65,18 +70,32 @@ exports.serverLog = function(label, data) {
       labelNumber = 7;
   }
 
-  if (development) {
-    winston.log('info', data);
+*/
+
+  switch (label) {
+    case 'error':
+      labelNumber = 0;
+      break;
+    case 'warn':
+      labelNumber = 1;
+      break;
+    case 'info':
+      labelNumber = 2;
+      break;
+  }
+
+  if (mode === 'Development') {
+    winston.log(label, data);
     console.log('development log');
   }
-  else if (testing) {
-    if (labelNumber >= 0 && labelNumber <=6) {
+  else if (mode === 'Testing') {
+    if (labelNumber >= 0 && labelNumber <=1) {
       winston.log(label, data);
       console.log('testing log');
     }
   }
-  else if (production) {
-    if (labelNumber >= 0 && labelNumber <=4) {
+  else if (mode === 'Production') {
+    if (labelNumber == 0) {
       winston.log(label, data);
       console.log('production log');
     }
