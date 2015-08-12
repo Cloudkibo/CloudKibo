@@ -21,6 +21,9 @@ Turn server is running on IP address 45.55.232.65 and this droplet is named as â
 ## Design
 ![Implementation steps](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/Design.PNG)
 
+
+## Implementation
+
 ### Install nodejs
 
 In order to get this version, we just have to use the apt package manager. We should refresh our local package index prior and then install from the repositories:
@@ -132,32 +135,6 @@ Stop the server using command:
 Start the server again using command:
 
     forever start dist/server/app.js
-
-## Implementation
-
-To run Cloudkibo application follow the steps bellow
->Step-1 
-Install nodejs, mongodb, forever, grunt, npm, bower
-
->Step-2
-clone the application from the github
-
->Step-3
-Run npm install command to install server libraries
-
->Step-4
-Run bower install command to install angularjs dependencies
-
->Step-5
-To run development version: node server/app.js
-
->Step-6
-To run production version: node dist/server/app.js
-
-
-
-Run using forever to make it run continuously
-In the app.js file, you can set the application mode either as production or as development
 
 SSL certificates are stored in server/security and can be defined in app.js file
 
