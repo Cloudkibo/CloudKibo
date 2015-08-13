@@ -3,10 +3,33 @@
 User register for account using their email id. Cloudkibo now provides features to register to their Cloudkibo account using Facebook, Google and Windows.
 Signup and invite friends and colleagues to Cloudkibo and start one-to one video chat or make a conference call.
 ## Features
+
+### Register
+![Register](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/register.PNG)
+
+![Login](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/login.PNG)
+### Invite Contacts
+
+![invite ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/invite.PNG)
+
+### Add contacts
+
+![Add contact](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/add-contact1.PNG)
+![Add email](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/add-contact-email.PNG)
+![Add username](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/add-contact-username.PNG)
+
 ### Click to Call
 CloudKibo lets you invite your friend with a click of a button into a call. Don’t get tied down to a clumsy keypad and cryptic codes to control and manage your calls.
+
+![call ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/call-contact-username.PNG)
+
 ### Web Meeting
 CloudKibo also allows you to invite multiple people to join the Web meeting without installing any complex software. All they need to do is visit a URL and join the meeting.
+
+![call meeting link ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/meeting-link.PNG)
+![call meeting ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conferencecall.PNG)
+![call meeting 2 ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conferencecall2.PNG)
+
 ### HD Video Call
 CloudKibo uses VP8 codec, which allows efficient use of bandwidth estimation for better video quality. VP8 adaptable technology allows you have HD quality. It also includes components to conceal pack loss and clean up noisy images.
 ### HD Audio Call
