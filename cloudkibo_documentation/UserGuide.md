@@ -29,15 +29,16 @@ Adding contact using Cloudkibo username as shown below:
 ![Add username](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/add-contact-username.PNG)
 
 ### Click to Call
-CloudKibo lets you invite your friend with a click of a button into a call. Don’t get tied down to a clumsy keypad and cryptic codes to control and manage your calls.
+CloudKibo lets you invite your friend with a click of a button. Don’t get tied down to a clumsy keypad and cryptic codes to control and manage your calls.
 
-![call ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/call-contact-username.PNG)
+![call meeting ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conference call.PNG)
 
 ### Web Meeting
 CloudKibo also allows you to invite multiple people to join the Web meeting without installing any complex software. All they need to do is visit a URL and join the meeting.
-![call meeting ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conference call.PNG)
 
-Cloudkibo sets the default meeing name as you [Cloudkibousername_m] 
+![call ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/call-contact-username.PNG)
+
+Cloudkibo sets the default meeing name as you [m_Cloudkibousername] 
 Then send the above meeting URL to the people to join your meeting.
 
 ![call meeting link ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/meeting-link.PNG)
@@ -50,6 +51,7 @@ Dusing the meetig participants can see the following options
   - Choose file
   - Share/Hide screen
   - Screen sharing extension
+
 
 ![call meeting 2 ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conference call2.PNG)
 
