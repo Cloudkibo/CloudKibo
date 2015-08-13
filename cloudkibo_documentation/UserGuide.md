@@ -1,5 +1,4 @@
 #User Guide
-## Application user guide
 
 ## Features
 
@@ -8,6 +7,7 @@ User register for account using their email id. Cloudkibo now provides features 
 Signup and invite friends and colleagues to Cloudkibo and start one-to one video chat or make a conference call.
 
 ![Register](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/register.PNG)
+
 To login cloudkibo user name and password is required or you can login through your registered Facebook, Google or Windows id.
 
 ![Login](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/login.PNG)
@@ -19,9 +19,12 @@ Inviting people to Cloudkibo is one click process. Enter the email id and send i
 
 ### Add contacts
 Adding Cloudkibo user as your friend, click add contact and you can add contact using email id or Cloudkibo username.
+
 ![Add contact](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/add-contact1.PNG)
+
 Adding contact using email address as shown below:
 ![Add email](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/add-contact-email.PNG)
+
 Adding contact using Cloudkibo username as shown below:
 ![Add username](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/add-contact-username.PNG)
 
