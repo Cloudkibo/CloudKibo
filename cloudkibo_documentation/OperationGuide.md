@@ -272,36 +272,37 @@ Use the following steps to create username and password for that database and ru
 
 ##### Procedure
 
-Start the MongoDB instance without authentication. Start the mongod or mongos instance without the authorization or keyFile setting. For example:
+#### Start the MongoDB instance without authentication.
+
+Start the mongod or mongos instance without the authorization or keyFile setting. For example:
 
     mongod --port 27017 --dbpath /data/db1
 
 For details on starting a mongod or mongos, see Manage mongod Processes or Deploy a Sharded Cluster.
 
-Create the system user administrator.
+#### Create the system user administrator.
 
 Add the user with the userAdminAnyDatabase role, and only that role.
 The following example creates the user siteUserAdmin user on the cloudkibo database:
 
-use cloudkibo
-db.createUser(
-  {
-    user: "siteUserAdmin",
-    pwd: "password",
-    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
-  }
-)
+    use cloudkibo
+    db.createUser(
+      {
+        user: "siteUserAdmin",
+        pwd: "password",
+        roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+      }
+    )
 
 
-Re-start the MongoDB instance with authentication enabled. 
+#### Re-start the MongoDB instance with authentication enabled. 
 
 Re-start the mongod or mongos instance with the authorization or keyFile setting. Use authorization on a standalone instance. Use keyFile on an instance in a replica set or sharded cluster.
 The following example enables authentication on a standalone mongod using the authorization command-line option:
 
     mongod --auth --config /etc/mongodb/mongodb.conf
 
-Create additional users. 
-
+#### Create additional users. 
 
 Log in with the user administrator’s credentials and create additional users. See Manage User and Roles.
 
