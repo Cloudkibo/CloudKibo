@@ -22,6 +22,7 @@ Turn server is running on IP address 45.55.232.65 and this droplet is named as â
 
 ![Client](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/client-design-diagram.PNG)
 
+![Server](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/Server-Architecture.PNG)
 ## Implementation
 
 ![Implementation steps](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/Design.PNG)
@@ -284,9 +285,9 @@ Assuming that mongodb has been installed using steps provided in above section, 
 Use the following steps to create username and password for that database and run mongo server in authentication mode:
 (http://docs.mongodb.org/manual/tutorial/enable-authentication-without-bypass/)
 
-##### Procedure
+#### Procedure
 
-#### Start the MongoDB instance without authentication.
+##### Start the MongoDB instance without authentication.
 
 Start the mongod or mongos instance without the authorization or keyFile setting. For example:
 
@@ -294,7 +295,7 @@ Start the mongod or mongos instance without the authorization or keyFile setting
 
 For details on starting a mongod or mongos, see Manage mongod Processes or Deploy a Sharded Cluster.
 
-#### Create the system user administrator.
+##### Create the system user administrator.
 
 Add the user with the userAdminAnyDatabase role, and only that role.
 The following example creates the user siteUserAdmin user on the cloudkibo database:
@@ -309,14 +310,14 @@ The following example creates the user siteUserAdmin user on the cloudkibo datab
     )
 
 
-#### Re-start the MongoDB instance with authentication enabled. 
+##### Re-start the MongoDB instance with authentication enabled. 
 
 Re-start the mongod or mongos instance with the authorization or keyFile setting. Use authorization on a standalone instance. Use keyFile on an instance in a replica set or sharded cluster.
 The following example enables authentication on a standalone mongod using the authorization command-line option:
 
     mongod --auth --config /etc/mongodb/mongodb.conf
 
-#### Create additional users. 
+##### Create additional users. 
 
 Log in with the user administratorâ€™s credentials and create additional users. See Manage User and Roles.
 
