@@ -253,12 +253,58 @@ Go to this directory /usr/bin and run the following command to start the server.
 
     turnserver -o -a -r -f
 
+### Sendgrid Integration
+
+Sendgrid is an email service provider api which CloudKibo uses to send automatic emails to users. In package.json file, we have defined which version of sendgrid api we integrate with our server. Simple npm install command would work and install this module along with all other required modules. The username and password is given to us by Sendgrid which is provided when we use this API. We have stored the username and password in database so that super user can easily modify them according to need:
+
+### Integration with Facebook, Google and Windows
+
+CloudKibo is integrated with Facebook, Google and Windows for authentication purposes. All the secrets and keys are defined in database so that they can be easily changed by super user.
+
+### Mongodb Integration
+
+Assuming that mongodb has been installed using steps provided in above section, we would need to create database now. Use the following command in mongo console to create database named cloudkibo:
+
+    use cloudkibo
+
+Use the following steps to create username and password for that database and run mongo server in authentication mode:
+(http://docs.mongodb.org/manual/tutorial/enable-authentication-without-bypass/)
+
+##### Procedure
+
+#### Start the MongoDB instance without authentication.
+
+Start the mongod or mongos instance without the authorization or keyFile setting. For example:
+
+    mongod --port 27017 --dbpath /data/db1
+
+For details on starting a mongod or mongos, see Manage mongod Processes or Deploy a Sharded Cluster.
+
+#### Create the system user administrator.
+
+Add the user with the userAdminAnyDatabase role, and only that role.
+The following example creates the user siteUserAdmin user on the cloudkibo database:
+
+    use cloudkibo
+    db.createUser(
+      {
+        user: "siteUserAdmin",
+        pwd: "password",
+        roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+      }
+    )
 
 
+#### Re-start the MongoDB instance with authentication enabled. 
 
+Re-start the mongod or mongos instance with the authorization or keyFile setting. Use authorization on a standalone instance. Use keyFile on an instance in a replica set or sharded cluster.
+The following example enables authentication on a standalone mongod using the authorization command-line option:
 
+    mongod --auth --config /etc/mongodb/mongodb.conf
 
+#### Create additional users. 
 
+Log in with the user administrator’s credentials and create additional users. See Manage User and Roles.
 
 
 
