@@ -184,13 +184,13 @@ Admin can set configuration like:
 
 ## Integration
 
-It only require us to run npm install and bower install commands and this install all libraries.
+It only require us to run npm install and bower install commands, this install all libraries.
 Sendgrid api is accessed using nodejs library and Cloudkibo has username and password which can be changed from super user account.
 Cloudkibo can define addresses of TURN server in client/components/kibortc/rtcconfig.service.js.
 
 
-Cloudkibo has feature to register with Windos, Facebook and Google accounts. The integration with facebook, google and windows is done on server side and all the credentials are defined on the super user UI. Super user has all right to change the configuration.
+Cloudkibo has feature to register with Windows, Facebook and Google accounts. The integration with facebook, google and windows is done on server side and all the credentials are defined on the super user UI. Super user has all right to change the configuration.
 
 
 Application is integrated with shippable which automatically runs all the tests on each github commit and sends the email on test failure.
-Shippable uses the grunt file to run the tests. All the automated processes run by shippable are defined in grunt file.
+Shippable uses the grunt file to run the tests and all the automated processes run by shippable are defined in grunt file.
