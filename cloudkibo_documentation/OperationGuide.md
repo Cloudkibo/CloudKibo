@@ -263,12 +263,17 @@ Sendgrid is an email service provider api which CloudKibo uses to send automatic
 
 CloudKibo is integrated with Facebook, Google and Windows for authentication purposes. All the secrets and keys are defined in database so that they can be easily changed by super user.
 
+Facebook:
+
 ![facebook](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/facebook.PNG)
 
+Google
 
 ![google](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/google.PNG)
 
-![windows](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/window.PNG)
+Windows
+
+![windows](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/windows.PNG)
 
 ### Mongodb Integration
 
