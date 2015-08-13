@@ -19,10 +19,12 @@ Our database is running in same droplet as of our application. For sending email
 Turn server is running on IP address 45.55.232.65 and this droplet is named as “kibosupporttest”
 
 ## Design
-![Implementation steps](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/Design.PNG)
+
 
 
 ## Implementation
+
+![Implementation steps](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/Design.PNG)
 
 ### Install nodejs
 
