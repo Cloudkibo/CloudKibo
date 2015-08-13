@@ -31,12 +31,12 @@ Adding contact using Cloudkibo username as shown below:
 ### Click to Call
 CloudKibo lets you invite your friend with a click of a button. Don’t get tied down to a clumsy keypad and cryptic codes to control and manage your calls.
 
-![call meeting ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conference call.PNG)
+![call ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/call-contact-username.PNG)
 
 ### Web Meeting
 CloudKibo also allows you to invite multiple people to join the Web meeting without installing any complex software. All they need to do is visit a URL and join the meeting.
 
-![call ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/call-contact-username.PNG)
+![call meeting ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conference call.PNG)
 
 Cloudkibo sets the default meeing name as you [m_Cloudkibousername] 
 Then send the above meeting URL to the people to join your meeting.
