@@ -194,3 +194,87 @@ Cloudkibo has feature to register with Windows, Facebook and Google accounts. Th
 
 Application is integrated with shippable which automatically runs all the tests on each github commit and sends the email on test failure.
 Shippable uses the grunt file to run the tests and all the automated processes run by shippable are defined in grunt file.
+
+### Implementing and Integrating TURN server
+
+We would install the rfc5766-turn-server, an open-source project, on Ubuntu
+
+Step 1: Install the dependencies
+
+    sudo apt-get install libssl-dev
+    sudo apt-get install libevent-dev
+
+Step 2: Download the tar file and untar it
+
+    wget http://turnserver.open-sys.org/downloads/v3.2.5.9/turnserver-3.2.5.9-debian-wheezy-ubuntu-mint-x86-64bits.tar.gz
+  
+You can download the latest version by going to the downloads section in this link: https://code.google.com/p/rfc5766-turn-server
+
+Now, open it up.
+
+    tar xfz turnserver-3.2.5.9-debian-wheezy-ubuntu-mint-x86-64bits.tar.gz
+
+You would get *.deb file and INSTALL file. 
+
+Step 3: Installation
+
+    sudo apt-get update
+    sudo apt-get install gdebi-core
+
+If you get unmet dependency error on above command then run the following command before running this command.
+
+    sudo apt-get -f install
+
+Next, we would use gdebi with *.deb file.
+
+    sudo gdebi rfc5766*.deb 
+
+It will install the TURN on your file system. It would put documentations, binaries and configuration files in different directories. You would like to read some documentation in /usr/share/doc/rfc5766-turn-server directory.
+Also check following manuals.
+
+    man turnserver
+    man turnadmin
+    man turnutils
+
+Step 4: Configuration
+Edit this file /etc/turnserver.conf. Leave everything as it is and write the following statement in it.
+    listening-ip=<your IP address>
+We would use the long term credentials. For this, you need to edit this file /etc/turnuserdb.conf. Insert the following statement in this file.
+
+    username:password
+
+Now, in order to run turn server as a daemon, edit this file /etc/default/rfc5766-turn-server and make sure following is set to 1.
+
+    TURNSERVER_ENABLED=1
+
+Step 5: Start the server
+
+Go to this directory /usr/bin and run the following command to start the server.
+
+    turnserver -o -a -r -f
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
