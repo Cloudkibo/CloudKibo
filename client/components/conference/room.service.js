@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, audio_threshold) {
+  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, audio_threshold, $log) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -58,7 +58,7 @@ angular.module('cloudKiboApp')
         socket.emit('msg', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
       pc.onaddstream = function (evnt) {
-        console.log('Received new stream');
+        $log.debug('Received stream');
         if(screenSwitch){
           api.trigger('peer.screenStream', [{
             id: id,
@@ -78,7 +78,7 @@ angular.module('cloudKiboApp')
         }
       };
       pc.ondatachannel = function (evnt) {
-        console.log('Received DataChannel from '+ id);
+        $log.debug('Received DataChannel from '+ id);
         dataChannels[id] = evnt.channel;
         dataChannels[id].onmessage = function (evnt) {
           handleDataChannelMessage(id, evnt.data);
@@ -92,10 +92,10 @@ angular.module('cloudKiboApp')
       makeDataChannel(id);
       pc.createOffer(function (sdp) {
           pc.setLocalDescription(sdp);
-          console.log('Creating an offer for', id);
+          $log.debug('Creating an offer for', id);
           socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'sdp-offer', username: username });
         }, function (e) {
-          console.log(e);
+          $log.error(e);
         },
         { mandatory: { offerToReceiveVideo: true, offerToReceiveAudio: true }});
     }
@@ -108,17 +108,17 @@ angular.module('cloudKiboApp')
           dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: true});
         }
         catch (e) {
-          console.log('Unreliable DataChannel for '+ id);
+          $log.warn('Unreliable DataChannel for '+ id +': '+ e);
           dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: false});
         }
         dataChannels[id].onmessage = function (evnt) {
           handleDataChannelMessage(id, evnt.data);
         };
-        console.log('Created DataChannel for '+ id);
+        $log.debug('Created DataChannel for '+ id);
       } catch (e) {
         alert('Failed to create data channel. ' +
         'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
-        console.log('createDataChannel() failed with exception: ' + e.message);
+        $log.error('createDataChannel() failed with exception: ' + e.message);
       }
     }
 
@@ -137,28 +137,28 @@ angular.module('cloudKiboApp')
         case 'sdp-offer':
           userNames[data.by] = data.username;
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            console.log('Setting remote description by offer');
+            $log.debug('Setting remote description by offer');
             pc.createAnswer(function (sdp) {
               pc.setLocalDescription(sdp);
               socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'sdp-answer' });
             }, function (e) {
-              console.log(e);
+              $log.error(e);
             });
           }, function (e) {
-            console.log(e);
+            $log.error(e);
           });
           break;
         case 'sdp-answer':
           console.log('answer by '+ data.by);
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            console.log('Setting remote description by answer');
+            $log.debug('Setting remote description by answer');
           }, function (e) {
-            console.error(e);
+            $log.error(e);
           });
           break;
         case 'ice':
           if (data.ice) {
-            console.log('Adding ice candidates');
+            $log.debug('Adding ice candidates');
             pc.addIceCandidate(new RTCIceCandidate(data.ice));
           }
           break;

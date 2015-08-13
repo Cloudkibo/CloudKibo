@@ -5,7 +5,8 @@ angular.module('cloudKiboApp', [
   'ngRoute',
   'btford.socket-io',
   'ui.bootstrap',
-  'kiboRtc'
+  'kiboRtc',
+  'logglyLogger'
 ])
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
@@ -40,6 +41,13 @@ angular.module('cloudKiboApp', [
 	});*/
 
     $httpProvider.interceptors.push('authInterceptor');
+  })
+
+  .config( function( LogglyLoggerProvider ) {
+    LogglyLoggerProvider
+      .inputToken('09f00942-9bbd-444a-8b8c-de37fef8bb50')
+      .includeUrl(true)
+      .sendConsoleErrors(true);
   })
 
   .factory('socket', function (socketFactory) {

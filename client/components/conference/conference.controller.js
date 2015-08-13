@@ -5,10 +5,11 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout) {
+  .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
 
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
+      $log.error('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
       return;
     }
 
@@ -35,7 +36,7 @@ angular.module('cloudKiboApp')
     var stream;
 
     $scope.connect = function(){
-      //logger.log($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
+      $log.info($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
       Stream.get()
         .then(function (s) {
           stream = s;
@@ -44,13 +45,14 @@ angular.module('cloudKiboApp')
           Room.joinRoom($routeParams.mname);
         }, function (err) {
           console.error(err);
+          $log.debug(err);
           $scope.error = 'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
         });
     };
 
     $scope.peers = [];
     Room.on('peer.stream', function (peer) {
-      console.log('Client connected, adding new stream');
+      $log.debug('Client connected, adding new stream');
       // Inform the new joiner that you are sharing video
       if($scope.isLocalVideoShared()) Room.toggleVideo($scope.isLocalVideoShared());
       $scope.peers.push({
@@ -62,11 +64,11 @@ angular.module('cloudKiboApp')
       });
     });
     Room.on('peer.screenStream', function (peer) {
-      console.log('Client shared screen, adding stream');
+      $log.debug('Client shared screen, adding stream');
       peerScreenStream = URL.createObjectURL(peer.stream);
     });
     Room.on('conference.stream', function (peer) {
-      console.log('hiding / showing video or screen');
+      $log.debug('hiding / showing video or screen');
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
           if(peer.type === 'video'){
@@ -85,7 +87,7 @@ angular.module('cloudKiboApp')
       });
     });
     Room.on('peer.disconnected', function (peer) {
-      console.log('Client disconnected, removing stream');
+      $log.debug('Client disconnected, removing stream');
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
       });

@@ -10,7 +10,7 @@
  * details from application.
  */
 angular.module('cloudKiboApp')
-  .factory('FileHangout', function FileHangout($rootScope, Room, FileUtility) {
+  .factory('FileHangout', function FileHangout($rootScope, Room, FileUtility, $log) {
 
     var isChrome = !!navigator.webkitGetUserMedia;
 
@@ -19,7 +19,7 @@ angular.module('cloudKiboApp')
     var chunks = {};
     var meta = {};
     var filesysteminuse = false;
-    var FSdebug = false;
+    var FSdebug = true;
     /* Used in Chrome to handle larger files (and firefox with idb.filesystem.js) */
     window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
     var file_to_upload;    /* "pointer" to external file */
@@ -121,10 +121,10 @@ angular.module('cloudKiboApp')
 
             /* debug */
             if (FSdebug) {
-              console.log("DEBUG: writing chunk2 " + recievedChunksWritePointer[user_id]);
+              $log.debug("DEBUG: writing chunk2 " + recievedChunksWritePointer[user_id]);
               for (i = 0; i < FileUtility.getChunksPerAck(); i++) {
                 if (recievedChunks[user_id][i]) {
-                  console.log('recived: ' + CryptoJS.SHA256(FileUtility._arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
+                  $log.debug('recived: ' + CryptoJS.SHA256(FileUtility._arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
                 }
               }
             }
@@ -185,7 +185,7 @@ angular.module('cloudKiboApp')
       }
 
       if (FSdebug) {
-        console.log("processing chunk # " + recieved_meta[id].chunks_recieved);
+        $log.debug("processing chunk # " + recieved_meta[id].chunks_recieved);
       }
 
       /* We can write to a file using FileSystem! Chrome has native support, FF uses idb.filesystem.js library */
@@ -260,7 +260,7 @@ angular.module('cloudKiboApp')
         }
       } else {
 
-        console.log('Chunk is requested');
+        $log.debug('Chunk is requested');
 
         /* Otherwise, we are going to assume that if we have reached here, this is a request to download our file */
         if (data.chunk % FileUtility.getChunksPerAck() == 0) {
@@ -274,10 +274,8 @@ angular.module('cloudKiboApp')
     /* request chunk # chunk_num from id, at this point just used to request the first chunk */
     function request_chunk(id, chunk_num, hash) {
       if (FSdebug) {
-        console.log("DEBUG: requesting chunk " + chunk_num + " from " + id);
+        $log.debug("DEBUG: requesting chunk " + chunk_num + " from " + id);
       }
-
-      console.log('Function which actually asks for chunk');
 
       Room.sendDataChannelMessage(JSON.stringify({ //id, JSON.stringify({
         "eventName": "request_chunk",
@@ -317,11 +315,9 @@ angular.module('cloudKiboApp')
         filesysteminuse = true;
         downloading[id] = true;
         /* accept file info from user */
-        console.log('File System given to the program');
+        $log.debug('File System given to the program');
         request_chunk(id, 0, 0);
       });
-
-      console.log('After File System given to the program');
 
       recieved_meta[id].chunks_recieved = 0;
       recievedChunksWritePointer[id] = 0;
@@ -336,7 +332,7 @@ angular.module('cloudKiboApp')
         filesysteminuse = false;
         fs[user_id].root.getFile(recieved_meta[user_id].name, {create: false}, function (fileEntry) {
           fileEntry.remove(function () {
-            console.log('File removed.');
+            $log.debug('File removed.');
           }, FileUtility.FSerrorHandler);
         }, FileUtility.FSerrorHandler);
       }
@@ -556,8 +552,8 @@ angular.module('cloudKiboApp')
           //	file_encrypt_and_send(id, event.target.result, rand, chunk_num);
           //} else {
           if (FSdebug) {
-            console.log("DEBUG: sending chunk " + chunk_num);
-            console.log('sending: ' + CryptoJS.SHA256(FileUtility._arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
+            $log.debug("DEBUG: sending chunk " + chunk_num);
+            $log.debug('sending: ' + CryptoJS.SHA256(FileUtility._arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
           }
 
           Room.sendDataChannelMessage(event.target.result);
