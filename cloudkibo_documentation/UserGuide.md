@@ -35,10 +35,25 @@ CloudKibo lets you invite your friend with a click of a button into a call. Donâ
 
 ### Web Meeting
 CloudKibo also allows you to invite multiple people to join the Web meeting without installing any complex software. All they need to do is visit a URL and join the meeting.
+![call meeting ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conference call.PNG)
+
+Cloudkibo sets the default meeing name as you [Cloudkibousername_m] 
+Then send the above meeting URL to the people to join your meeting.
 
 ![call meeting link ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/meeting-link.PNG)
-![call meeting ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conference call.PNG)
+
+Dusing the meetig participants can see the following options
+
+  - Mute/Un mute Audio
+  - Show/Hide Video
+  - Chat
+  - Choose file
+  - Share/Hide screen
+  - Screen sharing extension
+
 ![call meeting 2 ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conference call2.PNG)
+
+During the meeting participant can share the screen,  show their videos, send chat messgaes and send files. CloudKibo shows option to install screen sharing extension to your browser.
 
 ### HD Video Call
 CloudKibo uses VP8 codec, which allows efficient use of bandwidth estimation for better video quality. VP8 adaptable technology allows you have HD quality. It also includes components to conceal pack loss and clean up noisy images.
