@@ -1,21 +1,28 @@
 #User Guide
 ## Application user guide
-User register for account using their email id. Cloudkibo now provides features to register to their Cloudkibo account using Facebook, Google and Windows.
-Signup and invite friends and colleagues to Cloudkibo and start one-to one video chat or make a conference call.
+
 ## Features
 
 ### Register
+User register for account using their email id. Cloudkibo now provides features to register to their Cloudkibo account using Facebook, Google and Windows.
+Signup and invite friends and colleagues to Cloudkibo and start one-to one video chat or make a conference call.
+
 ![Register](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/register.PNG)
+To login cloudkibo user name and password is required or you can login through your registered Facebook, Google or Windows id.
 
 ![Login](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/login.PNG)
 ### Invite Contacts
 
+Inviting people to Cloudkibo is one click process. Enter the email id and send invitation.
+
 ![invite ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/invite.PNG)
 
 ### Add contacts
-
+Adding Cloudkibo user as your friend, click add contact and you can add contact using email id or Cloudkibo username.
 ![Add contact](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/add-contact1.PNG)
+Adding contact using email address as shown below:
 ![Add email](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/add-contact-email.PNG)
+Adding contact using Cloudkibo username as shown below:
 ![Add username](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/add-contact-username.PNG)
 
 ### Click to Call
@@ -27,8 +34,8 @@ CloudKibo lets you invite your friend with a click of a button into a call. Donâ
 CloudKibo also allows you to invite multiple people to join the Web meeting without installing any complex software. All they need to do is visit a URL and join the meeting.
 
 ![call meeting link ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/meeting-link.PNG)
-![call meeting ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conferencecall.PNG)
-![call meeting 2 ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conferencecall2.PNG)
+![call meeting ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conference call.PNG)
+![call meeting 2 ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/conference call2.PNG)
 
 ### HD Video Call
 CloudKibo uses VP8 codec, which allows efficient use of bandwidth estimation for better video quality. VP8 adaptable technology allows you have HD quality. It also includes components to conceal pack loss and clean up noisy images.
