@@ -26,7 +26,7 @@ Turn server is running on IP address 45.55.232.65 and this droplet is named as â
 
 ![Implementation steps](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/Design.PNG)
 
-### Install nodejs
+#### Install nodejs
 
 In order to get this version, we just have to use the apt package manager. We should refresh our local package index prior and then install from the repositories:
 
@@ -42,7 +42,7 @@ source: https://www.digitalocean.com/community/tutorials/how-to-install-node-js-
 
 
 
-### Install MongoDB
+#### Install MongoDB
 
 First have to import they key for the official MongoDB repository
 
@@ -78,24 +78,24 @@ You can also stop, start, and restart MongoDB using the service command (e.g. se
 
 source: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-14-04
 
-### Install Forever
+#### Install Forever
 
 To install forever run the following command:
 
     npm install forever -g
 
-### Install Grunt
+#### Install Grunt
 To install grunt run the following command:
 
     npm install -g grunt-cli
 
-### Install Bower
+#### Install Bower
 
 To install bower run the following command:
 
     npm install -g bower
 
-### Clone the application on server from github:
+#### Clone the application on server from github:
     git clone https://www.github.com/Cloudkibo/CloudKibo
 
 Install server side libraries using:
@@ -114,13 +114,13 @@ In order to run the application, use forever:
 
     forever start dist/server/app.js
 
-### Redirect the ports to our application ports
+#### Redirect the ports to our application ports
 Run following two commands
 
     iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000
     iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 8443
 
-### Updates
+#### Updates
 
 If there is update in code, then we need to pull the code. Go to folder of CloudKibo using "cd Cloudkibo". Run following commands
 
