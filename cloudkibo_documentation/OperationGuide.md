@@ -20,7 +20,7 @@ Turn server is running on IP address 45.55.232.65 and this droplet is named as â
 
 ## Design
 
-
+![Client](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/client-design-diagram.PNG)
 
 ## Implementation
 
@@ -257,9 +257,18 @@ Go to this directory /usr/bin and run the following command to start the server.
 
 Sendgrid is an email service provider api which CloudKibo uses to send automatic emails to users. In package.json file, we have defined which version of sendgrid api we integrate with our server. Simple npm install command would work and install this module along with all other required modules. The username and password is given to us by Sendgrid which is provided when we use this API. We have stored the username and password in database so that super user can easily modify them according to need:
 
+![send grid](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/sendgrid.PNG)
+
 ### Integration with Facebook, Google and Windows
 
 CloudKibo is integrated with Facebook, Google and Windows for authentication purposes. All the secrets and keys are defined in database so that they can be easily changed by super user.
+
+![facebook](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/facebook.PNG)
+
+
+![google](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/google.PNG)
+
+![windows](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/window.PNG)
 
 ### Mongodb Integration
 
