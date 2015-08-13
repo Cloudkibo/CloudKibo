@@ -148,6 +148,40 @@ Super user can modify certain cloudkibo features and can remove user accounts. I
 There is no way to make super user account from user interface, this is secure. One needs to create manual user account at cloudkibo first, then we can change the role from database manually for that user to be super user.
 This is for security reasons.
 
+When super user login, a separate tab is shown to the admin "Admin Dashboard"
+
+![Admin Dashboard Tab](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/adminDashboard1.PNG)
+
+Admin can see details like 
+
+
+  - Username
+  - First Name
+  - Last Name
+  - Email id
+  - Phone number
+  - Country
+  - Role
+  - Joining date
+  - Option
+
+![Admin Dashboard detail](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/adminDashboard2.PNG)
+
+Admin has option to remove the contact.
+Admin can set configuration like:
+
+  - SendGrid Username
+  - SendGrid Password
+  - Cloudkibo Logo
+  - Number of people in Conference
+  - Number of people in Contact list
+  - Google Id
+  - Google secrete
+
+![Admin Dashboard configuration](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/adminDashboard3.PNG)
+
+
+
 ## Integration
 
 It only require us to run npm install and bower install commands and this install all libraries.
