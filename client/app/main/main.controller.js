@@ -532,7 +532,7 @@ angular.module('cloudKiboApp')
         };
 
         $scope.removechathistory = function (index) {
-            $http.post(RestApi.userchat.removeChatHistroy, {contact: index})
+            $http.post(RestApi.userchat.removeChatHistroy, {username: index.username})
                 .success(function (data) {
                     //console.log(data);
                     if (data.status == 'success') {

@@ -34,7 +34,7 @@ exports.removechathistory = function(req, res) {
 
 		console.log("removing chat history");
 
-		User.findOne({username : req.body.contact.username}, function (err, gotUserSaved) {
+		User.findOne({username : req.body.username}, function (err, gotUserSaved) {
 			userchat.remove({owneruser : gotUser.username, $or: [ { to : gotUserSaved.username, from : gotUser.username },
 										{ to : gotUser.username, from : gotUserSaved.username } ]},
 										function(err1){
