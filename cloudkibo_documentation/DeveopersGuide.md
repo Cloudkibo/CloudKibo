@@ -11,23 +11,60 @@ On client side, Cloudkibo have modules to separate code. One of the core module,
 However, new conference logic has been placed in conference folder. Othere such modules are:
 socket.io module, authentication module, rest api and sound module.
 
-## Architecture (created .md )
+## Architecture 
 
-Cloudkibo application uses purchased droplet from digitalocean (https://www.digitalocean.com/) for deployment. Our mongodb database is running in same droplet as of our application. For sending emails, we have integrated our application with sendgrid service. Turn server is running on IP address 45.55.232.65 and this droplet is named as “kibosupporttest”. Application’s basic architecture was generated using Angular-FullStack generator. On every commit, our repository tested and built on shippable. Next, we would integrate our application with docker also for auto-deployment.
+Cloudkibo application uses purchased droplet from digitalocean (https://www.digitalocean.com/) for deployment. Our mongodb database is running in same droplet as of our application. For sending emails, we have integrated our application with sendgrid service. Turn server is running on IP address 45.55.232.65 and this droplet is named as ** “kibosupporttest” **. Application’s basic architecture was generated using Angular-FullStack generator. On every commit, our repository tested and built on shippable. Next, we would integrate our application with docker also for auto-deployment.
+
+
 Currently, our deployments are manual. We push the code to github and then access our droplet by ssh and pull the latest code there. With docker, we would just make a code push and docker will make build image for us.
 
 ## Design
-(  Design diagram would go here )
+
+![Client](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/client-design-diagram.PNG)
+
+![Server](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/Server-Architecture.PNG)
 
 ## Rest APIs
 
 On server side, we have directory ‘api’. All the mongodb collections (relations) with their constraints and test code are defined there. 
+
+
 From there, we also expose the REST API for clients. The URI for any resource is often like this “/api/users/me”.
 Code for this on server side can be located by looking at URI alone. We have folder api, then users folder and then we go to index.js file to fine route ‘/me’ and its controller.
+
 On client side, we have an Angularjs service which has all the URIs written at one place. The angularjs application uses them whenever needs to do http request.
 With this, we don’t have to modify the URI at all the places where it is used on client if URI is changed on server. We have to modify the Rest Service file only.
 
-To see Cloudkibo Rest APIs:  https://github.com/Cloudkibo/CloudKibo/wiki/Cloudkibo-Rest-API 
+For example if we have entity **User** and the link **/api/users/:id/password** , the URI would be
+www.cloudkibo.com/api/users/:id/password
+
+This link is used when user wants to change their password.
+
+Following are the REST API used by Cloudkibo. It shows the HTTP methode type **Get, Post, Delete, Put**
+
+#### User Entity
+
+**/api/users/**
+
+This gets list of users
+###### HTTP Method:GET
+
+**/api/users/:id**
+
+Deletes the user
+###### HTTP Method: DELETE
+
+**/api/usesr/me**
+
+This fetches user Profile details
+###### HTTP Method: GET
+
+**/api/users/:id/password**
+
+Changes user's password
+###### HTTP Method: PUT
+
+To see complete Cloudkibo Rest APIs:  https://github.com/Cloudkibo/CloudKibo/wiki/Cloudkibo-Rest-API 
 
 ## Server side code 
 In separate md file, we would give details of server side code.
@@ -39,7 +76,40 @@ In socketio.js, we have all the server side code of socket.io. This code is ofte
 App.js is the main file of server side application and serves as starting point of our code. ViewRoutes has controllers for all the views requested by client.
 Routes has all the API route handlers and other 404 route handlers
 
-To see Cloudkibo Server side structure: https://github.com/Cloudkibo/CloudKibo/wiki/Cloukibo-Server-Structure
+##### CloudKibo Server Side Files and Folders Structure
+
+Cloudkibo server side files and folders are categorized for clarification and understanding. Each link makes a URI and the complete URI can be seen as:
+
+www.cloudkibo.com/[folder-name]/[link-of-File]
+
+For example we have folder **API** and the link **/callrecord/callrecord.model.js** , the complete URI will be
+
+www.cloudkibo.com/api//callrecord/callrecord.model.js
+
+Following shows the complete server side folder and file. And each file has a description of the code it contains.
+
+##### API (Folder)
+
+**/callrecord/callrecord.model.js**
+
+File Description: Code for MongoDB Collection for Calls Data
+
+File Category: Mongodb model
+
+**/contactlist/contactlist.controller.js**
+
+File Description: Route Handlers for Contact List
+
+File Category: Route Handlers
+
+**/contactlist/contactlist.model.js**
+
+File Description: Code for MongoDB Collection for Contact List
+
+File Category: MongoDB model
+
+Complete Cloudkibo Server side structure can be found here: 
+https://github.com/Cloudkibo/CloudKibo/wiki/Cloukibo-Server-Structure
 
 ## Client side code 
 
@@ -64,9 +134,43 @@ Bower_components folder is automatically created and managed by bower. We don’
 
 /components/rest is angularjs service written to separate addresses of REST API URIs at one place, application uses this whenever there is need to make http request.
 
-To see Cloudkibo Client side structure: https://github.com/Cloudkibo/CloudKibo/wiki/Cloudkibo-Client-Structure
+##### CloudKibo Client Side Files and Folders Structure
 
-## Integration
+Cloudkibo client side files and folders are categorized for clarification and understanding. Each link makes a URI and the complete URI can be seen as:
+
+www.cloudkibo.com/[folder-name]/[link-of-File]
+
+For example we have folder **App* and the link */account/account.js* , the complete URI will be
+
+www.cloudkibo.com/app/account/account.js
+
+Following show the complete client side folder and file. And each file has a description of the code it contains.
+
+##### APP(Folder)
+
+**/cloudkiboApp.js**
+
+File Description: Contains Entry point for AngularJS code
+
+File Category: Main Application
+
+**/account/account.js**
+
+File Description: Client-side URL routers are handled for accounts
+
+File Category: User Accounts
+
+
+**/account/login/login.controller.js**
+
+File Description: Controller for Logic of Login
+
+File Category: User Accounts
+
+Complete Cloudkibo Client side structure can be found here: 
+https://github.com/Cloudkibo/CloudKibo/wiki/Cloudkibo-Client-Structure
+
+### Integration
 
 It only require us to run npm install and bower install commands and this install all libraries. All the server side libraries are defined in package.json file. All the client side libraries are defined in bower.json. Sendgrid api is accessed using nodejs library and Cloudkibo has username and password which can be changed from super user account. Cloudkibo can define addresses of TURN server in client/components/kibortc/rtcconfig.service.js.
 
@@ -74,7 +178,27 @@ Cloudkibo has feature to register with Windos, Facebook and Google accounts. The
 
 Application is integrated with shippable which automatically runs all the tests on each github commit and sends the email on test failure. Shippable uses the grunt file to run the tests. All the automated processes run by shippable are defined in grunt file.
 
+To see how they have been integrated follow the link: https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/OperationGuide.md
+
 ## Libraries
-### Client-side libraries 
-### Server-side libraries
+
+#### Server-side libraries
+The main libraries on server side are
+
+  - socket.io
+  - passport
+  - passport facebook
+  - passport windows
+  - passport google
+  - sendgrid
+  - winston loggly
+  
+#### Client-side libraries 
+Following are the main client side libraries:
+
+  - Angular bootstrap
+  - Event Emitter
+  - Angular loggly logger
+  - angular socket io
+
 ## Database
