@@ -32,7 +32,7 @@ angular.module('cloudKiboApp')
         .then( function() {
           // Account created, redirect to home
           $scope.progressState = false;
-          $location.path('/app');
+          $location.path('#verifyview');
         })
         .catch( function(err) {
             $log.error('Error n registering account '+err)
