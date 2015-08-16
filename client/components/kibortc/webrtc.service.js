@@ -29,7 +29,7 @@
  */
 
 angular.module('kiboRtc.services')
-  .factory('WebRTC', function WebRTC($rootScope, pc_config, pc_constraints, audio_threshold, sdpConstraints, video_constraints, audio_constraints, Signalling) {
+  .factory('WebRTC', function WebRTC($rootScope, pc_config, pc_constraints, audio_threshold, sdpConstraints, video_constraints, audio_constraints, Signalling, $log) {
 
     var isInitiator = false;
     /* It indicates which peer is the initiator of the call */
@@ -128,6 +128,8 @@ angular.module('kiboRtc.services')
         remoteVideo = remotevideo;
         remoteAudio = remoteaudio;
         remoteVideoScreen = remotevideoscreen;
+
+
       },
 
       /**
@@ -146,6 +148,7 @@ angular.module('kiboRtc.services')
         pc.addStream(localAudioStream);
         if (localVideoStream)
           pc.addStream(localVideoStream);
+        $log.info("creating peer connection "+ pc);
       },
 
       /**
@@ -157,6 +160,8 @@ angular.module('kiboRtc.services')
        */
       createAndSendOffer: function () {
         pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+
+        $log.warn('Creating offer '+setLocalAndSendMessage +" "+ handleCreateOfferError)
       },
 
       /**
@@ -170,6 +175,7 @@ angular.module('kiboRtc.services')
       createAndSendAnswer: function () {
         pc.createAnswer(setLocalAndSendMessage, function (error) {
           console.log(error)
+          $log.error("Fail to create and send answer "+error);
         }, sdpConstraints);
       },
 
@@ -181,6 +187,7 @@ angular.module('kiboRtc.services')
        */
       setRemoteDescription: function (message) {
         pc.setRemoteDescription(new RTCSessionDescription(message));
+        $log.debug("setting pc remote description ")
       },
 
       /**
@@ -208,9 +215,12 @@ angular.module('kiboRtc.services')
       toggleVideo: function (cb) {
         if (videoShared) {
 
+          $log.info('toggle video from '+videoShared)
+
           localVideoStream.stop();
           pc.removeStream(localVideoStream);
           Signalling.sendMessage('hiding video');
+
           pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
 
           localVideo.src = null;
@@ -218,6 +228,8 @@ angular.module('kiboRtc.services')
           videoShared = false;
 
           $rootScope.$broadcast('localVideoRemoved');
+
+          $log.info('Local Video Stream removed')
 
           cb(null);
         }
@@ -252,6 +264,7 @@ angular.module('kiboRtc.services')
       toggleAudio: function (cb) {
         if (audioShared) {
 
+          $log.info('Toggle audio from '+audioShared)
           localAudioStream.stop();
           pc.removeStream(localAudioStream);
           pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
@@ -299,6 +312,8 @@ angular.module('kiboRtc.services')
         else
           return cb('Invalid stream type. Must be "audio" or "video"');
 
+        $log.warn('Invalid stream type. Must be "audio" or "video"');
+
         captureMedia(constraints, streamType, cb);
 
       },
@@ -342,11 +357,12 @@ angular.module('kiboRtc.services')
           remoteStreamScreen = null;
         }
 
-        //console.log(localStream);
+        $log.info('ending connection ');
 
         try {
           pc.close();
         } catch (e) {
+          $log.error('Failed to end connection '+e);
         }
 
       },
@@ -485,7 +501,7 @@ angular.module('kiboRtc.services')
           candidate: event.candidate.candidate
         });
       } else {
-        //console.log('End of candidates.');
+        $log.info('End of candidates.');
       }
     }
 
@@ -500,7 +516,7 @@ angular.module('kiboRtc.services')
     function setLocalAndSendMessage(sessionDescription) {
       // Set Opus as the preferred codec in SDP if Opus is present.
       pc.setLocalDescription(sessionDescription);
-      //console.log('setLocalAndSendMessage sending message' , sessionDescription);
+      $log.warn('setLocalAndSendMessage sending message ' + sessionDescription);
       Signalling.sendMessage(sessionDescription);
     }
 
@@ -511,7 +527,7 @@ angular.module('kiboRtc.services')
      * @param error information about the error which occurred while creating offer
      */
     function handleCreateOfferError(error) {
-      console.log('createOffer() error: ', error);
+      $log.error('createOffer() error: '+ error);
     }
 
     /**
@@ -560,7 +576,7 @@ angular.module('kiboRtc.services')
      * @param event
      */
     function handleRemoteStreamRemoved(event) {
-      //console.log(event);
+      $log.info('handling even '+event);
       if(hidingVideo){
         remoteVideoStream.stop();
         remoteVideoStream = null;
@@ -617,6 +633,7 @@ angular.module('kiboRtc.services')
         },
         function (err) {
           cb(err);
+          $log.error('Error in call back '+err)
         }
       );
 

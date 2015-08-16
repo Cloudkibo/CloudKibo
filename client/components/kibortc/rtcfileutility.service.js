@@ -10,7 +10,7 @@
  * details from application.
  */
 angular.module('kiboRtc.services')
-  .factory('FileUtility', function FileUtility($rootScope) {
+  .factory('FileUtility', function FileUtility($rootScope, $log) {
 
 
     return {
@@ -45,6 +45,7 @@ angular.module('kiboRtc.services')
       bootAlert: function (text) {
         alert(text);
         console.log('Boot_alert: ', text);
+        $log.info('Boot_alert: ', text);
       },
 
       /**
@@ -59,18 +60,23 @@ angular.module('kiboRtc.services')
         switch (e.code) {
           case FileError.QUOTA_EXCEEDED_ERR:
             msg = 'QUOTA_EXCEEDED_ERR';
+            $log.warn(msg);
             break;
           case FileError.NOT_FOUND_ERR:
             msg = 'NOT_FOUND_ERR';
+            $log.warn(msg);
             break;
           case FileError.SECURITY_ERR:
             msg = 'SECURITY_ERR';
+            $log.warn(msg);
             break;
           case FileError.INVALID_MODIFICATION_ERR:
             msg = 'INVALID_MODIFICATION_ERR';
+            $log.warn(msg);
             break;
           case FileError.INVALID_STATE_ERR:
             msg = 'INVALID_STATE_ERR';
+            $log.warn(msg);
             break;
           default:
             msg = 'Unknown Error';
@@ -78,6 +84,7 @@ angular.module('kiboRtc.services')
         }
 
         console.error('Error: ' + msg);
+        $log.error('Error: ' + msg);
       },
 
       /**

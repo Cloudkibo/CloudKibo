@@ -1,11 +1,12 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('AdminCtrl', function ($scope, $http, Auth, User) {
+  .controller('AdminCtrl', function ($scope, $http, Auth, User, $log) {
 
     $http.get('/api/configurations/fetch')
       .success(function(data){
         $scope.supersettings = data;
+        $log.info('Fetching data '+ data)
       });
 
     // Use the User $resource to fetch all users
@@ -38,6 +39,8 @@ angular.module('cloudKiboApp')
             if(data.status == 'success') {
 
               alert("Saved.");
+
+              $log.info('saving changes ');
 
               //$scope.addAlertsSuperuserSetting(data.status, 'Changes saved.');
             }

@@ -24,7 +24,7 @@
  */
 
 angular.module('kiboRtc.services')
-  .factory('Signalling', function Signalling($rootScope, socket) {
+  .factory('Signalling', function Signalling($rootScope, socket, $log) {
 
     var peer;
     /* Username of the other peer */
@@ -67,6 +67,8 @@ angular.module('kiboRtc.services')
         //console.log('Client sending message: ', message);
         socket.emit('message', message);
 
+        $log.info('message '+ message)
+
       },
 
       /**
@@ -83,7 +85,7 @@ angular.module('kiboRtc.services')
         message.room = roomName;
         message.to = peer;
         message.from = username;
-        //console.log('Client sending message: ', message);
+        $log.info('Client sending message: '+ message);
         socket.emit('messagefordatachannel', message);
       },
 
@@ -100,7 +102,7 @@ angular.module('kiboRtc.services')
         message = {msg: {payload : message, ToUser : toUserName, FromUser : username}};
         message.room = roomName;
         message.username = username;
-        //console.log('Client sending message: ', message);
+        $log.info('messageformeeting '+ message);
         socket.emit('messageformeeting', message);
       },
 
