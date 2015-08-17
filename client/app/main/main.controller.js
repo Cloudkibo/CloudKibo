@@ -39,7 +39,7 @@ angular.module('cloudKiboApp')
 
     })
 
-    .controller('HomeController', function ($scope, $http, Auth, socket, $timeout, $location, Sound, WebRTC, Signalling, ScreenShare, RestApi, logger) {
+    .controller('HomeController', function ($scope, $http, Auth, socket, $timeout, $location, Sound, WebRTC, Signalling, ScreenShare, RestApi, logger, $log) {
 
 		    $scope.getCurrentUser = Auth.getCurrentUser;
 
@@ -1568,7 +1568,7 @@ angular.module('cloudKiboApp')
     .controller('AddRequestsController', function ($scope) {
     })
 
-    .controller('IndexController', function ($scope, $location, Auth, $http, socket, $interval, $timeout, RestApi) {
+    .controller('IndexController', function ($scope, $location, Auth, $http, socket, $interval, $timeout, RestApi, $log) {
 
         $scope.isCollapsed = true;
         $scope.isLoggedIn = Auth.isLoggedIn;
