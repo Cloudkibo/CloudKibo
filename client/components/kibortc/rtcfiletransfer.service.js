@@ -98,6 +98,7 @@ angular.module('kiboRtc.services')
 
       createAndSendOffer: function () {
         pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+        $log.info('Create and send offer ')
       },
 
       /**
@@ -112,6 +113,7 @@ angular.module('kiboRtc.services')
       createAndSendAnswer: function () {
         pc.createAnswer(setLocalAndSendMessage, function (error) {
           console.log(error)
+
           $log.error("fail to create and send answer with "+ error)
         }, sdpConstraints);
       },
@@ -157,11 +159,11 @@ angular.module('kiboRtc.services')
         try {
 
           pc.close();
-          $log.debug("closing pcand ending connection")
+          $log.debug("closing pc and ending connection")
         } catch (e) {
           $log.error("ending connection "+e)
         }
-        $log.warn("closing pcand ending connection")
+        $log.warn("closing pc and ending connection")
         console.log('FileTransfer Connection closed')
       },
 

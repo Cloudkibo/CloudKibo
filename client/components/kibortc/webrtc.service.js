@@ -128,8 +128,7 @@ angular.module('kiboRtc.services')
         remoteVideo = remotevideo;
         remoteAudio = remoteaudio;
         remoteVideoScreen = remotevideoscreen;
-
-
+        $log.info('initializing local video, video screen, remote video, remote audio')
       },
 
       /**
@@ -220,6 +219,7 @@ angular.module('kiboRtc.services')
           localVideoStream.stop();
           pc.removeStream(localVideoStream);
           Signalling.sendMessage('hiding video');
+          $log.info('hiding video');
 
           pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
 
@@ -236,7 +236,11 @@ angular.module('kiboRtc.services')
         else {
 
           captureMedia(video_constraints, VIDEO, function (err) {
-            if (err) return cb(err);
+            if (err) {
+             return cb(err);
+              $log.error('Error in capturing media',err)
+            }
+
 
             pc.addStream(localVideoStream);
             Signalling.sendMessage('sharing video');
@@ -247,6 +251,7 @@ angular.module('kiboRtc.services')
             videoShared = true;
 
             $rootScope.$broadcast('localVideoAdded');
+
 
             cb(null);
 
@@ -272,6 +277,7 @@ angular.module('kiboRtc.services')
           audioShared = false;
 
           $rootScope.$broadcast('localAudioRemoved');
+          $log.info('localAudioRemoved');
 
           cb(null);
         }
@@ -286,6 +292,7 @@ angular.module('kiboRtc.services')
             audioShared = true;
 
             $rootScope.$broadcast('localAudioAdded');
+            $log.info('localAudioAdded');
 
             cb(null);
 
@@ -311,7 +318,6 @@ angular.module('kiboRtc.services')
           constraints = video_constraints;
         else
           return cb('Invalid stream type. Must be "audio" or "video"');
-
         $log.warn('Invalid stream type. Must be "audio" or "video"');
 
         captureMedia(constraints, streamType, cb);
@@ -330,29 +336,35 @@ angular.module('kiboRtc.services')
         isStarted = false;
         isInitiator = false;
 
-        //console.log(localStream);
+        console.log(localStream);
 
         if (localVideoStream) {
           localVideoStream.stop();
+          $log.info('Ending local video stream ');
         }
         if (localAudioStream) {
           localAudioStream.stop();
+          $log.info('Ending local audio stream ');
         }
         if (localStreamScreen) {
           localStreamScreen.stop();
+          $log.info('Ending local screen stream ');
         }
         if (remoteVideoStream) {
           remoteVideoStream.stop();
+          $log.info('Ending remote video stream ');
           remoteVideo.src = null;
           remoteVideoStream = null;
         }
         if (remoteAudioStream) {
           remoteAudioStream.stop();
+          $log.info('Ending remote video stream ');
           remoteAudio.src = null;
           remoteAudioStream = null;
         }
         if (remoteStreamScreen) {
           remoteStreamScreen.stop();
+          $log.info('Ending remote screen ');
           remoteVideoScreen.src = null;
           remoteStreamScreen = null;
         }
@@ -361,6 +373,7 @@ angular.module('kiboRtc.services')
 
         try {
           pc.close();
+          $log.warn('ending peer connection ');
         } catch (e) {
           $log.error('Failed to end connection '+e);
         }
@@ -380,6 +393,7 @@ angular.module('kiboRtc.services')
        */
       initializeSignalling: function (to, from, roomName) {
         Signalling.initialize(to, from, roomName);
+        $log.info('initializing signalling to: '+ to +' from: '+from+' room name: '+roomName );
       },
 
       /**
@@ -391,6 +405,7 @@ angular.module('kiboRtc.services')
         localStreamScreen.stop();
         localVideoScreen.src = URL.createObjectURL(localVideoStream);
         pc.removeStream(localStreamScreen);
+        $log.info('hiding screen ');
       },
 
       /**
@@ -409,6 +424,7 @@ angular.module('kiboRtc.services')
         localVideoScreen.src = URL.createObjectURL(stream);
 
         pc.addStream(stream);
+        $log.info('add stream for screen ');
 
       },
 
@@ -419,6 +435,7 @@ angular.module('kiboRtc.services')
        */
       getLocalAudioStream: function () {
         return localAudioStream;
+        $log.info('get local Audio stream ');
       },
 
       /**
@@ -501,7 +518,7 @@ angular.module('kiboRtc.services')
           candidate: event.candidate.candidate
         });
       } else {
-        $log.info('End of candidates.');
+        $log.info('End of candidates. ');
       }
     }
 
@@ -561,6 +578,7 @@ angular.module('kiboRtc.services')
           remoteVideoScreen.src = URL.createObjectURL(event.stream);
           remoteStreamScreen = event.stream;
           $rootScope.$broadcast('screenShared');
+          $log.info('shared screen ')
         }
       }
     }
@@ -582,12 +600,14 @@ angular.module('kiboRtc.services')
         remoteVideoStream = null;
         hidingVideo = false;
         $scope.$broadcast('PeerHidesVideo');
+        $log.info('Peer hides video ');
       }
 
       if (typeof remoteStreamScreen != 'undefined' && !hidingVideo) {
         remoteStreamScreen.stop();
         remoteStreamScreen = null;
         $rootScope.$broadcast('screenRemoved');
+        $log.info('removed screen ');
       }
       else {
         remoteStreamScreen.stop();
@@ -595,6 +615,7 @@ angular.module('kiboRtc.services')
 
         remoteStreamScreen = null;
         remoteVideoStream = null;
+        $log.info('stops screen and video ');
       }
     }
 
@@ -646,7 +667,6 @@ angular.module('kiboRtc.services')
       var bufferLength = analyser2.frequencyBinCount;
       //console.log(bufferLength);
       var dataArray = new Uint8Array(bufferLength);
-
       var tempSpeakingValue = false;
 
       function draw() {
@@ -670,17 +690,13 @@ angular.module('kiboRtc.services')
 
         if(tempSpeakingValue !== speaking2){
           speaking2 = tempSpeakingValue;
-          //console.log(speaking ? 'Speaking' : 'Silent');
-
+          $log.info(speaking ? 'Speaking' : 'Silent');
           $rootScope.$broadcast(speaking2 ? 'PeerSpeaking' : 'PeerSilent');
 
         }
 
-
       };
-
       draw();
-
     }
 
     function analyseAudio(){

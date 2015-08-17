@@ -64,11 +64,8 @@ angular.module('kiboRtc.services')
         message.room = roomName;
         message.to = peer;
         message.username = username;
-        //console.log('Client sending message: ', message);
+        $log.info('Client sending message: ', message);
         socket.emit('message', message);
-
-        $log.info('message '+ message)
-
       },
 
       /**
@@ -85,7 +82,7 @@ angular.module('kiboRtc.services')
         message.room = roomName;
         message.to = peer;
         message.from = username;
-        $log.info('Client sending message: '+ message);
+        $log.info('sending message for data channel: '+ message);
         socket.emit('messagefordatachannel', message);
       },
 
@@ -102,7 +99,7 @@ angular.module('kiboRtc.services')
         message = {msg: {payload : message, ToUser : toUserName, FromUser : username}};
         message.room = roomName;
         message.username = username;
-        $log.info('messageformeeting '+ message);
+        $log.info('message for meeting '+ message);
         socket.emit('messageformeeting', message);
       },
 
