@@ -202,3 +202,22 @@ Following are the main client side libraries:
   - angular socket io
 
 ## Database
+
+We use mongoose library of nodejs to connect to our mongodb database. In operations guide, we have described how to setup mongodb database for cloudkibo. Here we would look how tables (collectionds) are defined in code. In mongodb, we don't defined ER diagrams for tables. In code, we defined structure of tables and they are automatically created when first time used.
+
+All of our tables on server side are in API folder. For each entity we have a table, e.g. we have "users" table. Now, any file whicn ends in '.model.js' is the file which describes the structure and constraints of any table. You would find these files in api folder on server side code.
+
+Here is the sample of a table defined in userchats.model.js file.
+
+    var userchat = new Schema({
+         to : String,
+         from : String,
+         fromFullName : String,
+         msg : String,
+         date : {type: Date, default: Date.now },
+         owneruser : String
+    });
+
+    module.exports = mongoose.model('userchat', userchat);
+
+All the tables will be defined in same way in their respective files.
