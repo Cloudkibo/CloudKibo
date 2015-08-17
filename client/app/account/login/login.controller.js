@@ -1,14 +1,14 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('LoginCtrl', function ($scope, Auth, $location, $window) {
+  .controller('LoginCtrl', function ($scope, Auth, $location, $window, $log) {
     $scope.user = {};
     $scope.errors = {};
 
     $scope.alerts = [];
 
 	$scope.addAlert = function(newtype, newMsg) {
-		//console.log('Error', newtype, newMsg)
+		$log.error('Error type '+ newtype+ " message "+ newMsg)
 		$scope.alerts.push({type: newtype, msg: newMsg});
 	};
 
@@ -38,10 +38,11 @@ angular.module('cloudKiboApp')
           $location.path('/app');
         })
         .catch( function(err) {
-          console.log(err);
+          $log.warn(err)
 		      $scope.progressState = false;
           //$scope.errors.other = err.message;
           $scope.addAlert('danger', err.message)
+          $log.info('error '+ err.message)
         });
       }
     };

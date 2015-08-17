@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('SignupCtrl', function ($scope, Auth, $location, $window) {
+  .controller('SignupCtrl', function ($scope, Auth, $location, $window, $log) {
     $scope.user = {};
     $scope.errors = {};
 
@@ -9,6 +9,7 @@ angular.module('cloudKiboApp')
 
 	$scope.addAlertRegister = function(newtype, newMsg) {
 		$scope.alertsRegister.push({type: newtype, msg: newMsg});
+    $log.info('registering ');
 	};
 
 	$scope.closeAlertRegister = function(index) {
@@ -20,6 +21,8 @@ angular.module('cloudKiboApp')
 	};
 
     $scope.register = function(form) {
+      $log.info('registered account with info '+ form);
+
       $scope.submitted = true;
 
       $scope.progressState = true;
@@ -29,11 +32,10 @@ angular.module('cloudKiboApp')
         .then( function() {
           // Account created, redirect to home
           $scope.progressState = false;
-          $location.path('/app');
+          $location.path('#verifyview');
         })
         .catch( function(err) {
-
-              console.log(err);
+            $log.error('Error n registering account '+err)
           err = err.data;
           $scope.progressState = false;
 

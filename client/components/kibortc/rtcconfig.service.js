@@ -14,7 +14,7 @@ angular.module('kiboRtc.services')
  *
  * todo: Add the function addICEServer which should take JSON array or JSON object as input
  */
-  .factory('pc_config', function () {
+  .factory('pc_config', function ($log) {
 
     var isChrome = !!navigator.webkitGetUserMedia;
 

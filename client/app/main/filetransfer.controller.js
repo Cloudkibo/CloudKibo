@@ -2,7 +2,7 @@
  * Created by Saba on 06/05/2015.
  */
 angular.module('cloudKiboApp')
-  .controller('FileSharingController', function ($scope, $http, socket, Signalling, FileTransfer, $timeout, $location, RestApi, logger) {
+  .controller('FileSharingController', function ($scope, $http, socket, Signalling, FileTransfer, $timeout, $location, RestApi, logger, $log) {
 
     var isChrome = !!navigator.webkitGetUserMedia;
 
@@ -10,36 +10,37 @@ angular.module('cloudKiboApp')
 
     $scope.openFileSendView = function () {
       return $scope.openFileView;
-      console.log("Opening file share view")
+      $log.info("Opening file share view")
       logger.log("Opening file share view");
     };
 
     $scope.startFileChat = function () {
-      console.log("Inside file chat")
+      $log.info("Inside file chat")
       logger.log("Inside file chat");
       $scope.openFileView = !$scope.openFileView;
 
       if (!FileTransfer.getIsStarted()) {
 
         FileTransfer.createPeerConnection(true, function (err) {
-          console.log("Creating peer connection");
+          $log.info("Creating peer connection");
           logger.log("Creating peer connection");
           if(err){
+            $log.error('Fail to create peer connection '+ err)
             alert('Failed to create connection. Make sure you are using latest browser.');
-            console.log("Failed Creating peer connection");
+            $log.info("Failed Creating peer connection");
             logger.log("Failed Creating peer connection");
             $scope.openFileView = !$scope.openFileView;
           } else {
 
             Signalling.initialize($scope.otherUser.username, $scope.user.username, 'globalchatroom');
-            console.log("Initializing signalling");
+            $log.info("Initializing signalling");
             logger.log("Initializing signalling");
 
             FileTransfer.setIsStarted(true);
-            console.log("File trnsfer set to TRUE");
+            $log.info("File trnsfer set to TRUE");
             logger.log("File trnsfer set to TRUE");
             FileTransfer.createAndSendOffer();
-            console.log("Calling create and send offer function");
+            $log.info("Calling create and send offer function");
             logger.log("Calling create and send offer function");
           }
         })
@@ -48,7 +49,7 @@ angular.module('cloudKiboApp')
       else{
         FileTransfer.endConnection();
         Signalling.sendMessageForDataChannel({type : 'bye'});
-        console.log("File transfer connection ended");
+        $log.info("File transfer connection ended");
         logger.log("File transfer connection ended");
       }
     };
@@ -57,12 +58,12 @@ angular.module('cloudKiboApp')
 
       var message = FileTransfer.getMessage();
 
-      console.log("file transfer msg: "+message);
+      $log.info("file transfer msg: "+message);
       logger.log("file transfer msg: "+message);
 
       if (message.byteLength  || typeof message !== 'string') {
         process_binary(0, message, 0);
-        console.log("breaking into bytes");
+        $log.info("breaking into bytes");
         logger.log("breaking into bytes");
       }
       else if (message.charAt(0) == '{' && message.charAt(message.length - 1) == '}') {
@@ -70,13 +71,14 @@ angular.module('cloudKiboApp')
         $scope.$apply(function () {
           $scope.openFileView = true;
           logger.log("set openFileView too TRUE")
+          $log.info("set openFileView too TRUE")
         })
       }
 
     });
 
     socket.on('messagefordatachannel', function (message) {
-      console.log('Client received message: ' + message);
+      $log.info('Client received message: ' + message);
       logger.log('Client received message: ' + message);
 
       //if(message.split(' ')[1] === 'is' && message.split(' ')[2] === 'now' && message.split(' ')[3] === 'offering')
@@ -85,13 +87,13 @@ angular.module('cloudKiboApp')
       if (message.type === 'bye') {
         FileTransfer.endConnection();
         $scope.openFileView = !$scope.openFileView;
-        console.log("File transfer connection ended");
+        $log.info("File transfer connection ended");
         logger.log("File transfer connection ended");
       }
       else if (message === 'hangup') {
         FileTransfer.endConnection();
         $scope.openFileView = !$scope.openFileView;
-        console.log("File transfer connection hungup");
+        $log.info("File transfer connection hungup");
         logger.log("File transfer connection hungup");
       }
       else if (message.type === 'offer') {
@@ -100,13 +102,13 @@ angular.module('cloudKiboApp')
           FileTransfer.createPeerConnection(false, function (err) {
             if(err){
               alert('Failed to create connection. Make sure you are using latest browser.');
-              console.log("File transfer Failed");
+              $log.info("File transfer Failed");
               logger.log("Error: File transfer Failed");
               $scope.openFileView = !$scope.openFileView;
             } else {
 
               Signalling.initialize($scope.otherUser.username, $scope.user.username, 'globalchatroom');
-              console.log("File transfer signalling initialized");
+              $log.info("File transfer signalling initialized");
               logger.log("File transfer signalling initialized");
 
               FileTransfer.setIsStarted(true);
@@ -119,14 +121,17 @@ angular.module('cloudKiboApp')
         FileTransfer.createAndSendAnswer();
       } else if (message.type === 'answer' && FileTransfer.getIsStarted()) {
         logger.log("setting remote description ")
+        $log.info("setting remote description ")
         FileTransfer.setRemoteDescription(message);
       }
       else if (message.type === 'candidate' && FileTransfer.getIsStarted()) {
         logger.log("adding ice candidate ")
+        $log.info("adding ice candidate ")
         FileTransfer.addIceCandidate(message);
       }
       else if (message === 'bye' && isStarted) {
         FileTransfer.endConnection();
+        $log.info("calling end File transfer connection ")
         logger.log("calling end File transfer connection ")
       }
 
@@ -183,14 +188,14 @@ angular.module('cloudKiboApp')
     // stop the uploading!
     function upload_stop() {
 
-      console.log("Stop uploading and remove data")
+      $log.info("Stop uploading and remove data")
       logger.log("Stop uploading and remove data")
       chunks = {};
       meta = {};
 
       // also clear the container
       create_or_clear_container(0);
-      console.log("Clearing container")
+      $log.info("Clearing container")
       logger.log("Clearing container")
 
       // firefox and chrome specific I think, but clear the file input
@@ -202,20 +207,20 @@ angular.module('cloudKiboApp')
 
     function write_to_file(user_id, chunk_data, chunk_num, hash) {
 
-      console.log('got Chunks : ', chunk_data)
+      $log.info('got Chunks : ', chunk_data)
       logger.log('got Chunks : ', chunk_data)
 
       // store our chunk temporarily in memory
       recievedChunks[user_id][chunk_num % chunksPerACK] = chunk_data;
-      console.log("Storing chunk temporary")
+      $log.info("Storing chunk temporary")
       logger.log("Storing chunk temporary")
 
       // once done recieving all chunks for this ack, start writing to memory
       if (chunk_num % chunksPerACK == (chunksPerACK - 1) || recieved_meta[user_id].numOfChunksInFile == (chunk_num + 1)) {
-        console.log("Ack that all chunks received")
+        $log.info("Ack that all chunks received")
         logger.log("Ack that all chunks received")
         store_in_fs(user_id, hash);
-        console.log("Chunks writing to memory")
+        $log.info("Chunks writing to memory")
         logger.log("Chunks writing to memory")
       }
     }
@@ -237,11 +242,11 @@ angular.module('cloudKiboApp')
         function (fileEntry) {
           // create a writer that can put data in the file
           fileEntry.createWriter(function (writer) {
-          console.log("creating writer to put data in file")
+            $log.info("creating writer to put data in file")
           logger.log("creating writer to put data in file")
             // once we have written all chunks per ack
             writer.onwriteend = function () {
-              console.log("written. Requesting next chunk")
+              $log.info("written. Requesting next chunk")
               logger.log("written. Requesting next chunk")
               // request the next chunk
               recievedChunks[user_id] = [];
@@ -259,11 +264,11 @@ angular.module('cloudKiboApp')
 
             // debug
             if (FSdebug) {
-              console.log("DEBUG: writing chunk2 " + recievedChunksWritePointer[user_id]);
+              $log.info("DEBUG: writing chunk2 " + recievedChunksWritePointer[user_id]);
               logger.log("DEBUG: writing chunk2 " + recievedChunksWritePointer[user_id]);
               for (var i = 0; i < chunksPerACK; i++) {
                 if (recievedChunks[user_id][i]) {
-                  console.log('recived: ' + CryptoJS.SHA256(FileTransfer._arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
+                  $log.info('recived: ' + CryptoJS.SHA256(FileTransfer._arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
                   logger.log('recived: ' + CryptoJS.SHA256(FileTransfer._arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
                 }
               }
@@ -277,12 +282,12 @@ angular.module('cloudKiboApp')
 
             // EOF condition
             if (recieved_meta[user_id].numOfChunksInFile <= (recievedChunksWritePointer[user_id])) {
-              console.log("creating file link!");
+              $log.info("creating file link!");
               logger.log("creating file link!");
 
               // stop accepting file info
               downloading[user_id] = false;
-              console.log("Stop accepting file!");
+              $log.info("Stop accepting file!");
               logger.log("Stop accepting file!");
 
               // on encrypted completion here, send hash back to other user who verifies it, then sends the OK to finish back
@@ -313,13 +318,13 @@ angular.module('cloudKiboApp')
       meta.size = file.size;
       meta.filetype = file.type;
       meta.browser = isChrome ? 'chrome' : 'firefox';
-      console.log("file info: "+meta);
+      $log.info("file info: "+meta);
       logger.log("file info: "+meta);
 
       send_meta();
 
       FileTransfer.sendData("You have received a file. Download and Save it.");
-      console.log("can download and save file now")
+      $log.info("can download and save file now")
       logger.log("can download and save file now")
       // user 0 is this user!
       create_upload_stop_link(file_to_upload.name, 0);//, username);
@@ -346,7 +351,7 @@ angular.module('cloudKiboApp')
       }
 
       if (FSdebug) {
-        console.log("processing chunk # " + recieved_meta[id].chunks_recieved);
+        $log.info("processing chunk # " + recieved_meta[id].chunks_recieved);
         logger.log("processing chunk # " + recieved_meta[id].chunks_recieved);
       }
 
@@ -359,7 +364,7 @@ angular.module('cloudKiboApp')
       if (recieved_meta[id].numOfChunksInFile > recieved_meta[id].chunks_recieved) {
         update_container_percentage(id, recieved_meta[id].chunks_recieved - 1, recieved_meta[id].numOfChunksInFile, recieved_meta[id].size);
       } else {
-        console.log("done downloading file!");
+        $log.info("done downloading file!");
         logger.log("done downloading file!");
         // stop accepting file info
         downloading[id] = false;
@@ -372,7 +377,7 @@ angular.module('cloudKiboApp')
 
     function process_data(data) {
       data = JSON.parse(data).data;
-      console.log('process_data function: ', data)
+      $log.info('process_data function: ', data)
       logger.log('process_data function: ', data)
       if (data.file_meta) {
         // we are recieving file meta data
@@ -395,7 +400,7 @@ angular.module('cloudKiboApp')
         // if auto-download, start the process
 
 
-        console.log("dowanload link "+recieved_meta[0]);
+        $log.info("dowanload link "+recieved_meta[0]);
         logger.log("dowanload link "+recieved_meta[0]);
       } else if (data.kill) {
         // if it is a kill msg, then the user on the other end has stopped uploading!
@@ -416,13 +421,13 @@ angular.module('cloudKiboApp')
           // one little idb.filesystem.js quirk
           saved_fileEntry[0].file(function (file) {
             create_file_link(recieved_meta[0], 0, file); // <-- file, not fileEntry
-            console.log("Save file");
+            $log.info("Save file");
             logger.log("Save file");
           });
         }
       } else {
 
-        console.log('Chunk is requested by other peer')
+        $log.info('Chunk is requested by other peer')
         logger.log('Chunk is requested by other peer')
 
         // Otherwise, we are going to assume that if we have reached here, this is a request to download our file
@@ -437,11 +442,11 @@ angular.module('cloudKiboApp')
     // request chunk # chunk_num from id, at this point just used to request the first chunk
     function request_chunk(id, chunk_num, hash) {
       if (FSdebug) {
-        console.log("DEBUG: requesting chunk " + chunk_num + " from " + id);
+        $log.info("DEBUG: requesting chunk " + chunk_num + " from " + id);
         logger.log("DEBUG: requesting chunk " + chunk_num + " from " + id);
       }
 
-      console.log('Function which actually asks for chunk')
+      $log.info('Function which actually asks for chunk')
       logger.log('Function which actually asks for chunk')
 
       FileTransfer.sendData(JSON.stringify({ //id, JSON.stringify({
@@ -463,7 +468,7 @@ angular.module('cloudKiboApp')
       // and will instead display warning that only 1 file can be downloaded at a time :(
 
       if (filesysteminuse) {
-        console.log('Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.')
+        $log.warn('Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.')
         logger.log('Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.')
         FileTransfer.bootAlert("Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.");
         return;
@@ -490,7 +495,7 @@ angular.module('cloudKiboApp')
         filesysteminuse = false;
         fs[user_id].root.getFile(recieved_meta[user_id].name, {create: false}, function (fileEntry) {
           fileEntry.remove(function () {
-            console.log('File removed.');
+            $log.info('File removed.');
             logger.log('File removed.');
           }, FileTransfer.FSerrorHandler);
         }, FileTransfer.FSerrorHandler);
@@ -602,7 +607,7 @@ angular.module('cloudKiboApp')
       a.href = 'javascript:void(0);';
       a.textContent = 'Download : ' + meta.name + ' ' + FileTransfer.getReadableFileSizeString(meta.size);
       a.draggable = true;
-      console.log("creating file link to download");
+      $log.info("creating file link to download");
       logger.log("creating file link to download");
       //append link!
       filecontainer.appendChild(span);
@@ -706,9 +711,9 @@ angular.module('cloudKiboApp')
         if (reader.readyState == FileReader.DONE) {
 
           if (FSdebug) {
-            console.log("DEBUG: sending chunk " + chunk_num);
+            $log.info("DEBUG: sending chunk " + chunk_num);
             logger.log("DEBUG: sending chunk " + chunk_num);
-            console.log('sending: ' + CryptoJS.SHA256(FileTransfer._arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
+            $log.info('sending: ' + CryptoJS.SHA256(FileTransfer._arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
             logger.log('sending: ' + CryptoJS.SHA256(FileTransfer._arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
           }
 

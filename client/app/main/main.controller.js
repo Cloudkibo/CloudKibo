@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-    .controller('TabsController', function ($scope, $location, Auth, $http, socket, RestApi, logger) {
+    .controller('TabsController', function ($scope, $location, Auth, $http, socket, RestApi, logger, $log) {
 
         $scope.isCollapsed = true;
         $scope.isLoggedIn = Auth.isLoggedIn;
@@ -20,7 +20,7 @@ angular.module('cloudKiboApp')
             }
 
             console.log("Left gloal chat room");
-            logger.log("Left gloal chat room");
+            $log.info("Left gloal chat room");
             Auth.logout();
 
             $location.path('/login');
@@ -76,7 +76,7 @@ angular.module('cloudKiboApp')
 
                 })
           console.log("New user account saved");
-          logger.log("New user account saved");
+          $log.info("New user account saved");
         };
 
         $scope.user = $scope.getCurrentUser();
@@ -122,12 +122,12 @@ angular.module('cloudKiboApp')
                 localStreamTest = newStream;
                 $scope.deviceAccess = true;
               console.log("testing video ");
-              logger.log("testing video ");
+              $log.info("testing video ");
             }, function (error) {
 
                 $scope.deviceAccess = false;
                 console.log(error);
-                logger.log(error);
+                $log.info(error);
 
             });
         };
@@ -167,7 +167,7 @@ angular.module('cloudKiboApp')
 
             $scope.meetingSelected = !$scope.meetingSelected;
           console.log("Meeting is opened");
-          logger.log("Meeting is opened");
+          $log.info("Meeting is opened");
         };
 
         $scope.isMeetingSelected = function () {
@@ -193,7 +193,7 @@ angular.module('cloudKiboApp')
 
             $scope.inviteSelected = !$scope.inviteSelected;
           console.log("invite selected");
-          logger.log("invite selected");
+          $log.info("invite selected");
         };
 
         $scope.isInviteSelected = function () {
@@ -218,7 +218,7 @@ angular.module('cloudKiboApp')
                 localStreamTest.stop();
 
           console.log("Settings selected");
-          logger.log("Settings selected");
+          $log.info("Settings selected");
         };
 
         $scope.isSettingsSelected = function () {
@@ -245,7 +245,7 @@ angular.module('cloudKiboApp')
             if (localStreamTest)
                 localStreamTest.stop();
           console.log("call selected");
-          logger.log("call selected");
+          $log.info("call selected");
         };
 
         $scope.isCallSelected = function () {
@@ -267,7 +267,7 @@ angular.module('cloudKiboApp')
 
             }
           console.log("Add contact selected");
-          logger.log("Add contact selected");
+          $log.info("Add contact selected");
 
             $scope.userFound = '';
 
@@ -319,7 +319,7 @@ angular.module('cloudKiboApp')
                     }
                 })
           console.log("Email invite selected");
-          logger.log("Email invite selected");
+          $log.info("Email invite selected");
         };
 
         $scope.userFound = '';
@@ -354,7 +354,7 @@ angular.module('cloudKiboApp')
                     }
                 })
           console.log("Search contact by email");
-          logger.log("Search contact by email");
+          $log.info("Search contact by email");
         };
 
         $scope.contactslist = {};
@@ -375,7 +375,7 @@ angular.module('cloudKiboApp')
                                 contact: add.searchusername
                             })
                           console.log("contact added by username");
-                          logger.log("contact added by username");
+                          $log.info("contact added by username");
 
                         }
                         else {
@@ -408,7 +408,7 @@ angular.module('cloudKiboApp')
                             })
 
                           console.log("contact added by email");
-                          logger.log("contact added by email");
+                          $log.info("contact added by email");
                         }
                         else {
                             $scope.userFound = null;
@@ -418,7 +418,7 @@ angular.module('cloudKiboApp')
                         $scope.addUserResponseMessage = data.msg;
                         $scope.userFound = 'danger';
                       console.log("contact NOT found by email");
-                      logger.log("contact NOT found by email");
+                      $log.info("contact NOT found by email");
                     }
                 })
         };
@@ -433,7 +433,7 @@ angular.module('cloudKiboApp')
                     console.log(data)
                 });
           console.log("contact profile updated");
-          logger.log("contact profile updated");
+          $log.info("contact profile updated");
 
         };
 
@@ -473,7 +473,7 @@ angular.module('cloudKiboApp')
             $scope.contactslist = data;
             $scope.fetchChatNow();
           console.log("contact list data and chat fetched");
-          logger.log("contact list data and chat fetched");
+          $log.info("contact list data and chat fetched");
         }).error(function (err) {
             console.log('error ', err)
         });
@@ -483,7 +483,7 @@ angular.module('cloudKiboApp')
         $http.get(RestApi.contacts.pendingAddRequest).success(function (data) {
             $scope.addRequestslist = data;
           console.log("pending requests shown "+ $scope.addRequestslist);
-          logger.log("pending requests shown "+ $scope.addRequestslist);
+          $log.info("pending requests shown "+ $scope.addRequestslist);
         });
 
         socket.on('friendrequest', function (data) {
@@ -498,7 +498,7 @@ angular.module('cloudKiboApp')
                         $scope.addRequestslist.splice(index, 1);
                         socket.emit('whozonline', {room: 'globalchatroom', user: $scope.user})
                       console.log("Friend request accepted");
-                      logger.log("Friend request accepted");
+                      $log.info("Friend request accepted");
                     }
                     else{
 
@@ -514,7 +514,7 @@ angular.module('cloudKiboApp')
                     if (data.status == 'success') {
                         $scope.addRequestslist.splice(index, 1);
                       console.log("Friend request rejected");
-                      logger.log("Friend request rejected");
+                      $log.info("Friend request rejected");
                     }
                 });
         };
@@ -524,7 +524,7 @@ angular.module('cloudKiboApp')
                 .success(function (data) {
                     //console.log(data);
                 console.log("Friend removed")
-                logger.log("Friend removed")
+                $log.info("Friend removed")
                     if (data.status == 'success') {
                         $location.path('/app');
                     }
@@ -538,7 +538,7 @@ angular.module('cloudKiboApp')
                     if (data.status == 'success') {
                         $location.path('/app');
                       console.log("Chat history removed")
-                      logger.log("Chat history removed")
+                      $log.info("Chat history removed")
                     }
                 });
         };
@@ -630,18 +630,18 @@ angular.module('cloudKiboApp')
                 .success(function (data) {
                     $scope.feedBackSent = true;
                 console.log("Call feedback sent")
-                logger.log("Call feedback sent")
+                $log.info("Call feedback sent")
                 })
                 .error(function (data) {
                     console.log('Error:', data)
-                logger.log('Error:', data)
+                $log.info('Error:', data)
                 });
         };
 
         $scope.isOtherPeerOffline = function () {
             return $scope.otherPeersOfflineStatus;
           console.log("Status of call"+ $scope.otherPeersOfflineStatus )
-          logger.log("Status of call"+ $scope.otherPeersOfflineStatus )
+          $log.info("Status of call"+ $scope.otherPeersOfflineStatus )
         };
 
         $scope.isOtherPeerBusy = false;
@@ -662,7 +662,7 @@ angular.module('cloudKiboApp')
                 $scope.otherScreenShared = true;
             })
           console.log("Screen shared by other")
-          logger.log("Screen shared by other")
+          $log.info("Screen shared by other")
 
         });
 
@@ -672,7 +672,7 @@ angular.module('cloudKiboApp')
                 $scope.otherScreenShared = false;
             })
           console.log("Screen remoed/hidden by other")
-          logger.log("Screen remoed/hidden by other")
+          $log.info("Screen remoed/hidden by other")
 
         });
 
@@ -692,7 +692,7 @@ angular.module('cloudKiboApp')
                     caller: $scope.user.username
                 });
               console.log("Calling person "+ calleeusername);
-              logger.log("Calling person "+ calleeusername);
+              $log.info("Calling person "+ calleeusername);
 
                 $scope.OutgoingCallStatement = 'Outgoing Call to : ' + calleeusername;
 
@@ -703,31 +703,31 @@ angular.module('cloudKiboApp')
 
         $scope.endCall = function () {
           console.log("end call selected")
-          logger.log("end call selected");
+          $log.info("end call selected");
             WebRTC.endConnection();
           console.log("connetion ended")
-          logger.log("connetion ended")
+          $log.info("connetion ended")
 
             $scope.firstVideoAdded = false;
           console.log("stop 1st video")
-          logger.log("stop 1st video")
+          $log.info("stop 1st video")
 
             $scope.screenSharedLocal = false;
           console.log("stop shared screen")
-          logger.log("stop shared screen")
+          $log.info("stop shared screen")
 
             $scope.screenSharedByPeer = false;
           console.log("stop other person's shared screen")
-          logger.log("stop other person's shared screen")
+          $log.info("stop other person's shared screen")
 
 
             $scope.localCameraOn = false;
           console.log("stop local camera capture")
-          logger.log("stop local camera capture")
+          $log.info("stop local camera capture")
 
             Signalling.sendMessage('hangup');
           console.log("STOP signalling msg sent ")
-          logger.log("STOP signalling msg sent ")
+          $log.info("STOP signalling msg sent ")
 
             //noinspection UnnecessaryLocalVariableJS
           var endTime = new Date();
@@ -787,25 +787,25 @@ angular.module('cloudKiboApp')
         $scope.$on('Speaking', function () {
           localPeerHideVideo.style.cssText = 'border : 2px solid #000000;';
           console.log('speaking '+ $scope.localSpeaking)
-          logger.log('speaking '+ $scope.localSpeaking)
+          $log.info('speaking '+ $scope.localSpeaking)
         });
 
         $scope.$on('Silent', function () {
           localPeerHideVideo.style.cssText = 'border : 0px solid #000000;';
           console.log('silent '+ $scope.localSpeaking)
-          logger.log('silent '+ $scope.localSpeaking)
+          $log.info('silent '+ $scope.localSpeaking)
         });
 
         $scope.$on('PeerSpeaking', function () {
           remotePeerHideVideo.style.cssText = 'border : 2px solid #000000;';
           console.log('speaking '+ $scope.localSpeaking)
-          logger.log('speaking '+ $scope.localSpeaking)
+          $log.info('speaking '+ $scope.localSpeaking)
         });
 
         $scope.$on('PeerSilent', function () {
           remotePeerHideVideo.style.cssText = 'border : 0px solid #000000;';
           console.log('silent '+ $scope.localSpeaking)
-          logger.log('silent '+ $scope.localSpeaking)
+          $log.info('silent '+ $scope.localSpeaking)
         });
 
         var peerSharedVideo = false;
@@ -820,20 +820,20 @@ angular.module('cloudKiboApp')
         $scope.isVideoCaptured = function(){
           return localVideoCaptured;
           console.log("localVideoCaptured")
-          logger.log("localVideoCaptured")
+          $log.info("localVideoCaptured")
         };
 
         $scope.isAudioCaptured = function(){
           return localAudioCaptured;
           console.log("localVideoCaptured")
-          logger.log("localVideoCaptured")
+          $log.info("localVideoCaptured")
         };
 
         $scope.toggleVideoStream = function() {
           WebRTC.toggleVideo(function(err){
             if (err) return alert('Permission denied.');
             console.log("video toggled")
-            logger.log("video toggled")
+            $log.info("video toggled")
             localVideoCaptured = WebRTC.isLocalVideoShared();
 
           })
@@ -843,7 +843,7 @@ angular.module('cloudKiboApp')
           WebRTC.toggleAudio(function(err){
             if (err) return alert('Permission denied.');
             console.log("Audio toggled")
-            logger.log("Audio toggled")
+            $log.info("Audio toggled")
             localAudioCaptured = WebRTC.isLocalAudioShared();
 
           })
@@ -865,23 +865,23 @@ angular.module('cloudKiboApp')
 
             var remotevideo = document.getElementById("remotevideo");
           console.log("Remote video captured")
-          logger.log("Remote video captured")
+          $log.info("Remote video captured")
 
             var remotevideoscreen = document.getElementById("remotevideoscreen");
           console.log("Remote video Screen captured")
-          logger.log("Remote video Screen captured")
+          $log.info("Remote video Screen captured")
 
             var localvideo = document.getElementById("localvideo");
           console.log("Local video captured")
-          logger.log("Local video captured")
+          $log.info("Local video captured")
 
             var remoteaudio = document.getElementById('remoteaudio');
           console.log("Local Audio captured")
-          logger.log("Local Audio captured")
+          $log.info("Local Audio captured")
 
             WebRTC.initialize(localvideo, localvideo, remotevideo, remoteaudio, remotevideoscreen);
           console.log("Initializing meeting call")
-          logger.log("Initializing meeting call")
+          $log.info("Initializing meeting call")
         };
 
         $timeout($scope.connectTimeOut, 1000);
@@ -897,18 +897,18 @@ angular.module('cloudKiboApp')
             // todo put it in signalling service, it is also linked with above connectTimeOut
             socket.emit('leaveChat', {room: roomid, user: $scope.user});
           console.log("leave chatRoom to rejoin")
-          logger.log("leave chatRoom to rejoin")
+          $log.info("leave chatRoom to rejoin")
 
             // Rejoin the room... (temporary fix)
 
             socket.emit('join global chatroom', {room: roomid, user: $scope.user});
           console.log("Joining Chat Room")
-          logger.log("Joining Chat Room")
+          $log.info("Joining Chat Room")
         };
 
         $scope.LeaveRoom = function () {
             console.log('Leaving room', {room: roomid, username: $scope.user.username});
-            logger.log('Leaving room', {room: roomid, username: $scope.user.username});
+            $log.info('Leaving room', {room: roomid, username: $scope.user.username});
 
             socket.emit('leaveChat', {room: 'globalchatroom', user: $scope.user});
         };
@@ -920,7 +920,7 @@ angular.module('cloudKiboApp')
 
                     socket.emit('status', {room: 'globalchatroom', user: $scope.user});
                   console.log("Status set")
-                  logger.log("Status set")
+                  $log.info("Status set")
                     $http.post(RestApi.user.statusMessage, $scope.user).success(function (data) {
                     });
                 }
@@ -933,7 +933,7 @@ angular.module('cloudKiboApp')
                 if ($scope.contactslist[i].contactid.username == friend.username) {
                     $scope.contactslist[i].online = true;
                   console.log("show online friends "+ $scope.contactslist[i].online)
-                  logger.log("show online friends "+ $scope.contactslist[i].online)
+                  $log.info("show online friends "+ $scope.contactslist[i].online)
                 }
             }
         });
@@ -943,7 +943,7 @@ angular.module('cloudKiboApp')
                 if ($scope.contactslist[i].contactid.username == friend.username) {
                     $scope.contactslist[i].online = false;
                   console.log("show Offline friends "+ $scope.contactslist[i].online)
-                  logger.log("show Offline friends "+ $scope.contactslist[i].online)
+                  $log.info("show Offline friends "+ $scope.contactslist[i].online)
                 }
             }
         });
@@ -954,7 +954,7 @@ angular.module('cloudKiboApp')
                     if ($scope.contactslist[j].contactid.username == friends[i].username) {
                         $scope.contactslist[j].online = true;
                       console.log("show online to "+ $scope.contactslist[j].online)
-                      logger.log("show online to "+ $scope.contactslist[j].online)
+                      $log.info("show online to "+ $scope.contactslist[j].online)
                         break;
                     }
                 }
@@ -976,7 +976,7 @@ angular.module('cloudKiboApp')
         socket.on('calleeisoffline', function (nickname) {
 
             console.log('Callee is OFFLINE')
-            logger.log('Callee is OFFLINE')
+            $log.info('Callee is OFFLINE')
 
             $scope.OutgoingCallStatement = nickname + ' is offline.';
 
@@ -991,7 +991,7 @@ angular.module('cloudKiboApp')
         socket.on('calleeisbusy', function (data) {
 
             console.log('Callee is OFFLINE')
-            logger.log('Callee is OFFLINE')
+            $log.info('Callee is OFFLINE')
 
             $scope.OutgoingCallStatement = data.callee + ' is busy on other call.';
 
@@ -1035,7 +1035,7 @@ angular.module('cloudKiboApp')
 
                 Signalling.initialize(data.caller, $scope.user.username, roomid);
               console.log("checking if callee is free for call")
-              logger.log("checking if callee is free for call")
+              $log.info("checking if callee is free for call")
             }
             else {
                 socket.emit('noiambusy', {mycaller: data.caller, me: $scope.user.username})
@@ -1065,14 +1065,14 @@ angular.module('cloudKiboApp')
 
         socket.on('message', function (message) {
             console.log('Client received message: ');
-          logger.log('Client received message: ');
+          $log.info('Client received message: ');
 
 
             if(typeof message == 'string'){
                 try {
                     message = JSON.parse(message);
                     console.log("sending msg: ' "+message+" ' ");
-                  logger.log("sending msg: ' "+message+" ' ");
+                  $log.info("sending msg: ' "+message+" ' ");
                 }catch(e){}
             }
 
@@ -1095,7 +1095,7 @@ angular.module('cloudKiboApp')
                     Sound.pause();
 
                     Signalling.destroy();
-                  logger.log("call missed: ' "+message+" ' ");
+                  $log.info("call missed: ' "+message+" ' ");
                 }
             } catch (e) {
             }
@@ -1112,7 +1112,7 @@ angular.module('cloudKiboApp')
                 $scope.otherSideRinging = false;
                 $scope.areYouCallingSomeone = false;
               console.log("Accepting call")
-              logger.log("Accepting call")
+              $log.info("Accepting call")
 
                 getMedia();
 
@@ -1127,25 +1127,25 @@ angular.module('cloudKiboApp')
 
                 Signalling.destroy();
               console.log("Rejecting call")
-              logger.log("Rejecting call")
+              $log.info("Rejecting call")
             }
             else if (message === 'sharing video'){
               WebRTC.setSharingVideo(true);
               peerSharedVideo = true;
               console.log("Sharing Video")
-              logger.log("Sharing Video")
+              $log.info("Sharing Video")
             }
             else if (message === 'hiding video'){
               WebRTC.setHidingVideo(true);
               peerSharedVideo = false;
               console.log("Hidding Video")
-              logger.log("Hidding Video")
+              $log.info("Hidding Video")
             }
             else if (message === 'bye') {
 
                 WebRTC.endConnection();
               console.log("received msg to end connection /call")
-              logger.log("received msg to end connection /call")
+              $log.info("received msg to end connection /call")
                 $scope.screenSharedLocal = false;
                 $scope.screenSharedByPeer = false;
                 $scope.firstVideoAdded = false;
@@ -1159,7 +1159,7 @@ angular.module('cloudKiboApp')
 
                 WebRTC.endConnection();
               console.log("received msg to end/hangup connection /call")
-              logger.log("received msg to end/hangup connection /call")
+              $log.info("received msg to end/hangup connection /call")
                 $scope.firstVideoAdded = false;
                 $scope.screenSharedLocal = false;
                 $scope.screenSharedByPeer = false;
@@ -1172,7 +1172,7 @@ angular.module('cloudKiboApp')
 
                 $scope.recordCallData();
               console.log("call data recorded")
-              logger.log("call data recorded")
+              $log.info("call data recorded")
 
                 $scope.userMessages = [];
 
@@ -1222,14 +1222,14 @@ angular.module('cloudKiboApp')
                 if (err) {
                     $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.');
                     console.log("Could not access your microphone or webcam")
-                    logger.log("Could not access your microphone or webcam")
+                    $log.info("Could not access your microphone or webcam")
                     $scope.ringing = false;
                     $scope.amInCall = false;
                     $scope.amInCallWith = '';
 
                     WebRTC.endConnection();
                   console.log("Connection ended")
-                  logger.log("Connection ended")
+                  $log.info("Connection ended")
 
                 } else {
 
@@ -1240,7 +1240,7 @@ angular.module('cloudKiboApp')
                         if (err) {
                             $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.');
                           console.log("Could not access your microphone or webcam")
-                          logger.log("Could not access your microphone or webcam")
+                          $log.info("Could not access your microphone or webcam")
 
                             $scope.ringing = false;
                             $scope.amInCall = false;
@@ -1248,7 +1248,7 @@ angular.module('cloudKiboApp')
 
                             WebRTC.endConnection();
                           console.log("Connection ended")
-                          logger.log("Connection ended")
+                          $log.info("Connection ended")
                         }
                         else {
 
@@ -1258,13 +1258,13 @@ angular.module('cloudKiboApp')
 
                             Signalling.sendMessage('got user media');
                           console.log("Accessed your microphone or webcam")
-                          logger.log("Accessed your microphone or webcam")
+                          $log.info("Accessed your microphone or webcam")
 
                             if (!WebRTC.getInitiator()) {
 
                                 maybeStart();
                               console.log("Can start a call ")
-                              logger.log("Can start a call ")
+                              $log.info("Can start a call ")
 
                             }
                         }
@@ -1284,7 +1284,7 @@ angular.module('cloudKiboApp')
             $scope.amInCallWith = '';
             $scope.OutgoingCallStatement = 'Calling stopped';
           console.log("Calling stopped")
-          logger.log("Calling stopped")
+          $log.info("Calling stopped")
 
         };
 
@@ -1298,7 +1298,7 @@ angular.module('cloudKiboApp')
 
             $scope.callData.StartTime = startTime.toUTCString();
           console.log("received call data")
-          logger.log("received call data")
+          $log.info("received call data")
         };
 
         $scope.AcceptCall = function () {
@@ -1308,7 +1308,7 @@ angular.module('cloudKiboApp')
             Sound.pause();
             $scope.ringing = false;
           console.log("Accepting call")
-          logger.log("Accepting call")
+          $log.info("Accepting call")
         };
 
         $scope.RejectCall = function () {
@@ -1320,7 +1320,7 @@ angular.module('cloudKiboApp')
             $scope.amInCall = false;
             $scope.amInCallWith = '';
           console.log("Rejecting call")
-          logger.log("Rejecting call")
+          $log.info("Rejecting call")
         };
 
 
@@ -1346,7 +1346,7 @@ angular.module('cloudKiboApp')
 
                             $scope.isUnderProgress = false;
                           console.log("Fetched chat")
-                          logger.log("Fetched chat")
+                          $log.info("Fetched chat")
 
                         }
                     });
@@ -1360,7 +1360,7 @@ angular.module('cloudKiboApp')
 
                         }).success();
                       console.log("Marking chat as read");
-                      logger.log("Marking chat as read");
+                      $log.info("Marking chat as read");
                     }
                 }
 
@@ -1386,7 +1386,7 @@ angular.module('cloudKiboApp')
                     });
                     */
                   console.log("Sending chat msgs");
-                  logger.log("Sending chat msgs");
+                  $log.info("Sending chat msgs");
 
                     $scope.im = {};
                 }
@@ -1403,8 +1403,8 @@ angular.module('cloudKiboApp')
                 console.log("Sending chat msgs to "+ $scope.user.username);
                 console.log("Sending chat From "+ $scope.otherUser.username);
 
-                logger.log("Sending chat msgs to "+ $scope.user.username);
-                logger.log("Sending chat From "+ $scope.otherUser.username);
+                $log.info("Sending chat msgs to "+ $scope.user.username);
+                $log.info("Sending chat From "+ $scope.otherUser.username);
               }
               else if (im.to == $scope.user.username && im.from != $scope.otherUser.username) {
                 for (i in $scope.contactslist) {

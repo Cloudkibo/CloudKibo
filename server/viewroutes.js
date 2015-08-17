@@ -358,7 +358,7 @@ exports.superUserViewRoute = function(req, res) {
 		if(req.get('host') == 'www.cloudkibo.com')
 			title = 'CloudKibo';
 		else if(req.get('host') == 'www.synaps3webrtc.com')
-			title = 'Synaps3WebRTC';
+		  	title = 'Synaps3WebRTC';
 
 
 		Account.findById(req.user._id, function (err, gotUser) {

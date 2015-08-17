@@ -13,7 +13,7 @@
  * angularjs code
  */
 angular.module('kiboRtc.services')
-  .factory('ScreenShare', function ScreenShare($rootScope, $window, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling, RestApi) {
+  .factory('ScreenShare', function ScreenShare($rootScope, $window, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling, RestApi, $log) {
 
     // todo need to check exact chrome browser because opera also uses chromium framework
     var isChrome;
@@ -87,6 +87,8 @@ angular.module('kiboRtc.services')
         if (!callback) throw '"callback" parameter is mandatory.';
         screenCallback = callback;
         $window.postMessage('get-sourceId', '*');
+        $log.debug(callback)
+        $log.info('getting source id '+callback)
       },
 
       /**
@@ -104,6 +106,8 @@ angular.module('kiboRtc.services')
 
         // ask extension if it is available
         $window.postMessage('are-you-there', '*');
+        $log.debug('are-you-there' +callback)
+        $log.info('are-you-there' +callback)
 
         setTimeout(function () {
           if (chromeMediaSource == 'screen') {
@@ -175,7 +179,10 @@ angular.module('kiboRtc.services')
           successInstallCallback,
           failureInstallCallback
         );
+        $log.info('Screen sharing extension install')
+
       }
+
     };
 
     /**
@@ -188,13 +195,14 @@ angular.module('kiboRtc.services')
      * @returns {*}
      */
     function onMessageCallback(data) {
-      //console.log('chrome message', data);
+      $log.info('chrome message', data);
 
       // "cancel" button is clicked
       if (data == 'PermissionDeniedError') {
         chromeMediaSource = 'PermissionDeniedError';
         if (screenCallback) return screenCallback('PermissionDeniedError');
         else throw new Error('PermissionDeniedError');
+        $log.error('Permission denied error ' )
       }
 
       // extension notified its presence
@@ -215,6 +223,7 @@ angular.module('kiboRtc.services')
 
     function failureInstallCallback(error) {
       alert(error);
+      $log.error('Failure to install '+error)
     }
 
 

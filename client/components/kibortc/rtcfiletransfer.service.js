@@ -8,7 +8,7 @@
  */
 
 angular.module('kiboRtc.services')
-  .factory('FileTransfer', function FileTransfer($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling) {
+  .factory('FileTransfer', function FileTransfer($rootScope, pc_config, pc_constraints, sdpConstraints, video_constraints, Signalling, $log) {
 
     var isInitiator = false;
     /* It indicates which peer is the initiator of the call */
@@ -49,14 +49,17 @@ angular.module('kiboRtc.services')
               sendChannel = pc.createDataChannel("sendDataChannel", {reliable: true});
             }
             catch (e) {
+              $log.warn("unreliable data channel")
               console.log('UNRELIABLE DATA CHANNEL')
               sendChannel = pc.createDataChannel("sendDataChannel", {reliable: false});
             }
             sendChannel.onmessage = handleMessage;
+            $log.debug('Created send data channel');
             trace('Created send data channel');
           } catch (e) {
             cb(e);
             trace('createDataChannel() failed with exception: ' + e.message);
+            $log.error('createDataChannel() failed with exception: ' + e.message)
             return;
           }
             cb(null);
@@ -69,6 +72,7 @@ angular.module('kiboRtc.services')
           }
         } catch (e) {
           cb(e);
+          $log.error('Failed to create PeerConnection, exception: ' + e.message);
           console.log('Failed to create PeerConnection, exception: ' + e.message);
         }
       },
@@ -81,6 +85,7 @@ angular.module('kiboRtc.services')
 
       sendData: function (data) {
         sendChannel.send(data);
+        $log.info('sending channel '+data)
       },
 
       /**
@@ -93,6 +98,7 @@ angular.module('kiboRtc.services')
 
       createAndSendOffer: function () {
         pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+        $log.info('Create and send offer ')
       },
 
       /**
@@ -107,6 +113,8 @@ angular.module('kiboRtc.services')
       createAndSendAnswer: function () {
         pc.createAnswer(setLocalAndSendMessage, function (error) {
           console.log(error)
+
+          $log.error("fail to create and send answer with "+ error)
         }, sdpConstraints);
       },
 
@@ -149,9 +157,13 @@ angular.module('kiboRtc.services')
         isInitiator = false;
 
         try {
+
           pc.close();
+          $log.debug("closing pc and ending connection")
         } catch (e) {
+          $log.error("ending connection "+e)
         }
+        $log.warn("closing pc and ending connection")
         console.log('FileTransfer Connection closed')
       },
 
@@ -233,6 +245,7 @@ angular.module('kiboRtc.services')
        */
       bootAlert: function (text) {
         alert(text);
+        $log.info('Boot_alert: '+ text)
         console.log('Boot_alert: ', text);
       },
 
@@ -248,24 +261,31 @@ angular.module('kiboRtc.services')
         switch (e.code) {
           case FileError.QUOTA_EXCEEDED_ERR:
             msg = 'QUOTA_EXCEEDED_ERR';
+            $log.info('Error message '+ msg)
             break;
           case FileError.NOT_FOUND_ERR:
             msg = 'NOT_FOUND_ERR';
+            $log.info('Error message '+ msg)
             break;
           case FileError.SECURITY_ERR:
             msg = 'SECURITY_ERR';
+            $log.info('Error message '+ msg)
             break;
           case FileError.INVALID_MODIFICATION_ERR:
             msg = 'INVALID_MODIFICATION_ERR';
+            $log.info('Error message '+ msg)
             break;
           case FileError.INVALID_STATE_ERR:
             msg = 'INVALID_STATE_ERR';
+            $log.info('Error message '+ msg)
             break;
           default:
             msg = 'Unknown Error';
+            $log.info('Error message '+ msg)
             break;
         }
         console.error('Error: ' + msg);
+        $log.error('Error: ' + msg)
       },
 
       /**
@@ -282,6 +302,7 @@ angular.module('kiboRtc.services')
           fileSizeInBytes = fileSizeInBytes / 1024;
           i++;
         } while (fileSizeInBytes > 1024);
+
         return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
       },
 
@@ -326,6 +347,7 @@ angular.module('kiboRtc.services')
      */
     function handleIceCandidate(event) {
       console.log(event.candidate)
+      $log.debug('handling ice candidate '+event.candidate)
       if (event.candidate) {
         Signalling.sendMessageForDataChannel({
           type: 'candidate',
@@ -335,6 +357,7 @@ angular.module('kiboRtc.services')
         });
       } else{
         //console.log('End of candidates.');
+        $log.info('End of Candidate')
       }
     }
 
@@ -350,6 +373,7 @@ angular.module('kiboRtc.services')
       // Set Opus as the preferred codec in SDP if Opus is present.
       pc.setLocalDescription(sessionDescription);
       //console.log('setLocalAndSendMessage sending message' , sessionDescription);
+      $log.info('setLocalAndSendMessage sending message' , sessionDescription);
       Signalling.sendMessageForDataChannel(sessionDescription);
     }
 
@@ -361,6 +385,7 @@ angular.module('kiboRtc.services')
      */
     function handleCreateOfferError(error) {
       console.log('createOffer() error: ', error);
+      $log.error('createOffer() error: ', error);
     }
 
     /**
@@ -371,6 +396,7 @@ angular.module('kiboRtc.services')
      */
     function handleMessage(event) {
       trace('MESSAGE GOT: ' + event.data);
+      $log.debug('MESSAGE GOT: ' + event.data);
       //document.getElementById("dataChannelReceive").value = event.data;
 
       message = event.data;
@@ -387,6 +413,7 @@ angular.module('kiboRtc.services')
     function handleSendChannelStateChange() {
       var readyState = sendChannel.readyState;
       trace('Send channel state is: ' + readyState);
+      $log.debug('Send channel state is: ' + readyState);
     }
 
     /**
@@ -397,6 +424,7 @@ angular.module('kiboRtc.services')
      */
     function gotReceiveChannel(event) {
       trace('Receive Channel Callback');
+      $log.info('Receive Channel Callback');
       sendChannel = event.channel;
       sendChannel.onmessage = handleMessage;
       sendChannel.onopen = handleReceiveChannelStateChange;
@@ -413,6 +441,7 @@ angular.module('kiboRtc.services')
     function handleReceiveChannelStateChange() {
       var readyState = sendChannel.readyState;
       trace('Receive channel state is: ' + readyState);
+      $log.info('Receive channel state is: ' + readyState);
     }
 
   });
