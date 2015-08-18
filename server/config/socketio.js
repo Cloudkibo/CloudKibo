@@ -73,6 +73,7 @@ function onDisconnect(socketio,socket) {
 function onConnect(socketio, socket) {
 
 		//console.log(socket);
+  logger.serverLog('debug', 'socketio.js connected:');
 
 	  // convenience function to log server messages on the client
 	function log(){
