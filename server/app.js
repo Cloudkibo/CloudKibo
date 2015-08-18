@@ -72,10 +72,18 @@ require('./routes')(app);
 // Start server
 server.listen(config.port, config.ip, function () {
   console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
+<<<<<<< HEAD
+  //$log.info('Express server listening on %d, in %s mode '+ config.port, app.get('env'));
+=======
+>>>>>>> 9c12e0c02561f7f1961e584e42407cebcc1e929e
 });
 
 httpsServer.listen(config.secure_port, function(){
   console.log('Express server listening on %d, in %s mode', config.secure_port, app.get('env'));
+<<<<<<< HEAD
+  ///$log.info('Express server listening on %d, in %s mode', config.secure_port, app.get('env'));
+=======
+>>>>>>> 9c12e0c02561f7f1961e584e42407cebcc1e929e
 });
 
 
