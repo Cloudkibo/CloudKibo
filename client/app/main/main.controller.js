@@ -315,7 +315,10 @@ angular.module('cloudKiboApp')
                     if (data.status == 'success') {
                         $scope.addAlert(data.status, data.msg)
                     }
+
                 })
+          inviteemail.recipientEmail= '';
+          inviteemail.shortmessage= '';
           console.log("Email invite selected");
           $log.info("Email invite selected");
         };
