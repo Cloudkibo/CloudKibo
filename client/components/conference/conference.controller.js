@@ -254,6 +254,7 @@ angular.module('cloudKiboApp')
 
     FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
+      //console.log(data);
       if (typeof data.data === 'string') {
         if (data.data === 'Speaking') {
           $scope.peers.forEach(function (p) {
