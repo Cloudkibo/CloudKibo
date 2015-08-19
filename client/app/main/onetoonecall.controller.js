@@ -8,7 +8,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, OneToOneCall, $timeout, $log, ScreenShare, FileHangout, $log, Sound) {
+  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, OneToOneCall, $timeout, $log, ScreenShare, FileHangout, Sound) {
 
     var room = 'globalchatroom';
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {

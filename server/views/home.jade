@@ -1,7 +1,7 @@
 extends tabcontents
 
 block appbodycontent
-        div(ng-show='!testingDefined()', class='animate-show' ng-show='OneToOneCallController')
+        div(ng-show='!testingDefined()', class='animate-show' ng-controller='OneToOneCallController')
                  .videoCallMainBodyPane
                    div()
                       .callNotifications(ng-show='isThereIncomingCall()')
