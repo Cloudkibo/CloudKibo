@@ -117,7 +117,7 @@ angular.module('cloudKiboApp')
 
                 var testvideo = document.getElementById("testvideo");
                 var testvideo2 = document.getElementById("testvideo2");
-                testvideo.src = URL.createObjectURL(newStream);
+                //testvideo.src = URL.createObjectURL(newStream);
                 testvideo2.src = URL.createObjectURL(newStream);
                 localStreamTest = newStream;
                 $scope.deviceAccess = true;
