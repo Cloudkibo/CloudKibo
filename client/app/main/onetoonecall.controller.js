@@ -28,9 +28,9 @@ angular.module('cloudKiboApp')
       Stream.get()
         .then(function (s) {
           stream = s;
-          Room.init(stream, $scope.user.username);
+          OneToOneCall.init(stream, $scope.user.username);
           stream = URL.createObjectURL(stream);
-          Room.joinRoom($routeParams.mname);
+          OneToOneCall.joinRoom($routeParams.mname);
         }, function (err) {
           console.error(err);
           $log.debug(err);
@@ -39,10 +39,10 @@ angular.module('cloudKiboApp')
     };
 
     $scope.peers = [];
-    Room.on('peer.stream', function (peer) {
+    OneToOneCall.on('peer.stream', function (peer) {
       $log.debug('Client connected, adding new stream');
       // Inform the new joiner that you are sharing video
-      if($scope.isLocalVideoShared()) Room.toggleVideo($scope.isLocalVideoShared());
+      if($scope.isLocalVideoShared()) OneToOneCall.toggleVideo($scope.isLocalVideoShared());
       $scope.peers.push({
         id: peer.id,
         username: peer.username,
@@ -51,11 +51,11 @@ angular.module('cloudKiboApp')
         stream: URL.createObjectURL(peer.stream)
       });
     });
-    Room.on('peer.screenStream', function (peer) {
+    OneToOneCall.on('peer.screenStream', function (peer) {
       $log.debug('Client shared screen, adding stream');
       peerScreenStream = URL.createObjectURL(peer.stream);
     });
-    Room.on('conference.stream', function (peer) {
+    OneToOneCall.on('conference.stream', function (peer) {
       $log.debug('hiding / showing video or screen');
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
@@ -74,7 +74,7 @@ angular.module('cloudKiboApp')
         }
       });
     });
-    Room.on('peer.disconnected', function (peer) {
+    OneToOneCall.on('peer.disconnected', function (peer) {
       $log.debug('Client disconnected, removing stream');
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
@@ -109,11 +109,11 @@ angular.module('cloudKiboApp')
     $scope.userMessages = [];
     $scope.sendData = function () {
       var data = $scope.dataChannelSend;
-      Room.sendChat(data);
+      OneToOneCall.sendChat(data);
       $scope.userMessages.push('Me: ' + data);
       $scope.dataChannelSend = '';
     };
-    Room.on('conference.chat', function(data){
+    OneToOneCall.on('conference.chat', function(data){
       if(data.username !== $scope.user.username) {
         $scope.$apply(function () {
           $scope.userMessages.push(data.username +': '+ data.message);
@@ -125,22 +125,22 @@ angular.module('cloudKiboApp')
     $scope.audioToggle = function () {
       if ($scope.toggleAudioText === 'Share Audio') {
         $scope.toggleAudioText = 'Mute Audio';
-        Room.toggleAudio();
+        OneToOneCall.toggleAudio();
       }
       else {
         $scope.toggleAudioText = 'Share Audio';
-        Room.toggleAudio();
+        OneToOneCall.toggleAudio();
       }
     };
     $scope.toggleVideoText = 'Share Video';
     $scope.videoToggle = function () {
       if ($scope.toggleVideoText === 'Share Video') {
         $scope.toggleVideoText = 'Hide Video';
-        Room.toggleVideo(true);
+        OneToOneCall.toggleVideo(true);
       }
       else {
         $scope.toggleVideoText = 'Share Video';
-        Room.toggleVideo(false);
+        OneToOneCall.toggleVideo(false);
       }
     };
 
@@ -181,7 +181,7 @@ angular.module('cloudKiboApp')
                   $scope.showScreenText = 'Hide Screen';
                   $scope.screenSharedLocal = true;
                 });
-                Room.toggleScreen(stream, true);
+                OneToOneCall.toggleScreen(stream, true);
               }
             });
           }
@@ -197,7 +197,7 @@ angular.module('cloudKiboApp')
                 $scope.showScreenText = 'Hide Screen';
                 $scope.screenSharedLocal = true;
               });
-              Room.toggleScreen(stream, true);
+              OneToOneCall.toggleScreen(stream, true);
             }, function (err) {
               alert('Permission denied or could not capture the screen.');
             });
@@ -206,7 +206,7 @@ angular.module('cloudKiboApp')
         else {
           ScreenShare.setSourceIdValue(null);
           screenStream.stop();
-          Room.toggleScreen(screenStream, false);
+          OneToOneCall.toggleScreen(screenStream, false);
           $scope.showScreenText = 'Share Screen';
           $scope.screenSharedLocal = false;
         }
@@ -238,7 +238,7 @@ angular.module('cloudKiboApp')
     }
 
     FileHangout.accept_inbound_files();
-    Room.on('dataChannel.message', function(data){
+    OneToOneCall.on('dataChannel.message', function(data){
       if (typeof data.data === 'string') {
         if (data.data === 'Speaking') {
           $scope.peers.forEach(function (p) {
@@ -265,20 +265,20 @@ angular.module('cloudKiboApp')
       $scope.$apply(function(){
         $scope.divBoxClass = 'hideVideoBoxSpeaking';
       });
-      Room.sendDataChannelMessage('Speaking');
+      OneToOneCall.sendDataChannelMessage('Speaking');
     });
     $scope.$on('Silent', function () {
       $scope.$apply(function(){
         $scope.divBoxClass = 'hideVideoBox';
       });
-      Room.sendDataChannelMessage('Silent');
+      OneToOneCall.sendDataChannelMessage('Silent');
     });
 
     $scope.connected = true;
     $scope.isConnected = function () {
       return $scope.connected;
     };
-    Room.on('connection.status', function(data){
+    OneToOneCall.on('connection.status', function(data){
       $scope.connected = data.status;
       if(!data.status){
         $scope.peers = [];
