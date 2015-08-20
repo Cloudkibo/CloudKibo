@@ -25,7 +25,7 @@ angular.module('cloudKiboApp')
       if ($scope.isUserNameDefined()) {
         $scope.connect();
       } else {
-        var sampleName = "user_" + Math.random().toString(36).substring(10);
+        var sampleName = "user " + Math.floor((Math.random() * 100) + 1);;
         $scope.user.username = window.prompt("Please write your username", sampleName);
         if ($scope.user.username == null)
           $scope.user.username = sampleName;
