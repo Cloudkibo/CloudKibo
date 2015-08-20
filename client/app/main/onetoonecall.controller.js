@@ -431,4 +431,42 @@ angular.module('cloudKiboApp')
       }
     });
 
+    $scope.isOtherPeerBusy = false;
+    $scope.otherScreenShared = false;
+    $scope.screenSharedLocal = false;
+    $scope.IncomingCallStatement = '';
+    $scope.isSomeOneCalling = false;
+    $scope.OutgoingCallStatement = '';
+    $scope.areYouCallingSomeone = false;
+    $scope.hasOtherPartySharedScreen = function () {
+      return $scope.otherScreenShared;
+    };
+    $scope.$on('screenShared', function(){
+      $scope.$apply(function(){
+        $scope.otherScreenShared = true;
+      });
+      $log.info("Screen shared by other")
+    });
+    $scope.$on('screenRemoved', function(){
+      $scope.$apply(function(){
+        $scope.otherScreenShared = false;
+      });
+      $log.info("Screen remoed/hidden by other")
+    });
+    $scope.isLocalScreenShared = function () {
+      return $scope.screenSharedLocal;
+    };
+    $scope.isThereIncomingCall = function () {
+      return $scope.isSomeOneCalling;
+    };
+    $scope.isThereOutgoingCall = function () {
+      return $scope.areYouCallingSomeone;
+    };
+    $scope.isItRinging = function () {
+      return $scope.ringing;
+    };
+    $scope.isOtherSideRinging = function () {
+      return $scope.otherSideRinging;
+    };
+
   });
