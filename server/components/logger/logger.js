@@ -86,7 +86,7 @@ exports.serverLog = function(label, data) {
 
   if (mode === 'Development') {
     winston.log(label, data);
-    console.log('development log '+ label +': '+ data);
+    //console.log('development log '+ label +': '+ data);
   }
   else if (mode === 'Testing') {
     if (labelNumber >= 0 && labelNumber <=1) {
