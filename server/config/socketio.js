@@ -227,8 +227,10 @@ function onConnect(socketio, socket) {
 			socket.join(room.room);
 
       socket.username= room.user.username;
-			//socket.emit('you are in global chat room', room);
+			socket.emit('you are in global chat room', room);
+      logger.serverLog('info', 'you are in global chat room  ')
 			//console.log(room.user.username +' has joined the room.')
+      logger.serverLog('info', room.user.username +' has joined the GLOBAL chat room');
 
 			var myOnlineContacts = [];
 
@@ -258,7 +260,7 @@ function onConnect(socketio, socket) {
 
 					socket.emit('youareonline', myOnlineContacts);
 
-          logger.serverLog('info', 'socketio.js on(create or join) : '+room.user.username +' logged in.');
+          logger.serverLog('info', 'socketio.js on : '+room.user.username +' logged in.');
 
 				}
 
@@ -325,6 +327,8 @@ function onConnect(socketio, socket) {
         }
         else {
           socketio.to(socketid).emit('areyoufreeforcall', {caller: message.caller, sendersocket: socketidSender});
+          logger.serverLog('info', 'socketio.js on(callthisperson) : see if callee is free to call');
+
         }
       }catch(e){
         logger.serverLog('error', 'socketio.js on(callthisperson) : '+ e);
@@ -347,6 +351,7 @@ function onConnect(socketio, socket) {
 
         if (socketid == '') {
           //socket.emit('calleeisoffline', message.callee);
+          logger.serverLog('info', 'socketio.js on(noiambusy) : callee is offline');
         }
         else {
           socketio.to(socketid).emit('calleeisbusy', {callee: message.me});
@@ -535,6 +540,7 @@ function onConnect(socketio, socket) {
 
       //log('Room ' + room.room + ' has ' + numClients + ' client(s)');
       //log('Request to create or join room ' + room.room + ' from '+ room.username);
+      logger.serverLog('info', 'Request to create or join room ' + room.room + ' from '+ room.username);
 
       var clientsIDs = new Array(numClients);
 
@@ -549,6 +555,8 @@ function onConnect(socketio, socket) {
         socket.username= room.username;
 
         console.log('room created');
+        logger.serverLog('info', 'Room created  ')
+
 				socket.emit('created', room);
 			} else if (numClients < 5) {//(numClients === 2 || numClients === 1 || numClients === 3 || numClients === 4) {
 				socket.join(room.room);
@@ -558,6 +566,7 @@ function onConnect(socketio, socket) {
 				socket.emit('joined', room);
 
         console.log('room joined');
+        logger.serverLog('info', 'Room joined  ')
 
         clientsIDs.push(room.username);
 
@@ -566,6 +575,7 @@ function onConnect(socketio, socket) {
 
 			} else { // max five clients
 				socket.emit('full', room.room);
+        logger.serverLog('info', 'Room is full  ')
 			}
 
 			//console.log(socketio.sockets.manager.rooms)
