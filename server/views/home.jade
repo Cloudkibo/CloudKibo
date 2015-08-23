@@ -155,7 +155,7 @@ block appbodycontent
                             video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='170px', ng-show='isLocalVideoShared()' muted)
                             span {{getUsername()}}
                           video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}', div-box-class='{{peer.divClass}}')
-                      div(ng-show='isCallStarted() && hasOtherPartySharedScreen()' class="videoCallChatPane2")
+                      div(ng-show='isCallStarted() && hasPeerSharedScreen()' class="videoCallChatPane2")
                         div(style='text-align: center;')
                           video(ng-src='{{getPeerScreen()}}',autoplay='true', width='80%', class='videoelementscreen', controls='true')
                       div(ng-show='isCallStarted()', style='text-align: center;' class="endCallDiv")
