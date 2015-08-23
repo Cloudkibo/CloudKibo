@@ -1,37 +1,25 @@
 /**
+ * Created by sojharo on 8/19/2015.
+ */
+/**
  * Created by sojharo on 8/1/2015.
  */
 'use strict';
 
 
 angular.module('cloudKiboApp')
-  .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
+  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, socket, OneToOneCall, $timeout, $log, ScreenShare, FileHangout, Sound) {
 
+    var room = 'globalchatroom';
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
       $log.error('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
       return;
     }
 
-    $scope.user = $scope.getCurrentUser();
-    $scope.isUserNameDefined = function () {
-      return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
-    };
     $scope.getUsername = function(){
       return $scope.user.username;
     };
-
-    $timeout(function(){
-      if ($scope.isUserNameDefined()) {
-        $scope.connect();
-      } else {
-        var sampleName = "user " + Math.floor((Math.random() * 100) + 1);;
-        $scope.user.username = window.prompt("Please write your username", sampleName);
-        if ($scope.user.username == null)
-          $scope.user.username = sampleName;
-        $scope.connect();
-      }
-    }, 1000);
 
     var stream;
 
@@ -40,9 +28,9 @@ angular.module('cloudKiboApp')
       Stream.get()
         .then(function (s) {
           stream = s;
-          Room.init(stream, $scope.user.username);
+          OneToOneCall.init(stream, $scope.user.username);
           stream = URL.createObjectURL(stream);
-          Room.joinRoom($routeParams.mname);
+          OneToOneCall.joinRoom($routeParams.mname);
         }, function (err) {
           console.error(err);
           $log.debug(err);
@@ -51,10 +39,10 @@ angular.module('cloudKiboApp')
     };
 
     $scope.peers = [];
-    Room.on('peer.stream', function (peer) {
+    OneToOneCall.on('peer.stream', function (peer) {
       $log.debug('Client connected, adding new stream');
       // Inform the new joiner that you are sharing video
-      if($scope.isLocalVideoShared()) Room.toggleVideo($scope.isLocalVideoShared());
+      if($scope.isLocalVideoShared()) OneToOneCall.toggleVideo($scope.isLocalVideoShared());
       $scope.peers.push({
         id: peer.id,
         username: peer.username,
@@ -63,11 +51,11 @@ angular.module('cloudKiboApp')
         stream: URL.createObjectURL(peer.stream)
       });
     });
-    Room.on('peer.screenStream', function (peer) {
+    OneToOneCall.on('peer.screenStream', function (peer) {
       $log.debug('Client shared screen, adding stream');
       peerScreenStream = URL.createObjectURL(peer.stream);
     });
-    Room.on('conference.stream', function (peer) {
+    OneToOneCall.on('conference.stream', function (peer) {
       $log.debug('hiding / showing video or screen');
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
@@ -86,7 +74,7 @@ angular.module('cloudKiboApp')
         }
       });
     });
-    Room.on('peer.disconnected', function (peer) {
+    OneToOneCall.on('peer.disconnected', function (peer) {
       $log.debug('Client disconnected, removing stream');
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
@@ -110,9 +98,6 @@ angular.module('cloudKiboApp')
     $scope.isFireFox = function () {
       return typeof navigator.mozGetUserMedia !== 'undefined';
     };
-    $scope.isMeetingPage = function () {
-      return true;
-    };
 
     $scope.chatBoxVisible = false;
     $scope.showChatBox = function () {
@@ -124,11 +109,11 @@ angular.module('cloudKiboApp')
     $scope.userMessages = [];
     $scope.sendData = function () {
       var data = $scope.dataChannelSend;
-      Room.sendChat(data);
+      OneToOneCall.sendChat(data);
       $scope.userMessages.push('Me: ' + data);
       $scope.dataChannelSend = '';
     };
-    Room.on('conference.chat', function(data){
+    OneToOneCall.on('conference.chat', function(data){
       if(data.username !== $scope.user.username) {
         $scope.$apply(function () {
           $scope.userMessages.push(data.username +': '+ data.message);
@@ -140,22 +125,22 @@ angular.module('cloudKiboApp')
     $scope.audioToggle = function () {
       if ($scope.toggleAudioText === 'Share Audio') {
         $scope.toggleAudioText = 'Mute Audio';
-        Room.toggleAudio();
+        OneToOneCall.toggleAudio();
       }
       else {
         $scope.toggleAudioText = 'Share Audio';
-        Room.toggleAudio();
+        OneToOneCall.toggleAudio();
       }
     };
     $scope.toggleVideoText = 'Share Video';
     $scope.videoToggle = function () {
       if ($scope.toggleVideoText === 'Share Video') {
         $scope.toggleVideoText = 'Hide Video';
-        Room.toggleVideo(true);
+        OneToOneCall.toggleVideo(true);
       }
       else {
         $scope.toggleVideoText = 'Share Video';
-        Room.toggleVideo(false);
+        OneToOneCall.toggleVideo(false);
       }
     };
 
@@ -196,7 +181,7 @@ angular.module('cloudKiboApp')
                   $scope.showScreenText = 'Hide Screen';
                   $scope.screenSharedLocal = true;
                 });
-                Room.toggleScreen(stream, true);
+                OneToOneCall.toggleScreen(stream, true);
               }
             });
           }
@@ -212,7 +197,7 @@ angular.module('cloudKiboApp')
                 $scope.showScreenText = 'Hide Screen';
                 $scope.screenSharedLocal = true;
               });
-              Room.toggleScreen(stream, true);
+              OneToOneCall.toggleScreen(stream, true);
             }, function (err) {
               alert('Permission denied or could not capture the screen.');
             });
@@ -221,7 +206,7 @@ angular.module('cloudKiboApp')
         else {
           ScreenShare.setSourceIdValue(null);
           screenStream.stop();
-          Room.toggleScreen(screenStream, false);
+          OneToOneCall.toggleScreen(screenStream, false);
           $scope.showScreenText = 'Share Screen';
           $scope.screenSharedLocal = false;
         }
@@ -253,8 +238,7 @@ angular.module('cloudKiboApp')
     }
 
     FileHangout.accept_inbound_files();
-    Room.on('dataChannel.message', function(data){
-      //console.log(data);
+    OneToOneCall.on('dataChannel.message', function(data){
       if (typeof data.data === 'string') {
         if (data.data === 'Speaking') {
           $scope.peers.forEach(function (p) {
@@ -281,20 +265,20 @@ angular.module('cloudKiboApp')
       $scope.$apply(function(){
         $scope.divBoxClass = 'hideVideoBoxSpeaking';
       });
-      Room.sendDataChannelMessage('Speaking');
+      OneToOneCall.sendDataChannelMessage('Speaking');
     });
     $scope.$on('Silent', function () {
       $scope.$apply(function(){
         $scope.divBoxClass = 'hideVideoBox';
       });
-      Room.sendDataChannelMessage('Silent');
+      OneToOneCall.sendDataChannelMessage('Silent');
     });
 
     $scope.connected = true;
     $scope.isConnected = function () {
       return $scope.connected;
     };
-    Room.on('connection.status', function(data){
+    OneToOneCall.on('connection.status', function(data){
       $scope.connected = data.status;
       if(!data.status){
         $scope.peers = [];
@@ -304,4 +288,185 @@ angular.module('cloudKiboApp')
     $scope.$on('$routeChangeStart', function () {
       location.reload();
     });
+
+    $scope.callThisPerson = function (calleeusername) {
+      if ($scope.areYouCallingSomeone == false && $scope.amInCall == false) {
+        socket.emit('callthisperson', {
+          room: room,
+          callee: calleeusername,
+          caller: $scope.user.username
+        });
+        $log.info("Calling person "+ calleeusername);
+        $scope.OutgoingCallStatement = 'Outgoing Call to : ' + calleeusername;
+        $scope.areYouCallingSomeone = true;
+      }
+    };
+    $scope.StopOutgoingCall = function () {
+      OneToOneCall.sendMessage('Missed Call: ' + $scope.user.username, room, $scope.amInCallWith, $scope.user.username);
+      $scope.areYouCallingSomeone = false;
+      $scope.otherSideRinging = false;
+      $scope.amInCall = false;
+      $scope.amInCallWith = '';
+      $scope.OutgoingCallStatement = 'Calling stopped';
+      $log.info("Calling stopped")
+    };
+    $scope.AcceptCall = function () {
+      OneToOneCall.sendMessage('Accept Call', room, $scope.amInCallWith, $scope.user.username);
+      $scope.isSomeOneCalling = false;
+      Sound.load();
+      Sound.pause();
+      $scope.ringing = false;
+      $log.info("Accepting call")
+    };
+    $scope.RejectCall = function () {
+      OneToOneCall.sendMessage('Reject Call', room, $scope.amInCallWith, $scope.user.username);
+      $scope.isSomeOneCalling = false;
+      Sound.load();
+      Sound.pause();
+      $scope.ringing = false;
+      $scope.amInCall = false;
+      $scope.amInCallWith = '';
+      $log.info("Rejecting call")
+    };
+    $scope.endCall = function () {
+      $log.info("end call selected");
+      $scope.firstVideoAdded = false;
+      $scope.screenSharedLocal = false;
+      $scope.screenSharedByPeer = false;
+      OneToOneCall.sendMessage('hangup', room, $scope.amInCallWith, $scope.user.username);
+      $scope.userMessages = [];
+      $scope.callEnded = true;
+      $scope.amInCall = false;
+      $scope.amInCallWith = '';
+    };
+
+    $scope.amInCallWith = '';
+    $scope.amInCall = false;
+    socket.on('calleeisoffline', function (nickname) {
+      $log.info('Callee is OFFLINE')
+      $scope.OutgoingCallStatement = nickname + ' is offline.';
+      $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
+      $scope.amInCall = false;
+      $scope.amInCallWith = '';
+    });
+    socket.on('calleeisbusy', function (data) {
+      $log.info('Callee is OFFLINE')
+      $scope.OutgoingCallStatement = data.callee + ' is busy on other call.';
+      $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
+      $scope.amInCall = false;
+      $scope.amInCallWith = '';
+    });
+    socket.on('othersideringing', function (data) {
+      $scope.otherSideRinging = true;
+      $scope.amInCall = true;
+      $scope.amInCallWith = data.callee;
+    });
+    socket.on('areyoufreeforcall', function (data) {
+      if ($scope.amInCall == false) {
+        $scope.IncomingCallStatement = data.caller + ' is calling you';
+        $scope.isSomeOneCalling = true;
+        Sound.load();
+        Sound.play();
+        $scope.ringing = true;
+        socket.emit('yesiamfreeforcall', {mycaller: data.caller, me: $scope.user.username});
+        $scope.amInCall = true;
+        $scope.amInCallWith = data.caller;
+        $log.info("checking if callee is free for call")
+      }
+      else {
+        socket.emit('noiambusy', {mycaller: data.caller, me: $scope.user.username})
+      }
+    });
+    socket.on('message', function (message) {
+      $log.info('Client received message: ');
+      if(typeof message == 'string'){
+        try {
+          message = JSON.parse(message);
+          $log.info("sending msg: ' "+message+" ' ");
+        }catch(e){}
+      }
+      if(typeof message != 'string'){
+        try {
+          console.log(JSON.stringify(message))
+        }catch(e){}
+      }
+      try {
+        if (message.split(' ')[0] === 'Missed') {
+          $scope.IncomingCallStatement = message;
+          $scope.amInCall = false;
+          $scope.amInCallWith = '';
+          $scope.ringing = false;
+          $timeout(function () { $scope.isSomeOneCalling = false; }, 6000);
+          Sound.load();
+          Sound.pause();
+          $log.info("call missed: ' "+message+" ' ");
+        }
+      } catch (e) {
+      }
+      if (message === 'Accept Call') {
+        $scope.otherSideRinging = false;
+        $scope.areYouCallingSomeone = false;
+        $log.info("Accepting call")
+        // todo do the logic here
+      }
+      else if (message === 'Reject Call') {
+        $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
+        $scope.OutgoingCallStatement = $scope.amInCallWith + ' is Busy...';
+        $scope.otherSideRinging = false;
+        $scope.amInCall = false;
+        $scope.amInCallWith = '';
+        $log.info("Rejecting call")
+      }
+      else if (message === 'bye' || message === 'hangup' ) {
+        console.log("received msg to end connection /call")
+        $log.info("received msg to end connection /call")
+        $scope.screenSharedLocal = false;
+        $scope.screenSharedByPeer = false;
+        $scope.firstVideoAdded = false;
+        $scope.localCameraOn = false;
+        $scope.userMessages = [];
+        $scope.callEnded = true;
+        $scope.amInCall = false;
+        $scope.amInCallWith = '';
+      }
+    });
+
+    $scope.isOtherPeerBusy = false;
+    $scope.otherScreenShared = false;
+    $scope.screenSharedLocal = false;
+    $scope.IncomingCallStatement = '';
+    $scope.isSomeOneCalling = false;
+    $scope.OutgoingCallStatement = '';
+    $scope.areYouCallingSomeone = false;
+    $scope.hasOtherPartySharedScreen = function () {
+      return $scope.otherScreenShared;
+    };
+    $scope.$on('screenShared', function(){
+      $scope.$apply(function(){
+        $scope.otherScreenShared = true;
+      });
+      $log.info("Screen shared by other")
+    });
+    $scope.$on('screenRemoved', function(){
+      $scope.$apply(function(){
+        $scope.otherScreenShared = false;
+      });
+      $log.info("Screen remoed/hidden by other")
+    });
+    $scope.isLocalScreenShared = function () {
+      return $scope.screenSharedLocal;
+    };
+    $scope.isThereIncomingCall = function () {
+      return $scope.isSomeOneCalling;
+    };
+    $scope.isThereOutgoingCall = function () {
+      return $scope.areYouCallingSomeone;
+    };
+    $scope.isItRinging = function () {
+      return $scope.ringing;
+    };
+    $scope.isOtherSideRinging = function () {
+      return $scope.otherSideRinging;
+    };
+
   });

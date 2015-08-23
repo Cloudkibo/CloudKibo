@@ -89,7 +89,6 @@ angular.module('cloudKiboApp')
             $http.post(RestApi.user.searchByUsername, {searchusername: $location.url().split('/')[2]})
                 .success(function (data) {
                     $scope.otherUser = data;
-
                 });
         }
 
@@ -173,7 +172,6 @@ angular.module('cloudKiboApp')
         $scope.isMeetingSelected = function () {
             return $scope.meetingSelected;
         };
-
 
         $scope.openInvite = function () {
 
@@ -408,7 +406,7 @@ angular.module('cloudKiboApp')
                                 room: 'globalchatroom',
                                 userid: $scope.user,
                                 contact: add.searchemail
-                            })
+                            });
 
                           console.log("contact added by email");
                           $log.info("contact added by email");
@@ -468,9 +466,7 @@ angular.module('cloudKiboApp')
             return false;//((typeof $scope.user.initialTesting == 'undefined'))
         };
 
-
         $scope.supportedBrowser = webrtcDetectedBrowser == "chrome";
-
 
         $http.get(RestApi.contacts.contactListOfUser).success(function (data) {
             $scope.contactslist = data;
@@ -578,36 +574,8 @@ angular.module('cloudKiboApp')
          }
          */
 
-        $scope.connected = false;
-
-        $scope.localCameraOn = false;
-
-        $scope.isConnected = function () {
-            return $scope.connected;
-        };
-
-        $scope.callEnded = false;
-
-        $scope.hasCallEnded = function () {
-            return $scope.callEnded;
-        };
-
         $scope.ignoreFeedBack = function () {
             $scope.feedBackSent = true;
-        };
-
-        $scope.extensionAvailable = false;
-
-        $scope.hasChromeExtension = function(){
-          return $scope.extensionAvailable;
-        };
-
-        $scope.isFireFox = function(){
-          return typeof navigator.mozGetUserMedia !== 'undefined';
-        }
-
-        $scope.localCameraCaptured = function () {
-            return $scope.localCameraOn;
         };
 
         $scope.alertsCallStart = [];
@@ -641,216 +609,6 @@ angular.module('cloudKiboApp')
                 });
         };
 
-        $scope.isOtherPeerOffline = function () {
-            return $scope.otherPeersOfflineStatus;
-          console.log("Status of call"+ $scope.otherPeersOfflineStatus )
-          $log.info("Status of call"+ $scope.otherPeersOfflineStatus )
-        };
-
-        $scope.isOtherPeerBusy = false;
-
-        $scope.isOtherPeerBusy = function () {
-            return $scope.otherPeersBusyStatus;
-        };
-
-        $scope.otherScreenShared = false;
-
-        $scope.hasOtherPartySharedScreen = function () {
-            return $scope.otherScreenShared;
-        };
-
-        $scope.$on('screenShared', function(){
-
-            $scope.$apply(function(){
-                $scope.otherScreenShared = true;
-            })
-          console.log("Screen shared by other")
-          $log.info("Screen shared by other")
-
-        });
-
-        $scope.$on('screenRemoved', function(){
-
-            $scope.$apply(function(){
-                $scope.otherScreenShared = false;
-            })
-          console.log("Screen remoed/hidden by other")
-          $log.info("Screen remoed/hidden by other")
-
-        });
-
-        $scope.screenSharedLocal = false;
-
-        $scope.isLocalScreenShared = function () {
-            return $scope.screenSharedLocal;
-        };
-
-        $scope.callThisPerson = function (calleeusername) {
-
-            if ($scope.areYouCallingSomeone == false && $scope.amInCall == false) {
-
-                socket.emit('callthisperson', {
-                    room: 'globalchatroom',
-                    callee: calleeusername,
-                    caller: $scope.user.username
-                });
-              console.log("Calling person "+ calleeusername);
-              $log.info("Calling person "+ calleeusername);
-
-                $scope.OutgoingCallStatement = 'Outgoing Call to : ' + calleeusername;
-
-                $scope.areYouCallingSomeone = true;
-            }
-
-        };
-
-        $scope.endCall = function () {
-          console.log("end call selected")
-          $log.info("end call selected");
-            WebRTC.endConnection();
-          console.log("connetion ended")
-          $log.info("connetion ended")
-
-            $scope.firstVideoAdded = false;
-          console.log("stop 1st video")
-          $log.info("stop 1st video")
-
-            $scope.screenSharedLocal = false;
-          console.log("stop shared screen")
-          $log.info("stop shared screen")
-
-            $scope.screenSharedByPeer = false;
-          console.log("stop other person's shared screen")
-          $log.info("stop other person's shared screen")
-
-
-            $scope.localCameraOn = false;
-          console.log("stop local camera capture")
-          $log.info("stop local camera capture")
-
-            Signalling.sendMessage('hangup');
-          console.log("STOP signalling msg sent ")
-          $log.info("STOP signalling msg sent ")
-
-            //noinspection UnnecessaryLocalVariableJS
-          var endTime = new Date();
-
-            $scope.callData.EndTime = endTime;
-
-            $scope.recordCallData();
-
-            $scope.userMessages = [];
-
-            $scope.callEnded = true;
-
-            $scope.amInCall = false;
-
-            $scope.amInCallWith = '';
-        };
-
-        $scope.IncomingCallStatement = '';
-        $scope.isSomeOneCalling = false;
-
-        $scope.isThereIncomingCall = function () {
-            return $scope.isSomeOneCalling;
-        };
-
-        $scope.OutgoingCallStatement = '';
-        $scope.areYouCallingSomeone = false;
-
-        $scope.isThereOutgoingCall = function () {
-            return $scope.areYouCallingSomeone;
-        };
-
-        $scope.isItRinging = function () {
-            return $scope.ringing;
-        };
-
-        $scope.isOtherSideRinging = function () {
-            return $scope.otherSideRinging;
-        };
-
-        $scope.onTimeoutForPersonOfflineOrBusy = function () {
-            $scope.areYouCallingSomeone = false;
-        };
-
-        $scope.onTimeoutOfMissedCall = function () {
-            $scope.isSomeOneCalling = false;
-        };
-
-        $scope.callData = {};
-
-        $scope.recordCallData = function () {
-            $http.post(RestApi.callrecord.setCallRecordData, JSON.stringify($scope.callData))
-        };
-
-        var localPeerHideVideo = document.getElementById("localPeerHideVideo");
-        var remotePeerHideVideo = document.getElementById("remotePeerHideVideo");
-
-        $scope.$on('Speaking', function () {
-          localPeerHideVideo.style.cssText = 'border : 2px solid #000000;';
-          console.log('speaking '+ $scope.localSpeaking)
-          $log.info('speaking '+ $scope.localSpeaking)
-        });
-
-        $scope.$on('Silent', function () {
-          localPeerHideVideo.style.cssText = 'border : 0px solid #000000;';
-          console.log('silent '+ $scope.localSpeaking)
-          $log.info('silent '+ $scope.localSpeaking)
-        });
-
-        $scope.$on('PeerSpeaking', function () {
-          remotePeerHideVideo.style.cssText = 'border : 2px solid #000000;';
-          console.log('speaking '+ $scope.localSpeaking)
-          $log.info('speaking '+ $scope.localSpeaking)
-        });
-
-        $scope.$on('PeerSilent', function () {
-          remotePeerHideVideo.style.cssText = 'border : 0px solid #000000;';
-          console.log('silent '+ $scope.localSpeaking)
-          $log.info('silent '+ $scope.localSpeaking)
-        });
-
-        var peerSharedVideo = false;
-
-        $scope.hasPeerSharedVideo = function(){
-          return peerSharedVideo;
-        };
-
-        var localVideoCaptured = false;
-        var localAudioCaptured = false;
-
-        $scope.isVideoCaptured = function(){
-          return localVideoCaptured;
-          console.log("localVideoCaptured")
-          $log.info("localVideoCaptured")
-        };
-
-        $scope.isAudioCaptured = function(){
-          return localAudioCaptured;
-          console.log("localVideoCaptured")
-          $log.info("localVideoCaptured")
-        };
-
-        $scope.toggleVideoStream = function() {
-          WebRTC.toggleVideo(function(err){
-            if (err) return alert('Permission denied.');
-            console.log("video toggled")
-            $log.info("video toggled")
-            localVideoCaptured = WebRTC.isLocalVideoShared();
-
-          })
-        }
-
-        $scope.toggleAudioStream = function() {
-          WebRTC.toggleAudio(function(err){
-            if (err) return alert('Permission denied.');
-            console.log("Audio toggled")
-            $log.info("Audio toggled")
-            localAudioCaptured = WebRTC.isLocalAudioShared();
-
-          })
-        };
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // Create or Join Room Logic                                                          //
@@ -867,24 +625,14 @@ angular.module('cloudKiboApp')
             $scope.connected = true;
 
             var remotevideo = document.getElementById("remotevideo");
-          console.log("Remote video captured")
-          $log.info("Remote video captured")
 
             var remotevideoscreen = document.getElementById("remotevideoscreen");
-          console.log("Remote video Screen captured")
-          $log.info("Remote video Screen captured")
 
             var localvideo = document.getElementById("localvideo");
-          console.log("Local video captured")
-          $log.info("Local video captured")
 
             var remoteaudio = document.getElementById('remoteaudio');
-          console.log("Local Audio captured")
-          $log.info("Local Audio captured")
 
             WebRTC.initialize(localvideo, localvideo, remotevideo, remoteaudio, remotevideoscreen);
-          console.log("Initializing meeting call")
-          $log.info("Initializing meeting call")
         };
 
         $timeout($scope.connectTimeOut, 1000);
@@ -976,76 +724,6 @@ angular.module('cloudKiboApp')
             }
         });
 
-        socket.on('calleeisoffline', function (nickname) {
-
-            console.log('Callee is OFFLINE')
-            $log.info('Callee is OFFLINE')
-
-            $scope.OutgoingCallStatement = nickname + ' is offline.';
-
-            $timeout($scope.onTimeoutForPersonOfflineOrBusy, 6000);
-
-            $scope.amInCall = false;
-
-            $scope.amInCallWith = '';
-
-        });
-
-        socket.on('calleeisbusy', function (data) {
-
-            console.log('Callee is OFFLINE')
-            $log.info('Callee is OFFLINE')
-
-            $scope.OutgoingCallStatement = data.callee + ' is busy on other call.';
-
-            $timeout($scope.onTimeoutForPersonOfflineOrBusy, 6000);
-
-            $scope.amInCall = false;
-
-            $scope.amInCallWith = '';
-
-
-        });
-
-        $scope.amInCallWith = '';
-
-        socket.on('othersideringing', function (data) {
-
-            $scope.otherSideRinging = true;
-
-            $scope.amInCall = true;
-
-            $scope.amInCallWith = data.callee;
-
-            Signalling.initialize(data.callee, $scope.user.username, roomid);
-
-        });
-
-        $scope.amInCall = false;
-
-        socket.on('areyoufreeforcall', function (data) {
-
-            if ($scope.amInCall == false) {
-
-                $scope.IncomingCallStatement = data.caller + ' is calling you';
-                $scope.isSomeOneCalling = true;
-                Sound.load();
-                Sound.play();
-                $scope.ringing = true;
-                socket.emit('yesiamfreeforcall', {mycaller: data.caller, me: $scope.user.username});
-                $scope.amInCall = true;
-                $scope.amInCallWith = data.caller;
-
-                Signalling.initialize(data.caller, $scope.user.username, roomid);
-              console.log("checking if callee is free for call")
-              $log.info("checking if callee is free for call")
-            }
-            else {
-                socket.emit('noiambusy', {mycaller: data.caller, me: $scope.user.username})
-            }
-
-        });
-
         socket.on('disconnected', function (data) {
 
             Sound.load();
@@ -1060,270 +738,6 @@ angular.module('cloudKiboApp')
             $scope.LeaveRoom();
             if (!$scope.isOtherPeerBusy())
                 Signalling.sendMessage({msg: 'bye'});
-        };
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // WebRTC using sigaling logic                                                        //
-        ///////////////////////////////////////////////////////////////////////////////////////
-
-        socket.on('message', function (message) {
-            console.log('Client received message: ');
-          $log.info('Client received message: ');
-
-
-            if(typeof message == 'string'){
-                try {
-                    message = JSON.parse(message);
-                    console.log("sending msg: ' "+message+" ' ");
-                  $log.info("sending msg: ' "+message+" ' ");
-                }catch(e){}
-            }
-
-            if(typeof message != 'string'){
-                try {
-                    console.log(JSON.stringify(message))
-                }catch(e){}
-            }
-
-            try {
-                if (message.split(' ')[0] === 'Missed') {
-                    $scope.IncomingCallStatement = message;
-
-                    $scope.amInCall = false;
-                    $scope.amInCallWith = '';
-
-                    $scope.ringing = false;
-                    $timeout($scope.onTimeoutOfMissedCall, 6000);
-                    Sound.load();
-                    Sound.pause();
-
-                    Signalling.destroy();
-                  $log.info("call missed: ' "+message+" ' ");
-                }
-            } catch (e) {
-            }
-
-            if (message === 'got user media') {
-                if (!WebRTC.getInitiator() && !WebRTC.getIsStarted()) {
-                    $scope.receiveCalling();
-                }
-            }
-            else if (message === 'Accept Call') {
-
-                WebRTC.setInitiator(true);
-
-                $scope.otherSideRinging = false;
-                $scope.areYouCallingSomeone = false;
-              console.log("Accepting call")
-              $log.info("Accepting call")
-
-                getMedia();
-
-            }
-            else if (message === 'Reject Call') {
-                $timeout($scope.onTimeoutForPersonOfflineOrBusy, 6000);
-                $scope.OutgoingCallStatement = $scope.amInCallWith + ' is Busy...';
-                $scope.otherSideRinging = false;
-                $scope.amInCall = false;
-                $scope.amInCallWith = '';
-
-
-                Signalling.destroy();
-              console.log("Rejecting call")
-              $log.info("Rejecting call")
-            }
-            else if (message === 'sharing video'){
-              WebRTC.setSharingVideo(true);
-              peerSharedVideo = true;
-              console.log("Sharing Video")
-              $log.info("Sharing Video")
-            }
-            else if (message === 'hiding video'){
-              WebRTC.setHidingVideo(true);
-              peerSharedVideo = false;
-              console.log("Hidding Video")
-              $log.info("Hidding Video")
-            }
-            else if (message === 'bye') {
-
-                WebRTC.endConnection();
-              console.log("received msg to end connection /call")
-              $log.info("received msg to end connection /call")
-                $scope.screenSharedLocal = false;
-                $scope.screenSharedByPeer = false;
-                $scope.firstVideoAdded = false;
-                $scope.localCameraOn = false;
-                $scope.userMessages = [];
-                $scope.callEnded = true;
-                $scope.amInCall = false;
-                $scope.amInCallWith = '';
-            }
-            else if (message === 'hangup') {
-
-                WebRTC.endConnection();
-              console.log("received msg to end/hangup connection /call")
-              $log.info("received msg to end/hangup connection /call")
-                $scope.firstVideoAdded = false;
-                $scope.screenSharedLocal = false;
-                $scope.screenSharedByPeer = false;
-
-                $scope.localCameraOn = false;
-
-                var endTime = new Date();
-
-                $scope.callData.EndTime = endTime.toUTCString();
-
-                $scope.recordCallData();
-              console.log("call data recorded")
-              $log.info("call data recorded")
-
-                $scope.userMessages = [];
-
-                $scope.callEnded = true;
-
-                $scope.amInCall = false;
-
-                $scope.amInCallWith = '';
-
-            }
-            else if(message.type == '__set_session_key') {
-                Signalling.setSessionKey(message.sessionKey);
-            }
-            else if (message.type === 'offer') {
-                if (WebRTC.getInitiator() && !WebRTC.getIsStarted()) {
-                    maybeStart();
-                }
-                WebRTC.setRemoteDescription(message);
-                WebRTC.createAndSendAnswer();
-            } else if (message.type === 'answer' && WebRTC.getIsStarted()) {
-                WebRTC.setRemoteDescription(message);
-            } else if (message.type === 'candidate' && WebRTC.getIsStarted()) {
-                WebRTC.addIceCandidate(message);
-            }
-        });
-
-        function maybeStart() {
-            if (!WebRTC.getIsStarted() && typeof WebRTC.getLocalAudioStream() != 'undefined') {
-
-                WebRTC.createPeerConnection();
-
-                WebRTC.setIsStarted(true);
-
-                if (!WebRTC.getInitiator()) {
-                    WebRTC.createAndSendOffer();
-                }
-            }
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // Media Stream Logic                                                                 //
-        ///////////////////////////////////////////////////////////////////////////////////////
-
-        function getMedia () {
-            WebRTC.captureUserMedia('audio', function (err) {
-
-                if (err) {
-                    $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.');
-                    console.log("Could not access your microphone or webcam")
-                    $log.info("Could not access your microphone or webcam")
-                    $scope.ringing = false;
-                    $scope.amInCall = false;
-                    $scope.amInCallWith = '';
-
-                    WebRTC.endConnection();
-                  console.log("Connection ended")
-                  $log.info("Connection ended")
-
-                } else {
-
-                    localAudioCaptured = true;
-
-                    WebRTC.captureUserMedia('video', function (err) {
-
-                        if (err) {
-                            $scope.addAlertCallStart('danger', 'Could not access your microphone or webcam.');
-                          console.log("Could not access your microphone or webcam")
-                          $log.info("Could not access your microphone or webcam")
-
-                            $scope.ringing = false;
-                            $scope.amInCall = false;
-                            $scope.amInCallWith = '';
-
-                            WebRTC.endConnection();
-                          console.log("Connection ended")
-                          $log.info("Connection ended")
-                        }
-                        else {
-
-                            localVideoCaptured = true;
-
-                            $scope.localCameraOn = true;
-
-                            Signalling.sendMessage('got user media');
-                          console.log("Accessed your microphone or webcam")
-                          $log.info("Accessed your microphone or webcam")
-
-                            if (!WebRTC.getInitiator()) {
-
-                                maybeStart();
-                              console.log("Can start a call ")
-                              $log.info("Can start a call ")
-
-                            }
-                        }
-
-                    })
-
-                }
-
-            });
-        }
-
-        $scope.StopOutgoingCall = function () {
-            Signalling.sendMessage('Missed Call: ' + $scope.user.username);
-            $scope.areYouCallingSomeone = false;
-            $scope.otherSideRinging = false;
-            $scope.amInCall = false;
-            $scope.amInCallWith = '';
-            $scope.OutgoingCallStatement = 'Calling stopped';
-          console.log("Calling stopped")
-          $log.info("Calling stopped")
-
-        };
-
-        $scope.receiveCalling = function () {
-
-            getMedia();
-
-            $scope.callData.Caller = $scope.IncomingCallStatement.split(': ')[1];
-            $scope.callData.Callee = $scope.user.username;
-            var startTime = new Date();
-
-            $scope.callData.StartTime = startTime.toUTCString();
-          console.log("received call data")
-          $log.info("received call data")
-        };
-
-        $scope.AcceptCall = function () {
-            Signalling.sendMessage('Accept Call');
-            $scope.isSomeOneCalling = false;
-            Sound.load();
-            Sound.pause();
-            $scope.ringing = false;
-          console.log("Accepting call")
-          $log.info("Accepting call")
-        };
-
-        $scope.RejectCall = function () {
-            Signalling.sendMessage('Reject Call');
-            $scope.isSomeOneCalling = false;
-            Sound.load();
-            Sound.pause();
-            $scope.ringing = false;
-            $scope.amInCall = false;
-            $scope.amInCallWith = '';
-          console.log("Rejecting call")
-          $log.info("Rejecting call")
         };
 
 
@@ -1441,126 +855,6 @@ angular.module('cloudKiboApp')
             return false;
         };
 
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // Screen Sharing Logic                                                               //
-        ///////////////////////////////////////////////////////////////////////////////////////
-
-        $scope.showScreenText = 'Share Screen';
-
-        $scope.showScreen = function () {
-
-            if ($scope.showScreenText == 'Share Screen') {
-
-              console.log("Inside share screen")
-
-              if(!!navigator.webkitGetUserMedia){
-
-                shareScreen(function (err, stream) {
-                  if(err) {
-                    $scope.addAlertCallStart('danger', err);
-                    console.log("Error in sharing screen")
-                  }
-                  else {
-
-                    WebRTC.addStreamForScreen(stream);
-
-                    WebRTC.createAndSendOffer();
-
-                    $scope.showScreenText = 'Hide Screen';
-                    $scope.screenSharedLocal = true;
-                    console.log("Screen shared")
-
-                  }
-                });
-
-              }
-              else if(!!navigator.mozGetUserMedia){
-                getUserMedia({
-                  video : {
-                    mozMediaSource: 'window',
-                    mediaSource: 'window'
-                  }}, function(stream){
-
-                  WebRTC.addStreamForScreen(stream);
-
-                  WebRTC.createAndSendOffer();
-
-                  $scope.showScreenText = 'Hide Screen';
-                  $scope.screenSharedLocal = true;
-                  console.log("Screen shared by Firefox")
-
-                }, function(err){
-                  alert(err)
-                });
-              }
-
-
-            }
-            else {
-                WebRTC.hideScreen();
-                WebRTC.createAndSendOffer();
-
-                ScreenShare.setSourceIdValue(null);
-
-                $scope.showScreenText = 'Share Screen';
-                $scope.screenSharedLocal = false;
-              console.log("Hide screen screen")
-            }
-
-        };
-
-        function shareScreen(cb) {
-            // this statement verifies chrome extension availability
-            // if installed and available then it will invoke extension API
-            // otherwise it will fallback to command-line based screen capturing API
-            if (ScreenShare.getChromeMediaSource() == 'desktop' && !ScreenShare.getSourceIdValue()) {
-                ScreenShare.getSourceId(function (error) {
-                    // if exception occurred or access denied
-                    if (error && error == 'PermissionDeniedError') {
-                        alert('PermissionDeniedError: User denied to share content of his/her screen.');
-                    }
-
-                    // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
-                    if (ScreenShare.getChromeMediaSource() == 'desktop') {
-                        ScreenShare.setSourceIdInConstraints();
-                    }
-
-                    // now invoking native getUserMedia API
-                    navigator.webkitGetUserMedia(ScreenShare.session(),
-                        function (newStream) {
-
-                            cb(null, newStream);
-
-                        }, function (err) {
-                            cb(err);
-                        });
-
-                });
-            }
-
-        }
-
-        //////////////////////////////////////////////////////////////////////////////////////////
-        // Talking to extension                                                                 //
-        //////////////////////////////////////////////////////////////////////////////////////////
-
-        ScreenShare.initialize();
-
-        ScreenShare.isChromeExtensionAvailable(function (status){
-            $scope.extensionAvailable = status;
-          console.log("Check chhrome extension status : "+$scope.extensionAvailable)
-        });
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // INSTALLATION OF EXTENSION                                                                                           //
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        $scope.installExtension = function () {
-
-          ScreenShare.installChromeExtension();
-          console.log("installing chrome extension");
-        };
 
     })
 

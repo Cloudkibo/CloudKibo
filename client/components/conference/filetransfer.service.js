@@ -122,9 +122,10 @@ angular.module('cloudKiboApp')
             /* debug */
             if (FSdebug) {
               $log.debug("DEBUG: writing chunk2 " + recievedChunksWritePointer[user_id]);
-              for (i = 0; i < FileUtility.getChunksPerAck(); i++) {
+              for (var i = 0; i < FileUtility.getChunksPerAck(); i++) {
                 if (recievedChunks[user_id][i]) {
-                  $log.debug('recived: ' + CryptoJS.SHA256(FileUtility._arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
+                  $log.debug('recieved chunk: '+ recievedChunks[user_id][i]);
+                  //$log.debug('recived: ' + CryptoJS.SHA256(FileUtility._arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
                 }
               }
             }
@@ -209,7 +210,7 @@ angular.module('cloudKiboApp')
      */
     function process_data(data) {
       data = JSON.parse(data).data;
-      //console.log('process_data function: ', data)
+      $log.debug('process_data function: ', data)
       if (data.file_meta) {
         /* we are recieving file meta data */
 
@@ -553,7 +554,7 @@ angular.module('cloudKiboApp')
           //} else {
           if (FSdebug) {
             $log.debug("DEBUG: sending chunk " + chunk_num);
-            $log.debug('sending: ' + CryptoJS.SHA256(FileUtility._arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
+            //$log.debug('sending: ' + CryptoJS.SHA256(FileUtility._arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
           }
 
           Room.sendDataChannelMessage(event.target.result);
@@ -592,10 +593,12 @@ angular.module('cloudKiboApp')
       },
 
       dataChannelMessage: function(id, data){
+        //$log.debug('data channel message received in conference file transfer '+ data);
         if (data.byteLength  || typeof data !== 'string') {
           process_binary(0, data, 0);
         }
         else if (data.charAt(0) == '{' && data.charAt(data.length - 1) == '}') {
+          $log.debug('Going to process data in file transfer conference '+ data);
           process_data(data);
         }
       }
