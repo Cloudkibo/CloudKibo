@@ -340,7 +340,8 @@ angular.module('cloudKiboApp')
       $scope.peers = [];
       $scope.callStarted = false;
       callroom = '';
-      screenStream.stop();
+      if($scope.screenSharedLocal)
+        screenStream.stop();
       Stream.reset();
       Room.end();
     };
@@ -433,7 +434,8 @@ angular.module('cloudKiboApp')
         $scope.peers = [];
         $scope.callStarted = false;
         callroom = '';
-        screenStream.stop();
+        if ($scope.screenSharedLocal)
+          screenStream.stop();
         Stream.reset();
         Room.end();
       }
