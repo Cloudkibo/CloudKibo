@@ -332,9 +332,6 @@ angular.module('cloudKiboApp')
     };
     $scope.endCall = function () {
       $log.info("end call selected");
-      $scope.firstVideoAdded = false;
-      $scope.screenSharedLocal = false;
-      $scope.screenSharedByPeer = false;
       sendMessage('hangup');
       $scope.userMessages = [];
       $scope.callEnded = true;
@@ -343,6 +340,7 @@ angular.module('cloudKiboApp')
       $scope.peers = [];
       $scope.callStarted = false;
       callroom = '';
+      screenStream.stop();
       Stream.reset();
       Room.end();
     };
@@ -428,10 +426,6 @@ angular.module('cloudKiboApp')
       }
       else if (message === 'bye' || message === 'hangup' ) {
         $log.info("received msg to end connection /call")
-        $scope.screenSharedLocal = false;
-        $scope.screenSharedByPeer = false;
-        $scope.firstVideoAdded = false;
-        $scope.localCameraOn = false;
         $scope.userMessages = [];
         $scope.callEnded = true;
         $scope.amInCall = false;
@@ -439,6 +433,7 @@ angular.module('cloudKiboApp')
         $scope.peers = [];
         $scope.callStarted = false;
         callroom = '';
+        screenStream.stop();
         Stream.reset();
         Room.end();
       }
