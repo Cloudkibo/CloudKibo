@@ -227,11 +227,11 @@ function onConnect(socketio, socket) {
 			socket.join(room.room);
 
       socket.username= room.user.username;
-			socket.emit('you are in global chat room', room);
-      logger.serverLog('info', 'you are in global chat room  ')
-			//console.log(room.user.username +' has joined the room.')
-      logger.serverLog('info', room.user.username +' has joined the GLOBAL chat room');
 
+      logger.serverLog('info', 'Data Sent to global chat room handler: '+ room);
+
+      logger.serverLog('info', 'you are trying to join global chat room now.');
+			//console.log(room.user.username +' has joined the room.')
 			var myOnlineContacts = [];
 
       var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
@@ -260,7 +260,7 @@ function onConnect(socketio, socket) {
 
 					socket.emit('youareonline', myOnlineContacts);
 
-          logger.serverLog('info', 'socketio.js on : '+room.user.username +' logged in.');
+          logger.serverLog('info', 'socketio.js on : '+room.user.username +' logged in. Global chat room was joined.');
 
 				}
 
