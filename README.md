@@ -15,6 +15,8 @@ CloudKibo is a next generation communication technology. It’s intuitive, cost 
     o	Features
 •	 [Operations Guide](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/OperationGuide.md)
 
+
+
     o	Overview
     o	Architecture
     o	Design
@@ -23,6 +25,8 @@ CloudKibo is a next generation communication technology. It’s intuitive, cost 
     o	Integration
   
 •	 [Developers guide ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/DeveopersGuide.md)
+
+
 
     o	Overview
     o	Architecture
@@ -37,6 +41,7 @@ CloudKibo is a next generation communication technology. It’s intuitive, cost 
     o	Database
     
 •	Application
+
     o	Kibosupport
 
 
