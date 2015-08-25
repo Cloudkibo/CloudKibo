@@ -5,7 +5,7 @@
     
 CloudKibo is a next generation communication technology. It’s intuitive, cost effective, and rich with functionality. It can be used both for internal and external communications. It provides integrated and unified voice, video, and data communication across web.
 
-### Cloudkibo Documentation
+ Cloudkibo Documentation
 
 •	 ### [User Guide](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/UserGuide.md)
 
@@ -15,7 +15,7 @@ If you want to run existing Cloudkibo application, user guide expalins Cloudkibo
     o	Application use
     o	Features
     
-•	 ### [Operations Guide](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/OperationGuide.md)
+• [Operations Guide](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/OperationGuide.md)
 
 
 
@@ -35,7 +35,7 @@ and others libraries using grunt and bower. Also shows steps to clone the Cloudk
     o	Administration
     o	Integration
   
-•	 ### [Developers guide ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/DeveopersGuide.md)
+•	 [Developers guide ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/DeveopersGuide.md)
 
 
 Setting up your development environment for Cloudkibo.  
