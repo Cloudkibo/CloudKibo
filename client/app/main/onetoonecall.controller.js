@@ -28,6 +28,7 @@ angular.module('cloudKiboApp')
       $log.info($scope.user.username +' is connecting in call with '+ $scope.amInCallWith);
       Stream.get()
         .then(function (s) {
+          $log.info($scope.user.username +' has got the stream');
           stream = s;
           Room.init(stream, $scope.user.username);
           stream = URL.createObjectURL(stream);
@@ -384,7 +385,7 @@ angular.module('cloudKiboApp')
       }
     });
     socket.on('message', function (message) {
-      $log.info('Client received message: ');
+      $log.info('Client received message: '+ message);
       if(typeof message == 'string'){
         try {
           message = JSON.parse(message);
@@ -477,7 +478,7 @@ angular.module('cloudKiboApp')
       message.room = room;
       message.to = $scope.amInCallWith;
       message.username = $scope.user.username;
-      $log.info('Client sending message: ', m);
+      $log.info('Client sending message: ', message);
       socket.emit('message', message);
     }
 

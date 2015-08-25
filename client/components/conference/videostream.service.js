@@ -22,8 +22,10 @@ angular.module('cloudKiboApp')
         }
       },
       reset: function () {
-        stream.stop();
-        stream = null;
+        if(stream) {
+          stream.stop();
+          stream = null;
+        }
       }
     };
   });
