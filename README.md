@@ -5,9 +5,9 @@
     
 CloudKibo is a next generation communication technology. It’s intuitive, cost effective, and rich with functionality. It can be used both for internal and external communications. It provides integrated and unified voice, video, and data communication across web.
 
- ### Cloudkibo Documentation
+### Cloudkibo Documentation
 
-#### [User Guide](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/UserGuide.md)
+#### User Guide
 
 
 If you want to run existing Cloudkibo application, [User Guide](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/UserGuide.md) expalins Cloudkibo features and use of interface. It explains how to use application to make calls, meeting with multiple users, chat with contact or with group during the call and file transfer to contact and during meeting call. 
@@ -17,7 +17,7 @@ If you want to run existing Cloudkibo application, [User Guide](https://github.c
     
 (https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/UserGuide.md)
 
-#### [Operations Guide](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/OperationGuide.md)
+#### Operations Guide
 
 
 [Operations Guide](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/OperationGuide.md) explains how to install dependances and libraries that support Cloudkibo. It has step by step process to install  libraries:
@@ -38,7 +38,7 @@ and others libraries using grunt and bower. Also shows steps to clone the Cloudk
 
 (https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/OperationGuide.md)
 
-#### [Developers guide ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/DeveopersGuide.md)
+#### Developers guide
 
 
 Setting up your development environment for Cloudkibo, [Developers guide ](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/DeveopersGuide.md) will help you.  
