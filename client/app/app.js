@@ -16,11 +16,6 @@ angular.module('cloudKiboApp', [
 			controller: 'HomeController' // IMCONtroller
 	  })
 
-	  .when('/meeting/:mname', {
-        templateUrl: function(params){ return '/meeting/'+ params.mname},
-        controller: 'MeetingController'
-    })
-
     .when('/conference/:mname', {
         templateUrl: function(params){ return '/conference/'+ params.mname},
         controller: 'ConferenceController'
