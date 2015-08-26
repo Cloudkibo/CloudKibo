@@ -91,6 +91,9 @@ module.exports = function(app) {
   app.route('/app')
 	.get(function(req, res){ res.redirect('/'); });
 
+  app.route('/webrtcview')
+    .get(function(req, res){ res.render('webrtc'); });
+
   app.route('/conference/*')
     .get(viewroutes.conferenceRoute);
 
