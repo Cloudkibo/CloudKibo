@@ -39,7 +39,7 @@ angular.module('cloudKiboApp')
 
     })
 
-    .controller('HomeController', function ($scope, $http, Auth, socket, $timeout, $location, Sound, WebRTC, Signalling, ScreenShare, RestApi, logger, $log) {
+    .controller('HomeController', function ($scope, $http, Auth, socket, $timeout, $location, Sound, RestApi, logger, $log) {
 
 		    $scope.getCurrentUser = Auth.getCurrentUser;
 
@@ -624,15 +624,6 @@ angular.module('cloudKiboApp')
             $scope.createOrJoinRoom();
             $scope.connected = true;
 
-            var remotevideo = document.getElementById("remotevideo");
-
-            var remotevideoscreen = document.getElementById("remotevideoscreen");
-
-            var localvideo = document.getElementById("localvideo");
-
-            var remoteaudio = document.getElementById('remoteaudio');
-
-            WebRTC.initialize(localvideo, localvideo, remotevideo, remoteaudio, remotevideoscreen);
         };
 
         $timeout($scope.connectTimeOut, 1000);
@@ -736,8 +727,6 @@ angular.module('cloudKiboApp')
 
         window.onbeforeunload = function (e) {
             $scope.LeaveRoom();
-            if (!$scope.isOtherPeerBusy())
-                Signalling.sendMessage({msg: 'bye'});
         };
 
 

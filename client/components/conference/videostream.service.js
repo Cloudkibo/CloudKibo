@@ -2,7 +2,7 @@
 
 angular.module('cloudKiboApp')
   .factory('Stream', function ($q) {
-    var stream, videoStream;
+    var stream;
     return {
       get: function () {
         if (stream) {
@@ -19,6 +19,12 @@ angular.module('cloudKiboApp')
             d.reject(e);
           });
           return d.promise;
+        }
+      },
+      reset: function () {
+        if(stream) {
+          stream.stop();
+          stream = null;
         }
       }
     };

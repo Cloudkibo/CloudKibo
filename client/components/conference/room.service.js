@@ -280,6 +280,10 @@ angular.module('cloudKiboApp')
           }
         }
         socket.emit('conference.stream', { username: username, type: 'screen', action: p, id: currentId });
+      },
+      end: function () {
+        peerConnections = {}; userNames = {}; dataChannels = {};
+        connected = false;
       }
     };
     EventEmitter.call(api);

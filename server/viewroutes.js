@@ -70,30 +70,6 @@ exports.homeRoute = function (req, res) {
     }
   };
 
-exports.meetingRoute = function (req, res) {
-	  if (typeof req.user == 'undefined')
-      res.render('meetingroom', { title: title, user: '', meetingroom : req.params[0]});
-      else{
-
-		  var title = 'CloudKibo';
-
-		  if(req.get('host') == 'www.cloudkibo.com')
-			  title = 'CloudKibo';
-		  else if(req.get('host') == 'www.synaps3webrtc.com')
-			  title = 'Synaps3WebRTC';
-
-			Account.findById(req.user._id, function (err, gotUser) {
-				if (err) return console.log(err);
-
-
-				res.render('meetingroom', { title: title, user: gotUser, meetingroom : req.params[0]});
-
-
-		  })
-
-      }
-  };
-
 exports.conferenceRoute = function (req, res) {
   if (typeof req.user == 'undefined')
     res.render('conference', { title: title, user: '', meetingroom : req.params[0]});

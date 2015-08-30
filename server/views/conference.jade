@@ -9,7 +9,7 @@ div
     .container
       a(class='site-logo', href='#')
         img(src='/images/logo_small.png')
-        | #{title}
+        | CloudKibo Conference
       a(href='javascript:void(0);', class='mobi-toggler')
         i(class='fa fa-bars')
   .meetingFullBodyPane.row(class='animate-show')
@@ -43,8 +43,7 @@ div
         a.icon-btn(id='showScreenButton', ng-click='showScreen()')
           i.fa.fa-desktop
           div {{showScreenText}}
-
-    .col-sm-4(ng-hide='hasChromeExtension() || isFireFox()')
+      .col-sm-4(ng-hide='hasChromeExtension() || isFireFox()')
       .btn-wrapper-kibo
         a.btn.btn-lg.green(ng-click='installExtension()')
           i.fa.fa-plus-square-o
@@ -54,14 +53,13 @@ div
         a.btn.btn-lg.green(target='self', ng-href='https://addons.mozilla.org/en-US/firefox/addon/cloudkibo-screen-capturing-in-/')
           i.fa.fa-plus-square-o
           div Add FireFox Screen Sharing Extension
-    .col-sm-1(ng-show='meetingStarted()')
+      .col-sm-1(ng-show='meetingStarted()')
       .btn-wrapper-kibo
         label Send File
         input(id='file', type='file')
-
-    .col-sm-1(id='0', ng-show='meetingStarted()')
-    .col-sm-1(id='filelist_container', ng-show='localCameraCaptured()')
-    .col-sm-1(ng-show='meetingStarted()')
+      .col-sm-1(id='0', ng-show='meetingStarted()')
+    .col-sm-1(id='filelist_container', ng-show='meetingStarted()')
+      .col-sm-1(ng-show='meetingStarted()')
       .btn-wrapper-kibo
         a.icon-btn(ng-click='audioToggle()')
           i.fa.fa-microphone
@@ -76,3 +74,4 @@ div
         a.icon-btn(ng-click='toggleChatBoxVisibility()')
           i.fa.fa-envelope-o
           div Chat
+
