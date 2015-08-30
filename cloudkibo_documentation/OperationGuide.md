@@ -20,7 +20,7 @@ Turn server is running on IP address 45.55.232.65 and this droplet is named as â
 
 ## Design
 
-![Client](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/client-design-diagram.PNG)
+![Client](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/client-design-diagramm.PNG)
 
 ![Server](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/Server-Architecture.PNG)
 ## Implementation
