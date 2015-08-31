@@ -18,9 +18,11 @@ Cloudkibo application uses purchased droplet from digitalocean (https://www.digi
 Our database is running in same droplet as of our application. For sending emails, we have integrated application with sendgrid service.
 Turn server is running on IP address 45.55.232.65 and this droplet is named as “kibosupporttest”
 
+![Architecture](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/architecture.PNG)
+
 ## Design
 
-![Client](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/client-design-diagram.PNG)
+![Client](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/client-design-diagramm.PNG)
 
 ![Server](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/Server-Architecture.PNG)
 ## Implementation

@@ -148,7 +148,7 @@ block appbodycontent
                                 button.btn.btn-send(ng-click='ignoreFeedBack()') Ignore
 
 
-                      div(ng-show='isCallStarted() && !hasOtherPartySharedScreen()' class="videoCallChatPane2")
+                      div(ng-show='isCallStarted() && !hasPeerSharedScreen()' class="videoCallChatPane2")
                         center
                           .videoBoxContainer
                             div(class='{{divBoxClass}}', ng-show='!isLocalVideoShared() && isCallStarted()')

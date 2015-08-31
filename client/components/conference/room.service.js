@@ -58,7 +58,7 @@ angular.module('cloudKiboApp')
         socket.emit('msg', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
       pc.onaddstream = function (evnt) {
-        $log.debug('Received stream');
+        $log.debug('Received stream from '+ id);
         if(screenSwitch){
           api.trigger('peer.screenStream', [{
             id: id,
