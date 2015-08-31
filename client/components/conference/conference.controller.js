@@ -50,6 +50,7 @@ angular.module('cloudKiboApp')
         });
     };
 
+    $scope.screenSharerId;
     $scope.peers = [];
     Room.on('peer.stream', function (peer) {
       $log.debug('Client connected, adding new stream');
@@ -78,6 +79,7 @@ angular.module('cloudKiboApp')
               p.sharedVideo = false;
           }
           else if(peer.type === 'screen'){
+            $scope.screenSharerId = peer.id;
             if(peer.action)
               $scope.peerSharedScreen = true;
             else
@@ -91,6 +93,8 @@ angular.module('cloudKiboApp')
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
       });
+      if(peer.id === $scope.screenSharerId)
+        $scope.peerSharedScreen = false;
     });
 
     $scope.getLocalVideo = function () {
