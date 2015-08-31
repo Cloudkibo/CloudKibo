@@ -43,7 +43,7 @@ div
         a.icon-btn(id='showScreenButton', ng-click='showScreen()')
           i.fa.fa-desktop
           div {{showScreenText}}
-      .col-sm-4(ng-hide='hasChromeExtension() || isFireFox()')
+    .col-sm-4(ng-hide='hasChromeExtension() || isFireFox()')
       .btn-wrapper-kibo
         a.btn.btn-lg.green(ng-click='installExtension()')
           i.fa.fa-plus-square-o
