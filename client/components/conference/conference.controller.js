@@ -223,14 +223,17 @@ angular.module('cloudKiboApp')
           }
         }
         else {
-          ScreenShare.setSourceIdValue(null);
-          screenStream.stop();
-          Room.toggleScreen(screenStream, false);
-          $scope.showScreenText = 'Share Screen';
-          $scope.screenSharedLocal = false;
+          removeLocalScreen();
         }
       }
     };
+    function removeLocalScreen(){
+      ScreenShare.setSourceIdValue(null);
+      screenStream.stop();
+      Room.toggleScreen(screenStream, false);
+      $scope.showScreenText = 'Share Screen';
+      $scope.screenSharedLocal = false;
+    }
     function shareScreenUsingChromeExtension(cb) {
       // this statement verifies chrome extension availability
       // if installed and available then it will invoke extension API
@@ -302,6 +305,7 @@ angular.module('cloudKiboApp')
       $scope.connected = data.status;
       if(!data.status){
         $scope.peers = [];
+        if ($scope.screenSharedLocal) removeLocalScreen();
       }
     });
 
