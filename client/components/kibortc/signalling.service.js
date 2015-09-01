@@ -52,23 +52,6 @@ angular.module('kiboRtc.services')
       },
 
       /**
-       * Sends the WebRTC signalling message to other peer in a WebRTC one-to-one call. This should be invoked
-       * when sending the offer, answer or candidate objects to other peer. Refer to the handleIceCandidate()
-       * in WebRTC Service which uses this function. You should write the server side code keeping structure of
-       * message object in mind.
-       *
-       * @param message WebRTC signalling message, i.e. offer object, answer object, candidate objects etc
-       */
-      sendMessage: function (message) {
-        message = {msg: message};
-        message.room = roomName;
-        message.to = peer;
-        message.username = username;
-        $log.info('Client sending message: ', message);
-        socket.emit('message', message);
-      },
-
-      /**
        * Sends the WebRTC signalling message to other peer in a WebRTC Data Channel Connection. This should be invoked
        * when sending the offer, answer or candidate objects to other peer. Refer to the handleIceCandidate()
        * in FileTransfer Service which uses this function. You should write the server side code keeping structure of

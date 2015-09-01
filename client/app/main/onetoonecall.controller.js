@@ -8,7 +8,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, socket, Room, $timeout, $log, ScreenShare, FileHangout, Sound) {
+  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, $log, ScreenShare, FileHangout, Sound, OneToOneCallService) {
 
     var room = 'globalchatroom';
     var callroom = '';
@@ -294,7 +294,7 @@ angular.module('cloudKiboApp')
 
     $scope.callThisPerson = function (calleeusername) {
       if ($scope.areYouCallingSomeone == false && $scope.amInCall == false) {
-        socket.emit('callthisperson', {
+        OneToOneCallService.sendMessage('callthisperson', {
           room: room,
           callee: calleeusername,
           caller: $scope.user.username
@@ -349,42 +349,42 @@ angular.module('cloudKiboApp')
 
     $scope.amInCallWith = '';
     $scope.amInCall = false;
-    socket.on('calleeisoffline', function (nickname) {
-      $log.info('Callee is OFFLINE')
-      $scope.OutgoingCallStatement = nickname + ' is offline.';
+    OneToOneCallService.on('calleeisoffline', function(data){
+      $scope.OutgoingCallStatement = data + ' is offline.';
       $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
       $scope.amInCall = false;
       $scope.amInCallWith = '';
     });
-    socket.on('calleeisbusy', function (data) {
-      $log.info('Callee is OFFLINE')
+    OneToOneCallService.on('calleeisbusy', function(data){
       $scope.OutgoingCallStatement = data.callee + ' is busy on other call.';
       $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
       $scope.amInCall = false;
       $scope.amInCallWith = '';
     });
-    socket.on('othersideringing', function (data) {
+    OneToOneCallService.on('othersideringing', function(data){
       $scope.otherSideRinging = true;
       $scope.amInCall = true;
       $scope.amInCallWith = data.callee;
     });
-    socket.on('areyoufreeforcall', function (data) {
+    OneToOneCallService.on('areyoufreeforcall', function(data){
+      $log.info("checking if callee is free for call");
       if ($scope.amInCall == false) {
         $scope.IncomingCallStatement = data.caller + ' is calling you';
         $scope.isSomeOneCalling = true;
         Sound.load();
         Sound.play();
         $scope.ringing = true;
-        socket.emit('yesiamfreeforcall', {mycaller: data.caller, me: $scope.user.username});
+        OneToOneCallService.sendMessage('yesiamfreeforcall', {mycaller: data.caller, me: $scope.user.username});
         $scope.amInCall = true;
         $scope.amInCallWith = data.caller;
-        $log.info("checking if callee is free for call")
+        $log.info("i the callee is free");
       }
       else {
-        socket.emit('noiambusy', {mycaller: data.caller, me: $scope.user.username})
+        OneToOneCallService.sendMessage('noiambusy', {mycaller: data.caller, me: $scope.user.username});
+        $log.info("I the callee is busy");
       }
     });
-    socket.on('message', function (message) {
+    OneToOneCallService.on('message', function (message) {
       $log.info('Client received message: '+ message);
       if(typeof message == 'string'){
         try {
@@ -412,7 +412,7 @@ angular.module('cloudKiboApp')
       if (message === 'Accept Call') {
         $scope.otherSideRinging = false;
         $scope.areYouCallingSomeone = false;
-        $log.info("Accepting call");
+        $log.info("Other party sent accept call message");
         callroom = Math.random().toString(36).substring(10);
         $scope.connect();
         $scope.callStarted = true;
@@ -424,23 +424,14 @@ angular.module('cloudKiboApp')
         $scope.otherSideRinging = false;
         $scope.amInCall = false;
         $scope.amInCallWith = '';
-        $log.info("Rejecting call")
+        $log.info("Other party sent reject call message")
       }
       else if (message === 'bye' || message === 'hangup' ) {
         $log.info("received msg to end connection /call")
-        $scope.userMessages = [];
-        $scope.callEnded = true;
-        $scope.amInCall = false;
-        $scope.amInCallWith = '';
-        $scope.peers = [];
-        $scope.callStarted = false;
-        callroom = '';
-        if ($scope.screenSharedLocal)
-          screenStream.stop();
-        Stream.reset();
-        Room.end();
+        endCall();
       }
       else if(message.type === 'room_name'){
+        $log.info("Room name is sent by caller party "+ message.room);
         callroom = message.room;
         $scope.connect();
         $scope.callStarted = true;
@@ -479,7 +470,28 @@ angular.module('cloudKiboApp')
       message.to = $scope.amInCallWith;
       message.username = $scope.user.username;
       $log.info('Client sending message: ', message);
-      socket.emit('message', message);
+      OneToOneCallService.sendMessage('message', message);
     }
+
+    function endCall(){
+      $scope.userMessages = [];
+      $scope.callEnded = true;
+      $scope.amInCall = false;
+      $scope.amInCallWith = '';
+      $scope.peers = [];
+      $scope.callStarted = false;
+      callroom = '';
+      if ($scope.screenSharedLocal)
+        screenStream.stop();
+      Stream.reset();
+      Room.end();
+    }
+
+    $scope.$on('$routeChangeStart', function () {
+      if($scope.isCallStarted()){
+        endCall();
+        sendMessage('hangup');
+      }
+    });
 
   });
