@@ -46,6 +46,7 @@ angular.module('cloudKiboApp')
       $log.debug('Client connected, adding new stream');
       // Inform the new joiner that you are sharing video
       if($scope.isLocalVideoShared()) Room.toggleVideo($scope.isLocalVideoShared());
+      if($scope.screenSharedLocal) Room.toggleScreen(screenStream, true);
       $scope.peers.push({
         id: peer.id,
         username: peer.username,
@@ -82,6 +83,8 @@ angular.module('cloudKiboApp')
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
       });
+      if(peer.id === $scope.screenSharerId)
+        $scope.peerSharedScreen = false;
     });
 
     $scope.getLocalVideo = function () {
@@ -285,6 +288,8 @@ angular.module('cloudKiboApp')
       $scope.connected = data.status;
       if(!data.status){
         $scope.peers = [];
+        if ($scope.screenSharedLocal) removeLocalScreen();
+        $scope.peerSharedScreen = false;
       }
     });
     $scope.callStarted = false;
