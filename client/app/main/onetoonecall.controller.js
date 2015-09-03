@@ -499,25 +499,4 @@ angular.module('cloudKiboApp')
       }
     });
 
-    function addHandlers(socket) {
-      socket.on('calleeisoffline', function (nickname) {
-        $log.info('Callee is OFFLINE');
-        api.trigger('calleeisoffline', [nickname]);
-      });
-      socket.on('calleeisbusy', function (data) {
-        $log.info('Callee is BUSY');
-        api.trigger('calleeisbusy', [data]);
-      });
-      socket.on('othersideringing', function (data) {
-        $log.info('Callee is ringing on other side');
-        api.trigger('othersideringing', [data]);
-      });
-      socket.on('areyoufreeforcall', function (data) {
-        api.trigger('areyoufreeforcall', [data]);
-      });
-      socket.on('message', function (data) {
-        api.trigger('message', [data]);
-      });
-    }
-
   });
