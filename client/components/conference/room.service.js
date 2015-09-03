@@ -8,7 +8,7 @@ angular.module('cloudKiboApp')
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
       dataChannels = {}, currentId, roomId,
-      stream, username, screenSwitch = false;
+      stream, username, screenSwitch = {};
 
     /** Audio Analyser variables **/
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -59,13 +59,13 @@ angular.module('cloudKiboApp')
       };
       pc.onaddstream = function (evnt) {
         $log.debug('Received stream from '+ id);
-        if(screenSwitch){
+        if(screenSwitch[id]){
           api.trigger('peer.screenStream', [{
             id: id,
             username: userNames[id],
             stream: evnt.stream
           }]);
-          screenSwitch = false;
+          screenSwitch[id] = false;
         } else {
           api.trigger('peer.stream', [{
             id: id,
@@ -170,6 +170,7 @@ angular.module('cloudKiboApp')
     function addHandlers(socket) {
       socket.on('peer.connected', function (params) {
         userNames[params.id] = params.username;
+        screenSwitch[params.id] = false;
         makeOffer(params.id);
       });
       socket.on('peer.disconnected', function (data) {
@@ -178,6 +179,7 @@ angular.module('cloudKiboApp')
           $rootScope.$apply();
         }
         delete userNames[data.id];
+        delete screenSwitch[data.id];
       });
       socket.on('msg', function (data) {
         handleMessage(data);
@@ -190,7 +192,7 @@ angular.module('cloudKiboApp')
       });
       socket.on('conference.stream', function(data){
         if(data.id !== currentId){
-          if(data.type === 'screen' && data.action) screenSwitch = true;
+          if(data.type === 'screen' && data.action) screenSwitch[data.id] = true;
           api.trigger('conference.stream', [{
             username: data.username,
             type: data.type,
