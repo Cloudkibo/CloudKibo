@@ -310,6 +310,8 @@ function onConnect(socketio, socket) {
 		socket.on('callthisperson', function(message){
       try {
 
+        console.log(message);
+
         var socketidSender = socket.id;
 
         var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
