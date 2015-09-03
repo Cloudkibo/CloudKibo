@@ -91,6 +91,8 @@ angular.module('cloudKiboApp')
       var pc = getPeerConnection(id);
       makeDataChannel(id);
       pc.createOffer(function (sdp) {
+          console.log(sdp)
+          sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000"); // todo added for testing by sojharo
           pc.setLocalDescription(sdp);
           $log.debug('Creating an offer for', id);
           socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'sdp-offer', username: username });
@@ -139,6 +141,7 @@ angular.module('cloudKiboApp')
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             $log.debug('Setting remote description by offer');
             pc.createAnswer(function (sdp) {
+              sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
               socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'sdp-answer' });
             }, function (e) {
