@@ -736,66 +736,6 @@ angular.module('cloudKiboApp')
       sendchunk(id, chunk_num, other_browser, rand, hash);
     }
 
-    socket.on('messagefordatachannel2', function (message) {
-      $log.info('Client received message: ' + message);
-      logger.log('Client received message: ' + message);
-
-      //if(message.split(' ')[1] === 'is' && message.split(' ')[2] === 'now' && message.split(' ')[3] === 'offering')
-      //$scope.openFileView = true;
-
-      if (message.type === 'bye') {
-        FileTransfer.endConnection();
-        $scope.openFileView = !$scope.openFileView;
-        $log.info("File transfer connection ended");
-        logger.log("File transfer connection ended");
-      }
-      else if (message === 'hangup') {
-        FileTransfer.endConnection();
-        $scope.openFileView = !$scope.openFileView;
-        $log.info("File transfer connection hungup");
-        logger.log("File transfer connection hungup");
-      }
-      else if (message.type === 'offer') {
-        if (!FileTransfer.getIsStarted()) {
-
-          FileTransfer.createPeerConnection(false, function (err) {
-            if(err){
-              alert('Failed to create connection. Make sure you are using latest browser.');
-              $log.info("File transfer Failed");
-              logger.log("Error: File transfer Failed");
-              $scope.openFileView = !$scope.openFileView;
-            } else {
-
-              Signalling.initialize($scope.otherUser.username, $scope.user.username, 'globalchatroom');
-              $log.info("File transfer signalling initialized");
-              logger.log("File transfer signalling initialized");
-
-              FileTransfer.setIsStarted(true);
-
-            }
-          })
-
-        }
-        FileTransfer.setRemoteDescription(message);
-        FileTransfer.createAndSendAnswer();
-      } else if (message.type === 'answer' && FileTransfer.getIsStarted()) {
-        logger.log("setting remote description ")
-        $log.info("setting remote description ")
-        FileTransfer.setRemoteDescription(message);
-      }
-      else if (message.type === 'candidate' && FileTransfer.getIsStarted()) {
-        logger.log("adding ice candidate ")
-        $log.info("adding ice candidate ")
-        FileTransfer.addIceCandidate(message);
-      }
-      else if (message === 'bye' && isStarted) {
-        FileTransfer.endConnection();
-        $log.info("calling end File transfer connection ")
-        logger.log("calling end File transfer connection ")
-      }
-
-    });
-
     ////////////////////////////////////////////////////////////////////////////////////////
     // File Sharing Logic End                                                              //
     ////////////////////////////////////////////////////////////////////////////////////////
