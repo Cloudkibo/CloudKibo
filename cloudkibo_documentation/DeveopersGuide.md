@@ -182,6 +182,10 @@ File Category: User Accounts
 Complete Cloudkibo Client side structure can be found here: 
 https://github.com/Cloudkibo/CloudKibo/wiki/Cloudkibo-Client-Structure
 
+##### *Modified logic for conference call*
+
+Modified logic for conference has one controller (conference.controller.js) which changes the UI according to actions happening on page. Other thing in modified logic has WebRTC module (room.service.js). This webrtc module is made in such a way that it supports N members in a call and controller is attached to this in such a way that it updates the UI for N members and based on array updates the UI when someone leaves or joins again. Conference related code can be found in /client/components/conference
+
 ### Integration
 
 It only require us to run npm install and bower install commands and this install all libraries. All the server side libraries are defined in package.json file. All the client side libraries are defined in bower.json. Sendgrid api is accessed using nodejs library and Cloudkibo has username and password which can be changed from super user account. Cloudkibo can define addresses of TURN server in client/components/kibortc/rtcconfig.service.js.
