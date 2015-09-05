@@ -15,6 +15,7 @@ socket.io module, authentication module, rest api and sound module.
 
 Cloudkibo application uses purchased droplet from digitalocean (https://www.digitalocean.com/) for deployment. Our mongodb database is running in same droplet as of our application. For sending emails, we have integrated our application with sendgrid service. Turn server is running on IP address 45.55.232.65 and this droplet is named as ** “kibosupporttest” **. Application’s basic architecture was generated using Angular-FullStack generator. On every commit, our repository tested and built on shippable. Next, we would integrate our application with docker also for auto-deployment.
 
+![Architecture](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/architecture.PNG)
 
 Currently, our deployments are manual. We push the code to github and then access our droplet by ssh and pull the latest code there. With docker, we would just make a code push and docker will make build image for us.
 
