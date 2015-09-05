@@ -28,10 +28,10 @@ Currently, our deployments are manual. We push the code to github and then acces
 
 
 
-Cloudkibo uses Passport as authentication middleware for it node server. As passport support authentication using a username and password, Facebook, Google and Microsoft. Passport recognizes that each application has unique authentication requirements.
+Cloudkibo uses Passport as authentication middleware for it's Node server. As passport support authentication using a username and password, Facebook, Google and Microsoft. Passport recognizes that each application has unique authentication requirements.
 The verify callback for local authentication accepts username and password arguments, which are submitted to the Cloudkibo application via login form. Cloudkibo login form allows the user to enter their credentials and log in.
 
-The login form is submitted to the Cloudkibo server via the POST method. Using authenticate() with the local strategy will handle the login request. It authenticates with passport and jade templete is updated for which user has logged in. This view is updated by angular.js, it is now the application, handles all requests .e. requests data from server and sends data to server. 
+The login form is submitted to the Cloudkibo server via the POST method. Using authenticate() with the local strategy which will handle the login request. It authenticates with passport and jade templete is updated for the user who has logged in. This view is updated by angular.js, it is now the application. Angularjs now handles all the requests i.e. requests data from server and sends data to server. 
 
 ![authentication](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/authenication-server.PNG)
 
