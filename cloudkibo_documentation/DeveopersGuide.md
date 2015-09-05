@@ -25,7 +25,7 @@ Currently, our deployments are manual. We push the code to github and then acces
 
 ![Server](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/Server-Architecture.PNG)
 
-### Authentication Management
+#### Authentication Management
 
 
 
@@ -35,6 +35,12 @@ The verify callback for local authentication accepts username and password argum
 The login form is submitted to the Cloudkibo server via the POST method. Using authenticate() with the local strategy which will handle the login request. It authenticates with passport and jade templete is updated for the user who has logged in. This view is updated by angular.js, it is now the application. Angularjs now handles all the requests i.e. requests data from server and sends data to server. 
 
 ![authentication](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/authenication-server.PNG)
+
+#### Contact Management
+
+All the logic of managing contacts is written in main.controller.js. The logic is simple updating of arrays while doing network requests to add, remove, approve and reject contacts. We use socket.io only for sending add requests as it goes instantly and other person doesn't need to refresh page to see new requests. To understand REST API for contacts, refer the contacts part in following page:
+
+https://github.com/Cloudkibo/CloudKibo/wiki/Cloudkibo-Rest-API
 
 ## Rest APIs
 
