@@ -50,11 +50,13 @@ angular.module('cloudKiboApp')
         });
     };
 
+    $scope.screenSharerId;
     $scope.peers = [];
     Room.on('peer.stream', function (peer) {
       $log.debug('Client connected, adding new stream');
       // Inform the new joiner that you are sharing video
       if($scope.isLocalVideoShared()) Room.toggleVideo($scope.isLocalVideoShared());
+      if($scope.screenSharedLocal) Room.toggleScreen(screenStream, true);
       $scope.peers.push({
         id: peer.id,
         username: peer.username,
@@ -78,6 +80,7 @@ angular.module('cloudKiboApp')
               p.sharedVideo = false;
           }
           else if(peer.type === 'screen'){
+            $scope.screenSharerId = peer.id;
             if(peer.action)
               $scope.peerSharedScreen = true;
             else
@@ -91,6 +94,8 @@ angular.module('cloudKiboApp')
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
       });
+      if(peer.id === $scope.screenSharerId)
+        $scope.peerSharedScreen = false;
     });
 
     $scope.getLocalVideo = function () {
@@ -219,14 +224,17 @@ angular.module('cloudKiboApp')
           }
         }
         else {
-          ScreenShare.setSourceIdValue(null);
-          screenStream.stop();
-          Room.toggleScreen(screenStream, false);
-          $scope.showScreenText = 'Share Screen';
-          $scope.screenSharedLocal = false;
+          removeLocalScreen();
         }
       }
     };
+    function removeLocalScreen(){
+      ScreenShare.setSourceIdValue(null);
+      screenStream.stop();
+      Room.toggleScreen(screenStream, false);
+      $scope.showScreenText = 'Share Screen';
+      $scope.screenSharedLocal = false;
+    }
     function shareScreenUsingChromeExtension(cb) {
       // this statement verifies chrome extension availability
       // if installed and available then it will invoke extension API
@@ -298,6 +306,8 @@ angular.module('cloudKiboApp')
       $scope.connected = data.status;
       if(!data.status){
         $scope.peers = [];
+        if ($scope.screenSharedLocal) removeLocalScreen();
+        $scope.peerSharedScreen = false;
       }
     });
 

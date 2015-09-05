@@ -158,9 +158,7 @@ block appbodycontent
                       div(ng-show='isCallStarted() && hasPeerSharedScreen()' class="videoCallChatPane2")
                         div(style='text-align: center;')
                           video(ng-src='{{getPeerScreen()}}',autoplay='true', width='80%', class='videoelementscreen', controls='true')
-                      div(ng-show='isCallStarted()', style='text-align: center;' class="endCallDiv")
-                        button(ng-click='endCall()') End Call
-                        br
+                      //div(ng-show='isCallStarted()', style='text-align: center;' class="endCallDiv")
                         alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
                         br
 
@@ -256,6 +254,11 @@ block appbodycontent
                          center {{otherUser.firstname}} {{otherUser.lastname}} has not shared details with you.
 
                  .meetingBottomPane.row
+                   .col-sm-1(ng-show='isCallStarted()')
+                     .btn-wrapper-kibo
+                       a.icon-btn(ng-click='endCall()')
+                         i.fa.fa-phone
+                         div End Call
                    .col-sm-1(ng-show='isCallStarted()')
                      .btn-wrapper-kibo
                        a.icon-btn(id='showScreenButton', ng-click='showScreen()')

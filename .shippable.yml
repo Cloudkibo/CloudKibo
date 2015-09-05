@@ -4,7 +4,8 @@ node_js:
   - '0.11'
 before_script:
   - npm install -g bower grunt-cli
-  - bower install
+  - bower install --allow-root
+  - npm install
 services: mongodb
 notifications:
      email:
@@ -14,5 +15,5 @@ notifications:
              - testing@cloudkibo.com
          on_success: change
          on_failure: always
-         
+
 cache: true

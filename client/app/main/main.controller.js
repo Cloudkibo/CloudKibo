@@ -542,38 +542,6 @@ angular.module('cloudKiboApp')
                 });
         };
 
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // WebRTC User Interface Logic                                                        //
-        ////////////////////////////////////////////////////////////////////////////////////////
-        /*
-         document.fullscreenEnabled = document.fullscreenEnabled || document.mozFullScreenEnabled || document.documentElement.webkitRequestFullScreen;
-
-         $scope.enterVideoFullScreen = function(){
-         var remotevideo = document.getElementById("remotevideo");
-         if (document.fullscreenEnabled) {
-         requestFullscreen(remotevideo);
-         }
-         }
-
-         $scope.enterVideoScreenFullScreen = function(){
-         var remotevideoscreen = document.getElementById("remotevideoscreen");
-         if (document.fullscreenEnabled) {
-         requestFullscreen(remotevideoscreen);
-         }
-         }
-
-         function requestFullscreen(element) {
-         if (element.requestFullscreen) {
-         element.requestFullscreen();
-         } else if (element.mozRequestFullScreen) {
-         element.mozRequestFullScreen();
-         } else if (element.webkitRequestFullScreen) {
-         element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-         }
-         }
-         */
-
         $scope.ignoreFeedBack = function () {
             $scope.feedBackSent = true;
         };

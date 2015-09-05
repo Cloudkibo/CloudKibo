@@ -8,7 +8,7 @@ angular.module('cloudKiboApp')
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
       dataChannels = {}, currentId, roomId,
-      stream, username, screenSwitch = false;
+      stream, username, screenSwitch = {};
 
     /** Audio Analyser variables **/
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -58,14 +58,14 @@ angular.module('cloudKiboApp')
         socket.emit('msg', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
       pc.onaddstream = function (evnt) {
-        $log.debug('Received stream');
-        if(screenSwitch){
+        $log.debug('Received stream from '+ id);
+        if(screenSwitch[id]){
           api.trigger('peer.screenStream', [{
             id: id,
             username: userNames[id],
             stream: evnt.stream
           }]);
-          screenSwitch = false;
+          screenSwitch[id] = false;
         } else {
           api.trigger('peer.stream', [{
             id: id,
@@ -91,6 +91,8 @@ angular.module('cloudKiboApp')
       var pc = getPeerConnection(id);
       makeDataChannel(id);
       pc.createOffer(function (sdp) {
+          console.log(sdp)
+          sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000"); // todo added for testing by sojharo
           pc.setLocalDescription(sdp);
           $log.debug('Creating an offer for', id);
           socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'sdp-offer', username: username });
@@ -139,6 +141,7 @@ angular.module('cloudKiboApp')
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             $log.debug('Setting remote description by offer');
             pc.createAnswer(function (sdp) {
+              sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
               socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'sdp-answer' });
             }, function (e) {
@@ -170,6 +173,7 @@ angular.module('cloudKiboApp')
     function addHandlers(socket) {
       socket.on('peer.connected', function (params) {
         userNames[params.id] = params.username;
+        screenSwitch[params.id] = false;
         makeOffer(params.id);
       });
       socket.on('peer.disconnected', function (data) {
@@ -178,6 +182,7 @@ angular.module('cloudKiboApp')
           $rootScope.$apply();
         }
         delete userNames[data.id];
+        delete screenSwitch[data.id];
       });
       socket.on('msg', function (data) {
         handleMessage(data);
@@ -190,7 +195,7 @@ angular.module('cloudKiboApp')
       });
       socket.on('conference.stream', function(data){
         if(data.id !== currentId){
-          if(data.type === 'screen' && data.action) screenSwitch = true;
+          if(data.type === 'screen' && data.action) screenSwitch[data.id] = true;
           api.trigger('conference.stream', [{
             username: data.username,
             type: data.type,
