@@ -27,13 +27,15 @@ var serverFile = dir + '/server';
 var mode = 'Development'; // Production or Testing
 
 var winston = require('winston');
-require('winston-loggly');
+require('winston-papertrail').Papertrail;
 
-winston.add(winston.transports.Loggly, {
-  token: "09f00942-9bbd-444a-8b8c-de37fef8bb50",
-  subdomain: "sabachanna",
-  tags: [""+ mode +"-Server"],
-  json:true
+var logger = new winston.Logger({
+  transports: [
+    new winston.transports.Papertrail({
+      host: 'logs3.papertrailapp.com',
+      port: 45576
+    })
+  ]
 });
 
 
@@ -85,18 +87,21 @@ exports.serverLog = function(label, data) {
   }
 
   if (mode === 'Development') {
-    winston.log(label, data);
+    logger.info(data);
+    //winston.log(label, data);
     //console.log('development log '+ label +': '+ data);
   }
   else if (mode === 'Testing') {
     if (labelNumber >= 0 && labelNumber <=1) {
-      winston.log(label, data);
+      logger.info(data);
+      //winston.log(label, data);
       console.log('testing log');
     }
   }
   else if (mode === 'Production') {
     if (labelNumber == 0) {
-      winston.log(label, data);
+      logger.info(data);
+      //winston.log(label, data);
       console.log('production log');
     }
   }
