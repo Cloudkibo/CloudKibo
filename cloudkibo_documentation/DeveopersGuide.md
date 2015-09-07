@@ -13,8 +13,9 @@ socket.io module, authentication module, rest api and sound module.
 
 ## Architecture 
 
-Cloudkibo application uses purchased droplet from digitalocean (https://www.digitalocean.com/) for deployment. Our mongodb database is running in same droplet as of our application. For sending emails, we have integrated our application with sendgrid service. Turn server is running on IP address 45.55.232.65 and this droplet is named as ** “kibosupporttest” **. Application’s basic architecture was generated using Angular-FullStack generator. On every commit, our repository tested and built on shippable. Next, we would integrate our application with docker also for auto-deployment.
+Cloudkibo application uses purchased droplet from digitalocean (https://www.digitalocean.com/) for deployment. Our mongodb database is running in same droplet as of our application. For sending emails, we have integrated our application with sendgrid service. Turn server is running on IP address 45.55.232.65 and this droplet is named as *“kibosupporttest”*. Application’s basic architecture was generated using Angular-FullStack generator. On every commit, our repository tested and built on shippable. Next, we would integrate our application with docker also for auto-deployment.
 
+![Architecture](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/architecture.PNG)
 
 Currently, our deployments are manual. We push the code to github and then access our droplet by ssh and pull the latest code there. With docker, we would just make a code push and docker will make build image for us.
 
@@ -23,6 +24,23 @@ Currently, our deployments are manual. We push the code to github and then acces
 ![Client](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/client-design-diagram.PNG)
 
 ![Server](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/Server-Architecture.PNG)
+
+#### Authentication Management
+
+
+
+Cloudkibo uses Passport as authentication middleware for it's Node server. As passport support authentication using a username and password, Facebook, Google and Microsoft. Passport recognizes that each application has unique authentication requirements.
+The verify callback for local authentication accepts username and password arguments, which are submitted to the Cloudkibo application via login form. Cloudkibo login form allows the user to enter their credentials and log in.
+
+The login form is submitted to the Cloudkibo server via the POST method. Using authenticate() with the local strategy which will handle the login request. It authenticates with passport and jade templete is updated for the user who has logged in. This view is updated by angular.js, it is now the application. Angularjs now handles all the requests i.e. requests data from server and sends data to server. 
+
+![authentication](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/authenication-server.PNG)
+
+#### Contact Management
+
+All the logic of managing contacts is written in main.controller.js. The logic is simple updating of arrays while doing network requests to add, remove, approve and reject contacts. We use socket.io only for sending add requests as it goes instantly and other person doesn't need to refresh page to see new requests. To understand REST API for contacts, refer the contacts part in following page:
+
+https://github.com/Cloudkibo/CloudKibo/wiki/Cloudkibo-Rest-API
 
 ## Rest APIs
 
@@ -169,6 +187,10 @@ File Category: User Accounts
 
 Complete Cloudkibo Client side structure can be found here: 
 https://github.com/Cloudkibo/CloudKibo/wiki/Cloudkibo-Client-Structure
+
+##### *Modified logic for conference call*
+
+Modified logic for conference has one controller (conference.controller.js) which changes the UI according to actions happening on page. Other thing in modified logic has WebRTC module (room.service.js). This webrtc module is made in such a way that it supports N members in a call and controller is attached to this in such a way that it updates the UI for N members and based on array updates the UI when someone leaves or joins again. Conference related code can be found in /client/components/conference
 
 ### Integration
 
