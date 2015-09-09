@@ -8,7 +8,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, $log, ScreenShare, FileHangout, Sound, OneToOneCallService) {
+  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, logger, Room, $timeout, $log, ScreenShare, FileHangout, Sound, OneToOneCallService) {
 
     var room = 'globalchatroom';
     var callroom = '';

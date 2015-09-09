@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('AdminCtrl', function ($scope, $http, Auth, User, $log) {
+  .controller('AdminCtrl', function ($scope, $http, Auth, User, $log, logger) {
 
     $http.get('/api/configurations/fetch')
       .success(function(data){

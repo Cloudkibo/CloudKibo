@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('SettingsCtrl', function ($scope, User, Auth, $log) {
+  .controller('SettingsCtrl', function ($scope, User, Auth, $log, logger) {
     $scope.errors = {};
 
     $scope.changePassword = function(form) {
