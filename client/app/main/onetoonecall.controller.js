@@ -8,14 +8,14 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, $log, ScreenShare, FileHangout, Sound, OneToOneCallService) {
+  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, logger, Room, $timeout, $log, ScreenShare, FileHangout, Sound, OneToOneCallService) {
 
     var room = 'globalchatroom';
     var callroom = '';
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
-      $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
+      $scope.error = 'WebRTC is not supported by  browser. You can try the app with Chrome and Firefox.';
       $log.error('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
-      logger.log('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
+      logger.log("WebRTC is not supported by "+$scope.user.username+"s' browser. You can try the app with Chrome and Firefox.");
       return;
     }
 
@@ -39,7 +39,7 @@ angular.module('cloudKiboApp')
         }, function (err) {
           console.error(err);
           $log.debug(err);
-          logger.log(err);
+          logger.log("Error: No audio/video permissions. shown to "+$scope.user.username, err);
           sendMessage('hangup');
           $scope.error = 'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
         });
@@ -59,15 +59,16 @@ angular.module('cloudKiboApp')
         divClass: 'hideVideoBox',
         stream: URL.createObjectURL(peer.stream)
       });
+      logger.log("Client "+peer.username+" connected. Adding new stream")
     });
     Room.on('peer.screenStream', function (peer) {
-      $log.debug('Client shared screen, adding stream');
-      logger.log('Client shared screen, adding stream');
+      $log.debug(' client shared screen, adding stream');
+      logger.log(peer.username +' shared screen, adding stream');
       peerScreenStream = URL.createObjectURL(peer.stream);
     });
     Room.on('conference.stream', function (peer) {
       $log.debug('hiding / showing video or screen');
-      logger.log('hiding / showing video or screen');
+      logger.log(peer.username+' is hiding / showing video or screen');
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
           if(peer.type === 'video'){
@@ -86,8 +87,8 @@ angular.module('cloudKiboApp')
       });
     });
     Room.on('peer.disconnected', function (peer) {
-      $log.debug('Client disconnected, removing stream');
-      logger.log('Client disconnected, removing stream');
+      $log.debug(peer.username+' has disconnected, removing stream');
+      logger.log(peer.username+' has disconnected, removing stream');
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
       });
@@ -133,6 +134,7 @@ angular.module('cloudKiboApp')
           $scope.userMessages.push(data.username +': '+ data.message);
         });
       }
+      logger.log(data.username+" sent the msg ")
     });
 
     $scope.toggleAudioText = 'Mute Audio';
@@ -141,6 +143,7 @@ angular.module('cloudKiboApp')
         $scope.toggleAudioText = 'Mute Audio';
         Room.toggleAudio();
       }
+
       else {
         $scope.toggleAudioText = 'Share Audio';
         Room.toggleAudio();
@@ -182,7 +185,7 @@ angular.module('cloudKiboApp')
     $scope.showScreen = function () {
       if($scope.peerSharedScreen){
         alert('Other person is already sharing screen');
-        logger.log('Other person is already sharing screen');
+        logger.log($scope.peerSharedScreen+' Other person is already sharing screen');
       } else {
         if ($scope.showScreenText === 'Share Screen') {
           if (!!navigator.webkitGetUserMedia) {

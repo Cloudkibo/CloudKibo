@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('SignupCtrl', function ($scope, Auth, $location, $window, $log) {
+  .controller('SignupCtrl', function ($scope, Auth, $location, $window, $log, logger) {
     $scope.user = {};
     $scope.errors = {};
 

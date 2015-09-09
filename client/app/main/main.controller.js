@@ -850,10 +850,10 @@ angular.module('cloudKiboApp')
     // HOME CONTROLLER ENDS HERE
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    .controller('AddRequestsController', function ($scope) {
+    .controller('AddRequestsController', function ($scope, logger) {
     })
 
-    .controller('IndexController', function ($scope, $location, Auth, $http, socket, $interval, $timeout, RestApi, $log) {
+    .controller('IndexController', function ($scope, $location, Auth, $http, socket, $interval, $timeout, RestApi, $log, logger) {
 
         $scope.isCollapsed = true;
         $scope.isLoggedIn = Auth.isLoggedIn;
