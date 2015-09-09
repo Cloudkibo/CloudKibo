@@ -613,7 +613,7 @@ function onConnect(socketio, socket) {
 		});
 
   socket.on('logClient', function(data){
-    //logger.clientLog(data);
+    logger.serverLog("info", "Client side log: "+ data);
   });
 
 

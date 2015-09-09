@@ -26,6 +26,7 @@ angular.module('cloudKiboApp')
           logger.log("Creating peer connection");
           if(err){
             $log.error('Fail to create peer connection '+ err)
+            logger.log('Fail to create peer connection '+ err)
             alert('Failed to create connection. Make sure you are using latest browser.');
             $log.info("Failed Creating peer connection");
             logger.log("Failed Creating peer connection");
@@ -588,6 +589,7 @@ angular.module('cloudKiboApp')
       filecontainer.appendChild(span);
       filecontainer.appendChild(a);
       console.log("created link ");
+      logger.log("created link ");
     }
 
     // create a link that will let the user start the download

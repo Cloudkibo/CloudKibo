@@ -20,7 +20,7 @@ angular.module('cloudKiboApp')
             }
 
             console.log("Left gloal chat room");
-            $log.info("Left gloal chat room");
+            logger.log("Left gloal chat room");
             Auth.logout();
 
             $location.path('/login');
@@ -75,7 +75,7 @@ angular.module('cloudKiboApp')
                     }
 
                 })
-          console.log("New user account saved");
+          logger.log("New user account saved");
           $log.info("New user account saved");
         };
 
@@ -120,13 +120,13 @@ angular.module('cloudKiboApp')
                 testvideo2.src = URL.createObjectURL(newStream);
                 localStreamTest = newStream;
                 $scope.deviceAccess = true;
-              console.log("testing video ");
+              logger.log("testing video ");
               $log.info("testing video ");
             }, function (error) {
 
                 $scope.deviceAccess = false;
                 console.log(error);
-                $log.info(error);
+              logger.log(error);
 
             });
         };
@@ -165,7 +165,7 @@ angular.module('cloudKiboApp')
             $scope.userFound = '';
 
             $scope.meetingSelected = !$scope.meetingSelected;
-          console.log("Meeting is opened");
+          logger.log("Meeting is opened");
           $log.info("Meeting is opened");
         };
 
@@ -190,7 +190,7 @@ angular.module('cloudKiboApp')
             $scope.userFound = '';
 
             $scope.inviteSelected = !$scope.inviteSelected;
-          console.log("invite selected");
+          logger.log("invite selected");
           $log.info("invite selected");
         };
 
@@ -215,7 +215,7 @@ angular.module('cloudKiboApp')
             if (localStreamTest)
                 localStreamTest.stop();
 
-          console.log("Settings selected");
+          logger.log("Settings selected");
           $log.info("Settings selected");
         };
 
@@ -243,7 +243,7 @@ angular.module('cloudKiboApp')
             if (localStreamTest)
                 localStreamTest.stop();
           console.log("call selected");
-          $log.info("call selected");
+          logger.log("call selected");
         };
 
         $scope.isCallSelected = function () {
@@ -264,7 +264,7 @@ angular.module('cloudKiboApp')
                     localStreamTest.stop();
 
             }
-          console.log("Add contact selected");
+          logger.log("Add contact selected");
           $log.info("Add contact selected");
 
             $scope.userFound = '';
@@ -302,6 +302,7 @@ angular.module('cloudKiboApp')
 
         $scope.addAlert = function (newtype, newMsg) {
             console.log('Error', newtype, newMsg);
+          logger.log('Error', newtype, newMsg);
             $scope.alerts.push({type: newtype, msg: newMsg});
         };
 
@@ -321,6 +322,7 @@ angular.module('cloudKiboApp')
           inviteemail.shortmessage= '';
           console.log("Email invite selected");
           $log.info("Email invite selected");
+          logger.log("Email invite selected");
         };
 
         $scope.userFound = '';
@@ -356,6 +358,7 @@ angular.module('cloudKiboApp')
                 })
           console.log("Search contact by email");
           $log.info("Search contact by email");
+          logger.log("Search contact by email");
         };
 
         $scope.contactslist = {};
@@ -377,6 +380,7 @@ angular.module('cloudKiboApp')
                             })
                           console.log("contact added by username");
                           $log.info("contact added by username");
+                          logger.log("contact added by username");
 
                         }
                         else {
@@ -410,6 +414,7 @@ angular.module('cloudKiboApp')
 
                           console.log("contact added by email");
                           $log.info("contact added by email");
+                          logger.log("contact added by email");
                         }
                         else {
                             $scope.userFound = null;
@@ -420,6 +425,7 @@ angular.module('cloudKiboApp')
                         $scope.userFound = 'danger';
                       console.log("contact NOT found by email");
                       $log.info("contact NOT found by email");
+                      logger.log("contact NOT found by email");
                     }
                 })
         };
@@ -432,9 +438,11 @@ angular.module('cloudKiboApp')
                 })
                 .error(function (data) {
                     console.log(data)
+                logger.log(data)
                 });
           console.log("contact profile updated");
           $log.info("contact profile updated");
+          logger.log("contact profile updated");
 
         };
 
@@ -473,8 +481,10 @@ angular.module('cloudKiboApp')
             $scope.fetchChatNow();
           console.log("contact list data and chat fetched");
           $log.info("contact list data and chat fetched");
+          logger.log("contact list data and chat fetched");
         }).error(function (err) {
             console.log('error ', err)
+          logger.log('error ', err)
         });
 
         $scope.addRequestslist = {};
@@ -483,6 +493,7 @@ angular.module('cloudKiboApp')
             $scope.addRequestslist = data;
           console.log("pending requests shown "+ $scope.addRequestslist);
           $log.info("pending requests shown "+ $scope.addRequestslist);
+          logger.log("pending requests shown "+ $scope.addRequestslist);
         });
 
         socket.on('friendrequest', function (data) {
@@ -498,6 +509,7 @@ angular.module('cloudKiboApp')
                         socket.emit('whozonline', {room: 'globalchatroom', user: $scope.user})
                       console.log("Friend request accepted");
                       $log.info("Friend request accepted");
+                      logger.log("Friend request accepted");
                     }
                     else{
 
@@ -514,6 +526,7 @@ angular.module('cloudKiboApp')
                         $scope.addRequestslist.splice(index, 1);
                       console.log("Friend request rejected");
                       $log.info("Friend request rejected");
+                      logger.log("Friend request rejected");
                     }
                 });
         };
@@ -524,6 +537,7 @@ angular.module('cloudKiboApp')
                     //console.log(data);
                 console.log("Friend removed")
                 $log.info("Friend removed")
+                logger.log("Friend removed")
                     if (data.status == 'success') {
                         $location.path('/app');
                     }
@@ -538,6 +552,7 @@ angular.module('cloudKiboApp')
                         $location.path('/app');
                       console.log("Chat history removed")
                       $log.info("Chat history removed")
+                      logger.log("Chat history removed")
                     }
                 });
         };
@@ -570,9 +585,11 @@ angular.module('cloudKiboApp')
                     $scope.feedBackSent = true;
                 console.log("Call feedback sent")
                 $log.info("Call feedback sent")
+                logger.log("Call feedback sent")
                 })
                 .error(function (data) {
                     console.log('Error:', data)
+                logger.log('Error:', data)
                 $log.info('Error:', data)
                 });
         };
@@ -591,7 +608,7 @@ angular.module('cloudKiboApp')
 
             $scope.createOrJoinRoom();
             $scope.connected = true;
-
+          logger.log("time out")
         };
 
         $timeout($scope.connectTimeOut, 1000);
@@ -608,17 +625,20 @@ angular.module('cloudKiboApp')
             socket.emit('leaveChat', {room: roomid, user: $scope.user});
           console.log("leave chatRoom to rejoin")
           $log.info("leave chatRoom to rejoin")
+          logger.log("leave chatRoom to rejoin")
 
             // Rejoin the room... (temporary fix)
 
             socket.emit('join global chatroom', {room: roomid, user: $scope.user});
           console.log("Joining Chat Room")
           $log.info("Joining Chat Room")
+          logger.log("Joining Chat Room")
         };
 
         $scope.LeaveRoom = function () {
             console.log('Leaving room', {room: roomid, username: $scope.user.username});
             $log.info('Leaving room', {room: roomid, username: $scope.user.username});
+          logger.log('Leaving room', {room: roomid, username: $scope.user.username});
 
             socket.emit('leaveChat', {room: 'globalchatroom', user: $scope.user});
         };
@@ -631,6 +651,7 @@ angular.module('cloudKiboApp')
                     socket.emit('status', {room: 'globalchatroom', user: $scope.user});
                   console.log("Status set")
                   $log.info("Status set")
+                  logger.log("Status set")
                     $http.post(RestApi.user.statusMessage, $scope.user).success(function (data) {
                     });
                 }
@@ -643,6 +664,7 @@ angular.module('cloudKiboApp')
                 if ($scope.contactslist[i].contactid.username == friend.username) {
                     $scope.contactslist[i].online = true;
                   console.log("show online friends "+ $scope.contactslist[i].online)
+                  logger.log("show online friends "+ $scope.contactslist[i].online)
                   $log.info("show online friends "+ $scope.contactslist[i].online)
                 }
             }
@@ -653,6 +675,7 @@ angular.module('cloudKiboApp')
                 if ($scope.contactslist[i].contactid.username == friend.username) {
                     $scope.contactslist[i].online = false;
                   console.log("show Offline friends "+ $scope.contactslist[i].online)
+                  logger.log("show Offline friends "+ $scope.contactslist[i].online)
                   $log.info("show Offline friends "+ $scope.contactslist[i].online)
                 }
             }
@@ -665,6 +688,7 @@ angular.module('cloudKiboApp')
                         $scope.contactslist[j].online = true;
                       console.log("show online to "+ $scope.contactslist[j].online)
                       $log.info("show online to "+ $scope.contactslist[j].online)
+                      logger.log("show online to "+ $scope.contactslist[j].online)
                         break;
                     }
                 }
@@ -721,6 +745,7 @@ angular.module('cloudKiboApp')
                             $scope.isUnderProgress = false;
                           console.log("Fetched chat")
                           $log.info("Fetched chat")
+                          logger.log("Fetched chat")
 
                         }
                     });
@@ -735,6 +760,7 @@ angular.module('cloudKiboApp')
                         }).success();
                       console.log("Marking chat as read");
                       $log.info("Marking chat as read");
+                      logger.log("Marking chat as read");
                     }
                 }
 
@@ -760,6 +786,7 @@ angular.module('cloudKiboApp')
                     });
                     */
                   console.log("Sending chat msgs");
+                  logger.log("Sending chat msgs");
                   $log.info("Sending chat msgs");
 
                     $scope.im = {};
@@ -776,9 +803,12 @@ angular.module('cloudKiboApp')
                 $scope.messages.push(im);
                 console.log("Sending chat msgs to "+ $scope.user.username);
                 console.log("Sending chat From "+ $scope.otherUser.username);
+                logger.log("Sending chat From "+ $scope.otherUser.username);
 
                 $log.info("Sending chat msgs to "+ $scope.user.username);
+                logger.log("Sending chat msgs to "+ $scope.user.username);
                 $log.info("Sending chat From "+ $scope.otherUser.username);
+                logger.log("Sending chat From "+ $scope.otherUser.username);
               }
               else if (im.to == $scope.user.username && im.from != $scope.otherUser.username) {
                 for (i in $scope.contactslist) {
@@ -794,6 +824,7 @@ angular.module('cloudKiboApp')
 
             if ($scope.otherUser.username == user.username)
                 $scope.otherUser.status = user.status;
+          logger.log("status updated")
         });
 
         $scope.isUnderProgress = true;
@@ -836,6 +867,7 @@ angular.module('cloudKiboApp')
             if (Auth.isLoggedIn()) {
                 //socket.emit('leave', {room: Auth.getCurrentUser().username, username: Auth.getCurrentUser().username});
                 socket.emit('leaveChat', {room: 'globalchatroom', user: Auth.getCurrentUser()});
+              logger.log('leaveChat'+'room: globalchatroom'+"user: "+Auth.getCurrentUser());
             }
 
             Auth.logout();
