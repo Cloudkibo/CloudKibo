@@ -741,10 +741,10 @@ module.exports = function (socketio) {
     socket.on('msg', function (data) {
       var to = parseInt(data.to, 10);
       if (rooms[currentRoom] && rooms[currentRoom][to]) {
-        logger.serverLog('info', 'Redirecting message to', to, 'by', data.by);
+        //logger.serverLog('info', 'Redirecting message to', to, 'by', data.by);
         rooms[currentRoom][to].emit('msg', data);
       } else {
-        logger.serverLog('warn', 'Invalid user');
+        //logger.serverLog('warn', 'Invalid user');
       }
     });
 
