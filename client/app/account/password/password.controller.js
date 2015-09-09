@@ -12,7 +12,8 @@ angular.module('cloudKiboApp')
 
             $http.post(RestApi.user.resetPasswordRequest, JSON.stringify(dataToSend))
                 .success(function(data) {
-                    $log.infor('Password reset data '+ data)
+                    $log.info('Password reset data '+ data)
+                    logger.log('Password reset data '+ data)
                     $scope.addAlert(data.status, data.msg);
                     if(data.status == 'success')
                         $scope.sentData = true;
@@ -51,6 +52,7 @@ angular.module('cloudKiboApp')
                     $scope.sentData = true;
 
                 });
+          logger.log("new password set")
 
         };
 

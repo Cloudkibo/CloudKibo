@@ -89,6 +89,7 @@ angular.module('cloudKiboApp')
 
       console.log("Check if Live help call ended");
       $log.info("Check if Live help call ended");
+      logger.log("Check if Live help call ended");
     };
 
     $scope.connectTimeOut = function(){
@@ -97,6 +98,7 @@ angular.module('cloudKiboApp')
       $scope.connected = true;
       console.log("Check if Live help call time out");
       $log.info("Check if Live help call time out");
+      logger.log("Check if Live help call time out");
     };
 
     $timeout($scope.connectTimeOut, 500);
@@ -107,6 +109,7 @@ angular.module('cloudKiboApp')
       $scope.$apply(function(){
         $scope.alertsCallStart.push({type: newtype, msg: newMsg});
         $log.info("ALERT: start call");
+        logger.log("ALERT: start call");
       })
     };
 
@@ -118,7 +121,7 @@ angular.module('cloudKiboApp')
     $scope.localCameraCaptured = function () {
       return $scope.localCameraOn;
       $log.info("set local camera captured: "+ $scope.localCameraOn);
-      $log.info("set local camera captured: "+ $scope.localCameraOn);
+      logger.log("set local camera captured: "+ $scope.localCameraOn);
     };
 
     $scope.peerSharedScreen = false;
@@ -126,7 +129,7 @@ angular.module('cloudKiboApp')
     $scope.hasPeerSharedScreen = function(){
       return $scope.peerSharedScreen;
       $log.info("Peer shared screen: "+ $scope.peerSharedScreen);
-      $log.info("Peer shared screen: "+ $scope.peerSharedScreen);
+      logger.log("Peer shared screen: "+ $scope.peerSharedScreen);
     };
 
     $scope.peerSharedVideo = false;
@@ -134,12 +137,13 @@ angular.module('cloudKiboApp')
     $scope.hasPeerSharedVideo = function(){
       return $scope.peerSharedVideo;
       $log.info("peer shared video: "+$scope.peerSharedVideo)
-      $log.info("peer shared video: "+$scope.peerSharedVideo)
+      logger.log("peer shared video: "+$scope.peerSharedVideo)
     };
 
     $scope.hasChromeExtension = function(){
       return $scope.extensionAvailable;
       $log.info("has chrome extension: "+ $scope.extensionAvailable)
+      logger.log("has chrome extension: "+ $scope.extensionAvailable)
     };
 
     $scope.isFireFox = function(){
@@ -151,7 +155,7 @@ angular.module('cloudKiboApp')
     $scope.isLocalScreenShared = function(){
       return $scope.screenSharedLocal;
       $log.info("peer shared video: "+$scope.peerSharedVideo)
-      $log.info("peer shared video: "+$scope.peerSharedVideo)
+      logger.log("peer shared video: "+$scope.peerSharedVideo)
     };
 
     $scope.localVideoCaptured = false;
@@ -160,6 +164,7 @@ angular.module('cloudKiboApp')
     $scope.isVideoCaptured = function(){
       return $scope.localVideoCaptured;
       $log.info("Local video captured: "+$scope.localVideoCaptured)
+      logger.log("Local video captured: "+$scope.localVideoCaptured)
 
     };
 
@@ -168,6 +173,7 @@ angular.module('cloudKiboApp')
     $scope.isAudioCaptured = function(){
       return $scope.localAudioCaptured;
       $log.info("Local Audio captured: "+$scope.localAudioCaptured)
+      logger.log("Local Audio captured: "+$scope.localAudioCaptured)
 
     };
 
@@ -178,24 +184,27 @@ angular.module('cloudKiboApp')
     $scope.createOrJoinMeeting = function(){
       socket.emit('create or join livehelp', {room: roomid});
       console.log("create or join livehelp call");
+      logger.log("create or join livehelp call");
       $log.info("create or join livehelp call");
 
     };
 
     $scope.LeaveRoom = function(){
       console.log('Leave room', {room: roomid});
+      logger.log('Leave room', {room: roomid});
 
       $log.info('Leave room', {room: roomid});
       $scope.callEnded = true;
       socket.emit('leave', {room: roomid});
       console.log("Leaving room: Live help call ended");
+      logger.log("Leaving room: Live help call ended");
 
       $log.info("Leaving room: Live help call ended");
     };
 
     socket.on('created', function (room){
       console.log('Created room for live help ' + room);
-
+      logger.log('Created room for live help ' + room);
       $log.info('Created room for live help ' + room);
 
       isInitiator = true;
@@ -203,32 +212,37 @@ angular.module('cloudKiboApp')
 
     socket.on('full', function (room){
       console.log('Room for livehelp ' + room + ' is full');
-
+      logger.log('Room for livehelp ' + room + ' is full');
       $log.info('Room for livehelp ' + room + ' is full');
     });
 
     socket.on('left', function (room){
       console.log('Left room, call ended');
+      logger.log('Left room, call ended');
       $scope.callEnded = true;
       if(remoteStream1)
       {
         remoteStream1.stop();
 
         $log.info('STOPPED remote stream1');
+        logger.log('STOPPED remote stream1');
       }
       if(localStream) {
         localStream.stop();
         $log.info('STOPPED local remote stream');
+        logger.log('STOPPED local remote stream');
 
       }
       if(localStreamScreen){
         localStreamScreen.stop();
 
         $log.info('STOPPED local remote Screen');
+        logger.log('STOPPED local remote Screen');
       }
       if(remoteStreamScreen) {
         remoteStreamScreen.stop();
         $log.info('STOPPED remote screen');
+        logger.log('STOPPED remote screen');
 
       }
       pc.close();
@@ -242,14 +256,17 @@ angular.module('cloudKiboApp')
        location.reload();
        }, 400)*/
       console.log("Left room: Live help call ended");
+      logger.log("Left room: Live help call ended");
       $log.info("Left room: Live help call ended");
 
     });
 
     socket.on('join', function (room){
       console.log('Another peer made a request to join room ' + room);
+      logger.log('Another peer made a request to join room ' + room);
 
       $log.info('JOIN: Another peer made a request to join room ' + room);
+      logger.log('JOIN: Another peer made a request to join room ' + room);
       //console.log('This peer is the initiator of room ' + room + '!');
 
       isChannelReady = true;
@@ -257,6 +274,7 @@ angular.module('cloudKiboApp')
 
     socket.on('joined', function (room){
       console.log('This peer has joined room ' + room.room + ' '+ room.username +' '+ room.otherClients);
+      logger.log('This peer has joined room ' + room.room + ' '+ room.username +' '+ room.otherClients);
 
       $log.info('This peer has joined room ' + room.room + ' '+ room.username +' '+ room.otherClients);
       isChannelReady = true;
@@ -279,6 +297,7 @@ angular.module('cloudKiboApp')
 
       console.log('Client sending message: ', message);
       $log.info('sendMessage: Client sending message: ', message);
+      logger.log('sendMessage: Client sending message: ', message);
 
 
       socket.emit('messageformeeting', message);
@@ -292,17 +311,19 @@ angular.module('cloudKiboApp')
     socket.on('message', function (message) {
       console.log('Client received message: '+ JSON.stringify(message));
       $log.info('Client received message: '+ JSON.stringify(message));
+      logger.log('Client received message: '+ JSON.stringify(message));
 
       if (message.msg === 'got user media') {
         if (isInitiator && !isStarted) {
           $scope.startCalling();//maybeStart();
           $log.info("Start call");
-          $log.info("Start call");
+          logger.log("Start call");
         }
       }
       else if (message.type === 'offer') {
         console.log("msg is "+message)
         $log.info("msg is "+message)
+        logger.log("msg is "+message)
         if(!isStarted){
           if (!isInitiator && !isStarted) {
             maybeStart();
@@ -316,6 +337,7 @@ angular.module('cloudKiboApp')
           pc.setRemoteDescription(new RTCSessionDescription(message));
           console.log("Audio share open ");
           $log.info("Audio share open ");
+          logger.log("Audio share open ");
 
           $scope.audioTogglingFromOtherSide = true;
 
@@ -327,6 +349,7 @@ angular.module('cloudKiboApp')
               sendMessage(sessionDescription);
               console.log('Sending answer to audio share true')
               $log.info('Sending answer to audio share true')
+              logger.log('Sending answer to audio share true')
 
             },
             function (error){console.log(error); $log.info(error)}, sdpConstraints);
@@ -346,11 +369,12 @@ angular.module('cloudKiboApp')
               sendMessage(sessionDescription);
               console.log('Sending answer to audio share false')
               $log.info('Sending answer to audio share false')
+              logger.log('Sending answer to audio share false')
 
             },
             function (error){console.log(error); $log.info(error)}, sdpConstraints);
           console.log("Audio share STOPPED ");
-          loggerh.log("Audio share STOPPED ");
+          logger.log("Audio share STOPPED ");
 
         }
         else if(message.sharingVideo === 'open') {
@@ -367,12 +391,14 @@ angular.module('cloudKiboApp')
               sendMessage(sessionDescription);
               console.log('Sending answer to video share true')
               $log.info('Sending answer to video share true')
+              logger.log('Sending answer to video share true')
 
             },
 
             function (error){console.log(error); $log.info(error)}, sdpConstraints);
           console.log("Video share open ");
           $log.info("Video share open ");
+          logger.log("Video share open ");
         }
         else if(message.sharingVideo === 'close') {
 
@@ -388,6 +414,7 @@ angular.module('cloudKiboApp')
               sendMessage(sessionDescription);
               console.log('Sending answer to video share false')
               $log.info('Sending answer to video share false')
+              logger.log('Sending answer to video share false')
 
             },
             function (error){console.log(error); $log.info(error)}, sdpConstraints);
@@ -404,6 +431,7 @@ angular.module('cloudKiboApp')
 
           console.log("Screen share OPEN ");
           $log.info("Screen share OPEN ");
+          logger.log("Screen share OPEN ");
           pc.createAnswer(function(sessionDescription){
 
               // Set Opus as the preferred codec in SDP if Opus is present.
@@ -419,12 +447,15 @@ angular.module('cloudKiboApp')
           pc.setRemoteDescription(new RTCSessionDescription(message));
           console.log("Screen share Stopped ");
           $log.info("Screen share Stopped ");
+          logger.log("Screen share Stopped ");
 
           $scope.peerSharedScreen = false;
           $log.info("Peer sharing screen: FALSE ");
+          logger.log("Peer sharing screen: FALSE ");
 
           $scope.switchingScreenShare = true;
           $log.info("Switching sharing screen: TRUE ");
+          logger.log("Switching sharing screen: TRUE ");
 
           $scope.meetingRemoteVideoWidth = '40%';
 
@@ -453,6 +484,7 @@ angular.module('cloudKiboApp')
     function maybeStart() {
       console.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
       $log.info('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
+      logger.log('isStarted localstream isChannelReady ', isStarted, localStream, isChannelReady)
 
       if (!isStarted && typeof localStream != 'undefined' && isChannelReady) {
 
@@ -478,6 +510,7 @@ angular.module('cloudKiboApp')
     function createPeerConnection() {
 
       $log.info("create peer connection")
+      logger.log("create peer connection")
       try {
         //
         //Different URL way for FireFox
@@ -493,20 +526,24 @@ angular.module('cloudKiboApp')
           try{
             sendChannel = pc.createDataChannel("sendDataChannel", {reliable: true});
             $log.info('RELIABLE DATA CHANNEL');
+            logger.log('RELIABLE DATA CHANNEL');
           }
           catch(e){
             console.log('UNRELIABLE DATA CHANNEL');
             $log.info('UNRELIABLE DATA CHANNEL');
+            logger.log('UNRELIABLE DATA CHANNEL');
             sendChannel = pc.createDataChannel("sendDataChannel", {reliable: false});
           }
           sendChannel.onmessage = handleMessage;
           trace('Created send data channel');
           $log.info('Created send data channel');
+          logger.log('Created send data channel');
         } catch (e) {
           alert('Failed to create data channel. ' +
           'You need Chrome M25 or later with RtpDataChannel enabled : '+ e.message );
           trace('createDataChannel() failed with exception: ' + e.message);
           $log.info("Failed to create data channel: "+ e.message)
+          logger.log("Failed to create data channel: "+ e.message)
         }
         sendChannel.onopen = handleSendChannelStateChange;
         sendChannel.onclose = handleSendChannelStateChange;
@@ -515,6 +552,7 @@ angular.module('cloudKiboApp')
         // }
       } catch (e) {
         console.log('Failed to create PeerConnection, exception: ' + e.message);
+        logger.log('Failed to create PeerConnection, exception: ' + e.message);
         $log.info('Failed to create PeerConnection, exception: ' + e.message);
         alert('Cannot create RTCPeerConnection object.');
         return 0;
@@ -524,6 +562,7 @@ angular.module('cloudKiboApp')
     function handleIceCandidate(event) {
       if (event.candidate) {
         console.log('I got candidate...');
+        logger.log('I got candidate...');
         $log.info('I got candidate...');
         sendMessage({
           type: 'candidate',
@@ -534,23 +573,27 @@ angular.module('cloudKiboApp')
       } else {
         console.log('End of candidates.');
         $log.info('End of candidates.');
+        logger.log('End of candidates.');
       }
     }
 
     function handleCreateOfferError(event){
       console.log('createOffer() error: ', e);
       $log.info('createOffer() error: ', e);
+      logger.log('createOffer() error: ', e);
     }
 
     function doCall() {
       console.log('Sending offer to peer');
       $log.info('Sending offer to peer');
+      logger.log('Sending offer to peer');
       pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
     }
 
     function doAnswer() {
       console.log('Sending answer to peer.');
       $log.info('Sending answer to peer.');
+      logger.log('Sending answer to peer.');
       pc.createAnswer(setLocalAndSendMessage, function (error){console.log(error); $log.info(error)}, sdpConstraints);
     }
 
@@ -561,9 +604,11 @@ angular.module('cloudKiboApp')
       pc.setLocalDescription(sessionDescription);
 
       console.log('setLocalAndSendMessage sending message' , sessionDescription);
+      logger.log('setLocalAndSendMessage sending message' , sessionDescription);
       $log.info('setLocalAndSendMessage sending message' , sessionDescription);
 
       console.log(''+ sessionDescription.FromUser +' sending Offer or Answer to ', toUserName)
+      logger.log(''+ sessionDescription.FromUser +' sending Offer or Answer to ', toUserName)
       $log.info(''+ sessionDescription.FromUser +' sending Offer or Answer to ', toUserName)
       sendMessage(sessionDescription);
     }
@@ -582,6 +627,7 @@ angular.module('cloudKiboApp')
 
           console.log("Toggleing video");
           $log.info("Toggleing video");
+          logger.log("Toggleing video");
 
           $scope.$apply(function(){
             remotevideo2.src = URL.createObjectURL(event.stream);
@@ -627,6 +673,7 @@ angular.module('cloudKiboApp')
         $scope.screenSharedByPeer = false;
         console.log("Removed remote stream when screen shared but video");
         $log.info("Removed remote stream when screen shared but video");
+        logger.log("Removed remote stream when screen shared but video");
       }
 
       if($scope.videoTogglingFromOtherSide && !$scope.switchingScreenShare){
@@ -635,6 +682,7 @@ angular.module('cloudKiboApp')
         $scope.peerSharedVideo = false;
         console.log("Removed remote stream when Video shared but Screen");
         $log.info("Removed remote stream when Video shared but Screen");
+        logger.log("Removed remote stream when Video shared but Screen");
       }
 
     }
@@ -669,6 +717,7 @@ angular.module('cloudKiboApp')
         sendMessage({msg: 'got user media'});
         console.log("got user media");
         $log.info("got user media");
+        logger.log("got user media");
 
         if (isInitiator) {
           maybeStart();
@@ -690,6 +739,7 @@ angular.module('cloudKiboApp')
 
       console.log("got user media video");
       $log.info("got user media video");
+      logger.log("got user media video");
       if (isInitiator) {
         maybeStart();
       }
@@ -698,6 +748,7 @@ angular.module('cloudKiboApp')
     function handleUserMediaError(error){
       console.log(error);
       $log.info(error);
+      logger.log(error);
     }
 
     function analyseAudio(){
@@ -737,6 +788,7 @@ angular.module('cloudKiboApp')
             if(typeof pc != 'undefined' && sendChannel.readyState === 'open'){
               sendChannel.send(':Speaking:peer:');
               console.log("Peer is Speaking ");
+              logger.log("Peer is Speaking ");
               $log.info("Peer is Speaking ");
             }
           }else{
@@ -744,6 +796,7 @@ angular.module('cloudKiboApp')
             if(typeof pc != 'undefined' && sendChannel.readyState === 'open'){
               sendChannel.send(':Silent:peer:');
               console.log("Peer is NOT Speaking ");
+              logger.log("Peer is NOT Speaking ");
               $log.info("Peer is NOT Speaking ");
             }
           }
@@ -766,13 +819,18 @@ angular.module('cloudKiboApp')
 
         pc.createOffer(function(sessionDescription){
           console.log('INSIDE CONDITION SCREEN SHARE')
+          logger.log('INSIDE CONDITION SCREEN SHARE')
           $log.info('INSIDE CONDITION SCREEN SHARE')
 
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'close'};
+
           console.log('CLOSING THE VIDEO');
+          logger.log('CLOSING THE VIDEO');
           $log.info('CLOSING THE VIDEO');
+
           console.log(payload)
           $log.info("Payload: "+payload)
+          logger.log("Payload: "+payload)
 
           // Set Opus as the preferred codec in SDP if Opus is present.
           pc.setLocalDescription(sessionDescription);
@@ -795,13 +853,13 @@ angular.module('cloudKiboApp')
 
           pc.createOffer(function(sessionDescription){
             //console.log('INSIDE CONDITION SCREEN SHARE')
+            logger.log('INSIDE CONDITION SCREEN SHARE')
 
             var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingVideo : 'open'};
             console.log('SHARING THE VIDEO');
+            logger.log('SHARING THE VIDEO');
+            logger.log("payload "+payload)
             console.log("payload "+payload)
-
-            $log.info('SHARING THE VIDEO');
-            $log.info("payload "+payload)
 
             // Set Opus as the preferred codec in SDP if Opus is present.
             pc.setLocalDescription(sessionDescription);
@@ -830,6 +888,7 @@ angular.module('cloudKiboApp')
           //console.log('INSIDE CONDITION SCREEN SHARE')
           console.log("toggle audio ");
           $log.info("toggle audio ");
+          logger.log("toggle audio ");
           var payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingAudio : 'close'};
 
           // Set Opus as the preferred codec in SDP if Opus is present.
@@ -914,6 +973,7 @@ angular.module('cloudKiboApp')
           if (DetectRTC.screen.chromeMediaSource == 'desktop') callback(true);
 
           $log.info(" extension is available")
+          logger.log(" extension is available")
           // ask extension if it is available
           window.postMessage('are-you-there', '*');
 
@@ -925,6 +985,7 @@ angular.module('cloudKiboApp')
         },
         onMessageCallback: function (data) {
           console.log('chrome message', data);
+          logger.log('chrome message', data);
           $log.info('chrome message', data);
 
           // "cancel" button is clicked
@@ -933,6 +994,7 @@ angular.module('cloudKiboApp')
 
             console.log("cancel extension button clicked ");
             $log.info("cancel extension button clicked ");
+            logger.log("cancel extension button clicked ");
 
             if (screenCallback) return screenCallback('PermissionDeniedError');
             else throw new Error('PermissionDeniedError');
@@ -948,6 +1010,7 @@ angular.module('cloudKiboApp')
 
             console.log("extension shared temp sourceId ");
             $log.info("extension shared temp sourceId ");
+            logger.log("extension shared temp sourceId ");
 
             DetectRTC.screen.sourceId = data.sourceId;
             if (screenCallback) screenCallback(DetectRTC.screen.sourceId);
@@ -962,6 +1025,7 @@ angular.module('cloudKiboApp')
             $scope.extensionAvailable = status;
             console.log("is extension installed "+ $scope.extensionAvailable )
             $log.info("is extension installed "+ $scope.extensionAvailable )
+            logger.log("is extension installed "+ $scope.extensionAvailable )
           })
 
         });
@@ -976,6 +1040,7 @@ angular.module('cloudKiboApp')
 
       console.log('THIS IS THE EVENT'+ event)
       $log.info('THIS IS THE EVENT'+ event)
+      logger.log('THIS IS THE EVENT'+ event)
       //console.log(event)
 
       DetectRTC.screen.onMessageCallback(event.data);
@@ -1006,6 +1071,7 @@ angular.module('cloudKiboApp')
             alert('PermissionDeniedError: User denied to share content of his screen.');
             console.log("PermissionDeniedError: User denied to share content of his screen");
             $log.info("PermissionDeniedError: User denied to share content of his screen");
+            logger.log("PermissionDeniedError: User denied to share content of his screen");
           }
 
           captureUserMedia(onStreamApproved);
@@ -1015,12 +1081,14 @@ angular.module('cloudKiboApp')
 
       console.log(DetectRTC.screen.chromeMediaSource);
       $log.info("Detecting chrome media source "+DetectRTC.screen.chromeMediaSource);
+      logger.log("Detecting chrome media source "+DetectRTC.screen.chromeMediaSource);
 
       // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
       if (DetectRTC.screen.chromeMediaSource == 'desktop') {
         screen_constraints.mandatory.chromeMediaSourceId = DetectRTC.screen.sourceId;
         console.log("get source id and set chrome media source id")
         $log.info("get source id and set chrome media source id")
+        logger.log("get source id and set chrome media source id")
       }
 
       // it is the session that we want to be captured
@@ -1048,6 +1116,7 @@ angular.module('cloudKiboApp')
 
         consol.log("Share screen selected");
         $log.info("Share screen selected");
+        logger.log("Share screen selected");
         //getUserMedia(screen_constraints, handleUserMediaShowScreen, handleUserMediaErrorShowScreen)
 
 
@@ -1081,22 +1150,26 @@ angular.module('cloudKiboApp')
           $scope.closingScreenShare = true;
           console.log("Sharing screen set TRUE");
           $log.info("Sharing screen set TRUE");
+          logger.log("Sharing screen set TRUE");
 
           if(typeof pc != 'undefined'){
             pc.removeStream(localStreamScreen);
             pc.createOffer(function(sessionDescription){
               console.log('INSIDE CONDITION SCREEN SHARE')
               $log.info('INSIDE CONDITION SCREEN SHARE')
+              logger.log('INSIDE CONDITION SCREEN SHARE')
               var payload;
               if($scope.closingScreenShare == false){
                 payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'open'};
                 console.log('SHARING THE SCREEN')
                 $log.info('SHARING THE SCREEN')
+                logger.log('SHARING THE SCREEN')
               }
               else{
                 payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'close'};
                 console.log('CLOSING THE SCREEN');
                 $log.info('CLOSING THE SCREEN');
+                logger.log('CLOSING THE SCREEN');
                 $scope.screenSharedLocal = false;
               }
 
@@ -1143,11 +1216,13 @@ angular.module('cloudKiboApp')
             payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'open'};
             console.log('SHARING THE SCREEN')
             $log.info('SHARING THE SCREEN')
+            logger.log('SHARING THE SCREEN')
           }
           else{
             payload = {sdp : sessionDescription.sdp, type : sessionDescription.type, sharingScreen : 'close'};
             console.log('CLOSING THE SCREEN');
             $log.info('CLOSING THE SCREEN');
+            logger.log('CLOSING THE SCREEN');
             $scope.screenSharedLocal = false;
           }
 
@@ -1164,6 +1239,7 @@ angular.module('cloudKiboApp')
 
     function OnStreamDenied(error){
       console.log(error);
+      logger.log(error);
       $log.info(error);
       $scope.addAlertCallStart('danger', error);
 
@@ -1239,6 +1315,7 @@ angular.module('cloudKiboApp')
     function gotReceiveChannel(event) {
       console.log('Receive Channel Callback');
       $log.info('Receive Channel Callback');
+      logger.log('Receive Channel Callback');
       sendChannel = event.channel;
       sendChannel.onmessage = handleMessage;
       sendChannel.onopen = handleReceiveChannelStateChange;
@@ -1341,6 +1418,7 @@ angular.module('cloudKiboApp')
 
       console.log('got Chunks : ', chunk_data)
       $log.info('got Chunks : ', chunk_data)
+      logger.log('got Chunks : ', chunk_data)
 
       /* store our chunk temporarily in memory */
       recievedChunks[user_id][chunk_num % chunksPerACK] = chunk_data;
@@ -1390,11 +1468,13 @@ angular.module('cloudKiboApp')
             if (FSdebug) {
               console.log("DEBUG: writing chunk2 "+ recievedChunksWritePointer[user_id]);
               $log.info("DEBUG: writing chunk2 "+ recievedChunksWritePointer[user_id]);
+              logger.log("DEBUG: writing chunk2 "+ recievedChunksWritePointer[user_id]);
 
               for (var i=0;i<chunksPerACK;i++) {
                 if (recievedChunks[user_id][i]) {
                   console.log('recived: '+CryptoJS.SHA256(_arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
                   $log.info('recived: '+CryptoJS.SHA256(_arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
+                  logger.log('recived: '+CryptoJS.SHA256(_arrayBufferToBase64(recievedChunks[user_id][i])).toString(CryptoJS.enc.Base64));
                 }
               }
             }
@@ -1408,6 +1488,7 @@ angular.module('cloudKiboApp')
             /* EOF condition */
             if (recieved_meta[user_id].numOfChunksInFile <= (recievedChunksWritePointer[user_id])) {
               console.log("creating file link!");
+              logger.log("creating file link!");
               $log.info("creating file link!");
 
               /* stop accepting file info */
@@ -1446,6 +1527,7 @@ angular.module('cloudKiboApp')
       send_meta();
       sendChannel.send("You have received a file. Download and Save it.");
       $log.info("You have received a file. Download and Save it.");
+      logger.log("You have received a file. Download and Save it.");
 
       /* user 0 is this user! */
       create_upload_stop_link(file_to_upload.name, 0);//, username);
@@ -1474,6 +1556,7 @@ angular.module('cloudKiboApp')
       if (FSdebug) {
         console.log("processing chunk # " + recieved_meta[id].chunks_recieved);
         $log.info("processing chunk # " + recieved_meta[id].chunks_recieved);
+        logger.log("processing chunk # " + recieved_meta[id].chunks_recieved);
       }
 
       /* We can write to a file using FileSystem! Chrome has native support, FF uses idb.filesystem.js library */
@@ -1486,6 +1569,7 @@ angular.module('cloudKiboApp')
         update_container_percentage(id, recieved_meta[id].chunks_recieved - 1, recieved_meta[id].numOfChunksInFile, recieved_meta[id].size);
       } else {
         //console.log("done downloading file!");
+        logger.log("done downloading file!");
         /* stop accepting file info */
         downloading[id] = false;
         /* creating the download link is handled by write_to_file */
@@ -1498,6 +1582,7 @@ angular.module('cloudKiboApp')
     function process_data(data) {
       data = JSON.parse(data).data;
       console.log('process_data function: ', data)
+      logger.log('process_data function: ', data)
       $log.info('process_data function: ', data)
       if (data.file_meta) {
         /* we are recieving file meta data */
@@ -1550,6 +1635,7 @@ angular.module('cloudKiboApp')
 
         console.log('Chunk is requested');
         $log.info('Chunk is requested');
+        logger.log('Chunk is requested');
 
         /* Otherwise, we are going to assume that if we have reached here, this is a request to download our file */
         if (data.chunk % chunksPerACK == 0) {
@@ -1581,10 +1667,12 @@ angular.module('cloudKiboApp')
       if (FSdebug) {
         console.log("DEBUG: requesting chunk " + chunk_num + " from " + id);
         $log.info("DEBUG: requesting chunk " + chunk_num + " from " + id);
+        logger.log("DEBUG: requesting chunk " + chunk_num + " from " + id);
       }
 
       console.log('Function which actually asks for chunk');
       $log.info('Function which actually asks for chunk');
+      logger.log('Function which actually asks for chunk');
 
       sendChannel.send(JSON.stringify({ //id, JSON.stringify({
         "eventName": "request_chunk",
@@ -1600,6 +1688,7 @@ angular.module('cloudKiboApp')
     function boot_alert(text) {
       console.log('Boot_alert: ', text);
       $log.info('Boot_alert: ', text);
+      logger.log('Boot_alert: ', text);
       //$("#alerts").append('<div class="alert alert-danger alert-dismissable">'+text+'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>');
     }
 
@@ -1613,11 +1702,13 @@ angular.module('cloudKiboApp')
        }*/
       console.log('Download File');
       $log.info('Download File');
+      logger.log('Download File');
       /* We can't request multiple filesystems or resize it at this time. Avoiding hacking around this ATM
        * and will instead display warning that only 1 file can be downloaded at a time :(
        */
       if (filesysteminuse) {
         console.log('Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.')
+        logger.log('Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.')
         boot_alert("Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.");
         return;
       }
@@ -1627,11 +1718,13 @@ angular.module('cloudKiboApp')
         filesysteminuse = true;
         downloading[id] = true; /* accept file info from user */
         console.log('File System given to the program');
+        logger.log('File System given to the program');
         $log.info('File System given to the program');
         request_chunk(id, 0, 0);
       });
 
       console.log('After File System given to the program');
+      logger.log('After File System given to the program');
       $log.info('After File System given to the program');
 
       recieved_meta[id].chunks_recieved = 0;
@@ -1650,6 +1743,7 @@ angular.module('cloudKiboApp')
           fileEntry.remove(function() {
             console.log('File removed.');
             $log.info('File removed.');
+            logger.log('File removed.');
           }, FSerrorHandler);
         }, FSerrorHandler);
       }
@@ -1851,6 +1945,7 @@ angular.module('cloudKiboApp')
 
       console.log("sending meta data");
       $log.info("sending meta data");
+      logger.log("sending meta data");
       //console.log(meta);
 
       sendChannel.send(JSON.stringify({
@@ -1887,9 +1982,11 @@ angular.module('cloudKiboApp')
           if (FSdebug) {
             console.log("DEBUG: sending chunk "+ chunk_num);
             console.log('sending: '+CryptoJS.SHA256(_arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
+            logger.log('sending: '+CryptoJS.SHA256(_arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
 
             $log.info("DEBUG: sending chunk "+ chunk_num);
             $log.info('sending: '+CryptoJS.SHA256(_arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
+            logger.log('sending: '+CryptoJS.SHA256(_arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
           }
           sendChannel.send(event.target.result);//id, event.target.result);
           //}
@@ -1943,6 +2040,7 @@ angular.module('cloudKiboApp')
       };
       console.error('Error: ' + msg);
       logger.error('Error: ' + msg);
+      logger.log('Error: ' + msg);
     }
 
     //used for debugging - credit - http://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
