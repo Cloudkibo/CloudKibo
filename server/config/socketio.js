@@ -764,8 +764,9 @@ module.exports = function (socketio) {
     function conferenceDisconnect(socketio, socket){
       if (!currentRoom || !rooms[currentRoom]) {
         return;
-        logger.serverLog('info', rooms[currentRoom][rooms[currentRoom].indexOf(socket)].username+' is disconnected from room '+rooms[currentRoom][rooms[currentRoom].indexOf(socket)]);
+
       }
+      logger.serverLog('info', rooms[currentRoom][rooms[currentRoom].indexOf(socket)].username+' is disconnected from room '+rooms[currentRoom][rooms[currentRoom].indexOf(socket)]);
       delete rooms[currentRoom][rooms[currentRoom].indexOf(socket)];
       rooms[currentRoom].forEach(function (socket) {
         if (socket) {
