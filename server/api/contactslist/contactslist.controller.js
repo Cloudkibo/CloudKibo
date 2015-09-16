@@ -235,6 +235,8 @@ exports.rejectfriendrequest = function(req, res) {
 
 
 exports.removefriend = function(req, res) {
+  
+  logger.serverLog('info', 'contactslist.controller : The data sent by client: '+ JSON.stringify(req.body));
 
   console.log("Removing contact request")
 	 User.findById(req.user._id, function (err, gotUser) {
