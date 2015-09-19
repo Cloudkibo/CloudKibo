@@ -532,7 +532,7 @@ angular.module('cloudKiboApp')
         };
 
         $scope.removeFriend = function (index) {
-            $http.post(RestApi.contacts.removeFromContactList, {contact: index})
+            $http.post(RestApi.contacts.removeFromContactList, index)
                 .success(function (data) {
                     //console.log(data);
                 console.log("Friend removed")
