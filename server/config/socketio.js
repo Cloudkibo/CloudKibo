@@ -460,7 +460,7 @@ function onConnect(socketio, socket) {
 		socket.on('friendrequest', function(im){
       try {
 
-        //console.log("GOT THIS MESSAGE", im);
+        logger.serverLog('info', 'freind request sent using socket: '+ JSON.stringify(im));
 
         var clients = findClientsSocket(im.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
