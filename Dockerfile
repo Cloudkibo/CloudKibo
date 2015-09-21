@@ -5,7 +5,7 @@
 #
 
 # Pull base image.
-FROM ubuntu
+FROM digitallyseamless/nodejs-bower-grunt
 MAINTAINER Jawaid Ekram, jekram@hotmail.com
 
 
@@ -24,7 +24,6 @@ ONBUILD ADD . /app
 ONBUILD RUN grunt build
 ONBUILD WORKDIR /app/dist
 ONBUILD ENV NODE_ENV production
-ONBUILD RUN npm install
 
 # Define working directory.
 WORKDIR /app
@@ -33,4 +32,4 @@ WORKDIR /app
 CMD ["npm", "start"]
 
 # Expose ports.
-EXPOSE 8080
+EXPOSE 3000 8443
