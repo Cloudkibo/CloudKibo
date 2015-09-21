@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Groupcall = require('./groupcall.model');
+var group_user = require('../group_user/groupuser.model');
 
 // Get list of groupcalls
 exports.index = function(req, res) {
@@ -43,7 +44,7 @@ exports.update = function(req, res) {
 };
 
 // Deletes a groupcall from the DB.
-exports.destroy = function(req, res) {
+exports.destroy = function(req, res) { // todo, this group remove needs more work
   Groupcall.findById(req.params.id, function (err, groupcall) {
     if(err) { return handleError(res, err); }
     if(!groupcall) { return res.send(404); }
@@ -54,97 +55,41 @@ exports.destroy = function(req, res) {
   });
 };
 
-exports.addcontacttogroup = function(req, res) {
-  User.findById(req.user._id, function (err, gotUser) {
-    if (err) return console.log('Error 1'+ err);
-
-    User.findOne({username : req.body.searchusername}, function (err, gotUserSaved) {
-
-      console.log("Add user to group")
-      if(gotUserSaved == null)
-        return res.send({status: 'success', msg: null});
-
-      grouplist.count({userid : gotUser._id, contactid : gotUserSaved._id}, function(err5, gotCount){
-
-        if(gotUser.username == gotUserSaved.username)
-          res.send({status: 'danger', msg: 'You can not add your self as a group.'});
-        else if(gotCount > 0)
-          res.send({status: 'danger', msg: gotUserSaved.username +' is already added in your group list with name '+ gotUserSaved.firstname +' '+ gotUserSaved.lastname});
-        else{
-
-          configuration.findOne({}, function (err, gotConfig) {
-            if(err) return console.log(err);
-
-            grouplist.count({userid : gotUser._id}, function(err, gotFullCount){
-              if(err) return console.log(err);
-
-              if(gotConfig.numberofpeopleingrouplist === gotFullCount){
-                logger.serverLog("warn", "groupmember list full");
-                res.send({status: 'danger', msg: 'Your groupmember list is full.'});
-
-              }
-              else{
-                var groupmember = new grouplist({
-                  userid : gotUser._id,
-                  groupid : gotUserSaved._id
-                });
-
-                groupmember.save(function(err2){
-                  if (err2) return console.log('Error 2'+ err);
-                  grouplist.find({userid : gotUser._id}).populate('contactid').exec(function(err3, gotGroupList){
-                    res.send({status: 'success', msg: gotGroupList});
-                  })
-                })
-
-              }
-
-            });
-
-          });
-
-
-        }
-        console.log("contact add by username");
-      })
-
-    })
-  })
+exports.addcontact = function(req, res) {
+  var group_user_row = {
+    creator_id : req.user._id,
+    groupid : req.body.group_id,
+    user_id : req.body.contact_id
+  };
+  group_user.find(group_user_row, function(err, got_row){
+    if(got_row){
+      res.json(200, {status: 'failed', msg: 'Already a member of this group.'});
+    }
+    else{
+      group_user.create(group_user_row, function(err, group_user_response) {
+        if(err) { return handleError(res, err); }
+        return res.json(201, group_user_response);
+      });
+    }
+  });
 };
 
 
-exports.removecontactfromgroup = function(req, res) {
-
-  logger.serverLog('info', 'grouplist.controller : The data sent by client: '+ JSON.stringify(req.body));
-
-  console.log("Removing from group list request")
-  User.findById(req.user._id, function (err, gotUser) {
-    if (err) return console.log('Error 1'+ err);
-
-    User.findOne({username : req.body.username}, function (err, gotUserSaved) {
-      grouplist.remove({userid : gotUserSaved._id, groupid : gotUser._id}, function(err6){
-        console.log("Is in group list")
-        grouplist.remove({userid : gotUser._id, groupid : gotUserSaved._id}, function(err6){
-          console.log("Is in my list")
-
-          userchat.remove({$or: [ { to : gotUserSaved.username, from : gotUser.username },
-              { to : gotUser.username, from : gotUserSaved.username } ]},
-            function(err1){
-              if(err1) return console.log(err1);
-
-              res.send({status: 'success', msg: 'Friend is removed'});
-
-              logger.serverLog('info', 'grouplist.controller : Friend removed from grouplist');
-
-            })
-
-        })
-
-      })
-
-    })
-  })
+exports.removecontact = function(req, res) {
+  var group_user_row = {
+    creator_id : req.user._id,
+    groupid : req.body.group_id,
+    user_id : req.body.contact_id
+  };
+  group_user.find(group_user_row, function (err, group_user_response) {
+    if(err) { return handleError(res, err); }
+    if(!groupcall) { return res.send(404); }
+    group_user_response.remove(function(err) {
+      if(err) { return handleError(res, err); }
+      return res.send(204);
+    });
+  });
 };
-
 
 function handleError(res, err) {
   return res.send(500, err);
