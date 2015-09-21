@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var groupuser = new Schema({
+  creator_id : {type: Schema.ObjectId, ref: 'accounts'},
   groupid : {type: Schema.ObjectId, ref: 'Groupcall'},
   user_id : {type: Schema.ObjectId, ref: 'accounts'}
 });

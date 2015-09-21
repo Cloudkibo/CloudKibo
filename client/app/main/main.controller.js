@@ -161,6 +161,8 @@ angular.module('cloudKiboApp')
                 $scope.inviteSelected = !$scope.inviteSelected;
             if ($scope.addContactSelected == true)
                 $scope.addContactSelected = !$scope.addContactSelected;
+            if ($scope.groupCallSelected == true)
+              $scope.groupCallSelected = !$scope.groupCallSelected;
 
             $scope.userFound = '';
 
@@ -171,6 +173,30 @@ angular.module('cloudKiboApp')
 
         $scope.isMeetingSelected = function () {
             return $scope.meetingSelected;
+        };
+
+        $scope.openGroupCall = function () {
+
+          if ($scope.inviteSelected == true)
+            $scope.inviteSelected = !$scope.inviteSelected;
+          if ($scope.meetingSelected == true)
+            $scope.meetingSelected = !$scope.meetingSelected;
+          if ($scope.addContactSelected == true)
+            $scope.addContactSelected = !$scope.addContactSelected;
+          if ($scope.settingsSelected == true) {
+            $scope.settingsSelected = !$scope.settingsSelected;
+            if (localStreamTest)
+              localStreamTest.stop();
+          }
+
+          $scope.userFound = '';
+
+          $scope.groupCallSelected = !$scope.groupCallSelected;
+
+        };
+
+        $scope.isGroupCallSelected = function () {
+          return $scope.groupCallSelected;
         };
 
         $scope.openInvite = function () {
@@ -186,6 +212,8 @@ angular.module('cloudKiboApp')
                 $scope.meetingSelected = !$scope.meetingSelected;
             if ($scope.addContactSelected == true)
                 $scope.addContactSelected = !$scope.addContactSelected;
+            if ($scope.groupCallSelected == true)
+              $scope.groupCallSelected = !$scope.groupCallSelected;
 
             $scope.userFound = '';
 
@@ -208,7 +236,8 @@ angular.module('cloudKiboApp')
                 $scope.meetingSelected = !$scope.meetingSelected;
             if ($scope.addContactSelected == true)
                 $scope.addContactSelected = !$scope.addContactSelected;
-
+            if ($scope.groupCallSelected == true)
+              $scope.groupCallSelected = !$scope.groupCallSelected;
             $scope.userFound = '';
 
             $scope.settingsSelected = !$scope.settingsSelected;
@@ -233,11 +262,15 @@ angular.module('cloudKiboApp')
                 $scope.addContactSelected = !$scope.addContactSelected;
             if ($scope.settingsSelected == true) {
                 $scope.settingsSelected = !$scope.settingsSelected;
+
                 if (localStreamTest)
                     localStreamTest.stop();
             }
+          if ($scope.groupCallSelected == true)
+            $scope.groupCallSelected = !$scope.groupCallSelected;
 
-            $scope.userFound = '';
+
+          $scope.userFound = '';
 
             $scope.callSelected = !$scope.callSelected;
             if (localStreamTest)
@@ -264,6 +297,8 @@ angular.module('cloudKiboApp')
                     localStreamTest.stop();
 
             }
+          if ($scope.groupCallSelected == true)
+            $scope.groupCallSelected = !$scope.groupCallSelected;
           logger.log("Add contact selected");
           $log.info("Add contact selected");
 
