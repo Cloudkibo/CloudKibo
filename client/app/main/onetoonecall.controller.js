@@ -8,13 +8,14 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, $log, ScreenShare, FileHangout, Sound, OneToOneCallService) {
+  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, logger, Room, $timeout, $log, ScreenShare, FileHangout, Sound, OneToOneCallService) {
 
     var room = 'globalchatroom';
     var callroom = '';
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
-      $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
+      $scope.error = 'WebRTC is not supported by  browser. You can try the app with Chrome and Firefox.';
       $log.error('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
+      logger.log("WebRTC is not supported by "+$scope.user.username+"s' browser. You can try the app with Chrome and Firefox.");
       return;
     }
 
@@ -26,9 +27,11 @@ angular.module('cloudKiboApp')
 
     $scope.connect = function(){
       $log.info($scope.user.username +' is connecting in call with '+ $scope.amInCallWith);
+      logger.log($scope.user.username +' is connecting in call with '+ $scope.amInCallWith);
       Stream.get()
         .then(function (s) {
           $log.info($scope.user.username +' has got the stream');
+          logger.log($scope.user.username +' has got the stream');
           stream = s;
           Room.init(stream, $scope.user.username);
           stream = URL.createObjectURL(stream);
@@ -36,6 +39,7 @@ angular.module('cloudKiboApp')
         }, function (err) {
           console.error(err);
           $log.debug(err);
+          logger.log("Error: No audio/video permissions. shown to "+$scope.user.username, err);
           sendMessage('hangup');
           $scope.error = 'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
         });
@@ -44,6 +48,7 @@ angular.module('cloudKiboApp')
     $scope.peers = [];
     Room.on('peer.stream', function (peer) {
       $log.debug('Client connected, adding new stream');
+      logger.log('Client connected, adding new stream');
       // Inform the new joiner that you are sharing video
       if($scope.isLocalVideoShared()) Room.toggleVideo($scope.isLocalVideoShared());
       if($scope.screenSharedLocal) Room.toggleScreen(screenStream, true);
@@ -54,13 +59,16 @@ angular.module('cloudKiboApp')
         divClass: 'hideVideoBox',
         stream: URL.createObjectURL(peer.stream)
       });
+      logger.log("Client "+peer.username+" connected. Adding new stream")
     });
     Room.on('peer.screenStream', function (peer) {
-      $log.debug('Client shared screen, adding stream');
+      $log.debug(' client shared screen, adding stream');
+      logger.log(peer.username +' shared screen, adding stream');
       peerScreenStream = URL.createObjectURL(peer.stream);
     });
     Room.on('conference.stream', function (peer) {
       $log.debug('hiding / showing video or screen');
+      logger.log(peer.username+' is hiding / showing video or screen');
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
           if(peer.type === 'video'){
@@ -79,7 +87,8 @@ angular.module('cloudKiboApp')
       });
     });
     Room.on('peer.disconnected', function (peer) {
-      $log.debug('Client disconnected, removing stream');
+      $log.debug(peer.username+' has disconnected, removing stream');
+      logger.log(peer.username+' has disconnected, removing stream');
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
       });
@@ -125,6 +134,7 @@ angular.module('cloudKiboApp')
           $scope.userMessages.push(data.username +': '+ data.message);
         });
       }
+      logger.log(data.username+" sent the msg ")
     });
 
     $scope.toggleAudioText = 'Mute Audio';
@@ -133,6 +143,7 @@ angular.module('cloudKiboApp')
         $scope.toggleAudioText = 'Mute Audio';
         Room.toggleAudio();
       }
+
       else {
         $scope.toggleAudioText = 'Share Audio';
         Room.toggleAudio();
@@ -174,12 +185,14 @@ angular.module('cloudKiboApp')
     $scope.showScreen = function () {
       if($scope.peerSharedScreen){
         alert('Other person is already sharing screen');
+        logger.log($scope.peerSharedScreen+' Other person is already sharing screen');
       } else {
         if ($scope.showScreenText === 'Share Screen') {
           if (!!navigator.webkitGetUserMedia) {
             shareScreenUsingChromeExtension(function (err, stream) {
               if (err) {
                 alert('Permission denied or could not capture the screen.');
+                logger.log('Permission denied or could not capture the screen.');
               }
               else {
                 screenStream = stream;
@@ -206,6 +219,7 @@ angular.module('cloudKiboApp')
               Room.toggleScreen(stream, true);
             }, function (err) {
               alert('Permission denied or could not capture the screen.');
+              logger.log('Permission denied or could not capture the screen.');
             });
           }
         }
@@ -227,6 +241,7 @@ angular.module('cloudKiboApp')
           // if exception occurred or access denied
           if (error && error == 'PermissionDeniedError') {
             alert('PermissionDeniedError: User denied to share content of his/her screen.');
+            logger.log('PermissionDeniedError: User denied to share content of his/her screen.');
           }
           // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
           if (ScreenShare.getChromeMediaSource() == 'desktop') {
@@ -305,6 +320,7 @@ angular.module('cloudKiboApp')
           caller: $scope.user.username
         });
         $log.info("Calling person "+ calleeusername);
+        logger.log("Calling person "+ calleeusername);
         $scope.OutgoingCallStatement = 'Outgoing Call to : ' + calleeusername;
         $scope.areYouCallingSomeone = true;
       }
@@ -317,6 +333,7 @@ angular.module('cloudKiboApp')
       $scope.amInCallWith = '';
       $scope.OutgoingCallStatement = 'Calling stopped';
       $log.info("Calling stopped")
+      logger.log("Calling stopped")
     };
     $scope.AcceptCall = function () {
       sendMessage('Accept Call');
@@ -325,9 +342,11 @@ angular.module('cloudKiboApp')
       Sound.pause();
       $scope.ringing = false;
       $log.info("Accepting call");
+      logger.log("Accepting call");
     };
     $scope.RejectCall = function () {
       sendMessage('Reject Call');
+      logger.log('Reject Call');
       $scope.isSomeOneCalling = false;
       Sound.load();
       Sound.pause();
@@ -335,10 +354,15 @@ angular.module('cloudKiboApp')
       $scope.amInCall = false;
       $scope.amInCallWith = '';
       $log.info("Rejecting call")
+      logger.log("Rejecting call")
     };
     $scope.endCall = function () {
       $log.info("end call selected");
+      logger.log("end call selected");
+
       sendMessage('hangup');
+      logger.log('hangup');
+
       $scope.userMessages = [];
       $scope.callEnded = true;
       $scope.amInCall = false;
@@ -359,12 +383,14 @@ angular.module('cloudKiboApp')
       $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
       $scope.amInCall = false;
       $scope.amInCallWith = '';
+      logger.log("callee is offline")
     });
     OneToOneCallService.on('calleeisbusy', function(data){
       $scope.OutgoingCallStatement = data.callee + ' is busy on other call.';
       $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
       $scope.amInCall = false;
       $scope.amInCallWith = '';
+      logger.log("callee is busy")
     });
     OneToOneCallService.on('othersideringing', function(data){
       $scope.otherSideRinging = true;
@@ -373,6 +399,7 @@ angular.module('cloudKiboApp')
     });
     OneToOneCallService.on('areyoufreeforcall', function(data){
       $log.info("checking if callee is free for call");
+      logger.log("checking if callee is free for call");
       if ($scope.amInCall == false) {
         $scope.IncomingCallStatement = data.caller + ' is calling you';
         $scope.isSomeOneCalling = true;
@@ -383,14 +410,17 @@ angular.module('cloudKiboApp')
         $scope.amInCall = true;
         $scope.amInCallWith = data.caller;
         $log.info("i the callee is free");
+        logger.log("i the callee is free");
       }
       else {
         OneToOneCallService.sendMessage('noiambusy', {mycaller: data.caller, me: $scope.user.username});
         $log.info("I the callee is busy");
+        logger.log("I the callee is busy");
       }
     });
     OneToOneCallService.on('message', function (message) {
       $log.info('Client received message: '+ message);
+      logger.log('Client received message: '+ message);
       if(typeof message == 'string'){
         try {
           message = JSON.parse(message);
@@ -399,6 +429,7 @@ angular.module('cloudKiboApp')
       if(typeof message != 'string'){
         try {
           console.log(JSON.stringify(message))
+          logger.log(JSON.stringify(message))
         }catch(e){}
       }
       try {
@@ -411,6 +442,7 @@ angular.module('cloudKiboApp')
           Sound.load();
           Sound.pause();
           $log.info("call missed: ' "+message+" ' ");
+          logger.log("call missed: ' "+message+" ' ");
         }
       } catch (e) {
       }
@@ -418,6 +450,7 @@ angular.module('cloudKiboApp')
         $scope.otherSideRinging = false;
         $scope.areYouCallingSomeone = false;
         $log.info("Other party sent accept call message");
+        logger.log("Other party sent accept call message");
         callroom = Math.random().toString(36).substring(10);
         $scope.connect();
         $scope.callStarted = true;
@@ -430,13 +463,16 @@ angular.module('cloudKiboApp')
         $scope.amInCall = false;
         $scope.amInCallWith = '';
         $log.info("Other party sent reject call message")
+        logger.log("Other party sent reject call message")
       }
       else if (message === 'bye' || message === 'hangup' ) {
         $log.info("received msg to end connection /call")
+        logger.log("received msg to end connection /call")
         endCall();
       }
       else if(message.type === 'room_name'){
         $log.info("Room name is sent by caller party "+ message.room);
+        logger.log("Room name is sent by caller party "+ message.room);
         callroom = message.room;
         $scope.connect();
         $scope.callStarted = true;
@@ -475,6 +511,7 @@ angular.module('cloudKiboApp')
       message.to = $scope.amInCallWith;
       message.username = $scope.user.username;
       $log.info('Client sending message: ', message);
+      logger.log('Client sending message: ', message);
       OneToOneCallService.sendMessage('message', message);
     }
 

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('SignupCtrl', function ($scope, Auth, $location, $window, $log) {
+  .controller('SignupCtrl', function ($scope, Auth, $location, $window, $log, logger) {
     $scope.user = {};
     $scope.errors = {};
 
@@ -10,6 +10,7 @@ angular.module('cloudKiboApp')
 	$scope.addAlertRegister = function(newtype, newMsg) {
 		$scope.alertsRegister.push({type: newtype, msg: newMsg});
     $log.info('registering ');
+    logger.log('registering ');
 	};
 
 	$scope.closeAlertRegister = function(index) {
@@ -22,6 +23,7 @@ angular.module('cloudKiboApp')
 
     $scope.register = function(form) {
       $log.info('registered account with info '+ form);
+      logger.log('registered account with info '+ form);
 
       $scope.submitted = true;
 
@@ -35,7 +37,8 @@ angular.module('cloudKiboApp')
           $location.path('#verifyview');
         })
         .catch( function(err) {
-            $log.error('Error n registering account '+err)
+            $log.error('Error in registering account '+err)
+            logger.log('Error: registering account '+err)
           err = err.data;
           $scope.progressState = false;
 
@@ -47,6 +50,7 @@ angular.module('cloudKiboApp')
             //form[field].$setValidity('mongoose', false);
             //$scope.errors[field] = error.message;
             $scope.addAlertRegister('danger', error.message)
+            logger.log('danger', error.message)
           });
         });
       }

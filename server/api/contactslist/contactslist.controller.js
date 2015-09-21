@@ -235,12 +235,14 @@ exports.rejectfriendrequest = function(req, res) {
 
 
 exports.removefriend = function(req, res) {
+  
+  logger.serverLog('info', 'contactslist.controller : The data sent by client: '+ JSON.stringify(req.body));
 
   console.log("Removing contact request")
 	 User.findById(req.user._id, function (err, gotUser) {
 		if (err) return console.log('Error 1'+ err);
 
-		User.findOne({username : req.body.contact.username}, function (err, gotUserSaved) {
+		User.findOne({username : req.body.username}, function (err, gotUserSaved) {
 			contactslist.remove({userid : gotUserSaved._id, contactid : gotUser._id}, function(err6){
         console.log("Is in friend's list")
 				contactslist.remove({userid : gotUser._id, contactid : gotUserSaved._id}, function(err6){

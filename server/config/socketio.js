@@ -460,7 +460,7 @@ function onConnect(socketio, socket) {
 		socket.on('friendrequest', function(im){
       try {
 
-        //console.log("GOT THIS MESSAGE", im);
+        logger.serverLog('info', 'freind request sent using socket: '+ JSON.stringify(im));
 
         var clients = findClientsSocket(im.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
@@ -485,6 +485,7 @@ function onConnect(socketio, socket) {
       socketio.in(room.room).emit('left', room);
 			socket.leave(room.room);
 			socket.emit('left', room);
+
 
 
 
@@ -613,7 +614,7 @@ function onConnect(socketio, socket) {
 		});
 
   socket.on('logClient', function(data){
-    //logger.clientLog(data);
+    logger.serverLog("info", "Client side log: "+ data);
   });
 
 
@@ -741,10 +742,10 @@ module.exports = function (socketio) {
     socket.on('msg', function (data) {
       var to = parseInt(data.to, 10);
       if (rooms[currentRoom] && rooms[currentRoom][to]) {
-        logger.serverLog('info', 'Redirecting message to', to, 'by', data.by);
+        //logger.serverLog('info', 'Redirecting message to', to, 'by', data.by);
         rooms[currentRoom][to].emit('msg', data);
       } else {
-        logger.serverLog('warn', 'Invalid user');
+        //logger.serverLog('warn', 'Invalid user');
       }
     });
 
@@ -763,7 +764,9 @@ module.exports = function (socketio) {
     function conferenceDisconnect(socketio, socket){
       if (!currentRoom || !rooms[currentRoom]) {
         return;
+
       }
+      logger.serverLog('info', rooms[currentRoom][rooms[currentRoom].indexOf(socket)].username+' is disconnected from room '+rooms[currentRoom][rooms[currentRoom].indexOf(socket)]);
       delete rooms[currentRoom][rooms[currentRoom].indexOf(socket)];
       rooms[currentRoom].forEach(function (socket) {
         if (socket) {

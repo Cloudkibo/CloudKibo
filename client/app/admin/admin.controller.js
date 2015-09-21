@@ -1,12 +1,13 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('AdminCtrl', function ($scope, $http, Auth, User, $log) {
+  .controller('AdminCtrl', function ($scope, $http, Auth, User, $log, logger) {
 
     $http.get('/api/configurations/fetch')
       .success(function(data){
         $scope.supersettings = data;
         $log.info('Fetching data '+ data)
+        logger.log('Fetching data '+ data)
       });
 
     // Use the User $resource to fetch all users
@@ -19,6 +20,7 @@ angular.module('cloudKiboApp')
           $scope.users.splice(i, 1);
         }
       });
+      logger.log("delete user")
     };
 
     $scope.isUserNameDefined = function() {
@@ -41,6 +43,7 @@ angular.module('cloudKiboApp')
               alert("Saved.");
 
               $log.info('saving changes ');
+              logger.log('saving changes ');
 
               //$scope.addAlertsSuperuserSetting(data.status, 'Changes saved.');
             }

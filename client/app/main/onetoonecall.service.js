@@ -6,7 +6,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('OneToOneCallService', function ($rootScope, $q, socket, $log) {
+  .factory('OneToOneCallService', function ($rootScope, $q, socket, $log, logger) {
 
     function addHandlers(socket) {
       socket.on('calleeisoffline', function (nickname) {
