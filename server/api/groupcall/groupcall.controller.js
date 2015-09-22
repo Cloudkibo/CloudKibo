@@ -75,6 +75,109 @@ exports.addcontact = function(req, res) {
 };
 
 
+
+socket.on('message', function (message) {
+  console.log('Client received message: '+ JSON.stringify(message));
+  $log.info('Client received message: '+ JSON.stringify(message));
+  logger.log('Client received message: '+ JSON.stringify(message));
+
+  if (message.msg === 'got user media') {
+    if (isInitiator && !isStarted) {
+      $scope.startCalling();//maybeStart();
+      $log.info("Start call");
+      logger.log("Start call");
+    }
+  }
+  else if (message.type === 'offer') {
+    console.log("msg is "+message)
+    $log.info("msg is "+message)
+    logger.log("msg is "+message)
+    if(!isStarted){
+      if (!isInitiator && !isStarted) {
+        maybeStart();
+      }
+      pc.setRemoteDescription(new RTCSessionDescription(message));
+      doAnswer();
+
+    }
+
+    else if(message.sharingAudio === 'close') {
+
+      pc.setRemoteDescription(new RTCSessionDescription(message));
+
+      $scope.audioTogglingFromOtherSide = true;
+
+      pc.createAnswer(function(sessionDescription){
+
+          // Set Opus as the preferred codec in SDP if Opus is present.
+          pc.setLocalDescription(sessionDescription);
+
+          sendMessage(sessionDescription);
+          console.log('Sending answer to audio share false')
+          $log.info('Sending answer to audio share false')
+          logger.log('Sending answer to audio share false')
+
+        },
+        function (error){console.log(error); $log.info(error)}, sdpConstraints);
+      console.log("Audio share STOPPED ");
+      logger.log("Audio share STOPPED ");
+
+    }
+    else if(message.sharingVideo === 'open') {
+
+      pc.setRemoteDescription(new RTCSessionDescription(message));
+
+      $scope.videoTogglingFromOtherSide = true;
+
+      pc.createAnswer(function(sessionDescription){
+
+          // Set Opus as the preferred codec in SDP if Opus is present.
+          pc.setLocalDescription(sessionDescription);
+
+          sendMessage(sessionDescription);
+          console.log('Sending answer to video share true')
+          $log.info('Sending answer to video share true')
+          logger.log('Sending answer to video share true')
+
+        },
+
+        function (error){console.log(error); $log.info(error)}, sdpConstraints);
+      console.log("Video share open ");
+      $log.info("Video share open ");
+      logger.log("Video share open ");
+    }
+    else if(message.sharingVideo === 'close') {
+
+      pc.setRemoteDescription(new RTCSessionDescription(message));
+
+      $scope.videoTogglingFromOtherSide = true;
+
+      pc.createAnswer(function(sessionDescription){
+
+          // Set Opus as the preferred codec in SDP if Opus is present.
+          pc.setLocalDescription(sessionDescription);
+
+          sendMessage(sessionDescription);
+          console.log('Sending answer to video share false')
+          $log.info('Sending answer to video share false')
+          logger.log('Sending answer to video share false')
+
+        },
+        function (error){console.log(error); $log.info(error)}, sdpConstraints);
+
+    }
+  } else if (message.type === 'answer' && isStarted) {
+    pc.setRemoteDescription(new RTCSessionDescription(message));
+  } else if (message.type === 'candidate' && isStarted) {
+    var candidate = new RTCIceCandidate({
+      sdpMLineIndex: message.label,
+      candidate: message.candidate
+    });
+    pc.addIceCandidate(candidate);
+  }
+});
+
+
 exports.removecontact = function(req, res) {
   var group_user_row = {
     creator_id : req.user._id,

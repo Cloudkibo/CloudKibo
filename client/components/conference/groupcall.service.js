@@ -193,6 +193,29 @@ angular.module('cloudKiboApp')
     };
 
 
+    function addHandlers(socket) {
+      socket.on('groupmemberisoffline', function (nickname) {
+        $log.info('Member is OFFLINE');
+        api.trigger('groupmemberisoffline', [nickname]);
+      });
+      socket.on('groupmemberisbusy', function (data) {
+        $log.info('Callee is BUSY');
+        api.trigger('groupmemberisbusy', [data]);
+      });
+      socket.on('othersideringing', function (data) {
+        $log.info('Callee is ringing on other side');
+        api.trigger('othersideringing', [data]);
+      });
+      socket.on('areyoufreeforcall', function (data) {
+        api.trigger('areyoufreeforcall', [data]);
+      });
+      socket.on('message', function (data) {
+        api.trigger('message', [data]);
+      });
+    }
+
+
+
 
 
     function addHandlers(socket) {
