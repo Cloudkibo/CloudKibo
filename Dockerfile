@@ -3,6 +3,7 @@
 #
 # https://github.com/DigitallySeamless/nodejs-bower-grunt-runtime
 #
+
 FROM digitallyseamless/nodejs-bower-grunt-runtime
 
 # Pull base image.
