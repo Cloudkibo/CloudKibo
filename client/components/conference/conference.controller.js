@@ -337,4 +337,56 @@ angular.module('cloudKiboApp')
     $scope.$on('$routeChangeStart', function () {
       location.reload();
     });
+
+    $scope.shareScreenToTest = function () {
+      if($scope.peerSharedScreenTest){
+        alert('Other person is already sharing screen');
+        logger.log(''+ $scope.user.username +' tried sharing screen while other was already sharing the screen');
+      } else {
+        if ($scope.showScreenText === 'Share Screen') {
+          if (!!navigator.webkitGetUserMedia) {
+            shareScreenUsingChromeExtension(function (err, stream) {
+              if (err) {
+                alert('Permission denied or could not capture the screen.');
+                logger.log('ERROR: Permission denied or could not capture the screen. Shown to: '+ $scope.user.username);
+              }
+              else {
+                screenStream = stream;
+                $scope.$apply(function(){
+                  $scope.showScreenText = 'Hide Screen';
+                  $scope.screenSharedLocal = true;
+                });
+                Room.toggleScreen(stream, true);
+                logger.log("Screen captured by "+$scope.user.username+", now informing other participants. (Chrome browser)");
+              }
+            });
+          }
+          else if (!!navigator.mozGetUserMedia) {
+            getUserMedia({
+              video: {
+                mozMediaSource: 'screen',
+                mediaSource: 'screen'
+              }
+            }, function (stream) {
+              screenStream = stream;
+              $scope.$apply(function(){
+                $scope.showScreenText = 'Hide Screen';
+                $scope.screenSharedLocal = true;
+              });
+              Room.toggleScreen(stream, true);
+              logger.log("Screen captured by "+$scope.user.username+", now informing other participants. (Firefox browser)");
+            }, function (err) {
+              alert('Permission denied or could not capture the screen.');
+              logger.log('ERROR: Permission denied or could not capture the screen. Shown to: '+ $scope.user.username);
+            });
+          }
+        }
+        else {
+          removeLocalScreen();
+        }
+      }
+    };
+
+
+
   });
