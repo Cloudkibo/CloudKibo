@@ -3,10 +3,11 @@
 var _ = require('lodash');
 var Groupcall = require('./groupcall.model');
 var group_user = require('../group_user/groupuser.model');
+var user = require('../user/user.model');
 
 // Get list of groupcalls
 exports.index = function(req, res) {
-  Groupcall.find(function (err,groupcalls) {
+  Groupcall.find({groupowner: req.user.username}, function (err,groupcalls) {
     if(err) { return handleError(res, err); }
     return res.json(200, groupcalls);
   });
@@ -21,12 +22,30 @@ exports.show = function(req, res) {
   });
 };
 
+exports.showgroupmembers = function(req, res) {
+  group_user.find({groupid : req.params.id, creator_id : req.user._id}).populate('groupid user_id').exec(function (err, groupcalls) {
+    if(err) { return handleError(res, err); }
+    if(!groupcalls) { return res.send(404); }
+    return res.json(groupcalls);
+  });
+};
+
 // Creates a new groupcall in the DB.
 exports.create = function(req, res) {
-  Groupcall.create(req.body, function(err, groupcall) {
-    if(err) { return handleError(res, err); }
-    return res.json(201, groupcall);
-  });
+  Groupcall.findOne({groupname : req.body.groupname, groupowner: req.user.username}, function(err, data){
+    if(data){
+      res.json(200, {status: 'failed', msg: 'Group already created.'});
+    }
+    else {
+      Groupcall.create(req.body, function(err, groupcall) {
+        if(err) { return handleError(res, err); }
+        Groupcall.find({groupowner: req.user.username}, function (err,groupcalls) {
+          if(err) { return handleError(res, err); }
+          return res.json(200, groupcalls);
+        });
+      });
+    }
+  })
 };
 
 // Updates an existing groupcall in the DB.
@@ -50,148 +69,71 @@ exports.destroy = function(req, res) { // todo, this group remove needs more wor
     if(!groupcall) { return res.send(404); }
     groupcall.remove(function(err) {
       if(err) { return handleError(res, err); }
-      return res.send(204);
+      group_user.remove({groupid : req.params.id}, function(err, group_user_response) {
+        if(err) { return handleError(res, err); }
+        Groupcall.find({groupowner: req.user.username}, function (err,groupcalls) {
+          if(err) { return handleError(res, err); }
+          return res.json(200, groupcalls);
+        });
+      });
     });
   });
 };
 
 exports.addcontact = function(req, res) {
-  var group_user_row = {
-    creator_id : req.user._id,
-    groupid : req.body.group_id,
-    user_id : req.body.contact_id
-  };
-  group_user.find(group_user_row, function(err, got_row){
-    if(got_row){
-      res.json(200, {status: 'failed', msg: 'Already a member of this group.'});
-    }
-    else{
-      group_user.create(group_user_row, function(err, group_user_response) {
-        if(err) { return handleError(res, err); }
-        return res.json(201, group_user_response);
+  console.log(req.body)
+  user.findOne({username: req.body.contactusername}, function(err, contact){
+    if(contact){
+      var group_user_row = {
+        creator_id : req.user._id,
+        groupid : req.body.group_id,
+        user_id : contact._id
+      };
+      group_user.findOne(group_user_row, function(err, got_row){
+        if(got_row){
+          res.json(200, {status: 'failed', msg: 'Already a member of this group.'});
+        }
+        else{
+          group_user.create(group_user_row, function(err, group_user_response) {
+            if(err) { return handleError(res, err); }
+            group_user.find({groupid : req.body.group_id, creator_id : req.user._id}).populate('groupid user_id').exec(function (err, groupcalls) {
+              if(err) { return handleError(res, err); }
+              if(!groupcalls) { return res.send(404); }
+              return res.json(groupcalls);
+            });
+          });
+        }
       });
     }
-  });
+  })
+
 };
 
 
 
-socket.on('message', function (message) {
-  console.log('Client received message: '+ JSON.stringify(message));
-  $log.info('Client received message: '+ JSON.stringify(message));
-  logger.log('Client received message: '+ JSON.stringify(message));
-
-  if (message.msg === 'got user media') {
-    if (isInitiator && !isStarted) {
-      $scope.startCalling();//maybeStart();
-      $log.info("Start call");
-      logger.log("Start call");
-    }
-  }
-  else if (message.type === 'offer') {
-    console.log("msg is "+message)
-    $log.info("msg is "+message)
-    logger.log("msg is "+message)
-    if(!isStarted){
-      if (!isInitiator && !isStarted) {
-        maybeStart();
-      }
-      pc.setRemoteDescription(new RTCSessionDescription(message));
-      doAnswer();
-
-    }
-
-    else if(message.sharingAudio === 'close') {
-
-      pc.setRemoteDescription(new RTCSessionDescription(message));
-
-      $scope.audioTogglingFromOtherSide = true;
-
-      pc.createAnswer(function(sessionDescription){
-
-          // Set Opus as the preferred codec in SDP if Opus is present.
-          pc.setLocalDescription(sessionDescription);
-
-          sendMessage(sessionDescription);
-          console.log('Sending answer to audio share false')
-          $log.info('Sending answer to audio share false')
-          logger.log('Sending answer to audio share false')
-
-        },
-        function (error){console.log(error); $log.info(error)}, sdpConstraints);
-      console.log("Audio share STOPPED ");
-      logger.log("Audio share STOPPED ");
-
-    }
-    else if(message.sharingVideo === 'open') {
-
-      pc.setRemoteDescription(new RTCSessionDescription(message));
-
-      $scope.videoTogglingFromOtherSide = true;
-
-      pc.createAnswer(function(sessionDescription){
-
-          // Set Opus as the preferred codec in SDP if Opus is present.
-          pc.setLocalDescription(sessionDescription);
-
-          sendMessage(sessionDescription);
-          console.log('Sending answer to video share true')
-          $log.info('Sending answer to video share true')
-          logger.log('Sending answer to video share true')
-
-        },
-
-        function (error){console.log(error); $log.info(error)}, sdpConstraints);
-      console.log("Video share open ");
-      $log.info("Video share open ");
-      logger.log("Video share open ");
-    }
-    else if(message.sharingVideo === 'close') {
-
-      pc.setRemoteDescription(new RTCSessionDescription(message));
-
-      $scope.videoTogglingFromOtherSide = true;
-
-      pc.createAnswer(function(sessionDescription){
-
-          // Set Opus as the preferred codec in SDP if Opus is present.
-          pc.setLocalDescription(sessionDescription);
-
-          sendMessage(sessionDescription);
-          console.log('Sending answer to video share false')
-          $log.info('Sending answer to video share false')
-          logger.log('Sending answer to video share false')
-
-        },
-        function (error){console.log(error); $log.info(error)}, sdpConstraints);
-
-    }
-  } else if (message.type === 'answer' && isStarted) {
-    pc.setRemoteDescription(new RTCSessionDescription(message));
-  } else if (message.type === 'candidate' && isStarted) {
-    var candidate = new RTCIceCandidate({
-      sdpMLineIndex: message.label,
-      candidate: message.candidate
-    });
-    pc.addIceCandidate(candidate);
-  }
-});
-
-
 exports.removecontact = function(req, res) {
-  var group_user_row = {
-    creator_id : req.user._id,
-    groupid : req.body.group_id,
-    user_id : req.body.contact_id
-  };
-  group_user.find(group_user_row, function (err, group_user_response) {
-    if(err) { return handleError(res, err); }
-    if(!groupcall) { return res.send(404); }
-    group_user_response.remove(function(err) {
-      if(err) { return handleError(res, err); }
-      return res.send(204);
-    });
-  });
+  user.findOne({username: req.body.contactusername}, function(err, contact){
+    if(contact){
+      var group_user_row = {
+        creator_id : req.user._id,
+        groupid : req.body.group_id,
+        user_id : contact._id
+      };
+      group_user.findOne(group_user_row, function (err, group_user_response) {
+        if(err) { return handleError(res, err); }
+        if(!group_user_response) { return res.send(404); }
+        group_user_response.remove(function(err) {
+          if(err) { return handleError(res, err); }
+          group_user.find({groupid : req.body.group_id, creator_id : req.user._id}).populate('groupid user_id').exec(function (err, groupcalls) {
+            if(err) { return handleError(res, err); }
+            if(!groupcalls) { return res.send(404); }
+            return res.json(groupcalls);
+          });
+        });
+      });
+    }
+
+  })
 };
 
 function handleError(res, err) {

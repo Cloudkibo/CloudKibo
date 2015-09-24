@@ -276,7 +276,22 @@ angular.module('cloudKiboApp')
                  *
                  */
                 screenSharingExtension: 'https://chrome.google.com/webstore/detail/hjfejjmhpakdodimneibbmgfhfhjedod'
+            },
+            groupcall : {
+
+              createGroup : '/api/groupcall/',
+
+              getGroups : '/api/groupcall/',
+
+              deleteGroup : '/api/groupcall/',
+
+              getSpecificGroup : '/api/groupcall/groupmembers/',
+
+              addContact : '/api/groupcall/addcontact',
+
+              removeContact : '/api/groupcall/removecontact'
             }
+
 
         };
     });
