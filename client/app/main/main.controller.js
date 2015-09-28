@@ -188,6 +188,8 @@ angular.module('cloudKiboApp')
             if (localStreamTest)
               localStreamTest.stop();
           }
+          if ($scope.groupCallViewSelected == true)
+            $scope.groupCallViewSelected = !$scope.groupCallViewSelected;
 
           $scope.userFound = '';
 
@@ -197,6 +199,54 @@ angular.module('cloudKiboApp')
 
         $scope.isGroupCallSelected = function () {
           return $scope.groupCallSelected;
+        };
+
+    $scope.addContactToGroup = function(contact, group){
+      $http.post(RestApi.groupcall.addContact, {contactusername: contact.contactusername, group_id : group._id})
+        .success(function(data){
+          if(data.status)
+            alert(data.msg);
+          else
+            $scope.selectedGroupDetails = data;
+        })
+    }
+
+    $scope.removeContactToGroup = function(group){
+      $http.post(RestApi.groupcall.removeContact, {contactusername: group.user_id.username, group_id : group.groupid._id})
+        .success(function(data){
+          $scope.selectedGroupDetails = data;
+        })
+    }
+
+        $scope.openGroupView = function (grp) {
+
+          $scope.selectedGroup = grp;
+
+          $http.get(RestApi.groupcall.getSpecificGroup+ grp._id)
+            .success(function(data){
+              $scope.selectedGroupDetails = data;
+            });
+
+          if ($scope.inviteSelected == true)
+            $scope.inviteSelected = !$scope.inviteSelected;
+          if ($scope.meetingSelected == true)
+            $scope.meetingSelected = !$scope.meetingSelected;
+          if ($scope.addContactSelected == true)
+            $scope.addContactSelected = !$scope.addContactSelected;
+          if ($scope.settingsSelected == true) {
+            $scope.settingsSelected = !$scope.settingsSelected;
+            if (localStreamTest)
+              localStreamTest.stop();
+          }
+          if ($scope.groupCallSelected == true)
+            $scope.groupCallSelected = !$scope.groupCallSelected;
+
+          $scope.groupCallViewSelected = !$scope.groupCallViewSelected;
+
+        };
+
+        $scope.isOpenGroupViewSelected = function () {
+          return $scope.groupCallViewSelected;
         };
 
         $scope.openInvite = function () {
@@ -214,6 +264,8 @@ angular.module('cloudKiboApp')
                 $scope.addContactSelected = !$scope.addContactSelected;
             if ($scope.groupCallSelected == true)
               $scope.groupCallSelected = !$scope.groupCallSelected;
+          if ($scope.groupCallViewSelected == true)
+            $scope.groupCallViewSelected = !$scope.groupCallViewSelected;
 
             $scope.userFound = '';
 
@@ -238,6 +290,8 @@ angular.module('cloudKiboApp')
                 $scope.addContactSelected = !$scope.addContactSelected;
             if ($scope.groupCallSelected == true)
               $scope.groupCallSelected = !$scope.groupCallSelected;
+          if ($scope.groupCallViewSelected == true)
+            $scope.groupCallViewSelected = !$scope.groupCallViewSelected;
             $scope.userFound = '';
 
             $scope.settingsSelected = !$scope.settingsSelected;
@@ -262,6 +316,8 @@ angular.module('cloudKiboApp')
                 $scope.addContactSelected = !$scope.addContactSelected;
             if ($scope.settingsSelected == true) {
                 $scope.settingsSelected = !$scope.settingsSelected;
+              if ($scope.groupCallViewSelected == true)
+                $scope.groupCallViewSelected = !$scope.groupCallViewSelected;
 
                 if (localStreamTest)
                     localStreamTest.stop();
@@ -293,6 +349,8 @@ angular.module('cloudKiboApp')
                 $scope.callSelected = !$scope.callSelected;
             if ($scope.settingsSelected == true) {
                 $scope.settingsSelected = !$scope.settingsSelected;
+              if ($scope.groupCallViewSelected == true)
+                $scope.groupCallViewSelected = !$scope.groupCallViewSelected;
                 if (localStreamTest)
                     localStreamTest.stop();
 
@@ -428,6 +486,32 @@ angular.module('cloudKiboApp')
                     }
                 })
         };
+
+
+        $scope.createGroup = function (add) {
+          add.groupowner = $scope.user.username;
+          $http.post(RestApi.groupcall.createGroup, JSON.stringify(add))
+            .success(function (data) {
+              if(data.status === 'failed')
+                alert(data.msg);
+              else
+                $scope.allGroups = data;
+            })
+        };
+
+        $scope.deleteGroup = function (add) {
+          $http.delete(RestApi.groupcall.deleteGroup + add._id)
+            .success(function (data) {
+              console.log(data);
+              $scope.allGroups = data;
+            })
+        };
+
+    $scope.allGroups = [];
+    $http.get(RestApi.groupcall.getGroups).success(function(data){
+      $scope.allGroups = data;
+    });
+
 
         // todo Testing Required
 

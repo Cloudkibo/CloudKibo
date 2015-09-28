@@ -545,68 +545,87 @@ block bodycontent
                   div(style='text-align:right;')
                     button.myButton1(ng-click='openSettings()') Hide Me!
 
-        div()
-          div
-            div
-                .col-md-6
-                 // BEGIN SAMPLE FORM PORTLET
-                 // END SAMPLE FORM PORTLET
-                 // BEGIN SAMPLE FORM PORTLET
-                 .portlet.box.blue
-                   .portlet-title
-                     .caption
-                       i.fa.fa-gift
-                       |  Default Form Height Sizing
-                     .tools
-                       a.collapse(href='')
-                       a.config(href='#portlet-config', data-toggle='modal')
-                       a.reload(href='')
-                       a.remove(href='')
-                   .portlet-body.form
-                     form(role='form')
-                       .form-body
-                         .form-group
-                           label Large Input
-                           input.form-control.input-lg(type='text', placeholder='input-lg')
-                         .form-group
-                           label Default Input
-                           input.form-control(type='text', placeholder='')
-                         .form-group
-                           label Small Input
-                           input.form-control.input-sm(type='text', placeholder='input-sm')
-                         .form-group
-                           label Large Select
-                           select.form-control.input-lg
-                             option Option 1
-                             option Option 2
-                             option Option 3
-                             option Option 4
-                             option Option 5
-                         .form-group
-                           label Default Select
-                           select.form-control
-                             option Option 1
-                             option Option 2
-                             option Option 3
-                             option Option 4
-                             option Option 5
-                         .form-group
-                           label Small Select
-                           select.form-control.input-sm
-                             option Option 1
-                             option Option 2
-                             option Option 3
-                             option Option 4
-                             option Option 5
-                       .form-actions.right
-                         button.btn.default(type='button') Cancel
-                         button.btn.green(type='submit') Submit
-                 // END SAMPLE FORM PORTLET
-                 // BEGIN SAMPLE FORM PORTLET
-                         button.btn.green(type='submit') Submit
-                 // END SAMPLE FORM PORTLET
 
-       //fullBodyLightCoverShow(ng-show='isCallSelected() || isInviteSelected() || isSettingsSelected() || isMeetingSelected()')
+
+        div(ng-show='isGroupCallSelected()', class='animate-show modalBox')
+          div
+            div(class='nameAdd')
+              form(role='form', ng-submit='createGroup(group)', novalidate, name='form9', class='css-form')
+                .form-group
+                  label Group Name
+                  input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='group.groupname')
+                div(class="labelAddContact")
+                  button.myButton(type='submit', ng-disabled="form9.$invalid", ) Create group
+
+              br
+              br
+              .table-responsive
+                table.table.table-bordered.table-hover
+                  thead
+                    tr
+                      th
+                        | #
+                      th
+                        | Group Name
+                      th
+                        | Group Owner
+                      th(colspan=2)
+                        | Actions
+                  tbody
+                    tr(ng-repeat = 'grp in allGroups')
+                      td()
+                        | {{$index+1}}
+                      td
+                        | {{grp.groupname}}
+                      td
+                        | {{grp.groupowner}}
+                      td
+                        button(ng-click='openGroupView(grp)') View
+                      td
+                        button(ng-click= 'deleteGroup(grp)') Delete
+        div(ng-show='isOpenGroupViewSelected()', class='animate-show modalBox')
+          div
+            div(class='nameAdd')
+              h4 {{selectedGroup.groupname}}
+              form(role='form', ng-submit='addContactToGroup(contact, selectedGroup)', novalidate, name='form99', class='css-form')
+                .form-group
+                  label Add contact in this group
+                  input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='contact.contactusername')
+                div(class="labelAddContact")
+                  button.myButton(type='submit', ng-disabled="form99.$invalid", ) Add
+
+                br
+                br
+              .table-responsive
+                table.table.table-bordered.table-hover
+                  thead
+                    tr
+                      th
+                        | #
+                      th
+                        | Member Name
+                      th
+                        | Actions
+
+                  tbody
+                    tr(ng-repeat = 'grp in selectedGroupDetails')
+                      td()
+                        | {{$index+1}}
+                      td
+                        | {{grp.user_id.firstname}} {{grp.user_id.lastname}}
+                      td
+                        button(ng-click="removeContactToGroup(grp)") Delete
+
+
+
+
+
+
+
+
+
+
+        //fullBodyLightCoverShow(ng-show='isCallSelected() || isInviteSelected() || isSettingsSelected() || isMeetingSelected()')
 
 
 
