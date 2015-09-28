@@ -62,10 +62,10 @@ exports.homeRoute = function (req, res) {
 				  return res.redirect('/superuser');
 				else if(role != 'Owner' )
 				{
-         // if(gotUser.accountVerified === 'Yes')
+          if(gotUser.accountVerified === 'Yes')
 					  res.render('home', { title: title, user: gotUser, role: role});
-         // else
-          //  res.render('notverified', { title: title, user: gotUser, role: role});
+          else
+            res.render('notverified', { title: title, user: gotUser, role: role});
         }
 
 		  })
