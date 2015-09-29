@@ -24,5 +24,7 @@ router.post('/setstatusmessage', auth.isAuthenticated(), controller.setstatusmes
 router.post('/resetpasswordrequest', controller.resetpasswordrequest);
 router.post("/changepassword", controller.changePasswordRoute);
 router.post("/saveusername", controller.saveUsernameRoute);
+router.post("/searchaccountsbyphone", auth.isAuthenticated(), controller.searchAccountByPhone);
+router.post("/searchaccountsbyemail", auth.isAuthenticated(), controller.searchAccountByEmail);
 
 module.exports = router;

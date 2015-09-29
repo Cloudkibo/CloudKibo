@@ -39,7 +39,7 @@ angular.module('cloudKiboApp')
 
     })
 
-    .controller('HomeController', function ($scope, $http, Auth, socket, $timeout, $location, Sound, RestApi, logger, $log) {
+    .controller('HomeController', function ($scope, $http, Auth, socket, $timeout, $location, Sound, RestApi, logger, $log, Room) {
 
 		    $scope.getCurrentUser = Auth.getCurrentUser;
 
