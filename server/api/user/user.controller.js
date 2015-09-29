@@ -281,6 +281,36 @@ exports.searchbyemail = function(req, res, next){
 };
 
 
+exports.searchAccountByPhone = function(req, res, next){
+  User.find({phone : { $in : req.body.phonenumbers}}, function (err, gotUsers) {
+
+    var notAvailable = req.body.phonenumbers;
+    var available = [];
+    for(var i in gotUsers){
+      if(notAvailable.indexOf(gotUsers[i].phone) > -1){
+        notAvailable.splice(notAvailable.indexOf(gotUsers[i].phone), 1);
+        available.push(gotUsers[i].phone);
+      }
+    }
+    res.json({available : available, notAvailable : notAvailable});
+  })
+};
+
+exports.searchAccountByEmail = function(req, res, next){
+  User.find({email : { $in : req.body.emails}}, function (err, gotUsers) {
+
+    var notAvailable = req.body.emails;
+    var available = [];
+    for(var i in gotUsers){
+      if(notAvailable.indexOf(gotUsers[i].email) > -1){
+        notAvailable.splice(notAvailable.indexOf(gotUsers[i].email), 1);
+        available.push(gotUsers[i].email);
+      }
+    }
+    res.json({available : available, notAvailable : notAvailable});
+  })
+};
+
 exports.saveUsernameRoute = function(req, res, next) {
 	User.count({username: req.body.username}, function(err, countUsername){
 
