@@ -512,6 +512,19 @@ angular.module('cloudKiboApp')
       $scope.allGroups = data;
     });
 
+    $scope.connected = true;
+    $scope.isConnected = function () {
+      return $scope.connected;
+    };
+    Room.on('connection.status', function(data){
+      $scope.connected = data.status;
+      if(!data.status){
+        $scope.peers = [];
+        if ($scope.screenSharedLocal) removeLocalScreen();
+        $scope.peerSharedScreen = false;
+      }
+    });
+
 
         // todo Testing Required
 

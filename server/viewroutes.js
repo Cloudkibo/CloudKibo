@@ -62,7 +62,10 @@ exports.homeRoute = function (req, res) {
 				  return res.redirect('/superuser');
 				else if(role != 'Owner' )
 				{
-					res.render('home', { title: title, user: gotUser, role: role});
+          if(gotUser.accountVerified === 'Yes')
+					  res.render('home', { title: title, user: gotUser, role: role});
+          else
+            res.render('notverified', { title: title, user: gotUser, role: role});
         }
 
 		  })
@@ -243,7 +246,8 @@ exports.loginViewRoute = function(req, res) {
 		else if(req.get('host') == 'www.synaps3webrtc.com')
 			title = 'Synaps3WebRTC';
 
-		res.render('login', {title: title});
+      res.render('login', {title: title});
+
 	}
 	else
 		res.redirect('/home');
