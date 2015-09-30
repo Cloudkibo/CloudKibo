@@ -293,6 +293,7 @@ exports.searchAccountByPhone = function(req, res, next){
         available.push(gotUsers[i].phone);
       }
     }
+    logger.serverLog('info', "Sending response to client : "+ {available : available, notAvailable : notAvailable});
     res.json({available : available, notAvailable : notAvailable});
   })
 };
@@ -309,6 +310,9 @@ exports.searchAccountByEmail = function(req, res, next){
         available.push(gotUsers[i].email);
       }
     }
+    
+    logger.serverLog('info', "Sending response to client : "+ {available : available, notAvailable : notAvailable});
+    
     res.json({available : available, notAvailable : notAvailable});
   })
 };
