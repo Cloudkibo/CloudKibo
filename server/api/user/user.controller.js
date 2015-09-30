@@ -293,7 +293,7 @@ exports.searchAccountByPhone = function(req, res, next){
         available.push(gotUsers[i].phone);
       }
     }
-    logger.serverLog('info', "Sending response to client : "+ JSON.Stringify({available : available, notAvailable : notAvailable}));
+    logger.serverLog('info', "Sending response to client : "+ JSON.stringify({available : available, notAvailable : notAvailable}));
     res.json({available : available, notAvailable : notAvailable});
   })
 };
@@ -311,7 +311,7 @@ exports.searchAccountByEmail = function(req, res, next){
       }
     }
     
-    logger.serverLog('info', "Sending response to client : "+ JSON.Stringify({available : available, notAvailable : notAvailable}));
+    logger.serverLog('info', "Sending response to client : "+ JSON.stringify({available : available, notAvailable : notAvailable}));
     
     res.json({available : available, notAvailable : notAvailable});
   })
