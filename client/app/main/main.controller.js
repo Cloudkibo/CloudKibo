@@ -592,6 +592,11 @@ angular.module('cloudKiboApp')
 
         };
 
+    $http.post('/api/users/invitebymultipleemail', {emails: ['sojharo@gmail.com', 'sojharo@live.com']})
+      .success(function(data){
+        console.log(data);
+      });
+
         ////////////////////////////////////////////////////////////////////////////////////////
         // General User Interface Logic                                                      //
         ///////////////////////////////////////////////////////////////////////////////////////
