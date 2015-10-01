@@ -282,6 +282,7 @@ exports.searchbyemail = function(req, res, next){
 
 
 exports.searchAccountByPhone = function(req, res, next){
+  logger.serverLog('info', "Phone numbers sent to server: "+JSON.stringify(req.body));
   User.find({phone : { $in : req.body.phonenumbers}}, function (err, gotUsers) {
 
     var notAvailable = req.body.phonenumbers;
@@ -292,11 +293,13 @@ exports.searchAccountByPhone = function(req, res, next){
         available.push(gotUsers[i].phone);
       }
     }
+    logger.serverLog('info', "Sending response to client : "+ JSON.stringify({available : available, notAvailable : notAvailable}));
     res.json({available : available, notAvailable : notAvailable});
   })
 };
 
 exports.searchAccountByEmail = function(req, res, next){
+  logger.serverLog('info', "Email Addresses sent to server: "+JSON.stringify(req.body));
   User.find({email : { $in : req.body.emails}}, function (err, gotUsers) {
 
     var notAvailable = req.body.emails;
@@ -307,6 +310,9 @@ exports.searchAccountByEmail = function(req, res, next){
         available.push(gotUsers[i].email);
       }
     }
+    
+    logger.serverLog('info', "Sending response to client : "+ JSON.stringify({available : available, notAvailable : notAvailable}));
+    
     res.json({available : available, notAvailable : notAvailable});
   })
 };
