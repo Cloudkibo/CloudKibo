@@ -457,6 +457,7 @@ angular.module('cloudKiboApp')
         $scope.contactslist = {};
 
         $scope.addUserName = function (add) {
+          console.log('add username contact')
             $http.post(RestApi.contacts.addContactByName, JSON.stringify(add))
                 .success(function (data) {
                     if (data.status == 'success') {
@@ -591,11 +592,6 @@ angular.module('cloudKiboApp')
             return $scope.contactslist[index].online;
 
         };
-
-    $http.post('/api/users/invitebymultipleemail', {emails: ['sojharo@gmail.com', 'sojharo@live.com']})
-      .success(function(data){
-        console.log(data);
-      });
 
         ////////////////////////////////////////////////////////////////////////////////////////
         // General User Interface Logic                                                      //

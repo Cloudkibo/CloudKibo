@@ -2,7 +2,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('GroupCalllService', function ($rootScope, $q, socket, $log, logger) {
+  .factory('GroupCallService', function ($rootScope, $q, socket, $log, logger) {
 
     function addHandlers(socket) {
       socket.on('groupmemberisoffline', function (nickname) {

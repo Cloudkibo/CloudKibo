@@ -17,6 +17,15 @@ angular.module('cloudKiboApp')
       return $scope.user.username;
     };
 
+    $scope.callGroup = function(grp){
+
+      $http.get(RestApi.groupcall.getSpecificGroup+ grp._id)
+        .success(function(data){
+          $scope.selectedGroupDetails = data;
+        });
+
+    };
+
     var stream;
 
     $scope.connect = function(){

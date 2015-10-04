@@ -212,25 +212,24 @@ block bodycontent
 
         div(ng-show='isAddContactSelected()', class='animate-show modalBox')
           div
-            div(ng-show='isUserNameAddSelected()', class='nameAdd')
-              form(role='form', ng-submit='addUserName(add)', novalidate, name='form9', class='css-form')
+            div(ng-show='isUserNameAddSelected()', class='')
+              form(role='form', ng-submit='addUserName(add)', novalidate, name='form999', class='css-form')
                 .form-group
-                  br
                   label Add contact by username
                   input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='add.searchusername')
                 a(ng-click='switchAddOption()' class="labelAddContact")
                   small Add contact by email
                 br
                 br
-                div(class="labelAddContact")
-                  button.myButton(type='submit', ng-disabled="form9.$invalid") Add
+                div
+                  button.myButton(type='submit', ng-disabled="form999.$invalid") Add
             div(ng-show='!isUserNameAddSelected()', class='')
               form(role='form', ng-submit='addEmail(add)', novalidate, name='form41', class='css-form')
                 .form-group
                   label Add contact by email
                   input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='add.searchemail')
                 div(ng-show="form41.email.$dirty && !form41.email.$focused")
-                  div(ng-show="form4.email.$invalid")
+                  div(ng-show="form41.email.$invalid")
                     span(ng-show="form41.email.$error.required")
                       | Enter the email address.
                     span(ng-show="form41.email.$error.email")
@@ -583,6 +582,8 @@ block bodycontent
                         button(ng-click='openGroupView(grp)') View
                       td
                         button(ng-click= 'deleteGroup(grp)') Delete
+                      td
+                        button(ng-click= 'callGroup(grp)') Call
         div(ng-show='isOpenGroupViewSelected()', class='animate-show modalBox')
           div
             div(class='nameAdd')
