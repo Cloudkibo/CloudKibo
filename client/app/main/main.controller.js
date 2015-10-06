@@ -457,6 +457,7 @@ angular.module('cloudKiboApp')
         $scope.contactslist = {};
 
         $scope.addUserName = function (add) {
+          console.log('add username contact')
             $http.post(RestApi.contacts.addContactByName, JSON.stringify(add))
                 .success(function (data) {
                     if (data.status == 'success') {

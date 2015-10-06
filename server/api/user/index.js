@@ -19,6 +19,7 @@ router.put('/update', auth.isAuthenticated(), controller.update);
 router.post('/searchbyusername', auth.isAuthenticated(), controller.searchbyusername);
 router.post('/searchbyemail', auth.isAuthenticated(), controller.searchbyemail);
 router.post('/invitebyemail', auth.isAuthenticated(), controller.invitebyemail);
+router.post('/invitebymultipleemail', auth.isAuthenticated(), controller.inviteMultipleByEmail);
 router.post('/initialtestingdone', auth.isAuthenticated(), controller.initialtesting);
 router.post('/setstatusmessage', auth.isAuthenticated(), controller.setstatusmessage);
 router.post('/resetpasswordrequest', controller.resetpasswordrequest);

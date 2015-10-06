@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, audio_threshold, sdpConstraints, $timeout, RestApi, $window, ScreenShare, logger, $log){
+  .controller('LiveHelpController', function($scope, $http, socket, pc_config, pc_constraints, audio_threshold, sdpConstraints, $timeout, RestApi, $window, ScreenShare, logger, $log, Room){
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // Variables for WebRTC Session                                                       //
@@ -68,6 +68,18 @@ angular.module('cloudKiboApp')
       roomid = roomid.split('/')[1];
     }
 
+$scope.connected = true;
+    $scope.isConnected = function () {
+      return $scope.connected;
+    };
+    Room.on('connection.status', function(data){
+      $scope.connected = data.status;
+      if(!data.status){
+        $scope.peers = [];
+        if ($scope.screenSharedLocal) removeLocalScreen();
+        $scope.peerSharedScreen = false;
+      }
+    });
 
 
     ////////////////////////////////////////////////////////////////////////////////////////

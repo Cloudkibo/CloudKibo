@@ -310,11 +310,55 @@ exports.searchAccountByEmail = function(req, res, next){
         available.push(gotUsers[i].email);
       }
     }
-    
+
     logger.serverLog('info', "Sending response to client : "+ JSON.stringify({available : available, notAvailable : notAvailable}));
-    
+
     res.json({available : available, notAvailable : notAvailable});
   })
+};
+
+/**
+ * Invite by email
+ */
+exports.inviteMultipleByEmail = function(req, res, next){
+
+  console.log(req.body)
+
+  configuration.findOne({}, function(err, gotConfig) {
+
+    var sendgrid = require('sendgrid')(gotConfig.sendgridusername, gotConfig.sendgridpassword);
+
+    console.log(req.body)
+
+    var emails = req.body.emails;
+
+    for(var i in emails){
+      var email     = new sendgrid.Email({
+        to:       emails[i],
+        from:     'support@cloudkibo.com',
+        subject:  ''+ req.user.firstname +' via CloudKibo: Join me on CloudKibo, a secure video conferencing app',
+        text:     ''
+      });
+
+
+      email.setHtml('<h1>CloudKibo</h1><br><br>'+req.user.firstname+' has invited you to connect on CloudKibo.<br><br>'+
+      'Follow the following URL to make an account on CloudKibo and start Video Conference in real time.'+
+      ' <br><br><a href="https://www.cloudkibo.com/" target=_blank>http://www.cloudkibo.com/</a><br><br><br>' +
+      '<p><b>With CloudKibo<b> you can do</b></p><br><ul><li>Video Call</li><li>Audio Call</li><li>File Transfering'+
+      '</li><li>Screen Sharing</li><li>Instant Messaging</li></ul><br><br> Join CloudKibo and talk your dearest ones.');
+
+      sendgrid.send(email, function(err, json) {
+        if (err) { return console.error(err); }
+
+        logger.serverLog('info', "sending email for invitation for mobile client");
+
+      });
+    }
+
+    res.json({status: 'success', msg: 'Email Sent Successfully'})
+
+  });
+
 };
 
 exports.saveUsernameRoute = function(req, res, next) {
@@ -403,9 +447,6 @@ exports.invitebyemail = function(req, res, next){
     res.send({status: 'success', msg: 'Email Sent Successfully'})
 
   });
-
-
-
 
 };
 
