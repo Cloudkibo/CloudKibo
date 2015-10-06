@@ -310,9 +310,9 @@ exports.searchAccountByEmail = function(req, res, next){
         available.push(gotUsers[i].email);
       }
     }
-    
+
     logger.serverLog('info', "Sending response to client : "+ JSON.stringify({available : available, notAvailable : notAvailable}));
-    
+
     res.json({available : available, notAvailable : notAvailable});
   })
 };
@@ -321,6 +321,8 @@ exports.searchAccountByEmail = function(req, res, next){
  * Invite by email
  */
 exports.inviteMultipleByEmail = function(req, res, next){
+
+  console.log(req.body)
 
   configuration.findOne({}, function(err, gotConfig) {
 
@@ -353,7 +355,7 @@ exports.inviteMultipleByEmail = function(req, res, next){
       });
     }
 
-    res.send({status: 'success', msg: 'Email Sent Successfully'})
+    res.json({status: 'success', msg: 'Email Sent Successfully'})
 
   });
 
