@@ -245,6 +245,12 @@ angular.module('cloudKiboApp')
 
         };
 
+    $scope.closeGroupCallView = function(){
+      if ($scope.groupCallSelected === false)
+        $scope.groupCallSelected = !$scope.groupCallSelected;
+      $scope.groupCallViewSelected = !$scope.groupCallViewSelected;
+    }
+
         $scope.isOpenGroupViewSelected = function () {
           return $scope.groupCallViewSelected;
         };

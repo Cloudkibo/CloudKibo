@@ -4,7 +4,7 @@ block appbodycontent
         div(class='topPane row' ng-hide='isConnected()')
           center
             b You are disconnnected. We are trying to connect again. Please check your Internet connection.
-        div(ng-show='!testingDefined()', class='animate-show' ng-controller='OneToOneCallController')
+        div(ng-show='!testingDefined()', class='animate-show')
                  .videoCallMainBodyPane
                    div()
                       .callNotifications(ng-show='isThereIncomingCall()')
