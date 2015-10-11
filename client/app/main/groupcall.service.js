@@ -9,13 +9,13 @@ angular.module('cloudKiboApp')
         $log.info('Member is OFFLINE');
         api.trigger('groupmemberisoffline', [nickname]);
       });
-      socket.on('groupmemeberisbusy', function (data) {
+      socket.on('groupmemberisbusy', function (data) {
         $log.info('Group member is BUSY');
-        api.trigger('groupmemeberisbusy', [data]);
+        api.trigger('groupmemberisbusy', [data]);
       });
       socket.on('groupmembersideringing', function (data) {
         $log.info('Callee is ringing on other side');
-        api.trigger('groupmemebersideringing', [data]);
+        api.trigger('groupmembersideringing', [data]);
       });
       socket.on('areyoufreeforgroupcall', function (data) {
         api.trigger('areyoufreeforgroupcall', [data]);
