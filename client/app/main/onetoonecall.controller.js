@@ -38,7 +38,6 @@ angular.module('cloudKiboApp')
           Room.joinRoom(callroom);
         }, function (err) {
           console.error(err);
-          $log.debug(err);
           logger.log("Error: No audio/video permissions. shown to "+$scope.user.username, err);
           sendMessage('hangup');
           $scope.error = 'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
@@ -326,12 +325,16 @@ angular.module('cloudKiboApp')
       }
     };
     $scope.callThisGroup = function(grp){
+
+      $scope.openGroupCall();
+
       $http.get(RestApi.groupcall.getSpecificGroup+ grp._id)
         .success(function(data){
           $scope.selectedGroupDetails = data;
           logger.log("Calling group "+ grp.groupname);
           $scope.OutgoingCallStatement = 'Outgoing Call to group : ' + grp.groupname;
           $scope.areYouCallingSomeone = true;
+          $scope.isThisGroupCall = true;
 
           GroupCallService.sendMessage('callthisgroup', {
             room: room,
@@ -340,9 +343,16 @@ angular.module('cloudKiboApp')
           });
 
         });
-    }
+    };
+
     $scope.StopOutgoingCall = function () {
-      sendMessage('Missed Call: ' + $scope.user.username);
+
+      if(!$scope.isThisGroupCall) {
+        sendMessage('Missed Call: ' + $scope.user.username);
+      } else {
+        console.log($scope.selectedGroupDetails);
+        sendMessage('GroupCallMissed : ' + $scope.selectedGroupDetails[0].groupid.groupname);
+      }
       $scope.areYouCallingSomeone = false;
       $scope.otherSideRinging = false;
       $scope.amInCall = false;
@@ -352,7 +362,13 @@ angular.module('cloudKiboApp')
       logger.log("Calling stopped")
     };
     $scope.AcceptCall = function () {
-      sendMessage('Accept Call');
+      if(!$scope.isThisGroupCall) {
+        sendMessage('Accept Call');
+        logger.log('Accept Call');
+      } else {
+        sendMessage('Accept Group Call');
+        logger.log('Accept Group Call');
+      }
       $scope.isSomeOneCalling = false;
       Sound.load();
       Sound.pause();
@@ -361,8 +377,13 @@ angular.module('cloudKiboApp')
       logger.log("Accepting call");
     };
     $scope.RejectCall = function () {
-      sendMessage('Reject Call');
-      logger.log('Reject Call');
+      if(!$scope.isThisGroupCall) {
+        sendMessage('Reject Call');
+        logger.log('Reject Call');
+      } else {
+        sendMessage('Reject Group Call');
+        logger.log('Reject Group Call');
+      }
       $scope.isSomeOneCalling = false;
       Sound.load();
       Sound.pause();
@@ -499,27 +520,28 @@ angular.module('cloudKiboApp')
     GroupCallService.on('groupmemberisoffline', function(data){
       $scope.OutgoingCallStatement = data + ' is offline.';
       $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
-      $scope.amInCall = false;
-      $scope.amInCallWith = '';
+      //$scope.amInCall = false;
+      //$scope.amInCallWith = '';
       logger.log("callee is offline")
     });
-    GroupCallService.on('groupmemeberisbusy', function(data){
+    GroupCallService.on('groupmemberisbusy', function(data){
       $scope.OutgoingCallStatement = data.callee + ' is busy on other call.';
       $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
-      $scope.amInCall = false;
-      $scope.amInCallWith = '';
+      //$scope.amInCall = false;
+      //$scope.amInCallWith = '';
       logger.log("callee is busy")
     });
     GroupCallService.on('groupmembersideringing', function(data){
       $scope.otherSideRinging = true;
       $scope.amInCall = true;
       $scope.amInCallWith = data.callee;
+      $scope.isThisGroupCall = true;
     });
     GroupCallService.on('areyoufreeforgroupcall', function(data){
       $log.info("checking if callee is free for call");
       logger.log("checking if callee is free for call");
       if ($scope.amInCall == false) {
-        $scope.IncomingCallStatement = data.caller + ' is calling you';
+        $scope.IncomingCallStatement = data.caller + ' is calling you in a group call';
         $scope.isSomeOneCalling = true;
         Sound.load();
         Sound.play();
@@ -527,6 +549,7 @@ angular.module('cloudKiboApp')
         GroupCallService.sendMessage('yesiamfreeforgroupcall', {mycaller: data.caller, me: $scope.user.username});
         $scope.amInCall = true;
         $scope.amInCallWith = data.caller;
+        $scope.isThisGroupCall = true;
         $log.info("i the callee is free");
         logger.log("i the callee is free");
       }
@@ -556,6 +579,7 @@ angular.module('cloudKiboApp')
           $scope.amInCall = false;
           $scope.amInCallWith = '';
           $scope.ringing = false;
+          $scope.isThisGroupCall = false;
           $timeout(function () { $scope.isSomeOneCalling = false; }, 6000);
           Sound.load();
           Sound.pause();
@@ -569,8 +593,11 @@ angular.module('cloudKiboApp')
         $scope.areYouCallingSomeone = false;
         $log.info("Other party sent accept call message");
         logger.log("Other party sent accept call message");
-        callroom = Math.random().toString(36).substring(10);
-        $scope.connect();
+        $scope.isThisGroupCall = true;
+        if(!$scope.callStarted) {
+          callroom = Math.random().toString(36).substring(10);
+          $scope.connect();
+        }
         $scope.callStarted = true;
         sendMessage({type : 'room_name', room: callroom});
       }
@@ -580,6 +607,7 @@ angular.module('cloudKiboApp')
         $scope.otherSideRinging = false;
         $scope.amInCall = false;
         $scope.amInCallWith = '';
+        $scope.isThisGroupCall = false;
         $log.info("Other party sent reject call message")
         logger.log("Other party sent reject call message")
       }
@@ -587,13 +615,16 @@ angular.module('cloudKiboApp')
         $log.info("received msg to end connection /call")
         logger.log("received msg to end connection /call")
         endCall();
+        $scope.isThisGroupCall = false;
       }
       else if(message.type === 'room_name'){
         $log.info("Room name is sent by caller party "+ message.room);
         logger.log("Room name is sent by caller party "+ message.room);
-        callroom = message.room;
-        $scope.connect();
-        $scope.callStarted = true;
+        if($scope.callStarted === false) {
+          callroom = message.room;
+          $scope.connect();
+          $scope.callStarted = true;
+        }
       }
     });
     // end group call logic for socket
@@ -631,7 +662,10 @@ angular.module('cloudKiboApp')
       message.username = $scope.user.username;
       $log.info('Client sending message: ', message);
       logger.log('Client sending message: ', message);
-      OneToOneCallService.sendMessage('message', message);
+      if($scope.isThisGroupCall === false)
+        OneToOneCallService.sendMessage('message', message);
+      else
+        GroupCallService.sendMessage('group_call_message', message);
     }
 
     function endCall(){

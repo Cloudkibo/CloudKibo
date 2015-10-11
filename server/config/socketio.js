@@ -93,7 +93,6 @@ function onConnect(socketio, socket) {
         if(e) logger.serverLog('warn', 'socketio.js on(message) : '+ e);
       }
 
-
       var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
 			var socketid = '';
@@ -108,14 +107,38 @@ function onConnect(socketio, socket) {
 				//socket.emit('disconnected', message.mycaller);
 			}
 			else{
-
         socketio.to(socketid).emit('message', message.msg);
 				//socketio.sockets.socket(socketid).emit('message', message.msg);
-
-
 			}
-
 		});
+
+  socket.on('group_call_message', function (message) {
+    console.log('Got message:', message.msg);
+
+    try {
+      message.msg.from = socket.id;
+    }catch(e){
+      if(e) logger.serverLog('warn', 'socketio.js on(message) : '+ e);
+    }
+
+    var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+
+    var socketid = '';
+
+    for(var i in clients){
+      if(clients[i].username == message.to){
+        socketid = clients[i].id;
+      }
+    }
+
+    if(socketid == ''){
+      //socket.emit('disconnected', message.mycaller);
+    }
+    else{
+      socketio.to(socketid).emit('group_call_message', message.msg);
+      //socketio.sockets.socket(socketid).emit('message', message.msg);
+    }
+  });
 
 		socket.on('messageformeeting', function (message) {
 			console.log('Got message:', message.msg);
@@ -397,6 +420,33 @@ function onConnect(socketio, socket) {
 
 		});
 
+  socket.on('noiambusyforgroupcall', function(message){
+
+    try {
+      var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+
+      var socketid = '';
+
+      for (var i in clients) {
+        if (clients[i].username == message.mycaller) {
+          socketid = clients[i].id;
+        }
+      }
+
+      if (socketid == '') {
+        //socket.emit('calleeisoffline', message.callee);
+        logger.serverLog('info', 'socketio.js on(noiambusy) : callee is offline');
+      }
+      else {
+        socketio.to(socketid).emit('groupmemberisbusy', {callee: message.me});
+        //socketio.sockets.socket(socketid).emit('calleeisbusy', {callee : message.me});
+      }
+    }catch(e){
+      logger.serverLog('error', 'socketio.js on(noiambusyforgroupcall) : '+ e);
+    }
+
+  });
+
 		socket.on('yesiamfreeforcall', function(message){
 
       try {
@@ -422,6 +472,32 @@ function onConnect(socketio, socket) {
       }
 
 		});
+
+  socket.on('yesiamfreeforgroupcall', function(message){
+
+    try {
+      var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+
+      var socketid = '';
+
+      for (var i in clients) {
+        if (clients[i].username == message.mycaller) {
+          socketid = clients[i].id;
+        }
+      }
+
+      if (socketid == '') {
+        socket.emit('disconnected', message.mycaller);
+      }
+      else {
+        socketio.to(socketid).emit('groupmembersideringing', {callee: message.me});
+        //socketio.sockets.socket(socketid).emit('othersideringing', {callee : message.me});
+      }
+    }catch(e){
+      logger.serverLog('error', 'socketio.js on(yesiamfreeforgroupcall) : '+ e);
+    }
+
+  });
 
 		socket.on('im', function(im){
 
