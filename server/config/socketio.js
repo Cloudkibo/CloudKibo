@@ -308,35 +308,67 @@ function onConnect(socketio, socket) {
 		});
 
 		socket.on('callthisperson', function(message){
-      try {
+    try {
 
-        console.log(message);
+      console.log(message);
 
-        var socketidSender = socket.id;
+      var socketidSender = socket.id;
 
-        var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-        var socketid = '';
+      var socketid = '';
 
-        for (var i in clients) {
-          if (clients[i].username == message.callee) {
-            socketid = clients[i].id;
-          }
+      for (var i in clients) {
+        if (clients[i].username == message.callee) {
+          socketid = clients[i].id;
         }
-
-        if (socketid == '') {
-          socket.emit('calleeisoffline', message.callee);
-        }
-        else {
-          socketio.to(socketid).emit('areyoufreeforcall', {caller: message.caller, sendersocket: socketidSender});
-          logger.serverLog('info', 'socketio.js on(callthisperson) : see if callee is free to call');
-
-        }
-      }catch(e){
-        logger.serverLog('error', 'socketio.js on(callthisperson) : '+ e);
       }
 
-		});
+      if (socketid == '') {
+        socket.emit('calleeisoffline', message.callee);
+      }
+      else {
+        socketio.to(socketid).emit('areyoufreeforcall', {caller: message.caller, sendersocket: socketidSender});
+        logger.serverLog('info', 'socketio.js on(callthisperson) : see if callee is free to call');
+
+      }
+    }catch(e){
+      logger.serverLog('error', 'socketio.js on(callthisperson) : '+ e);
+    }
+
+  });
+
+  socket.on('callthisgroup', function(message){
+    try {
+
+      console.log(message);
+
+      var socketidSender = socket.id;
+
+      var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+
+      var socketid = '';
+
+      for (var i in clients) {
+        for(var j in message.callees){
+          if (clients[i].username == message.callees[j].user_id.username) {
+            socketid = clients[i].id;
+            if (socketid == '') {
+              socket.emit('groupmemberisoffline', message.callee);
+            }
+            else {
+              socketio.to(socketid).emit('areyoufreeforgroupcall', {caller: message.caller, sendersocket: socketidSender});
+              logger.serverLog('info', 'socketio.js on(callthisgroup) : see if callee is free for group call');
+            }
+          }
+        }
+      }
+
+    }catch(e){
+      logger.serverLog('error', 'socketio.js on(callthisperson) : '+ e);
+    }
+
+  });
 
 		socket.on('noiambusy', function(message){
 

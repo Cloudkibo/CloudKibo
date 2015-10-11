@@ -8,7 +8,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, logger, Room, $timeout, $log, ScreenShare, FileHangout, Sound, OneToOneCallService) {
+  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, logger, Room, $timeout, $log, ScreenShare, FileHangout, Sound, OneToOneCallService, GroupCallService, $http, RestApi) {
 
     var room = 'globalchatroom';
     var callroom = '';
@@ -325,6 +325,22 @@ angular.module('cloudKiboApp')
         $scope.areYouCallingSomeone = true;
       }
     };
+    $scope.callThisGroup = function(grp){
+      $http.get(RestApi.groupcall.getSpecificGroup+ grp._id)
+        .success(function(data){
+          $scope.selectedGroupDetails = data;
+          logger.log("Calling group "+ grp.groupname);
+          $scope.OutgoingCallStatement = 'Outgoing Call to group : ' + grp.groupname;
+          $scope.areYouCallingSomeone = true;
+
+          GroupCallService.sendMessage('callthisgroup', {
+            room: room,
+            callees: data,
+            caller: $scope.user.username
+          });
+
+        });
+    }
     $scope.StopOutgoingCall = function () {
       sendMessage('Missed Call: ' + $scope.user.username);
       $scope.areYouCallingSomeone = false;
@@ -478,6 +494,109 @@ angular.module('cloudKiboApp')
         $scope.callStarted = true;
       }
     });
+
+    //Group Call logic for socket
+    GroupCallService.on('groupmemberisoffline', function(data){
+      $scope.OutgoingCallStatement = data + ' is offline.';
+      $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
+      $scope.amInCall = false;
+      $scope.amInCallWith = '';
+      logger.log("callee is offline")
+    });
+    GroupCallService.on('groupmemeberisbusy', function(data){
+      $scope.OutgoingCallStatement = data.callee + ' is busy on other call.';
+      $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
+      $scope.amInCall = false;
+      $scope.amInCallWith = '';
+      logger.log("callee is busy")
+    });
+    GroupCallService.on('groupmembersideringing', function(data){
+      $scope.otherSideRinging = true;
+      $scope.amInCall = true;
+      $scope.amInCallWith = data.callee;
+    });
+    GroupCallService.on('areyoufreeforgroupcall', function(data){
+      $log.info("checking if callee is free for call");
+      logger.log("checking if callee is free for call");
+      if ($scope.amInCall == false) {
+        $scope.IncomingCallStatement = data.caller + ' is calling you';
+        $scope.isSomeOneCalling = true;
+        Sound.load();
+        Sound.play();
+        $scope.ringing = true;
+        GroupCallService.sendMessage('yesiamfreeforgroupcall', {mycaller: data.caller, me: $scope.user.username});
+        $scope.amInCall = true;
+        $scope.amInCallWith = data.caller;
+        $log.info("i the callee is free");
+        logger.log("i the callee is free");
+      }
+      else {
+        GroupCallService.sendMessage('noiambusyforgroupcall', {mycaller: data.caller, me: $scope.user.username});
+        $log.info("I the callee is busy");
+        logger.log("I the callee is busy");
+      }
+    });
+    GroupCallService.on('group_call_message', function (message) {
+      $log.info('Client received message: '+ message);
+      logger.log('Client received message: '+ message);
+      if(typeof message == 'string'){
+        try {
+          message = JSON.parse(message);
+        }catch(e){}
+      }
+      if(typeof message != 'string'){
+        try {
+          console.log(JSON.stringify(message))
+          logger.log(JSON.stringify(message))
+        }catch(e){}
+      }
+      try {
+        if (message.split(' ')[0] === 'GroupCallMissed') {
+          $scope.IncomingCallStatement = message;
+          $scope.amInCall = false;
+          $scope.amInCallWith = '';
+          $scope.ringing = false;
+          $timeout(function () { $scope.isSomeOneCalling = false; }, 6000);
+          Sound.load();
+          Sound.pause();
+          $log.info("call missed: ' "+message+" ' ");
+          logger.log("call missed: ' "+message+" ' ");
+        }
+      } catch (e) {
+      }
+      if (message === 'Accept Group Call') {
+        $scope.otherSideRinging = false;
+        $scope.areYouCallingSomeone = false;
+        $log.info("Other party sent accept call message");
+        logger.log("Other party sent accept call message");
+        callroom = Math.random().toString(36).substring(10);
+        $scope.connect();
+        $scope.callStarted = true;
+        sendMessage({type : 'room_name', room: callroom});
+      }
+      else if (message === 'Reject Group Call') {
+        $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
+        $scope.OutgoingCallStatement = $scope.amInCallWith + ' is Busy...';
+        $scope.otherSideRinging = false;
+        $scope.amInCall = false;
+        $scope.amInCallWith = '';
+        $log.info("Other party sent reject call message")
+        logger.log("Other party sent reject call message")
+      }
+      else if (message === 'bye' || message === 'hangup' ) {
+        $log.info("received msg to end connection /call")
+        logger.log("received msg to end connection /call")
+        endCall();
+      }
+      else if(message.type === 'room_name'){
+        $log.info("Room name is sent by caller party "+ message.room);
+        logger.log("Room name is sent by caller party "+ message.room);
+        callroom = message.room;
+        $scope.connect();
+        $scope.callStarted = true;
+      }
+    });
+    // end group call logic for socket
 
     $scope.isOtherPeerBusy = false;
     $scope.otherScreenShared = false;

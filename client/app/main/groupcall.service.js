@@ -17,11 +17,11 @@ angular.module('cloudKiboApp')
         $log.info('Callee is ringing on other side');
         api.trigger('groupmemebersideringing', [data]);
       });
-      socket.on('areyoufreeforcall', function (data) {
-        api.trigger('areyoufreeforcall', [data]);
+      socket.on('areyoufreeforgroupcall', function (data) {
+        api.trigger('areyoufreeforgroupcall', [data]);
       });
-      socket.on('message', function (data) {
-        api.trigger('message', [data]);
+      socket.on('group_call_message', function (data) {
+        api.trigger('group_call_message', [data]);
       });
     }
 
