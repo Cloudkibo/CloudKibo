@@ -289,7 +289,9 @@ angular.module('cloudKiboApp')
 
               addContact : '/api/groupcall/addcontact',
 
-              removeContact : '/api/groupcall/removecontact'
+              removeContact : '/api/groupcall/removecontact',
+
+              getOtherGroups : '/api/groupcall/getothersgroups'
             }
 
 

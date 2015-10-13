@@ -30,6 +30,14 @@ exports.showgroupmembers = function(req, res) {
   });
 };
 
+exports.showothergroups = function(req, res) {
+  group_user.find({user_id : req.user._id}).populate('groupid').exec(function (err, groupcalls) {
+    if(err) { return handleError(res, err); }
+    if(!groupcalls) { return res.send(404); }
+    return res.json(groupcalls);
+  });
+};
+
 // Creates a new groupcall in the DB.
 exports.create = function(req, res) {
   Groupcall.findOne({groupname : req.body.groupname, groupowner: req.user.username}, function(err, data){

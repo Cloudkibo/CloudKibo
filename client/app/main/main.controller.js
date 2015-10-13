@@ -519,6 +519,11 @@ angular.module('cloudKiboApp')
       $scope.allGroups = data;
     });
 
+    $scope.allOtherGroups = [];
+    $http.get(RestApi.groupcall.getOtherGroups).success(function(data){
+      $scope.allOtherGroups = data;
+    });
+
     $scope.connected = true;
     $scope.isConnected = function () {
       return $scope.connected;
