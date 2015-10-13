@@ -557,6 +557,7 @@ block bodycontent
                   button.myButton(type='submit', ng-disabled="form9.$invalid", ) Create group
 
               br
+              b My Groups
               br
               .table-responsive
                 table.table.table-bordered.table-hover
@@ -584,6 +585,28 @@ block bodycontent
                         button(ng-click= 'deleteGroup(grp)') Delete
                       td
                         button(ng-click= 'callThisGroup(grp)') Call
+              br
+              b Groups I am member of
+              br
+              .table-responsive
+                table.table.table-bordered.table-hover
+                  thead
+                    tr
+                      th
+                        | #
+                      th
+                        | Group Name
+                      th
+                        | Group Owner
+                  tbody
+                    tr(ng-repeat = 'grp in allOtherGroups')
+                      td()
+                        | {{$index+1}}
+                      td
+                        | {{grp.groupid.groupname}}
+                      td
+                        | {{grp.groupid.groupowner}}
+
         div(ng-show='isOpenGroupViewSelected()', class='animate-show modalBox')
           div
             div(class='nameAdd')
