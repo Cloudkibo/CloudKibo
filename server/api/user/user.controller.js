@@ -14,6 +14,8 @@ var userchat = require('../userchat/userchat.model');
 var configuration = require('../configuration/configuration.model');
 
 var validationError = function(res, err) {
+  logger.serverLog('info', 'error: '+ err);
+  
   return res.json(422, err);
 };
 
