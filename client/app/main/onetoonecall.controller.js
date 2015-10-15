@@ -324,6 +324,9 @@ angular.module('cloudKiboApp')
         $scope.areYouCallingSomeone = true;
       }
     };
+
+    $scope.isThisGroupCall = false;
+
     $scope.callThisGroup = function(grp){
 
       $scope.openGroupCall();
@@ -383,6 +386,7 @@ angular.module('cloudKiboApp')
       } else {
         sendMessage('Reject Group Call');
         logger.log('Reject Group Call');
+        $scope.isThisGroupCall = false;
       }
       $scope.isSomeOneCalling = false;
       Sound.load();
@@ -399,6 +403,8 @@ angular.module('cloudKiboApp')
 
       sendMessage('hangup');
       logger.log('hangup');
+
+      $scope.isThisGroupCall = false;
 
       $scope.userMessages = [];
       $scope.callEnded = true;
@@ -523,6 +529,7 @@ angular.module('cloudKiboApp')
       //$scope.amInCall = false;
       //$scope.amInCallWith = '';
       logger.log("callee is offline")
+      $scope.isThisGroupCall = false;
     });
     GroupCallService.on('groupmemberisbusy', function(data){
       $scope.OutgoingCallStatement = data.callee + ' is busy on other call.';
@@ -530,6 +537,7 @@ angular.module('cloudKiboApp')
       //$scope.amInCall = false;
       //$scope.amInCallWith = '';
       logger.log("callee is busy")
+      $scope.isThisGroupCall = false;
     });
     GroupCallService.on('groupmembersideringing', function(data){
       $scope.otherSideRinging = true;
