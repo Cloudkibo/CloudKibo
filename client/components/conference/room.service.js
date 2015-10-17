@@ -95,7 +95,7 @@ angular.module('cloudKiboApp')
           //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000"); // todo added for testing by sojharo
           pc.setLocalDescription(sdp);
           $log.debug('Creating an offer for', id);
-          socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'sdp-offer', username: username });
+          socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username });
         }, function (e) {
           $log.error(e);
         },
@@ -135,15 +135,16 @@ angular.module('cloudKiboApp')
 
     function handleMessage(data) {
       var pc = getPeerConnection(data.by);
+      console.log(JSON.stringify(data));
       switch (data.type) {
-        case 'sdp-offer':
+        case 'offer':
           userNames[data.by] = data.username;
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             $log.debug('Setting remote description by offer');
             pc.createAnswer(function (sdp) {
               //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
-              socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'sdp-answer' });
+              socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'answer' });
             }, function (e) {
               $log.error(e);
             });
@@ -151,7 +152,7 @@ angular.module('cloudKiboApp')
             $log.error(e);
           });
           break;
-        case 'sdp-answer':
+        case 'answer':
           console.log('answer by '+ data.by);
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             $log.debug('Setting remote description by answer');
