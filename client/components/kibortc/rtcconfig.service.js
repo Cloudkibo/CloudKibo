@@ -83,7 +83,7 @@ angular.module('kiboRtc.services')
   })
 
   .factory('pc_constraints2', function () {
-    return {optional: []};
+    return {optional: [ {"DtlsSrtpKeyAgreement": true}]};
   })
 
 /**
