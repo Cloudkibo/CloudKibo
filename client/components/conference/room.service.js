@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, audio_threshold, $log) {
+  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints, audio_threshold, $log) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -51,7 +51,7 @@ angular.module('cloudKiboApp')
       if (peerConnections[id]) {
         return peerConnections[id];
       }
-      var pc = new RTCPeerConnection(iceConfig);
+      var pc = new RTCPeerConnection(iceConfig, pc_constraints);
       peerConnections[id] = pc;
       pc.addStream(stream);
       pc.onicecandidate = function (evnt) {
