@@ -82,6 +82,10 @@ angular.module('kiboRtc.services')
     return {'optional': [{'DtlsSrtpKeyAgreement': true}, {'RtpDataChannels': true}]};
   })
 
+  .factory('pc_constraints2', function () {
+    return {optional: []};
+  })
+
 /**
  * Session Description Protocol Constraints
  *
