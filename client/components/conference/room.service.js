@@ -51,7 +51,7 @@ angular.module('cloudKiboApp')
       if (peerConnections[id]) {
         return peerConnections[id];
       }
-      var pc = new RTCPeerConnection(iceConfig, pc_constraints);
+      var pc = new RTCPeerConnection(iceConfig);
       peerConnections[id] = pc;
       pc.addStream(stream);
       pc.onicecandidate = function (evnt) {
