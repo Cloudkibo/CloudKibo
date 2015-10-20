@@ -15,7 +15,7 @@ var configuration = require('../configuration/configuration.model');
 
 var validationError = function(res, err) {
   logger.serverLog('info', 'error: '+ err);
-  
+
   return res.json(422, err);
 };
 
@@ -154,7 +154,7 @@ exports.update = function(req, res, next) {
  * Update User Image
  */
 exports.updateimage = function(req, res, next){
-	console.log("uploading file request "+req.files);
+	console.log(req.files);
 	User.findById(req.user._id, function (err, gotUser) {
 		if (err) return console.log('Error 1'+ err);
 
@@ -164,14 +164,14 @@ exports.updateimage = function(req, res, next){
 			  var uid = crypto.randomBytes(5).toString('hex');
 			  var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
 			  serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
-			  serverPath += '' + req.files.fileUploaded.name;
+			  serverPath += '.' + req.files.file.type.split('/')[1];
 
 			  var dir = __dirname + "/userpictures";
 
-			  if(req.files.fileUploaded.size == 0) return res.send('No file submitted');
+			  if(req.files.file.size == 0) return res.send('No file submitted');
 
 			  require('fs').rename(
-				 req.files.fileUploaded.path,
+				 req.files.file.path,
 				 dir + "/" + serverPath,
 				  function(error) {
 					   if(error) {
@@ -219,14 +219,14 @@ exports.updateimage = function(req, res, next){
 						  var uid = crypto.randomBytes(5).toString('hex');
 						  var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
 						  serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
-						  serverPath += '' + req.files.fileUploaded.name;
+              serverPath += '.' + req.files.file.type.split('/')[1];
 
 						  var dir = __dirname + "/userpictures";
 
-						  if(req.files.fileUploaded.size == 0) return res.send('No file submitted');
+						  if(req.files.file.size == 0) return res.send('No file submitted');
 
 						  require('fs').rename(
-							 req.files.fileUploaded.path,
+							 req.files.file.path,
 							 dir + "/" + serverPath,
 							  function(error) {
 								   if(error) {

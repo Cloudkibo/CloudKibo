@@ -488,17 +488,25 @@ block bodycontent
                       br
                       div
                         button.myButton(type='submit') Save
-                  #profileRight
+                  #profileRight(ng-controller='UploadCtrl')
                       #pictureBox
                        if(user.picture)
                          img(src='/userimage'+user.picture, width='152px', height='152px', class='img-frame')
                          br
                          br
-                         form(role='form', method="post", action='/api/users/userimage/update', style='max-width: 300px;', enctype='multipart/form-data', novalidate, name='form8', class='css-form')
-                           input(type="file", name="fileUploaded", required, ng-model="myfile.file")
-                           br
-                           br
-                           button.btn.btn-submit(type='submit', ng-disabled="form8.$invalid || isUnchanged(myfile)") Update Photo
+                         form(name='myForm')
+                           div Upload new image
+                           button(ngf-select='', ng-model='picFile', accept='image/*')
+                             | Select Picture
+                           .cropArea(ngf-drop='', ng-model='picFile', ngf-pattern='image/*')
+                             img-crop(image='picFile  | ngfDataUrl', result-image='croppedDataUrl', ng-init="croppedDataUrl=''")
+                           div
+                             img(ng-src='{{croppedDataUrl}}')
+                           button(ng-click='upload(croppedDataUrl)') Submit
+                           span.progress(ng-show='progress >= 0')
+                             div(style='width:{{progress}}%', ng-bind="progress + '%'")
+                           span(ng-show='result') Upload Successful
+                           span.err(ng-show='errorMsg') {{errorMsg}}
                        else if(user.fb_photo)
                          img(src='{{user.fb_photo}}', width='152px', height='152px', class='img-frame')
                        else if(user.google_photo)
@@ -509,11 +517,19 @@ block bodycontent
                          img(src='/images/displayPic.jpg', width='152px', height='152px', class='img-frame')
                          br
                          br
-                         form(role='form', method="post", action='/api/users/userimage/update', style='max-width: 300px;', enctype='multipart/form-data', novalidate, name='form8', class='css-form')
-                           input(type="file", name="fileUploaded", required, ng-model="user.file")
-                           br
-                           br
-                           button.btn.btn-submit(type='submit', ng-disabled="form8.$invalid || isUnchanged(myfile)") Update Photo
+                         form(name='myForm')
+                           div New Image upload
+                           button(ngf-select='', ng-model='picFile', accept='image/*')
+                             | Select Picture
+                           .cropArea(ngf-drop='', ng-model='picFile', ngf-pattern='image/*')
+                             img-crop(image='picFile  | ngfDataUrl', result-image='croppedDataUrl', ng-init="croppedDataUrl=''")
+                           div
+                             img(ng-src='{{croppedDataUrl}}')
+                           button(ng-click='upload(croppedDataUrl)') Submit
+                           span.progress(ng-show='progress >= 0')
+                             div(style='width:{{progress}}%', ng-bind="progress + '%'")
+                           span(ng-show='result') Upload Successful
+                           span.err(ng-show='errorMsg') {{errorMsg}}
                 div(style='text-align:right;')
                   button.myButton1(ng-click='openSettings()') Hide Me!
               tab(heading='Support Test')
