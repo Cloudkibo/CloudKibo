@@ -6,7 +6,9 @@ angular.module('cloudKiboApp', [
   'btford.socket-io',
   'ui.bootstrap',
   'kiboRtc',
-  'logglyLogger'
+  'logglyLogger',
+  'ngFileUpload',
+  'ngImgCrop'
 ])
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider

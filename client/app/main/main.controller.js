@@ -39,9 +39,30 @@ angular.module('cloudKiboApp')
 
     })
 
-    .controller('HomeController', function ($scope, $http, Auth, socket, $timeout, $location, Sound, RestApi, logger, $log, Room) {
+    .controller('UploadCtrl', ['$scope', 'Upload', '$timeout', function ($scope, Upload, $timeout) {
+      $scope.upload = function (dataUrl) {
+        Upload.upload({
+          url: '/api/users/userimage/update',
+          data: {
+            file: Upload.dataUrltoBlob(dataUrl)
+          }
+        }).then(function (response) {
+          $timeout(function () {
+            $scope.result = response.data;
+          });
+        }, function (response) {
+          if (response.status > 0) $scope.errorMsg = response.status
+          + ': ' + response.data;
+        }, function (evt) {
+          $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
+        });
+      }
+    }])
+
+    .controller('HomeController', function ($scope, $http, Auth, socket, Upload, $timeout, $location, Sound, RestApi, logger, $log, Room) {
 
 		    $scope.getCurrentUser = Auth.getCurrentUser;
+        $scope.token = Auth.getToken();
 
         $scope.isUserNameDefined = function() {
             return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');

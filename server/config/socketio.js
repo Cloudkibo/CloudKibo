@@ -807,7 +807,7 @@ module.exports = function (socketio) {
     socket.on('disconnect', function () {
       onDisconnect(socketio, socket);
       conferenceDisconnect(socketio, socket);
-      console.info('[%s] DISCONNECTED', socket.address);
+      //console.info('[%s] DISCONNECTED', socket.address);
     });
 
     // Call onConnect.

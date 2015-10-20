@@ -4,6 +4,8 @@ var express = require('express');
 var controller = require('./user.controller');
 var config = require('../../config/environment');
 var auth = require('../../auth/auth.service');
+var multiparty = require('connect-multiparty');
+var multipartyMiddleware = multiparty();
 
 var router = express.Router();
 
@@ -13,7 +15,7 @@ router.get('/me', auth.isAuthenticated(), controller.me); // www.cloudkibo.com/a
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', controller.create); // www.cloudkibo.com/api/users/ (POST)
-router.post('/userimage/update', auth.isAuthenticated(), controller.updateimage);
+router.post('/userimage/update', auth.isAuthenticated(), multipartyMiddleware, controller.updateimage);
 router.get('/userimage/:image', controller.userimage); // www.cloudkibo.com/api/users/userimage/:image
 router.put('/update', auth.isAuthenticated(), controller.update);
 router.post('/searchbyusername', auth.isAuthenticated(), controller.searchbyusername);
