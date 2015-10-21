@@ -438,13 +438,24 @@ form .progress {
   width: 0;
 }
 
+
 .meetingFullBodyPane
 {
   position: relative;
   left: 0px;
   right:0px;
-  height: 500px;
+  height: 780px;
   #background: #00fd01;
+}
+
+.meetingMainBodyPane
+{
+  position: absolute;
+  width: 80%;
+  height: 780px;
+  left: 0px;
+  top: 0px;
+  # background: #00dd01;
 }
 
 .meetingSidePane
@@ -454,25 +465,16 @@ form .progress {
   #background: #badfef;
   right: 0px;
   top: 80px;
-  height: 450px;
+  height: 780px;
 }
 
-.meetingMainBodyPane
-{
-  position: absolute;
-  width: 80%;
-  height: 450px;
-  left: 0px;
-  top: 0px;
-  #background: #00dd01;
-}
 
 .meetingBottomPane
 {
-  position: absolute;
+  position: fixed;
   border-top: 1px solid #000000;
   height: 13%;
-  #background: #00ed01;
+  #  background: #00ed01;
   bottom : 0px;
   right: 15px;
   left: 0px;
@@ -488,6 +490,11 @@ form .progress {
   margin : 0.5em 0.1em 1.5em 1.5em;
 
 }
+
+
+
+
+
 
 
 .fullBodyPane
