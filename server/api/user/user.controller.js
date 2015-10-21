@@ -166,7 +166,9 @@ exports.updateimage = function(req, res, next){
 			  serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
 			  serverPath += '.' + req.files.file.type.split('/')[1];
 
-			  var dir = __dirname + "/userpictures";
+      console.log(__dirname);
+
+			  var dir = "./userpictures";
 
 			  if(req.files.file.size == 0) return res.send('No file submitted');
 
