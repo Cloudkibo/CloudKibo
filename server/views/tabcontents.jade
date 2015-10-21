@@ -491,7 +491,7 @@ block bodycontent
                   #profileRight(ng-controller='UploadCtrl')
                       #pictureBox
                        if(user.picture)
-                         img(src='/userimage'+user.picture, width='152px', height='152px', class='img-frame')
+                         img(src='/api/users/userimage'+user.picture, width='152px', height='152px', class='img-frame')
                          br
                          br
                          form(name='myForm')
