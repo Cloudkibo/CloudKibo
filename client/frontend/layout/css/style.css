@@ -444,7 +444,7 @@ form .progress {
   position: relative;
   left: 0px;
   right:0px;
-  height: 780px;
+  height: 500px;
   #background: #00fd01;
 }
 
@@ -452,10 +452,10 @@ form .progress {
 {
   position: absolute;
   width: 80%;
-  height: 780px;
+  height: 450px;
   left: 0px;
   top: 0px;
-  # background: #00dd01;
+  #background: #00dd01;
 }
 
 .meetingSidePane
@@ -465,13 +465,13 @@ form .progress {
   #background: #badfef;
   right: 0px;
   top: 80px;
-  height: 780px;
+  height: 450px;
 }
 
 
 .meetingBottomPane
 {
-  position: fixed;
+  position: absolute;
   border-top: 1px solid #000000;
   height: 13%;
   #  background: #00ed01;
