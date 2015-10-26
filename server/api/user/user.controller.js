@@ -213,7 +213,7 @@ exports.updateimage = function(req, res, next){
 					require('fs').unlink(dir, function (err) {
 						  if (err) {
                 logger.serverLog('error', 'user.controller (update image) : '+ err);
-                throw err;
+                //throw err;
               }
 
 
