@@ -380,8 +380,13 @@ function onConnect(socketio, socket) {
               socket.emit('groupmemberisoffline', message.callee);
             }
             else {
-              socketio.to(socketid).emit('areyoufreeforgroupcall', {caller: message.caller, sendersocket: socketidSender});
-              logger.serverLog('info', 'socketio.js on(callthisgroup) : see if callee is free for group call');
+              if(clients[i].username != message.caller) {
+                socketio.to(socketid).emit('areyoufreeforgroupcall', {
+                  caller: message.caller,
+                  sendersocket: socketidSender
+                });
+                logger.serverLog('info', 'socketio.js on(callthisgroup) : see if callee is free for group call');
+              }
             }
           }
         }
