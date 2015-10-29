@@ -345,6 +345,13 @@ angular.module('cloudKiboApp')
             caller: $scope.user.username
           });
 
+          $timeout(function(){
+            if(!$scope.otherSideRinging){
+              $scope.OutgoingCallStatement = 'All members are offline.';
+              $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
+            }
+          },3000)
+
         });
     };
 
