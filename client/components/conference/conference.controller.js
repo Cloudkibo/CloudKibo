@@ -301,14 +301,15 @@ angular.module('cloudKiboApp')
     var imageData = '';
     FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
-      console.log(data);
-      if(JSON.parse(data).type === 'screenData'){
-        if (JSON.parse(data).data == "\n") {
+      console.log(data.data);
+      if(JSON.parse(data.data).type === 'screenData'){
+        if (JSON.parse(data.data).data == "\n") {
           androidPeerScreenStream = imageData;
           imageData = '';
           trace("Received all data. Setting image.");
         } else {
-          imageData += JSON.parse(data).data;
+          imageData += JSON.parse(data.data).data;
+          androidPeerScreenStream = imageData; // testing
           //trace("Data chunk received");
         }
         return ;
