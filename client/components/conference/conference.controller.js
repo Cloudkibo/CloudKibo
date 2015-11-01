@@ -79,6 +79,7 @@ angular.module('cloudKiboApp')
     });
     Room.on('conference.stream', function (peer) {
       $log.debug('hiding / showing video or screen');
+      console.log(peer)
       logger.log('hiding / showing video or screen, username : '+ $scope.user.username +' and peer name : '+ peer.username);
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
