@@ -95,6 +95,13 @@ angular.module('cloudKiboApp')
             else
               $scope.peerSharedScreen = false;
           }
+          else if(peer.type === 'screenAndroid'){
+            $scope.screenSharerId = peer.id;
+            if(peer.action)
+              $scope.androidPeerSharedScreen = true;
+            else
+              $scope.androidPeerSharedScreen = false;
+          }
         }
       });
     });
@@ -183,16 +190,24 @@ angular.module('cloudKiboApp')
     ScreenShare.initialize();
     var screenStream;
     var peerScreenStream;
+    var androidPeerScreenStream;
 
     $scope.peerSharedScreen = false;
     $scope.hasPeerSharedScreen = function () {
       return $scope.peerSharedScreen;
+    };
+    $scope.androidPeerSharedScreen = false;
+    $scope.hasAndroidPeerSharedScreen = function () {
+      return $scope.androidPeerSharedScreen;
     };
     $scope.isLocalScreenShared = function () {
       return $scope.screenSharedLocal;
     };
     $scope.getPeerScreen = function () {
       return $sce.trustAsResourceUrl(peerScreenStream);
+    };
+    $scope.getAndroidPeerScreen = function () {
+      return $sce.trustAsResourceUrl(androidPeerScreenStream);
     };
     $scope.installExtension = function () {
       ScreenShare.installChromeExtension();
@@ -283,8 +298,20 @@ angular.module('cloudKiboApp')
       }
     }
 
+    var imageData = '';
     FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
+      if(data.type === 'screenData'){
+        if (data.data == "\n") {
+          androidPeerScreenStream = imageData;
+          imageData = '';
+          trace("Received all data. Setting image.");
+        } else {
+          imageData += data.data;
+          //trace("Data chunk received");
+        }
+        return ;
+      }
       //console.log(data);
       if (typeof data.data === 'string') {
         if (data.data === 'Speaking') {
