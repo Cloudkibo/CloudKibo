@@ -29,7 +29,7 @@ div
       div(ng-show='hasAndroidPeerSharedScreen()')
         center
           span
-            img(ng-src='{{getAndroidPeerScreen()}}')
+            img(id='screenViewer', ng-src='{{getAndroidPeerScreen()}}')
       br
       alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
       br

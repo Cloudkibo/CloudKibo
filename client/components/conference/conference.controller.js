@@ -13,6 +13,7 @@ angular.module('cloudKiboApp')
       logger.log('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
       return;
     }
+    var screenViewer = document.getElementById('screenViewer');
 
     $scope.user = $scope.getCurrentUser();
     $scope.isUserNameDefined = function () {
@@ -84,24 +85,15 @@ angular.module('cloudKiboApp')
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
           if(peer.type === 'video'){
-            if(peer.action)
-              p.sharedVideo = true;
-            else
-              p.sharedVideo = false;
+            p.sharedVideo = peer.action;
           }
           else if(peer.type === 'screen'){
             $scope.screenSharerId = peer.id;
-            if(peer.action)
-              $scope.peerSharedScreen = true;
-            else
-              $scope.peerSharedScreen = false;
+            $scope.peerSharedScreen = peer.action;
           }
           else if(peer.type === 'screenAndroid'){
             $scope.screenSharerId = peer.id;
-            if(peer.action)
-              $scope.androidPeerSharedScreen = true;
-            else
-              $scope.androidPeerSharedScreen = false;
+            $scope.androidPeerSharedScreen = peer.action;
           }
         }
       });
@@ -306,11 +298,13 @@ angular.module('cloudKiboApp')
       if(JSON.parse(data.data).type === 'screenData'){
         if (JSON.parse(data.data).data == "\n") {
           androidPeerScreenStream = imageData;
+          screenViewer.src = androidPeerScreenStream;
           imageData = '';
           trace("Received all data. Setting image.");
         } else {
           imageData += JSON.parse(data.data).data;
           androidPeerScreenStream = imageData; // testing
+          screenViewer.src = androidPeerScreenStream;
           //trace("Data chunk received");
         }
         return ;
