@@ -14,6 +14,7 @@ angular.module('cloudKiboApp')
       return;
     }
     var screenViewer = document.getElementById('screenViewer');
+    var screenAndroidImage = document.getElementById('screenAndroidImage');
 
     $scope.user = $scope.getCurrentUser();
     $scope.isUserNameDefined = function () {
@@ -298,6 +299,15 @@ angular.module('cloudKiboApp')
       if($scope.hasAndroidPeerSharedScreen()){
         if (data.byteLength  || typeof data !== 'string') {
           imageData += data.data;
+
+          var canvas = document.createElement('canvas');
+          canvas.classList.add('incomingPhoto');
+          screenAndroidImage.insertBefore(canvas, screenAndroidImage.firstChild);
+
+          var context = canvas.getContext('2d');
+          var img = context.createImageData(photoContextW, photoContextH);
+          img.data.set(data.data);
+          context.putImageData(img, 0, 0);
           //androidPeerScreenStream = imageData; // testing
           //screenViewer.src = androidPeerScreenStream;
           //trace("Data chunk received");
