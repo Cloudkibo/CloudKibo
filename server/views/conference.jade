@@ -30,6 +30,7 @@ div
         center
           span
             img(id='screenViewer', ng-src='{{getAndroidPeerScreen()}}')
+            div(id='screenAndroidImage')
       br
       alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
       br
