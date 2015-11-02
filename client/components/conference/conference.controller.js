@@ -295,17 +295,17 @@ angular.module('cloudKiboApp')
     FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
       console.log(data.data);
-      if(JSON.parse(data.data).type === 'screenData'){
-        if (JSON.parse(data.data).data == "\n") {
+      if($scope.hasAndroidPeerSharedScreen()){
+        if (data.byteLength  || typeof data !== 'string') {
+          imageData += data.data;
+          //androidPeerScreenStream = imageData; // testing
+          //screenViewer.src = androidPeerScreenStream;
+          //trace("Data chunk received");
+        } else {
           androidPeerScreenStream = imageData;
           screenViewer.src = androidPeerScreenStream;
           imageData = '';
           trace("Received all data. Setting image.");
-        } else {
-          imageData += JSON.parse(data.data).data;
-          androidPeerScreenStream = imageData; // testing
-          screenViewer.src = androidPeerScreenStream;
-          //trace("Data chunk received");
         }
         return ;
       }
