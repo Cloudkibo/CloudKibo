@@ -86,15 +86,21 @@ angular.module('cloudKiboApp')
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
           if(peer.type === 'video'){
-            p.sharedVideo = peer.action;
+            $scope.$apply(function(){
+              p.sharedVideo = peer.action;
+            });
           }
           else if(peer.type === 'screen'){
-            $scope.screenSharerId = peer.id;
-            $scope.peerSharedScreen = peer.action;
+            $scope.$apply(function(){
+              $scope.screenSharerId = peer.id;
+              $scope.peerSharedScreen = peer.action;
+            });
           }
           else if(peer.type === 'screenAndroid'){
-            $scope.screenSharerId = peer.id;
-            $scope.androidPeerSharedScreen = peer.action;
+            $scope.$apply(function(){
+              $scope.screenSharerId = peer.id;
+              $scope.androidPeerSharedScreen = peer.action;
+            });
           }
         }
       });
@@ -297,6 +303,7 @@ angular.module('cloudKiboApp')
     Room.on('dataChannel.message', function(data){
       console.log(data.data);
       if($scope.hasAndroidPeerSharedScreen()){
+        console.log('Android shared screen is true')
         if (data.byteLength  || typeof data !== 'string') {
           imageData += data.data;
 
