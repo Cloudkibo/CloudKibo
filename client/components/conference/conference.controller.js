@@ -305,7 +305,7 @@ angular.module('cloudKiboApp')
           screenAndroidImage.insertBefore(canvas, screenAndroidImage.firstChild);
 
           var context = canvas.getContext('2d');
-          var img = context.createImageData(photoContextW, photoContextH);
+          var img = context.createImageData(150, 300);
           img.data.set(data.data);
           context.putImageData(img, 0, 0);
           //androidPeerScreenStream = imageData; // testing
