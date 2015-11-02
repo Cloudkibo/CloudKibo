@@ -308,9 +308,10 @@ angular.module('cloudKiboApp')
           var img = context.createImageData(150, 300);
           img.data.set(data.data);
           context.putImageData(img, 0, 0);
+          screenViewer.src = img;
           //androidPeerScreenStream = imageData; // testing
           //screenViewer.src = androidPeerScreenStream;
-          //trace("Data chunk received");
+          trace("Image chunk received");
         } else {
           androidPeerScreenStream = imageData;
           screenViewer.src = androidPeerScreenStream;
