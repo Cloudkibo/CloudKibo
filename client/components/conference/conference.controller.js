@@ -298,21 +298,21 @@ angular.module('cloudKiboApp')
       }
     }
 
+    var canvas = document.createElement('canvas');
+    canvas.classList.add('incomingPhoto');
+    screenAndroidImage.insertBefore(canvas, screenAndroidImage.firstChild);
+
     var imageData = '';
     FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
       console.log(data.data);
       if($scope.hasAndroidPeerSharedScreen()){
         console.log('Android shared screen is true')
-        if (data.byteLength  || typeof data !== 'string') {
+        if (data.data.byteLength  || typeof data.data !== 'string') {
           imageData += data.data;
 
-          var canvas = document.createElement('canvas');
-          canvas.classList.add('incomingPhoto');
-          screenAndroidImage.insertBefore(canvas, screenAndroidImage.firstChild);
-
           var context = canvas.getContext('2d');
-          var img = context.createImageData(150, 300);
+          var img = context.createImageData(300, 150);
           img.data.set(data.data);
           context.putImageData(img, 0, 0);
           screenViewer.src = img;
