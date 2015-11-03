@@ -14,7 +14,7 @@ div
         i(class='fa fa-bars')
   .meetingFullBodyPane.row(class='animate-show')
     .meetingMainBodyPane
-      div(class='animate-show', ng-hide='hasPeerSharedScreen()')
+      div(class='animate-show', ng-hide='hasPeerSharedScreen() || hasAndroidPeerSharedScreen()')
         center
           span
             .videoBoxContainer
@@ -26,6 +26,11 @@ div
         center
           span
             video(ng-src='{{getPeerScreen()}}',autoplay='true', width='80%', class='videoelementscreen', controls='true')
+      div(ng-show='hasAndroidPeerSharedScreen()')
+        center
+          span
+            img(id='screenViewer', ng-src='{{getAndroidPeerScreen()}}')
+            div(id='screenAndroidImage')
       br
       alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
       br

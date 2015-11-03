@@ -13,6 +13,8 @@ angular.module('cloudKiboApp')
       logger.log('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
       return;
     }
+    var screenViewer = document.getElementById('screenViewer');
+    var screenAndroidImage = document.getElementById('screenAndroidImage');
 
     $scope.user = $scope.getCurrentUser();
     $scope.isUserNameDefined = function () {
@@ -79,21 +81,26 @@ angular.module('cloudKiboApp')
     });
     Room.on('conference.stream', function (peer) {
       $log.debug('hiding / showing video or screen');
+      console.log(peer)
       logger.log('hiding / showing video or screen, username : '+ $scope.user.username +' and peer name : '+ peer.username);
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
           if(peer.type === 'video'){
-            if(peer.action)
-              p.sharedVideo = true;
-            else
-              p.sharedVideo = false;
+            $scope.$apply(function(){
+              p.sharedVideo = peer.action;
+            });
           }
           else if(peer.type === 'screen'){
-            $scope.screenSharerId = peer.id;
-            if(peer.action)
-              $scope.peerSharedScreen = true;
-            else
-              $scope.peerSharedScreen = false;
+            $scope.$apply(function(){
+              $scope.screenSharerId = peer.id;
+              $scope.peerSharedScreen = peer.action;
+            });
+          }
+          else if(peer.type === 'screenAndroid'){
+            $scope.$apply(function(){
+              $scope.screenSharerId = peer.id;
+              $scope.androidPeerSharedScreen = peer.action;
+            });
           }
         }
       });
@@ -183,16 +190,24 @@ angular.module('cloudKiboApp')
     ScreenShare.initialize();
     var screenStream;
     var peerScreenStream;
+    var androidPeerScreenStream;
 
     $scope.peerSharedScreen = false;
     $scope.hasPeerSharedScreen = function () {
       return $scope.peerSharedScreen;
+    };
+    $scope.androidPeerSharedScreen = false;
+    $scope.hasAndroidPeerSharedScreen = function () {
+      return $scope.androidPeerSharedScreen;
     };
     $scope.isLocalScreenShared = function () {
       return $scope.screenSharedLocal;
     };
     $scope.getPeerScreen = function () {
       return $sce.trustAsResourceUrl(peerScreenStream);
+    };
+    $scope.getAndroidPeerScreen = function () {
+      return $sce.trustAsResourceUrl(androidPeerScreenStream);
     };
     $scope.installExtension = function () {
       ScreenShare.installChromeExtension();
@@ -283,8 +298,35 @@ angular.module('cloudKiboApp')
       }
     }
 
+    var canvas = document.createElement('canvas');
+    canvas.classList.add('incomingPhoto');
+    screenAndroidImage.insertBefore(canvas, screenAndroidImage.firstChild);
+
+    var imageData = '';
     FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
+      console.log(data);
+      if($scope.hasAndroidPeerSharedScreen()){
+        console.log('Android shared screen is true')
+        if (data.data.byteLength  || typeof data.data !== 'string') {
+          imageData += data.data;
+
+          var context = canvas.getContext('2d');
+          var img = context.createImageData(300, 150);
+          img.data.set(data.data);
+          context.putImageData(img, 0, 0);
+          screenViewer.src = img;
+          //androidPeerScreenStream = imageData; // testing
+          //screenViewer.src = androidPeerScreenStream;
+          trace("Image chunk received");
+        } else {
+          androidPeerScreenStream = imageData;
+          screenViewer.src = androidPeerScreenStream;
+          imageData = '';
+          trace("Received all data. Setting image.");
+        }
+        return ;
+      }
       //console.log(data);
       if (typeof data.data === 'string') {
         if (data.data === 'Speaking') {
