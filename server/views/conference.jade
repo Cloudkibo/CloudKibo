@@ -42,41 +42,51 @@ div
         form
           input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
           button(ng-click='sendData()') Send
+
+
   .meetingBottomPane.row
     .col-sm-1(ng-show='meetingStarted()')
-      .btn-wrapper-kibo
-        a.icon-btn(id='showScreenButton', ng-click='showScreen()')
+
+        a.icon-btn.sharebtn(id='showScreenButton', ng-click='showScreen()')
           i.fa.fa-desktop
           div {{showScreenText}}
     .col-sm-4(ng-hide='hasChromeExtension() || isFireFox()')
-      .btn-wrapper-kibo
+
         a.btn.btn-lg.green(ng-click='installExtension()')
           i.fa.fa-plus-square-o
-          div Add Chrome Screen Sharing Extension
+          div Extension
     .col-sm-4(ng-show='isFireFox()')
-      .btn-wrapper-kibo
-        a.btn.btn-lg.green(target='self', ng-href='https://addons.mozilla.org/en-US/firefox/addon/cloudkibo-screen-capturing-in-/')
+
+        a.btn.btn-lg.green.exbtn(target='self', ng-href='https://addons.mozilla.org/en-US/firefox/addon/cloudkibo-screen-capturing-in-/')
           i.fa.fa-plus-square-o
-          div Add FireFox Screen Sharing Extension
-    .col-sm-1(ng-show='meetingStarted()')
-      .btn-wrapper-kibo
+          div Extension
+    .col-sm-1.filebtn(ng-show='meetingStarted()')
+
         label Send File
         input(id='file', type='file')
-    .col-sm-1(id='0', ng-show='meetingStarted()')
+    .col-sm-1.filesharetext(id='0', ng-show='meetingStarted()')
     .col-sm-1(id='filelist_container', ng-show='meetingStarted()')
-      .col-sm-1(ng-show='meetingStarted()')
-      .btn-wrapper-kibo
-        a.icon-btn(ng-click='audioToggle()')
+      .col-sm-1.audiobutton(ng-show='meetingStarted()')
+
+        a.icon-btn.audiobtn(ng-click='audioToggle()')
           i.fa.fa-microphone
           div {{toggleAudioText}}
     .col-sm-1(ng-show='meetingStarted()')
-      .btn-wrapper-kibo
-        a.icon-btn(ng-click='videoToggle()')
+
+        a.icon-btn.videobutton(ng-click='videoToggle()')
           i.fa.fa-desktop
           div {{toggleVideoText}}
-    .col-sm-1.chatBoxButton(ng-show='meetingStarted()')
-      .btn-wrapper-kibo
-        a.icon-btn(ng-click='toggleChatBoxVisibility()')
+    .col-sm-1.chatBoxButtonConf(ng-show='meetingStarted()')
+
+        a.icon-btn.chatBoxButtonConf(ng-click='toggleChatBoxVisibility()')
           i.fa.fa-envelope-o
           div Chat
+    //.row(class = "buttonConference")
+      .col-sm-4(style='background-color:lavenderblush;', ng-show='meetingStarted()')
+        a(id='showScreenButton', ng-click='showScreen()')
+          i.fa.fa-desktop {{showScreenText}}
+    //.row(class = "buttonConference")
+      .col-sm-4(style='background-color:lavender;', ng-hide='hasChromeExtension() || isFireFox()')
+        a(ng-click='installExtension()')
+          i.fa.fa-plus-square-o Extension
 

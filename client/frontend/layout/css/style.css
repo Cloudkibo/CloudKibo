@@ -5,8 +5,49 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 /********************************************************************************/
 /* Image Slider                                                                 */
 /********************************************************************************/
+.filesharetext{
+  top: 440px;
+  left : -52px;
+}
 
+.exbtn{
+  top: 98px;
+  width : 20px;
+}
 
+.sharebtn{
+  top: 270px;
+  left : 8px
+
+}
+.filebtn{
+  top: 355px;
+  left : -19px;
+}
+.meetingBottomPane{
+
+  position: fixed;
+  display: block;
+  height: 550px;
+  background: #e7edf5;
+  width: 10%;
+  top: 10%;
+}
+
+.chatBoxButtonConf{
+  top: 18%;
+  left : 5px;
+}
+
+.audiobtn{
+  top: 190px;
+  left : -95px;
+}
+
+.videobutton{
+  top: -30px;
+  left : 10px;
+}
 
 .arrow {
 	cursor: pointer;
@@ -132,9 +173,9 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 }
 
 .userInfoBoxContainer{
-  background: #fffbbb;
+  background: #f0e7e7;
   position : relative;
-  top : 15px;
+  top : 2px;
 }
 
 .statusTextField{
@@ -252,12 +293,13 @@ todo need more work
 .videoCallSidePane
 {
   position: fixed;
-  width: 20%;
-  #background: #00dd01;
-  right: 0px;
+  width: 18%;
+  #background: #f1fff1 ;
+  left: 0px;
   top: 121px;
-  height: 439px;
-  border: 1px solid;
+  height: 450px;
+  border-style: solid;
+  border-color: #eef1f5;
 }
 
 .endCallDiv{
@@ -469,7 +511,7 @@ form .progress {
 }
 
 
-.meetingBottomPane
+.chatBoxButtonConf
 {
   position: absolute;
   border-top: 1px solid #000000;
@@ -477,7 +519,8 @@ form .progress {
   #  background: #00ed01;
   bottom : 0px;
   right: 15px;
-  left: 0px;
+  top: 18%;
+  left : 5px;
 }
 
 .chatBoxButton{
@@ -727,12 +770,16 @@ textarea
   border : 2px solid #000000;
 }
 
+
 .videoelementscreen{
   border: 1.5px solid #badfef;
-  margin: 0.5em;
+  margin: 0.1em;
+  top: 87px;
+  left:182px;
+  position: fixed;
+  width: 74%;
+
 }
-
-
 
 #sidePanebox
 {
