@@ -64,9 +64,9 @@ div
 
         label Send File
         input(id='file', type='file')
-    .col-sm-1(id='0', ng-show='meetingStarted()')
+    .col-sm-1.filesharetext(id='0', ng-show='meetingStarted()')
     .col-sm-1(id='filelist_container', ng-show='meetingStarted()')
-    .col-sm-1.audiobutton(ng-show='meetingStarted()')
+      .col-sm-1.audiobutton(ng-show='meetingStarted()')
 
         a.icon-btn.audiobtn(ng-click='audioToggle()')
           i.fa.fa-microphone
