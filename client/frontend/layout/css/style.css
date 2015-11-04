@@ -40,8 +40,8 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 }
 
 .videobutton{
-  top: 30px;
-  left : -110px;
+  top: -30px;
+  left : 10px;
 }
 
 .arrow {
@@ -763,12 +763,14 @@ textarea
   height: 152px;
   border : 2px solid #000000;
 }
-
 .videoelementscreen{
   border: 1.5px solid #badfef;
-  margin: 0.5em;
-}
+  margin: 0.1em;
+  left:182px;
+  position: fixed;
+  width: 78%;
 
+}
 
 
 #sidePanebox
