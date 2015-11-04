@@ -506,7 +506,16 @@ form .progress {
 }
 
 
-
+.chatBoxButtonConf
+{
+  position: absolute;
+  border-top: 1px solid #000000;
+  height: 13%;
+  #  background: #00ed01;
+  bottom : 0px;
+  right: 15px;
+  left: 0px;
+}
 
 .chatBoxButton{
   position: absolute;
