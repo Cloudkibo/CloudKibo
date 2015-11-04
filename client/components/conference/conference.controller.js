@@ -305,7 +305,8 @@ angular.module('cloudKiboApp')
     var imageData = '';
     FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
-      console.log(data);
+      console.log(data.data);
+      console.log(data)
       if($scope.hasAndroidPeerSharedScreen()){
         console.log('Android shared screen is true')
         if (data.data.byteLength  || typeof data.data !== 'string') {
