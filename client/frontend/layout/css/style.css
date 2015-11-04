@@ -11,13 +11,13 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 }
 
 .sharebtn{
-  top: 400px;
+  top: 270px;
   left : 8px
 
 }
 .filebtn{
-  top: 335px;
-  left : -80px;
+  top: 355px;
+  left : -19px;
 }
 .meetingBottomPane{
 
@@ -30,18 +30,18 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 }
 
 .chatBoxButtonConf{
-  top: 28%;
-  left : 10px;
+  top: 18%;
+  left : 5px;
 }
 
 .audiobtn{
-  top: 250px;
-  left : -157px;
+  top: 190px;
+  left : -95px;
 }
 
 .videobutton{
-  top: 40px;
-  left : 10px;
+  top: 30px;
+  left : -110px;
 }
 
 .arrow {
