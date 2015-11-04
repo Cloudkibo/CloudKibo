@@ -26,7 +26,7 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
   height: 550px;
   background: #e7edf5;
   width: 10%;
-  top: 15%;
+  top: 10%;
 }
 
 .chatBoxButtonConf{
@@ -514,7 +514,8 @@ form .progress {
   #  background: #00ed01;
   bottom : 0px;
   right: 15px;
-  left: 0px;
+  top: 18%;
+  left : 5px;
 }
 
 .chatBoxButton{
@@ -763,15 +764,17 @@ textarea
   height: 152px;
   border : 2px solid #000000;
 }
+
+
 .videoelementscreen{
   border: 1.5px solid #badfef;
   margin: 0.1em;
+  top: 87px;
   left:182px;
   position: fixed;
-  width: 78%;
+  width: 74%;
 
 }
-
 
 #sidePanebox
 {
