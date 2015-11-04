@@ -5,8 +5,13 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 /********************************************************************************/
 /* Image Slider                                                                 */
 /********************************************************************************/
+.filesharetext{
+  top: 440px;
+  left : -52px;
+}
+
 .exbtn{
-  top: 90px;
+  top: 98px;
   width : 20px;
 }
 
