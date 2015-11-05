@@ -59,7 +59,7 @@ angular.module('cloudKiboApp')
       };
       pc.onaddstream = function (evnt) {
         $log.debug('Received stream from '+ id);
-        console.log(JSON.stringify(evnt.stream));
+        console.log(evnt.stream);
         if(screenSwitch[id]){
           api.trigger('peer.screenStream', [{
             id: id,
