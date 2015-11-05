@@ -147,7 +147,7 @@ angular.module('cloudKiboApp')
               socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'answer' });
             }, function (e) {
               $log.error(e);
-            }, { mandatory: { offerToReceiveVideo: true, offerToReceiveAudio: true }});
+            });
           }, function (e) {
             $log.error(e);
           });
