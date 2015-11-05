@@ -382,6 +382,18 @@ todo need more work
   background-color: #ffffff;
 
 }
+.modalBoxTabContent{
+  position: absolute;
+  left: 400px;
+  top: 132px;
+  overflow: auto;
+  height: 426px;
+  width: 70%;
+  z-index: 10;
+  border : 1px solid #ffffff;
+  background-color: #ffffff;
+
+}
 
 .videoCallChatPane{
   position: fixed;
