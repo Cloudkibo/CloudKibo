@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log) {
+  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -99,7 +99,7 @@ angular.module('cloudKiboApp')
         }, function (e) {
           $log.error(e);
         },
-        { mandatory: { offerToReceiveVideo: true, offerToReceiveAudio: true }});
+        sdpConstraints);
     }
 
     function makeDataChannel (id) {
@@ -146,8 +146,8 @@ angular.module('cloudKiboApp')
               pc.setLocalDescription(sdp);
               socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'answer' });
             }, function (e) {
-              $log.error(e);
-            });
+              console.log(e);
+            }, sdpConstraints);
           }, function (e) {
             $log.error(e);
           });
