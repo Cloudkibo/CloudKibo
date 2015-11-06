@@ -407,10 +407,9 @@ todo need more work
   height: 446px;
   width: 70%;
   z-index: 10;
-  border : 1px solid #ffffff;
-  background-color: #ffffff;
+  border : 2px solid #e0e0e0;
+  background-color: #f9f9f9;
 }
-
 /*.videoCallChatPane{
   position: fixed;
   width: 80%;
