@@ -5,6 +5,7 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 /********************************************************************************/
 /* Image Slider                                                                 */
 /********************************************************************************/
+
 .filesharetext{
   top: 440px;
   left : -52px;
@@ -24,7 +25,7 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
   top: 355px;
   left : -19px;
 }
-.meetingBottomPane{
+.meetingBottomPaneConference{
 
   position: fixed;
   display: block;
@@ -33,6 +34,21 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
   width: 10%;
   top: 10%;
 }
+
+
+
+.meetingBottomPane
+{
+position: absolute;
+border-top: 1px solid #e0e0e0;
+height: 12%;
+width: 100%;
+background: #f8fafe;
+top: 575px;
+right: 15px;
+left: 0px;
+}
+
 
 .chatBoxButtonConf{
   top: 18%;
@@ -267,8 +283,8 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
   overflow : auto;
   width : 100%;#240px;
   height : 400px;
-  background: #22DFFF;
-  border: 1px solid #a1a1a1;
+  background: #f8fafe;
+  border: 1px solid #badfef;
   padding: 10px;
 
 }
@@ -289,10 +305,9 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 todo need more work
 */
 
-
 .videoCallSidePane
 {
-  position: fixed;
+  position: absolute;
   width: 18%;
   #background: #f1fff1 ;
   left: 0px;
@@ -301,6 +316,7 @@ todo need more work
   border-style: solid;
   border-color: #eef1f5;
 }
+
 
 .endCallDiv{
   position: fixed;
@@ -370,15 +386,39 @@ todo need more work
   background-color: #ffffff;
 
 }
+.modalBoxTabContent{
+  position: absolute;
+  left: 400px;
+  top: 132px;
+  overflow: auto;
+  height: 426px;
+  width: 70%;
+  z-index: 10;
+  border : 1px solid #ffffff;
+  background-color: #ffffff;
+
+}
 
 .videoCallChatPane{
+  position: absolute;
+  left: 400px;
+  top: 1-2px;
+  overflow: auto;
+  height: 446px;
+  width: 70%;
+  z-index: 10;
+  border : 1px solid #ffffff;
+  background-color: #ffffff;
+}
+
+/*.videoCallChatPane{
   position: fixed;
   width: 80%;
   height: 324px;
   left: 0px;
   top: 121px;
   #background: #ffffff;
-}
+}*/
 
 .videoCallChatPane2{
   position: fixed;

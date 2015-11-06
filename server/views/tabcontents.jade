@@ -101,7 +101,7 @@ block bodycontent
 
      div(ng-show='isUserNameDefined()')
       div
-        div(ng-show='testingDefined()', class='well well-lg modalBox')
+        div(ng-show='testingDefined()', class='well well-lg modalBoxTabContent')
           .animate-show
             h3 Checking Browser Compatibility
             br
@@ -126,7 +126,7 @@ block bodycontent
             div(style='text-align:right;')
               button.btn.btn-default(ng-click='ReadyToGo()') I'm Ready
 
-        div(ng-show='isMeetingSelected()', class='well well-lg animate-show modalBox')
+        div(ng-show='isMeetingSelected()', class='well well-lg animate-show modalBoxTabContent')
           label Name your Meeting Room
           input.form-control(type='text', ng-model='meetingroom')
           br
@@ -144,7 +144,7 @@ block bodycontent
           div(style='text-align:right;')
             button.myButton1(ng-click='openMeeting()') Hide Me!
 
-        div(ng-show='isCallSelected()', class='well well-lg animate-show modalBox')
+        div(ng-show='isCallSelected()', class='well well-lg animate-show modalBoxTabContent')
           div
             div(ng-show='isUserNameSearchSelected()', class='innerbox')
               form(role='form', ng-submit='searchUserName()', novalidate, name='form5', class='css-form')
@@ -183,7 +183,7 @@ block bodycontent
           div(style='text-align:right;')
             button.myButton1(ng-click='openCall()') Hide Me!
 
-        div(ng-show='isInviteSelected()', class='animate-show modalBox')
+        div(ng-show='isInviteSelected()', class='animate-show modalBoxTabContent')
           div(class='')
             div(style='text-align:right;', class='')
               //button.myButton1(ng-click='openInvite()') Hide Me!
@@ -210,7 +210,7 @@ block bodycontent
 
               alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
 
-        div(ng-show='isAddContactSelected()', class='animate-show modalBox')
+        div(ng-show='isAddContactSelected()', class='animate-show modalBoxTabContent')
           div
             div(ng-show='isUserNameAddSelected()', class='')
               form(role='form', ng-submit='addUserName(add)', novalidate, name='form999', class='css-form')
@@ -251,7 +251,7 @@ block bodycontent
           div(style='text-align:right;')
             button.myButton1(ng-click='openAddContact()') Hide Me!
 
-        div(ng-show='isSettingsSelected()', class='modalBox')
+        div(ng-show='isSettingsSelected()', class='modalBoxTabContent')
           div(class='lalz')
             tabset(justified='true', class='tabbable')
               tab(heading='Profile')
@@ -562,7 +562,7 @@ block bodycontent
 
 
 
-        div(ng-show='isGroupCallSelected()', class='animate-show modalBox')
+        div(ng-show='isGroupCallSelected()', class='animate-show modalBoxTabContent')
           div
             div(class='nameAdd')
               form(role='form', ng-submit='createGroup(group)', novalidate, name='form9', class='css-form')
@@ -626,7 +626,7 @@ block bodycontent
                       td
                         | {{grp.groupid.groupowner}}
 
-        div(ng-show='isOpenGroupViewSelected()', class='animate-show modalBox')
+        div(ng-show='isOpenGroupViewSelected()', class='animate-show modalBoxTabContent')
           div
             div(class='nameAdd')
               h4 {{selectedGroup.groupname}}
