@@ -35,16 +35,20 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
   top: 10%;
 }
 
+
+
 .meetingBottomPane
 {
 position: absolute;
-border-top: 1px solid #000000;
-height: 13%;
-#background: #00ed01;
-bottom : 0px;
+border-top: 1px solid #e0e0e0;
+height: 12%;
+width: 100%;
+background: #f8fafe;
+top: 575px;
 right: 15px;
 left: 0px;
 }
+
 
 .chatBoxButtonConf{
   top: 18%;
@@ -301,10 +305,9 @@ left: 0px;
 todo need more work
 */
 
-
 .videoCallSidePane
 {
-  position: fixed;
+  position: absolute;
   width: 18%;
   #background: #f1fff1 ;
   left: 0px;
@@ -313,6 +316,7 @@ todo need more work
   border-style: solid;
   border-color: #eef1f5;
 }
+
 
 .endCallDiv{
   position: fixed;
