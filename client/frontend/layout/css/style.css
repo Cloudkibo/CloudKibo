@@ -400,13 +400,25 @@ todo need more work
 }
 
 .videoCallChatPane{
+  position: absolute;
+  left: 400px;
+  top: 1-2px;
+  overflow: auto;
+  height: 446px;
+  width: 70%;
+  z-index: 10;
+  border : 1px solid #ffffff;
+  background-color: #ffffff;
+}
+
+/*.videoCallChatPane{
   position: fixed;
   width: 80%;
   height: 324px;
   left: 0px;
   top: 121px;
   #background: #ffffff;
-}
+}*/
 
 .videoCallChatPane2{
   position: fixed;
