@@ -222,6 +222,10 @@ angular.module('cloudKiboApp')
           return $scope.groupCallSelected;
         };
 
+    $scope.isAnyTabSelected = function () {
+      return $scope.meetingSelected || $scope.inviteSelected || $scope.callSelected || $scope.addContactSelected || $scope.settingsSelected || $scope.groupCallViewSelected;
+    };
+
     $scope.addContactToGroup = function(contact, group){
       $http.post(RestApi.groupcall.addContact, {contactusername: contact.contactusername, group_id : group._id})
         .success(function(data){

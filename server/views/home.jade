@@ -45,7 +45,7 @@ block appbodycontent
 
 
                         if(otherUser)
-                          div(ng-if='getlocation() != "#app"')
+                          div(ng-if='getlocation() != "#app"', ng-hide='isAnyTabSelected()')
                             div(ng-controller='FileSharingController')
                               div(class="friendInfoBoxContainer")
                                 #pictureBoxForFriend
