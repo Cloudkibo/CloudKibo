@@ -179,8 +179,8 @@ block bodycontent
               br
               a(ng-click='openInvite()')
                 small Invite to CloudKibo
-          div(style='text-align:right;')
-            button.myButton1(ng-click='openCall()') Hide Me!
+              div(style='text-align:right;')
+                button.myButton1(ng-click='openCall()') Hide Me!
 
         div(ng-show='isInviteSelected()', class='animate-show modalBoxTabContent')
           div(class='')
@@ -198,6 +198,8 @@ block bodycontent
                       | Enter the email address.
                     span(ng-show="form6.email.$error.email")
                       | This is not a valid email address.
+                br
+                br
                 label.col-sm-10 Optional Message
                 .form-group2
                   textarea.form-control(rows=8, cols=40, name="smessage", ng-model='inviteemail.shortmessage', ng-focus)
