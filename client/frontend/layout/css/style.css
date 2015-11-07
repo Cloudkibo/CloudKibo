@@ -449,12 +449,12 @@ todo need more work
 .modalBoxTabContent{
   position: absolute;
   left: 100px;
-  top: 130px;
+  top: 160px;
   overflow: auto;
   height: 434px;
   width: 70%;
   z-index: 10;
-  border : 1px solid #ffffff;
+  border : 1px solid #fcfcfc;
   background-color: #ffffff;
 
 }
