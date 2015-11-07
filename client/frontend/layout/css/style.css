@@ -10,6 +10,19 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 /*
 */
 
+.videoCallSidePaneContact
+{
+  position: absolute;
+  width: 18%;
+  #background: #f1fff1 ;
+  left: 1110px;
+  top: 121px;
+  height: 450px;
+  border-style: solid;
+  border-color: #eef1f5;
+}
+
+
 .otherLogin{
   top: -220px;
   left: 300px;
@@ -325,8 +338,30 @@ left: 0px;
 /*
 todo need more work
 */
-
+.videoCallChatPane{
+  position: absolute;
+  left: 100px;
+  top: 130px;
+  overflow: auto;
+  height: 446px;
+  width: 80%;
+  z-index: 10;
+  border : 2px solid #e0e0e0;
+  background-color: #f9f9f9;
+}
 .videoCallSidePane
+{
+  position: absolute;
+  width: 18%;
+  #background: #f1fff1 ;
+  left: 1110px;
+  top: 121px;
+  height: 450px;
+  border-style: solid;
+  border-color: #eef1f5;
+}
+
+/*.videoCallSidePane
 {
   position: absolute;
   width: 18%;
@@ -337,7 +372,7 @@ todo need more work
   border-style: solid;
   border-color: #eef1f5;
 }
-
+*/
 
 .endCallDiv{
   position: fixed;
@@ -409,18 +444,17 @@ todo need more work
 }
 .modalBoxTabContent{
   position: absolute;
-  left: 400px;
-  top: 132px;
+  left: 100px;
+  top: 130px;
   overflow: auto;
-  height: 435px;
+  height: 434px;
   width: 70%;
   z-index: 10;
   border : 1px solid #ffffff;
   background-color: #ffffff;
 
 }
-
-.videoCallChatPane{
+/*.videoCallChatPane{
   position: absolute;
   left: 400px;
   top: 130px;
@@ -430,7 +464,7 @@ todo need more work
   z-index: 10;
   border : 2px solid #e0e0e0;
   background-color: #f9f9f9;
-}
+}*/
 /*.videoCallChatPane{
   position: fixed;
   width: 80%;
