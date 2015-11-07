@@ -339,6 +339,18 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 todo need more work
 */
 
+/*.videoCallChatPane{
+  position: absolute;
+  left: 100px;
+  top: 130px;
+  overflow: auto;
+  height: 446px;
+  width: 90%;
+  z-index: 10;
+  border : 1px solid #e0e0e0;
+  background-color: #f9f9f9;
+}*/
+
 .videoCallChatPane{
   position: absolute;
   left: 100px;
@@ -711,10 +723,17 @@ form .progress {
 
 }
 
-.friendInfoBoxContainer{
+/*.friendInfoBoxContainer{
   background: #fffbbb;
   height : 112px;
   overflow : auto;
+}*/
+
+.friendInfoBoxContainer{
+  background: #ffffff;
+  height : 112px;
+  overflow : auto;
+  margin:0.2em;
 }
 
 #userNameBoxForFriend
