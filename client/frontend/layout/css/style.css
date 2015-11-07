@@ -1151,17 +1151,14 @@ textarea
   max-height:40px;
 }
 
-
-
-
 .form-group1{
-  left: -15px;
+  left: -25px;
   top: 22px;
-  height: 110px; #auto;#300px;
-  width: 80%;
-
+  height: 60px; #auto;#300px;
+  width: 95%;
   background-color: #ffffff;
 }
+
 .form-group2{
   left: 15px;
   top: 22px;
