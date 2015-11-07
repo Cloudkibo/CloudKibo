@@ -6,6 +6,18 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 /* Image Slider                                                                 */
 /********************************************************************************/
 
+/**login page
+/*
+*/
+
+.otherLogin{
+  top: -270px;
+  left: 300px;
+}
+
+/**/
+
+
 .filesharetext{
   top: 440px;
   left : -52px;
