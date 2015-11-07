@@ -15,13 +15,13 @@
                               #userNameBoxForFriend
                                 #userInfoDetails
                                   h5 {{otherUser.firstname}} {{otherUser.lastname}}
-                                  b KiboName: 
+                                  b KiboName:
                                   i {{otherUser.username}}
                                   br
                                   small
                                     i {{otherUser.status}}
                                 #userViewOptions
-                                  span
+                                  .row
                                     button.btn.btn-send(ng-click='callThisPerson(otherUser.username)') Make a Call
                             .chatArea
                               .chatBox(schroll-bottom='messages')
@@ -30,7 +30,7 @@
                                 div(ng-repeat='message in messages')
                                   .chatMessage
                                     .senderInfoInMessage
-                                      b {{message.fromFullName}} 
+                                      b {{message.fromFullName}}
                                     .messageTextInMessage
                                       | {{message.msg}}
                               .chatControls
