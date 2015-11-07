@@ -11,8 +11,15 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 */
 
 .otherLogin{
-  top: -270px;
+  top: -220px;
   left: 300px;
+}
+
+
+.contet{
+
+  top: 5px;
+
 }
 
 /**/
@@ -2698,6 +2705,11 @@ body.page-header-fixed {
 /***
 Sidebar
 ***/
+
+.sidebarLogin {
+  right: 80px;
+}
+
 .sidebar {
 	color: #3E4D5C;
 }
