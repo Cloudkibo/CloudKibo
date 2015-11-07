@@ -127,14 +127,12 @@ block bodycontent
               button.btn.btn-default(ng-click='ReadyToGo()') I'm Ready
 
         div(ng-show='isMeetingSelected()', class='well well-lg animate-show modalBoxTabContent')
-          label.col-sm-10 Name your Meeting Room
-          input.form-control(type='text', ng-model='meetingroom')
+          label.col-md-4.col-sm-offset-4 Name your Meeting Room
+          input.form-control.col-lg-7.col-md-offset-1.padding-left-0.ng-pristine.ng-valid(type='text', ng-model='meetingroom')
           br
+          label.col-lg-7.col-md-offset-3.padding-left-0.padding-top-10 Please ask participants to join meeting using this meeting name
           br
-          label.col-sm-10 Please ask participants to join meeting using this meeting name
-          br
-          b {{meetingroom}}
-          br
+          b.col-lg-8.col-md-offset-5.padding-left-0.padding-top-20.ng-binding {{meetingroom}}
           br
           center
             a(href='/#/conference/{{meetingroom}}')
