@@ -223,7 +223,7 @@ angular.module('cloudKiboApp')
         };
 
     $scope.isAnyTabSelected = function () {
-      return $scope.meetingSelected || $scope.inviteSelected || $scope.callSelected || $scope.addContactSelected || $scope.settingsSelected || $scope.groupCallViewSelected;
+      return $scope.meetingSelected || $scope.inviteSelected || $scope.callSelected || $scope.addContactSelected || $scope.groupCallSelected || $scope.settingsSelected || $scope.groupCallViewSelected;
     };
 
     $scope.addContactToGroup = function(contact, group){

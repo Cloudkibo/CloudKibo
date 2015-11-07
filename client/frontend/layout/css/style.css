@@ -338,17 +338,19 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 /*
 todo need more work
 */
+
 .videoCallChatPane{
   position: absolute;
   left: 100px;
   top: 130px;
   overflow: auto;
   height: 446px;
-  width: 80%;
+  width: 90%;
   z-index: 10;
-  border : 2px solid #e0e0e0;
+  border : 1px solid #e0e0e0;
   background-color: #f9f9f9;
 }
+
 .videoCallSidePane
 {
   position: absolute;
