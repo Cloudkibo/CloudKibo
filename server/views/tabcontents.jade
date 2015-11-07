@@ -187,10 +187,9 @@ block bodycontent
             div(style='text-align:right;', class='')
               //button.myButton1(ng-click='openInvite()') Hide Me!
             #inviteEmailBox1(class='')
-              form(role='form', method="post", novalidate, name='form6', class='col-lg-8 col-lg-offset-6 formcss', ng-submit='emailInvite(inviteemail)')
-
+              form(role='form', method="post", novalidate, name='form6', class='col-lg-10 col-lg-offset-2 formcss', ng-submit='emailInvite(inviteemail)')
                 br
-                label.col-sm-2 Invite your friend to CloudKibo
+                label.col-sm-10 Invite your friend to CloudKibo
                 .form-group4
                   input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='inviteemail.recipientEmail')
                 div(ng-show="form6.email.$dirty && !form6.email.$focused")
@@ -199,7 +198,7 @@ block bodycontent
                       | Enter the email address.
                     span(ng-show="form6.email.$error.email")
                       | This is not a valid email address.
-                label Optional Message
+                label.col-sm-10 Optional Message
                 .form-group2
                   textarea.form-control(rows=8, cols=40, name="smessage", ng-model='inviteemail.shortmessage', ng-focus)
                 br
