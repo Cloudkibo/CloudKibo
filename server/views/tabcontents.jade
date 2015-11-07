@@ -147,24 +147,23 @@ block bodycontent
         div(ng-show='isCallSelected()', class='well well-lg animate-show modalBoxTabContent')
           div
             div(ng-show='isUserNameSearchSelected()', class='innerbox')
-              form(role='form', ng-submit='searchUserName()', novalidate, name='form5', class='css-form')
+              form(role='form', ng-submit='searchUserName()', novalidate, name='form5', class='col-lg-8 col-lg-offset-2 css-form')
                 .form-group1
-                  label Type the person's username to make a call
+                  center Enter Kiboname to make call
                   input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='search.searchusername')
                 a(ng-click='switchSearchOption()')
-                  small Call using email
-                br
+                  center Call using email
                 br
                 div
-                  button.myButton(type='submit', ng-disabled="form5.$invalid") Call
+                  button.myButton.center(type='submit', ng-disabled="form5.$invalid") Call
             div(ng-show='!isUserNameSearchSelected()', class='wellz')
-              form(role='form', ng-submit='searchEmail()', novalidate, name='form4', class='css-form')
-                .form-group1
+              form(role='form', ng-submit='searchEmail()', novalidate, name='form4', class='col-lg-8 col-lg-offset-2 css-form')
+                .form-group1.text-center
                   label Type the person's email address to make a call
                   input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='search.searchemail')
                 div(ng-show="form4.email.$dirty && !form4.email.$focused")
                   div(ng-show="form4.email.$invalid")
-                    span(ng-show="form4.email.$error.required")
+                    span.center-block(ng-show="form4.email.$error.required")
                       | Enter the email address.
                     span(ng-show="form4.email.$error.email")
                       | This is not a valid email address.
@@ -569,7 +568,7 @@ block bodycontent
                 .form-group
                   label Group Name
                   input.form-control(type='text', name="username", placeholder='Enter group name here to create group', required, ng-model='group.groupname')
-                  
+
                 div(class="labelAddContact")
                   button.myButton(type='submit', ng-disabled="form9.$invalid", ) Create group
 
