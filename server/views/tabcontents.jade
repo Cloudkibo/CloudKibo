@@ -213,26 +213,25 @@ block bodycontent
             div(ng-show='isUserNameAddSelected()', class='')
               form(role='form', ng-submit='addUserName(add)', novalidate, name='form999', class='css-form')
                 .form-group
-                  label Add contact by username
-                  input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='add.searchusername')
-                a(ng-click='switchAddOption()' class="labelAddContact")
+                  label.col-md-1.col-md-offset-6  Add contact by username
+                  input.form-control.col-md-1.col-md-offset-4 (type='text', name="username", placeholder='Enter Username', required, ng-model='add.searchusername')
+                a.col-md-1.col-md-offset-6 (ng-click='switchAddOption()' class="labelAddContact")
                   small Add contact by email
                 br
-                br
                 div
-                  button.myButton(type='submit', ng-disabled="form999.$invalid") Add
+                  button.myButton.col-md-1.col-md-offset-6 (type='submit', ng-disabled="form999.$invalid") Add
             div(ng-show='!isUserNameAddSelected()', class='')
               form(role='form', ng-submit='addEmail(add)', novalidate, name='form41', class='css-form')
                 .form-group
-                  label Add contact by email
-                  input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='add.searchemail')
+                  label.col-md-1.col-md-offset-6  Add contact by email
+                  input.form-control.col-md-1.col-md-offset-4(type='email', name="email", placeholder='Enter Email Address', required, ng-model='add.searchemail')
                 div(ng-show="form41.email.$dirty && !form41.email.$focused")
                   div(ng-show="form41.email.$invalid")
                     span(ng-show="form41.email.$error.required")
                       | Enter the email address.
                     span(ng-show="form41.email.$error.email")
                       | This is not a valid email address.
-                a(ng-click='switchAddOption()')
+                a.col-md-1.col-md-offset-6 (ng-click='switchAddOption()')
                   small Add contact by username
                 br
                 br
@@ -255,7 +254,7 @@ block bodycontent
               tab(heading='Profile')
                 div(class='lalz')
                   #profileLeft
-                    form(role='form', novalidate, name='form', class='css-form', enctype='multipart/form-data', ng-submit='updateProfile(user)')
+                    form(role='form', novalidate, name='form', class='css-form col-md-12', enctype='multipart/form-data', ng-submit='updateProfile(user)')
                       br
                       h4 My Profile
                       br
