@@ -125,6 +125,9 @@ module.exports = function(app) {
   app.route('/forgotpasswordview')
 	.get(viewroutes.forgotPasswordViewRoute);
 
+  app.route('/forgotusernameview')
+    .get(viewroutes.forgotUserNameViewRoute);
+
   app.route("/resetpasswordview/*")
 	.get(viewroutes.resetPasswordViewRoute);
 

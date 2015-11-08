@@ -25,6 +25,7 @@ router.post('/invitebymultipleemail', auth.isAuthenticated(), controller.inviteM
 router.post('/initialtestingdone', auth.isAuthenticated(), controller.initialtesting);
 router.post('/setstatusmessage', auth.isAuthenticated(), controller.setstatusmessage);
 router.post('/resetpasswordrequest', controller.resetpasswordrequest);
+router.post('/resetusernamerequest', controller.resetusernamerequest);
 router.post("/changepassword", controller.changePasswordRoute);
 router.post("/saveusername", controller.saveUsernameRoute);
 router.post("/searchaccountsbyphone", auth.isAuthenticated(), controller.searchAccountByPhone);
