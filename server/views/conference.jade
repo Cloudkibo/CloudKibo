@@ -65,7 +65,7 @@
 
   .col-sm-11(class='animate-show')
     .row
-      .col-sm-2(ng-show='showChatBox()')
+      .col-md-6.col-lg-offset-9(ng-show='showChatBox()')
         div(class='animate-show')
           div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages')
             .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
@@ -73,7 +73,7 @@
           form
             input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
             button(ng-click='sendData()') Send
-      .col-sm-10
+      .contactIconPane
         div(class='animate-show', ng-hide='hasPeerSharedScreen() || hasAndroidPeerSharedScreen()')
           center
             span
