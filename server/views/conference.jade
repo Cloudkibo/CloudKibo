@@ -85,7 +85,7 @@
         div(ng-show='hasPeerSharedScreen()')
           center
             span
-              video(ng-src='{{getPeerScreen()}}',autoplay='true', style='width: {{widthScreen}};', class='videoelementscreen', controls='true')
+              video(ng-src='{{getPeerScreen()}}',autoplay='true', style='width: {{widthScreen}}; height: {{heightScreen}}', class='videoelementscreen', controls='true')
         div(ng-show='hasAndroidPeerSharedScreen()')
           center
             span
