@@ -213,18 +213,19 @@ block bodycontent
             div(ng-show='isUserNameAddSelected()', class='')
               form(role='form', ng-submit='addUserName(add)', novalidate, name='form999', class='css-form')
                 .form-group
-                  label.col-md-1.col-md-offset-6  Add contact by username
-                  input.form-control.col-md-1.col-md-offset-4 (type='text', name="username", placeholder='Enter Username', required, ng-model='add.searchusername')
+                  label Add contact by username
+                  input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='add.searchusername')
                 a(ng-click='switchAddOption()' class="labelAddContact")
                   small Add contact by email
                 br
+                br
                 div
-                  button.myButton.col-md-1.col-md-offset-6 (type='submit', ng-disabled="form999.$invalid") Add
+                  button(type='submit', ng-disabled="form999.$invalid") Add
             div(ng-show='!isUserNameAddSelected()', class='')
               form(role='form', ng-submit='addEmail(add)', novalidate, name='form41', class='css-form')
                 .form-group
-                  label.col-md-1.col-md-offset-6  Add contact by email
-                  input.form-control.col-md-1.col-md-offset-4(type='email', name="email", placeholder='Enter Email Address', required, ng-model='add.searchemail')
+                  label Add contact by email
+                  input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='add.searchemail')
                 div(ng-show="form41.email.$dirty && !form41.email.$focused")
                   div(ng-show="form41.email.$invalid")
                     span(ng-show="form41.email.$error.required")
