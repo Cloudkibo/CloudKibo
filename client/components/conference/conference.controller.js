@@ -141,7 +141,14 @@ angular.module('cloudKiboApp')
       return $scope.chatBoxVisible;
     };
     $scope.toggleChatBoxVisibility = function () {
-      if($scope.chatBoxVisible) $scope.widthScreen = '84%'; else $scope.widthScreen = '74%';
+      if($scope.chatBoxVisible)
+      {
+        $scope.widthScreen = '100%';
+        $scope.heightScreen = '100%';
+      } else{
+        $scope.widthScreen = '130%';
+        $scope.heightScreen = '100%';
+      }
       $scope.chatBoxVisible = !$scope.chatBoxVisible;
     };
     $scope.userMessages = [];
@@ -192,7 +199,8 @@ angular.module('cloudKiboApp')
     var screenStream;
     var peerScreenStream;
     var androidPeerScreenStream;
-    $scope.widthScreen = '84%';
+    $scope.widthScreen = '130%';
+    $scope.heightScreen = '100%';
     $scope.peerSharedScreen = false;
     $scope.hasPeerSharedScreen = function () {
       return $scope.peerSharedScreen;

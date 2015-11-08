@@ -327,7 +327,7 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 {
   overflow : auto;
   width : 40%;#240px;
-  height : 400px;
+  height : 498px;
   background: #f8fafe;
   border: 1px solid #badfef;
   padding: 10px;
@@ -890,10 +890,18 @@ textarea
 }
 
 
-.videoelementscreen{
+/*.videoelementscreen{
   border: 1.5px solid #badfef;
   margin: 0.1em;
 
+}*/
+
+
+.videoelementscreen{
+  border: 1.5px solid #badfef;
+  margin: 0.1em;
+  height: 500px;
+  width: 930px;
 }
 
 #sidePanebox
