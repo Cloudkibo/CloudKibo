@@ -143,10 +143,10 @@ angular.module('cloudKiboApp')
     $scope.toggleChatBoxVisibility = function () {
       if($scope.chatBoxVisible)
       {
-        $scope.widthScreen = '100%';
+        $scope.widthScreen = '105%';
         $scope.heightScreen = '100%';
       } else{
-        $scope.widthScreen = '130%';
+        $scope.widthScreen = '120%';
         $scope.heightScreen = '100%';
       }
       $scope.chatBoxVisible = !$scope.chatBoxVisible;
@@ -199,7 +199,7 @@ angular.module('cloudKiboApp')
     var screenStream;
     var peerScreenStream;
     var androidPeerScreenStream;
-    $scope.widthScreen = '130%';
+    $scope.widthScreen = '120%';
     $scope.heightScreen = '100%';
     $scope.peerSharedScreen = false;
     $scope.hasPeerSharedScreen = function () {
