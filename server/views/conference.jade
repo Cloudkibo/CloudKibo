@@ -38,6 +38,10 @@
       .col-sm-1(ng-show='meetingStarted()')
         label.col-sm-2 Send File
         input.icon-btn(id='file', type='file')
+        .fileUpload.btn.btn-primary
+          span Upload
+            |
+            input.upload(type='file')
     .row
       .col-sm-1(id='0', ng-show='meetingStarted()')
     .row
