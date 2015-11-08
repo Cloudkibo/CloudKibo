@@ -500,9 +500,6 @@ exports.setstatusmessage = function(req, res, next){
 
 
 
-/**
- * Password reset request route
- */
 exports.resetpasswordrequest = function(req, res, next){
 
   console.log("reset password request sent")
@@ -550,6 +547,42 @@ exports.resetpasswordrequest = function(req, res, next){
   })
 };
 
+
+exports.resetusernamerequest = function(req, res, next){
+
+  console.log("username request sent")
+  User.findOne({email : req.body.email}, function(err, gotUser){
+    if(err) return console.log(err);
+    if(!gotUser) return res.send({status:'danger', msg:'Sorry! No such account exists in our database.'});
+
+    configuration.findOne({}, function(err, gotConfig) {
+
+      var sendgrid = require('sendgrid')(gotConfig.sendgridusername, gotConfig.sendgridpassword);
+
+
+      var email     = new sendgrid.Email({
+        to:       gotUser.email,
+        from:     'support@cloudkibo.com',
+        subject:  'CloudKibo: Username Request',
+        text:     'Username Request'
+      });
+
+      email.setHtml('<h1>CloudKibo</h1><br><br>Your Cloudkibo username is:  <br><br> Cloudkibo username:  '+ gotUser.username);
+
+      sendgrid.send(email, function(err, json) {
+        if (err) { return console.error(err); }
+
+        console.log("sending link for username in email");
+
+        res.send({status:'success', msg:'Cloudkibo username has been sent to your email address. Check your spam or junk folder if you have not received our email.'});
+
+      });
+
+    })
+
+
+  })
+};
 
 
 /**
