@@ -8,23 +8,6 @@ var passwordresettoken = require("./api/tokens/passwordresettoken.model");
 
 var html_dir = './public/';
 
-exports.indexRoute = function (req, res) {
-
-	var title = 'CloudKibo';
-
-	if(req.get('host') == 'www.cloudkibo.com')
-		title = 'CloudKibo';
-	else if(req.get('host') == 'www.synaps3webrtc.com')
-		title = 'Synaps3WebRTC';
-
-	  if (typeof req.user == 'undefined')
-	      res.render('index', { title: title});
-      else{
-		res.render('index', { title: title});
-		//res.redirect('/home');
-      }
-  };
-
 exports.appRoute = function (req, res) {
 
 		var title = 'CloudKibo';
@@ -137,17 +120,6 @@ exports.liveHelpRoute = function (req, res) {
 		res.render('livehelp', { title: title, meetingroom : req.params[0], role : req.query['role']});
   };
 
-exports.videoCallRoute = function (req, res) {
-
-	var title = 'CloudKibo';
-
-	if(req.get('host') == 'www.cloudkibo.com')
-		title = 'CloudKibo';
-	else if(req.get('host') == 'www.synaps3webrtc.com')
-		title = 'Synaps3WebRTC';
-
-		res.render('videocall', { title: title, meetingroom : req.params[0]});
-  };
 
 exports.welcomeScreenViewRoute = function (req, res) {
 	  if (typeof req.user == 'undefined')
@@ -289,44 +261,8 @@ exports.forgotPasswordViewRoute = function(req, res) {
 		res.redirect('/home');
   };
 
-exports.featuresViewRoute = function(req, res) {
-
-	var title = 'CloudKibo';
-
-	if(req.get('host') == 'www.cloudkibo.com')
-		title = 'CloudKibo';
-	else if(req.get('host') == 'www.synaps3webrtc.com')
-		title = 'Synaps3WebRTC';
-
-	res.render('features', { title: title});
-  };
 
 
-exports.contactViewRoute = function(req, res) {
-
-	var title = 'CloudKibo';
-
-	if(req.get('host') == 'www.cloudkibo.com')
-		title = 'CloudKibo';
-	else if(req.get('host') == 'www.synaps3webrtc.com')
-		title = 'Synaps3WebRTC';
-
-	res.render('contact', { title: title});
-
-  };
-
-
-exports.aboutusViewRoute = function(req, res) {
-
-	var title = 'CloudKibo';
-
-	if(req.get('host') == 'www.cloudkibo.com')
-		title = 'CloudKibo';
-	else if(req.get('host') == 'www.synaps3webrtc.com')
-		title = 'Synaps3WebRTC';
-
-	res.render('aboutus', { title: title});
-  };
 exports.superUserViewRoute = function(req, res) {
 	if (typeof req.user == 'undefined')
 		res.redirect('/');
