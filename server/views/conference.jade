@@ -30,19 +30,20 @@
           i.fa.fa-desktop
           div {{toggleVideoText}}
     .row
-      .col-sm-1.chatButtonUI(ng-show='meetingStarted()')
-        a.icon-btn(ng-click='toggleChatBoxVisibility()')
-          i.fa.fa-envelope-o
-          div Chat
-    .row
       .col-sm-1(ng-show='meetingStarted()')
-        label Send File
+        //label Send File
         input(id='file', type='file')
-        input(type='file', data-filename-placement='inside')
+        //input(type='file', data-filename-placement='inside')
+
     .row
       .col-sm-1(id='0', ng-show='meetingStarted()')
     .row
       .col-sm-1(id='filelist_container', ng-show='meetingStarted()')
+    .row
+      .col-sm-1.chatButtonUI(ng-show='meetingStarted()')
+        a.icon-btn(ng-click='toggleChatBoxVisibility()')
+          i.fa.fa-envelope-o
+          div Chat
     .row
       .col-sm-1(ng-hide='hasChromeExtension() || isFireFox()')
         a.btn.btn-lg.green(ng-click='installExtension()')

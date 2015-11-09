@@ -314,7 +314,7 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 
 .chatButtonUI{
   left: 1240px;
-  top :270px;
+  top :90px;
 
 }
 
@@ -1340,13 +1340,13 @@ textarea
 input#file {
   left: 3px;
   height: 60px;
-  width: 32px;
-  min-width: 80px;
-  margin: 0 5px 5px 0;
+  width: 35px;
+  min-width: 86px;
+  margin: 0 5px 05px 0;
   border: 1px solid #ddd;
-  padding: 12px 0px 0px 0px;
+  padding: 18px 0px 0px 0px;
   background-color: #fafafa !important;
-  background-image: none !important;
+  ground-image: none !important;
   filter:none !important;
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
