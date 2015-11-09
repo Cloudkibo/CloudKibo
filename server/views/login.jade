@@ -7,7 +7,7 @@ block bodycontent
  div(class='main')
    .container
      div(class='row margin-bottom-40')
-       div(class='sidebar col-md-3 col-sm-3')
+       div(class='sidebar col-md-2')
          ul(class='list-group margin-bottom-25 sidebar-menu')
            li(class='list-group-item clearfix')
              a(href='#register')
@@ -17,7 +17,12 @@ block bodycontent
              a(href='#forgotpassword')
                i(class='fa fa-angle-right')
                | Forgot Password
-       div(class='col-md-9 col-sm-9')
+           li(class='list-group-item clearfix')
+             a(href='#forgotusername')
+               i(class='fa fa-angle-right')
+               | Forgot Username
+
+       div(class='contet col-md-9 col-sm-9')
          h1 Login
          .content-form-page
              .row
@@ -49,8 +54,10 @@ block bodycontent
                              small Enter the password.
                            span(ng-show="form1.password.$error.minlength")
                              small Length of password should be greater than 6 characters.
+                   br
+                   br
                    .row
-                     div(class='col-lg-8 col-md-offset-4 padding-left-0')
+                     div(class='col-lg-8 col-md-offset-4 padding-left-1')
                        a(href='#forgotpassword')
                          | Forget Password?
                    .row
@@ -62,8 +69,7 @@ block bodycontent
                      div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
                        alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
                    .row
-                     div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-10 padding-right-30')
-                       hr
+                     div(class='otherLogin col-lg-8 col-md-offset-4 padding-left-0 padding-top-10 padding-right-30')
                        p(class='text-muted') or login using:
                        div
                            div

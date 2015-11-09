@@ -45,7 +45,7 @@ block appbodycontent
 
 
                         if(otherUser)
-                          div(ng-if='getlocation() != "#app"')
+                          div(ng-if='getlocation() != "#app"', ng-hide='isAnyTabSelected()')
                             div(ng-controller='FileSharingController')
                               div(class="friendInfoBoxContainer")
                                 #pictureBoxForFriend
@@ -69,13 +69,13 @@ block appbodycontent
                                       i {{otherUser.status}}
                                   #userViewOptions(ng-if='hasSharedDetails()')
                                     span
-                                      button.btn.btn-send(ng-click='callThisPerson(otherUser.username)') Make a Call
+                                      button.btn.btn-info.btn-sm(ng-click='callThisPerson(otherUser.username)') Make a Call
                                     span
-                                      button.btn.btn-send(ng-click='removeFriend(otherUser)') Remove Friend
+                                      button.btn.btn-info.btn-sm(ng-click='removeFriend(otherUser)') Remove Friend
                                     span
-                                      button.btn.btn-send(ng-click='removechathistory(otherUser)') Remove Conversation
+                                      button.btn.btn-info.btn-sm(ng-click='removechathistory(otherUser)') Remove Conversation
                                     span
-                                      button.btn.btn-send(ng-click='startFileChat()') Send File
+                                      button.btn.btn-info.btn-sm(ng-click='startFileChat()') Send File
                               div(ng-show='openFileSendView()')
                                 label Send File
                                 input(id='file', type='file')

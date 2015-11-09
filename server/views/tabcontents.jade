@@ -127,14 +127,12 @@ block bodycontent
               button.btn.btn-default(ng-click='ReadyToGo()') I'm Ready
 
         div(ng-show='isMeetingSelected()', class='well well-lg animate-show modalBoxTabContent')
-          label Name your Meeting Room
-          input.form-control(type='text', ng-model='meetingroom')
+          label.col-md-4.col-sm-offset-4 Name your Meeting Room
+          input.form-control.col-lg-7.col-md-offset-1.padding-left-1.ng-pristine.ng-valid(type='text', ng-model='meetingroom')
           br
+          label.col-lg-9.col-md-offset-3.padding-left-0.padding-top-10 Please ask participants to join meeting using this meeting name
           br
-          label Please ask participants to join meeting using this meeting name
-          br
-          b {{meetingroom}}
-          br
+          b.col-lg-8.col-md-offset-5.padding-left-0.padding-top-20.ng-binding {{meetingroom}}
           br
           center
             a(href='/#/conference/{{meetingroom}}')
@@ -147,24 +145,23 @@ block bodycontent
         div(ng-show='isCallSelected()', class='well well-lg animate-show modalBoxTabContent')
           div
             div(ng-show='isUserNameSearchSelected()', class='innerbox')
-              form(role='form', ng-submit='searchUserName()', novalidate, name='form5', class='css-form')
+              form(role='form', ng-submit='searchUserName()', novalidate, name='form5', class='col-lg-8 col-lg-offset-2 css-form')
                 .form-group1
-                  label Type the person's username to make a call
+                  center Enter Kiboname to make call
                   input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='search.searchusername')
                 a(ng-click='switchSearchOption()')
-                  small Call using email
-                br
+                  center Call using email
                 br
                 div
-                  button.myButton(type='submit', ng-disabled="form5.$invalid") Call
+                  button.myButton.center(type='submit', ng-disabled="form5.$invalid") Call
             div(ng-show='!isUserNameSearchSelected()', class='wellz')
-              form(role='form', ng-submit='searchEmail()', novalidate, name='form4', class='css-form')
-                .form-group1
+              form(role='form', ng-submit='searchEmail()', novalidate, name='form4', class='col-lg-8 col-lg-offset-2 css-form')
+                .form-group1.text-center
                   label Type the person's email address to make a call
                   input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='search.searchemail')
                 div(ng-show="form4.email.$dirty && !form4.email.$focused")
                   div(ng-show="form4.email.$invalid")
-                    span(ng-show="form4.email.$error.required")
+                    span.center-block(ng-show="form4.email.$error.required")
                       | Enter the email address.
                     span(ng-show="form4.email.$error.email")
                       | This is not a valid email address.
@@ -180,18 +177,17 @@ block bodycontent
               br
               a(ng-click='openInvite()')
                 small Invite to CloudKibo
-          div(style='text-align:right;')
-            button.myButton1(ng-click='openCall()') Hide Me!
+              div(style='text-align:right;')
+                button.myButton1(ng-click='openCall()') Hide Me!
 
         div(ng-show='isInviteSelected()', class='animate-show modalBoxTabContent')
           div(class='')
             div(style='text-align:right;', class='')
               //button.myButton1(ng-click='openInvite()') Hide Me!
             #inviteEmailBox1(class='')
-              form(role='form', method="post", novalidate, name='form6', class='formcss', ng-submit='emailInvite(inviteemail)')
-
+              form(role='form', method="post", novalidate, name='form6', class='col-lg-10 col-lg-offset-2 formcss', ng-submit='emailInvite(inviteemail)')
                 br
-                label Invite your friend to CloudKibo
+                label.col-sm-10 Invite your friend to CloudKibo
                 .form-group4
                   input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='inviteemail.recipientEmail')
                 div(ng-show="form6.email.$dirty && !form6.email.$focused")
@@ -200,7 +196,9 @@ block bodycontent
                       | Enter the email address.
                     span(ng-show="form6.email.$error.email")
                       | This is not a valid email address.
-                label Optional Message
+                br
+                br
+                label.col-sm-10 Optional Message
                 .form-group2
                   textarea.form-control(rows=8, cols=40, name="smessage", ng-model='inviteemail.shortmessage', ng-focus)
                 br
@@ -222,7 +220,7 @@ block bodycontent
                 br
                 br
                 div
-                  button.myButton(type='submit', ng-disabled="form999.$invalid") Add
+                  button(type='submit', ng-disabled="form999.$invalid") Add
             div(ng-show='!isUserNameAddSelected()', class='')
               form(role='form', ng-submit='addEmail(add)', novalidate, name='form41', class='css-form')
                 .form-group
@@ -257,7 +255,7 @@ block bodycontent
               tab(heading='Profile')
                 div(class='lalz')
                   #profileLeft
-                    form(role='form', novalidate, name='form', class='css-form', enctype='multipart/form-data', ng-submit='updateProfile(user)')
+                    form(role='form', novalidate, name='form', class='css-form col-md-12', enctype='multipart/form-data', ng-submit='updateProfile(user)')
                       br
                       h4 My Profile
                       br
@@ -569,16 +567,15 @@ block bodycontent
                 .form-group
                   label Group Name
                   input.form-control(type='text', name="username", placeholder='Enter group name here to create group', required, ng-model='group.groupname')
-                  
+
                 div(class="labelAddContact")
                   button.myButton(type='submit', ng-disabled="form9.$invalid", ) Create group
 
               br
               br
-              br
               b My Groups
               br
-              .table-responsive
+              .table-responsive.col-md-12
                 table.table.table-bordered.table-hover
                   thead
                     tr
@@ -607,7 +604,7 @@ block bodycontent
               br
               b Groups I am member of
               br
-              .table-responsive
+              .table-responsive.col-md-12
                 table.table.table-bordered.table-hover
                   thead
                     tr
@@ -636,10 +633,8 @@ block bodycontent
                   input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='contact.contactusername')
                 div(class="labelAddContact")
                   button.myButton(type='submit', ng-disabled="form99.$invalid") Add
-
                 br
-                br
-              .table-responsive
+              .table-responsive.col-md-12
                 table.table.table-bordered.table-hover
                   thead
                     tr

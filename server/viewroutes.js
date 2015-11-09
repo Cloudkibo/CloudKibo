@@ -262,6 +262,25 @@ exports.forgotPasswordViewRoute = function(req, res) {
   };
 
 
+exports.forgotUserNameViewRoute = function(req, res) {
+  if (typeof req.user == 'undefined') {
+
+
+    var title = 'CloudKibo';
+
+    if(req.get('host') == 'www.cloudkibo.com')
+      title = 'CloudKibo';
+    else if(req.get('host') == 'www.synaps3webrtc.com')
+      title = 'Synaps3WebRTC';
+
+
+    res.render('forgotusername', {title: title});
+  }
+  else
+    res.redirect('/home');
+};
+
+
 
 exports.superUserViewRoute = function(req, res) {
 	if (typeof req.user == 'undefined')
