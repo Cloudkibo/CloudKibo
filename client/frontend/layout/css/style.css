@@ -1338,7 +1338,7 @@ textarea
 /* File Upload                                                                  */
 /********************************************************************************/
 input#file {
-  left: 3px;
+  left: -1px;
   height: 60px;
   width: 35px;
   min-width: 86px;
