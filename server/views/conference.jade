@@ -34,7 +34,9 @@
         //label Send File
         input(id='file', type='file')
         //input(type='file', data-filename-placement='inside')
-
+      .fileUpload.btn.btn-primary
+        span Upload
+        input.upload(type='file')
     .row
       .col-sm-1(id='0', ng-show='meetingStarted()')
     .row
