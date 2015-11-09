@@ -1337,7 +1337,32 @@ textarea
 /********************************************************************************/
 /* File Upload                                                                  */
 /********************************************************************************/
-
+input#file {
+  left: 3px;
+  height: 60px;
+  width: 32px;
+  min-width: 80px;
+  margin: 0 5px 5px 0;
+  border: 1px solid #ddd;
+  padding: 12px 0px 0px 0px;
+  background-color: #fafafa !important;
+  background-image: none !important;
+  filter:none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+  display:inline-block !important;
+  color: #646464 !important;
+  text-shadow: none !important;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  -webkit-transition: all 0.3s ease !important;
+  -moz-transition: all 0.3s ease !important;
+  -ms-transition: all 0.3s ease !important;
+  -o-transition: all 0.3s ease !important;
+  transition: all 0.3s ease !important;
+}
 .sub {
   font-size: smaller;
   color: #777;
@@ -1393,6 +1418,9 @@ button {
   margin: 10px;
 }
 .fileUpload input.upload {
+
+
+
   position: absolute;
   top: 0;
   right: 0;
