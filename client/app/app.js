@@ -29,7 +29,7 @@ angular.module('cloudKiboApp', [
     })
 
     .otherwise({
-      redirectTo: '/'
+      redirectTo: '/login'
     });
 
    /* $locationProvider.html5Mode({

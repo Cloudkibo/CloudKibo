@@ -79,9 +79,6 @@ module.exports = function(app) {
   //**************************************************************************************************//
 
 
-  app.route('/index')
-	.get(viewroutes.indexRoute);
-
   app.route('/')
 	.get(function(req,res){ res.sendfile(app.get('appPath') + '/index.html'); });
 	//.get(viewroutes.appRoute);		// commented by sojharo 30/3/2015
@@ -100,18 +97,6 @@ module.exports = function(app) {
 
   app.route('/livehelp/*')
 	.get(viewroutes.liveHelpRoute);
-
-  app.route('/videocall/*')
-	.get(viewroutes.videoCallRoute);
-
-  app.route('/featuresview')
-	.get(viewroutes.featuresViewRoute);
-
-  app.route('/contactview')
-  .get(viewroutes.contactViewRoute);
-
-  app.route('/aboutusview')
-  .get(viewroutes.aboutusViewRoute);
 
   app.route('/loginview')
 	.get(viewroutes.loginViewRoute);
