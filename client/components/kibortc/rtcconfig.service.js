@@ -19,15 +19,15 @@ angular.module('kiboRtc.services')
     var isChrome = !!navigator.webkitGetUserMedia;
 
     return {'iceServers': [
-      createIceServer('turn:45.55.232.65:3478?transport=udp', 'cloudkibo', 'cloudkibo'),
-      createIceServer('turn:45.55.232.65:3478?transport=tcp', 'cloudkibo', 'cloudkibo'),
-      createIceServer(isChrome
+      {url: 'turn:45.55.232.65:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'},
+      {url: 'turn:45.55.232.65:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'},
+      {url: (isChrome
         ? 'stun:stun.l.google.com:19302'
-        : 'stun:23.21.150.121', null, null),
-      createIceServer('stun:stun.anyfirewall.com:3478', null, null),
-      createIceServer('turn:turn.bistri.com:80?transport=udp', 'homeo', 'homeo'),
-      createIceServer('turn:turn.bistri.com:80?transport=tcp', 'homeo', 'homeo'),
-      createIceServer('turn:turn.anyfirewall.com:443?transport=tcp', 'webrtc', 'webrtc')
+        : 'stun:23.21.150.121'), username: null, credential: null},
+      {url: 'stun:stun.anyfirewall.com:3478', username: null, credential: null},
+      {url: 'turn:turn.bistri.com:80?transport=udp', username: 'homeo', credential: 'homeo'},
+      {url: 'turn:turn.bistri.com:80?transport=tcp', username: 'homeo', credential: 'homeo'},
+      {url: 'turn:turn.anyfirewall.com:443?transport=tcp', username: 'webrtc', credential: 'webrtc'}
     ]};
 
     // Commented only to test our own turn server with above address and credentials
