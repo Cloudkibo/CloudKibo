@@ -39,7 +39,7 @@ var app = express();
 var options = {
   ca: fs.readFileSync('server/security/gd_bundle-g2-g1.crt'),
   key: fs.readFileSync('server/security/server.key'),
-  cert: fs.readFileSync('server/security/a89aa21eff391f1e.crt')
+  cert: fs.readFileSync('server/security/806761bc64c5dc7c.crt')
 };
 
 
