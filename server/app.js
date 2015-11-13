@@ -49,7 +49,7 @@ var httpsServer = require('https').createServer(options, app);
 
 
 httpapp.get('*',function(req,res){
-    res.redirect('https://www.cloudkibo.com'+req.url)
+    res.redirect('https://api.cloudkibo.com'+req.url)
 });
 
 
