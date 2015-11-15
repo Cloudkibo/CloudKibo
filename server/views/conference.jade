@@ -30,12 +30,12 @@
           i.fa.fa-desktop
           div {{toggleVideoText}}
     .row
-      .col-sm-1.fileUpload.btn.btn-primary(ng-show='meetingStarted()')
+      .col-sm-1.fileUpload(ng-show='meetingStarted()')
         //label Send File
         input(id='file', type='file')
         //input(type='file', data-filename-placement='inside')
-        span Upload
-        input.upload(type='file')
+
+        //input.upload(type='file')
     .row
       .col-sm-1(id='0', ng-show='meetingStarted()')
     .row
