@@ -314,7 +314,7 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 
 .chatButtonUI{
   left: 1240px;
-  top :90px;
+  top :185px;
 
 }
 
@@ -1344,7 +1344,7 @@ textarea
 .fileUpload {
   position: relative;
   overflow: hidden;
-  margin: 10px;
+  margin: 2px;
 }
 .fileUpload input.upload {
   position: absolute;
