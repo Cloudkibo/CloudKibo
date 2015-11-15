@@ -314,7 +314,7 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 
 .chatButtonUI{
   left: 1240px;
-  top :90px;
+  top :185px;
 
 }
 
@@ -468,14 +468,18 @@ todo need more work
   z-index: 10;
   border : 1px solid #ffffff;
   background-color: #ffffff;
-
 }
+.btnAdd {
+  top: -15px;
+  left: -52px;
+}
+
 .modalBoxTabContent{
   position: absolute;
   left: 100px;
   top: 160px;
   overflow: auto;
-  height: 434px;
+  height: 415px;
   width: 70%;
   z-index: 10;
   border : 1px solid #fcfcfc;
@@ -1337,10 +1341,15 @@ textarea
 /********************************************************************************/
 /* File Upload                                                                  */
 /********************************************************************************/
+.buttonTabVert {
+
+  left: 16px;
+}
+
 .fileUpload {
   position: relative;
   overflow: hidden;
-  margin: 10px;
+  margin: 2px;
 }
 .fileUpload input.upload {
   position: absolute;
