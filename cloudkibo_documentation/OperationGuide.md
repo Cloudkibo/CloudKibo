@@ -88,6 +88,11 @@ To install forever run the following command:
 
     npm install forever -g
 
+#### Install Git
+
+    sudo apt-get update
+    sudo apt-get install git
+
 #### Install Grunt
 To install grunt run the following command:
 
