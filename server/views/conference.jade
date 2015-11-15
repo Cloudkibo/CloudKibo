@@ -13,7 +13,7 @@
       a(href='javascript:void(0);', class='mobi-toggler')
         i(class='fa fa-bars')
 .row
-  .col-sm-1
+  .col-sm-1.buttonTabVert
     .row
       .col-sm-1(ng-show='meetingStarted()')
         a.icon-btn(id='showScreenButton', ng-click='showScreen()')
@@ -30,7 +30,7 @@
           i.fa.fa-desktop
           div {{toggleVideoText}}
     .row
-      .col-sm-1.fileUpload(ng-show='meetingStarted()')
+      .col-sm-12.fileUpload(ng-show='meetingStarted()')
         //label Send File
         input(id='file', type='file')
         //input(type='file', data-filename-placement='inside')
