@@ -36,6 +36,7 @@ In order to get this version, we just have to use the apt package manager. We sh
 
     sudo apt-get update
     sudo apt-get install nodejs
+    sudo ln -s `which nodejs` /usr/local/bin/node
 
 install npm, which is the Node.js package manager
 
