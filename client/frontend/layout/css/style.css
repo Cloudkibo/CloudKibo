@@ -1349,8 +1349,11 @@ textarea
 .fileUpload {
   position: relative;
   overflow: hidden;
-  margin: 2px;
+  left: 10px;
+  width: 100px;
+  margin : 0.3px;
 }
+
 .fileUpload input.upload {
   position: absolute;
   top: 0;
