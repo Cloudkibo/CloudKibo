@@ -36,6 +36,7 @@ In order to get this version, we just have to use the apt package manager. We sh
 
     sudo apt-get update
     sudo apt-get install nodejs
+    sudo ln -s `which nodejs` /usr/local/bin/node
 
 install npm, which is the Node.js package manager
 
@@ -86,6 +87,11 @@ source: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-
 To install forever run the following command:
 
     npm install forever -g
+
+#### Install Git
+
+    sudo apt-get update
+    sudo apt-get install git
 
 #### Install Grunt
 To install grunt run the following command:
