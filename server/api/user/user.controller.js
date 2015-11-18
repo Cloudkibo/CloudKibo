@@ -71,7 +71,7 @@ exports.create = function (req, res, next) {
         text:     'Welcome to CloudKibo'
       });
 
-      email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to verify your account <br><br> http://www.cloudkibo.com/#/verify/'+ tokenString);
+      email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to verify your account <br><br> https://api.cloudkibo.com/#/verify/'+ tokenString);
 
       sendgrid.send(email, function(err, json) {
         if (err) { return console.log(err); }
@@ -348,7 +348,7 @@ exports.inviteMultipleByEmail = function(req, res, next){
 
       email.setHtml('<h1>CloudKibo</h1><br><br>'+req.user.firstname+' has invited you to connect on CloudKibo.<br><br>'+
       'Follow the following URL to make an account on CloudKibo and start Video Conference in real time.'+
-      ' <br><br><a href="https://www.cloudkibo.com/" target=_blank>http://www.cloudkibo.com/</a><br><br><br>' +
+      ' <br><br><a href="https://api.cloudkibo.com/" target=_blank>http://api.cloudkibo.com/</a><br><br><br>' +
       '<p><b>With CloudKibo<b> you can do</b></p><br><ul><li>Video Call</li><li>Audio Call</li><li>File Transfering'+
       '</li><li>Screen Sharing</li><li>Instant Messaging</li></ul><br><br> Join CloudKibo and talk your dearest ones.');
 
@@ -437,7 +437,7 @@ exports.invitebyemail = function(req, res, next){
 
     email.setHtml('<h1>CloudKibo</h1><br><br>'+req.user.firstname+' has invited you to connect on CloudKibo.<br><br>'+
     'Follow the following URL to make an account on CloudKibo and start Video Conversations in real time in your browser.'+
-    ' <br><br><a href="https://www.cloudkibo.com/" target=_blank>http://www.cloudkibo.com/</a><br><br><br>' +
+    ' <br><br><a href="https://api.cloudkibo.com/" target=_blank>http://api.cloudkibo.com/</a><br><br><br>' +
     '<span style="background:#22DFFF; width:100%; text-align:center;"><b><i>'+ message +'</i></b></span><br><br><br>'+
     '<p><b>With CloudKibo<b> you can do</b></p><br><ul><li>Video Call</li><li>Audio Call</li><li>File Transfering'+
     '</li><li>Screen Sharing</li><li>Instant Messaging</li></ul><br><br> Join CloudKibo and talk your dearest ones.');
@@ -530,7 +530,7 @@ exports.resetpasswordrequest = function(req, res, next){
         text:     'Password Reset'
       });
 
-      email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to change your password <br><br> http://www.cloudkibo.com/#resetpassword/'+ tokenString);
+      email.setHtml('<h1>CloudKibo</h1><br><br>Use the following link to change your password <br><br> https://api.cloudkibo.com/#resetpassword/'+ tokenString);
 
       sendgrid.send(email, function(err, json) {
         if (err) { return console.error(err); }
