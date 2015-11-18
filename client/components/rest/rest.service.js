@@ -279,7 +279,7 @@ angular.module('cloudKiboApp')
                  * screen sharing extension link
                  *
                  */
-                screenSharingExtension: 'https://chrome.google.com/webstore/detail/hjfejjmhpakdodimneibbmgfhfhjedod'
+                screenSharingExtension: 'https://chrome.google.com/webstore/detail/mjifcjeiodmblbjeagolckinomlcjefi'
             },
             groupcall : {
 
