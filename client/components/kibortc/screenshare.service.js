@@ -52,7 +52,7 @@ angular.module('kiboRtc.services')
     var sourceId;
     /* Screen object that user wants to share */
 
-    return {
+    var api=  {
 
       /**
        * Application must initialize the service before using it for screen sharing.
@@ -185,6 +185,8 @@ angular.module('kiboRtc.services')
 
     };
 
+
+
     /**
      * It handles the messages sent from the screen sharing extension. Extension
      * can send 3 types of messages: PermissionDeniedError (user denies to share screen),
@@ -218,8 +220,11 @@ angular.module('kiboRtc.services')
     }
 
     function successInstallCallback() {
-      location.reload();
+      //location.reload();
+      api.trigger('extensioninstalled', [{}]);
     }
+    EventEmitter.call(api);
+    Object.setPrototypeOf(api, EventEmitter.prototype);
 
     function failureInstallCallback(error) {
       alert(error);
@@ -227,4 +232,5 @@ angular.module('kiboRtc.services')
     }
 
 
+    return api;
   });
