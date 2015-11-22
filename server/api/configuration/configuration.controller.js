@@ -48,7 +48,9 @@ exports.create = function(req, res) {
             sendgridpassword : req.body.sendgridpassword,
             selectLogo : req.body.selectLogo,
             numberofpeopleincontactlist: req.body.numberofpeopleincontactlist,
-            numberofpeopleinconference: req.body.numberofpeopleinconference
+            numberofpeopleinconference: req.body.numberofpeopleinconference,
+            sitedomain : req.body.sitedomain,
+            kibodomain : req.body.kibodomain
 
           });
           console.log("update configuration for superuser")
@@ -68,6 +70,8 @@ exports.create = function(req, res) {
           gotConfig.selectLogo = req.body.selectLogo;
           gotConfig.numberofpeopleincontactlist = req.body.numberofpeopleincontactlist;
           gotConfig.numberofpeopleinconference = req.body.numberofpeopleinconference;
+          gotConfig.sitedomain = req.body.sitedomain;
+          gotConfig.kibodomain = req.body.kibodomain
 
 
           gotConfig.save(function (err) {
