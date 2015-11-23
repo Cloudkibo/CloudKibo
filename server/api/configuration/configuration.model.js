@@ -15,7 +15,10 @@ var ConfigurationSchema = new Schema({
   sendgridpassword : String,
   selectLogo : { type: String, default: 'Logo 1' },
   numberofpeopleincontactlist: Number,
-  numberofpeopleinconference: Number
+  numberofpeopleinconference: Number,
+
+  sitedomain : {type: String},
+  kibodomain : {type: String}
 
 });
 
