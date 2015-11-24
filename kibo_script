@@ -1,0 +1,5 @@
+#!/bin/bash
+#CloudKibo Server Restart Script
+#Author : Sojharo
+forever stop server/app.js
+forever start server/app.js
