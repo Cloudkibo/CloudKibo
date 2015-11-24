@@ -299,12 +299,16 @@ angular.module('cloudKiboApp')
         // this statement verifies chrome extension availability
         // if installed and available then it will invoke extension API
         // otherwise it will fallback to command-line based screen capturing API
+        console.log(ScreenShare.getChromeMediaSource())
+        console.log(ScreenShare.getSourceIdValue())
         if (ScreenShare.getChromeMediaSource() == 'desktop' && !ScreenShare.getSourceIdValue()) {
-          console.log('There is not source Id value')
+
           ScreenShare.getSourceId(function (error) {
             console.log(error)
             // if exception occurred or access denied
             if (error && error == 'PermissionDeniedError') {
+              ScreenShare.setSourceIdValue(undefined);
+              ScreenShare.setChromeMediaSource();
               //alert('PermissionDeniedError: User denied to share content of his/her screen.');
               logger.log('PermissionDeniedError: User denied to share content of his/her screen. Shown to: ' + $scope.user.username);
             }

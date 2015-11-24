@@ -148,6 +148,10 @@ angular.module('kiboRtc.services')
         return chromeMediaSource;
       },
 
+      setChromeMediaSource: function () {
+        chromeMediaSource = 'desktop';
+      },
+
       /**
        * Returns the source id of the screen object which is to be shared
        *
