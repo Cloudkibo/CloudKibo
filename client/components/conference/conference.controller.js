@@ -250,6 +250,7 @@ angular.module('cloudKiboApp')
               }
               else {
                 screenStream = stream;
+                screenStream.onended = removeLocalScreen();
                 $scope.$apply(function(){
                   $scope.showScreenText = 'Hide Screen';
                   $scope.screenSharedLocal = true;
@@ -295,16 +296,12 @@ angular.module('cloudKiboApp')
     function shareScreenUsingChromeExtension(cb) {
 
       if($scope.hasChromeExtension()) {
-        console.log('Chrome extension found installed')
         // this statement verifies chrome extension availability
         // if installed and available then it will invoke extension API
         // otherwise it will fallback to command-line based screen capturing API
-        console.log(ScreenShare.getChromeMediaSource())
-        console.log(ScreenShare.getSourceIdValue())
         if (ScreenShare.getChromeMediaSource() == 'desktop' && !ScreenShare.getSourceIdValue()) {
 
           ScreenShare.getSourceId(function (error) {
-            console.log(error)
             // if exception occurred or access denied
             if (error && error == 'PermissionDeniedError') {
               ScreenShare.setSourceIdValue(undefined);
@@ -412,56 +409,6 @@ angular.module('cloudKiboApp')
     $scope.$on('$routeChangeStart', function () {
       location.reload();
     });
-
-    $scope.shareScreenToTest = function () {
-      if($scope.peerSharedScreenTest){
-        alert('Other person is already sharing screen');
-        logger.log(''+ $scope.user.username +' tried sharing screen while other was already sharing the screen');
-      } else {
-        if ($scope.showScreenText === 'Share Screen') {
-          if (!!navigator.webkitGetUserMedia) {
-            shareScreenUsingChromeExtension(function (err, stream) {
-              if (err) {
-                alert('Permission denied or could not capture the screen.');
-                logger.log('ERROR: Permission denied or could not capture the screen. Shown to: '+ $scope.user.username);
-              }
-              else {
-                screenStream = stream;
-                $scope.$apply(function(){
-                  $scope.showScreenText = 'Hide Screen';
-                  $scope.screenSharedLocal = true;
-                });
-                Room.toggleScreen(stream, true);
-                logger.log("Screen captured by "+$scope.user.username+", now informing other participants. (Chrome browser)");
-              }
-            });
-          }
-          else if (!!navigator.mozGetUserMedia) {
-            getUserMedia({
-              video: {
-                mozMediaSource: 'screen',
-                mediaSource: 'screen'
-              }
-            }, function (stream) {
-              screenStream = stream;
-              $scope.$apply(function(){
-                $scope.showScreenText = 'Hide Screen';
-                $scope.screenSharedLocal = true;
-              });
-              Room.toggleScreen(stream, true);
-              logger.log("Screen captured by "+$scope.user.username+", now informing other participants. (Firefox browser)");
-            }, function (err) {
-              alert('Permission denied or could not capture the screen.');
-              logger.log('ERROR: Permission denied or could not capture the screen. Shown to: '+ $scope.user.username);
-            });
-          }
-        }
-        else {
-          removeLocalScreen();
-        }
-      }
-    };
-
 
 
   });
