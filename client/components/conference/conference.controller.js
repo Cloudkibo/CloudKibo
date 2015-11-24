@@ -305,6 +305,7 @@ angular.module('cloudKiboApp')
             console.log(error)
             // if exception occurred or access denied
             if (error && error == 'PermissionDeniedError') {
+              ScreenShare.setSourceIdValue(null);
               //alert('PermissionDeniedError: User denied to share content of his/her screen.');
               logger.log('PermissionDeniedError: User denied to share content of his/her screen. Shown to: ' + $scope.user.username);
             }
