@@ -250,7 +250,7 @@ angular.module('cloudKiboApp')
               }
               else {
                 screenStream = stream;
-                screenStream.onended = removeLocalScreen();
+                // screenStream.onended = removeLocalScreen();
                 $scope.$apply(function(){
                   $scope.showScreenText = 'Hide Screen';
                   $scope.screenSharedLocal = true;
