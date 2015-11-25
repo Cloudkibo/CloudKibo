@@ -291,7 +291,7 @@ angular.module('cloudKiboApp')
     };
     function removeLocalScreen(){
       ScreenShare.setSourceIdValue(null);
-      screenStream.stop();
+      screenStream.getTracks()[0].stop();
       Room.toggleScreen(screenStream, false);
       $scope.showScreenText = 'Share Screen';
       $scope.screenSharedLocal = false;

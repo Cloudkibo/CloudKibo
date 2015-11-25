@@ -23,8 +23,10 @@ angular.module('cloudKiboApp')
       },
       reset: function () {
         if(stream) {
-          stream.stop();
+
+          stream.getTracks()[0].stop();
           stream = null;
+          
         }
       }
     };
