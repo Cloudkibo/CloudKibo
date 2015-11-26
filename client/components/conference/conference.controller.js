@@ -250,7 +250,11 @@ angular.module('cloudKiboApp')
               }
               else {
                 screenStream = stream;
-                // screenStream.onended = removeLocalScreen();
+                console.log(screenStream);
+                screenStream.getVideoTracks()[0].onended = function () {
+                  console.log('function called on event of stop screen sharing');
+                  removeLocalScreen();
+                };
                 $scope.$apply(function(){
                   $scope.showScreenText = 'Hide Screen';
                   $scope.screenSharedLocal = true;
@@ -287,7 +291,7 @@ angular.module('cloudKiboApp')
     };
     function removeLocalScreen(){
       ScreenShare.setSourceIdValue(null);
-      screenStream.stop();
+      screenStream.getTracks()[0].stop();
       Room.toggleScreen(screenStream, false);
       $scope.showScreenText = 'Share Screen';
       $scope.screenSharedLocal = false;
