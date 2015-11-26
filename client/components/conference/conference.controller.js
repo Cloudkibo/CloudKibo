@@ -136,7 +136,7 @@ angular.module('cloudKiboApp')
       return true;
     };
 
-    $scope.chatBoxVisible = false;
+    $scope.chatBoxVisible = true;
     $scope.showChatBox = function () {
       return $scope.chatBoxVisible;
     };
