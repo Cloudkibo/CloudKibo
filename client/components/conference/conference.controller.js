@@ -200,7 +200,7 @@ angular.module('cloudKiboApp')
     var screenStream;
     var peerScreenStream;
     var androidPeerScreenStream;
-    $scope.widthScreen = '120%';
+    $scope.widthScreen = '105%';
     $scope.heightScreen = '100%';
     $scope.peerSharedScreen = false;
     $scope.hasPeerSharedScreen = function () {
