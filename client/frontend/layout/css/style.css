@@ -820,6 +820,10 @@ form .progress {
   #border: 1px solid;
 }
 
+.fileTransferBox{
+  position : fixed;
+  background : #fff000;
+}
 
 
 .course-sidepane
