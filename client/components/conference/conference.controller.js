@@ -136,7 +136,7 @@ angular.module('cloudKiboApp')
       return true;
     };
 
-    $scope.chatBoxVisible = false;
+    $scope.chatBoxVisible = true;
     $scope.showChatBox = function () {
       return $scope.chatBoxVisible;
     };
@@ -161,6 +161,7 @@ angular.module('cloudKiboApp')
     };
     Room.on('conference.chat', function(data){
       if(data.username !== $scope.user.username) {
+        $scope.chatBoxVisible = true;
         $scope.$apply(function () {
           $scope.userMessages.push(data.username +': '+ data.message);
           logger.log("chat messsage received by "+data.username);
@@ -199,7 +200,7 @@ angular.module('cloudKiboApp')
     var screenStream;
     var peerScreenStream;
     var androidPeerScreenStream;
-    $scope.widthScreen = '120%';
+    $scope.widthScreen = '105%';
     $scope.heightScreen = '100%';
     $scope.peerSharedScreen = false;
     $scope.hasPeerSharedScreen = function () {
