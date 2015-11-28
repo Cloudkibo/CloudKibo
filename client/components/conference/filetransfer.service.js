@@ -65,7 +65,7 @@ angular.module('cloudKiboApp')
       meta = {};
 
       /* also clear the container */
-      create_or_clear_container(0);
+      create_or_clear_container('id0');
 
       /* firefox and chrome specific I think, but clear the file input */
       document.getElementById('file').value = '';
@@ -174,7 +174,7 @@ angular.module('cloudKiboApp')
       Room.sendChat("You have received a file. Download and Save it.");
 
       /* user 0 is this user! */
-      create_upload_stop_link(file_to_upload.name, 0);//, username);
+      create_upload_stop_link(file_to_upload.name, 'id0');//, username);
     }
 
     /* inbound - recieve binary data (from a file)
@@ -227,7 +227,7 @@ angular.module('cloudKiboApp')
 
 
         /* create a download link */
-        create_pre_file_link(recieved_meta[0], 0, data.username);
+        create_pre_file_link(recieved_meta[0], 'id0', data.username);
 
         /* if auto-download, start the process */
         /* removed feature
@@ -245,17 +245,17 @@ angular.module('cloudKiboApp')
         if (recieved_meta[0]) {
           recieved_meta[0].chunks_recieved = 0;
         }
-        create_or_clear_container(0);
+        create_or_clear_container('id0');
 
       } else if (data.ok_to_download) {
         /* if we recieve an ok to download message from other host, our last file hash checks out and we can now offer the file up to the user */
 
         if (isChrome) {
-          create_file_link(recieved_meta[0], 0, saved_fileEntry[0]);
+          create_file_link(recieved_meta[0], 'id0', saved_fileEntry[0]);
         } else {
           /* one little idb.filesystem.js quirk */
           saved_fileEntry[0].file(function (file) {
-            create_file_link(recieved_meta[0], 0, file);
+            create_file_link(recieved_meta[0], 'id0', file);
             /* <-- file, not fileEntry */
           });
         }
@@ -530,7 +530,7 @@ angular.module('cloudKiboApp')
     }
 
     /* Please note that this works by sending one chunk per ack */
-    function sendchunk(id, chunk_num, other_browser, rand, hash) {
+    function sendchunk(chunk_num, other_browser, rand, hash) {
       /* uncomment the following lines and set breakpoints on them to simulate an impaired connection */
       /* if (chunk_num == 30) { console.log("30 reached, breakpoint this line");}
        if (chunk_num == 50) { console.log("30 reached"); }*/
@@ -575,7 +575,7 @@ angular.module('cloudKiboApp')
         }
       }
 
-      sendchunk(id, chunk_num, other_browser, rand, hash);
+      sendchunk(chunk_num, other_browser, rand, hash);
     }
 
     return {
@@ -595,7 +595,7 @@ angular.module('cloudKiboApp')
       dataChannelMessage: function(id, data){
         //$log.debug('data channel message received in conference file transfer '+ data);
         if (data.byteLength  || typeof data !== 'string') {
-          process_binary(0, data, 0);
+          process_binary('id0', data, 0);
         }
         else if (data.charAt(0) == '{' && data.charAt(data.length - 1) == '}') {
           $log.debug('Going to process data in file transfer conference '+ data);

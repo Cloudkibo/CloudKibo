@@ -820,7 +820,10 @@ form .progress {
   #border: 1px solid;
 }
 
-
+#id0{
+  position : fixed;
+  background : #fff000;
+}
 
 .course-sidepane
 {

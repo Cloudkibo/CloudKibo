@@ -26,7 +26,7 @@ angular.module('cloudKiboApp')
 
           stream.getTracks()[0].stop();
           stream = null;
-          
+
         }
       }
     };
