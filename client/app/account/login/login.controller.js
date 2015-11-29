@@ -1,7 +1,14 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .controller('LoginCtrl', function ($scope, Auth, $location, $window, $log, logger) {
+  .controller('LoginCtrl', function ($scope, Auth, $location, $window, $log, logger, $http) {
+
+    $http.get('/client_token_braintree').success(function(data){
+      braintree.setup(data, "dropin", {
+        container: "payment-form"
+      });
+    });
+
     $scope.user = {};
     $scope.errors = {};
 
