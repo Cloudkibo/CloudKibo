@@ -80,6 +80,10 @@ block bodycontent
                            br
                            div
                              img(src = "/images/microsoft.png", ng-click = "loginOauth('windowslive')", width = '200')
+             .row
+               form#checkout(method='post', action='/checkout_braintree')
+                 #payment-form
+                 input(type='submit', value='Pay $10')
  .footer
     .container
       .row

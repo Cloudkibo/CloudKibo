@@ -57,6 +57,16 @@ var auth = require('./auth/auth.service');
 var viewroutes = require('./viewroutes');
 var config = require('./config/environment');
 
+// Connect to BrainTree
+var braintree = require("braintree");
+
+var gateway = braintree.connect({
+  environment: braintree.Environment.Sandbox,
+  merchantId: "dcmt47r72j9fj7r7",
+  publicKey: "qdpwymhgxrxtz5j3",
+  privateKey: "00ddc61c89fedf69496eaef559f0e11b"
+});
+
 module.exports = function(app) {
 
   app.use('/api/things', require('./api/thing'));
@@ -69,6 +79,26 @@ module.exports = function(app) {
 
   app.use('/auth', require('./auth'));
 
+  app.route('/client_token_braintree')
+    .get(function(req,res){
+      gateway.clientToken.generate({}, function (err, response) {
+        if (err) return console.log(err);
+        //console.log(response);
+        res.send(response.clientToken);
+      });
+    });
+
+  app.route('/checkout_braintree')
+    .post(function(req, res){
+      console.log(req.body)
+      gateway.transaction.sale({
+        amount: '10.00',
+        paymentMethodNonce: req.body.payment_method_nonce,
+      }, function (err, result) {
+        console.log(result);
+        res.redirect('/');
+      });
+    });
 
 
 
