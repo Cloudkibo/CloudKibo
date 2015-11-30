@@ -909,7 +909,8 @@ textarea
 
 .videoelementscreen{
   border: 1.5px solid #badfef;
-  margin: 0.1em;
+  #margin: 0.1em;
+  margin: 0cm 0.5cm;
   height: 500px;
   width: 930px;
 }
