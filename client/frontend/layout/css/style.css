@@ -313,9 +313,9 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 }
 
 .chatButtonUI{
-  left: 1225px;
-  top :195px;
-
+position : relative;
+left: 1230px;
+padding: 10px;
 }
 
 /*.meetingChatBox
@@ -834,12 +834,11 @@ form .progress {
 }*/
 
 .fileTransferBox{
-  position : absolute;
-  background : #cdd9ed;
-  border: 1px solid #84a2d4;
-  left: -3px;
-  width: 110px;
-
+position : absolute;
+background : #cdd9ed;
+border: 1px solid #84a2d4;
+left: -3px;
+width: 110px;
 }
 
 .course-sidepane
