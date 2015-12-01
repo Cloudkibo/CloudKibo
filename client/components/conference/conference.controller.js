@@ -162,6 +162,15 @@ angular.module('cloudKiboApp')
     Room.on('conference.chat', function(data){
       if(data.username !== $scope.user.username) {
         $scope.chatBoxVisible = true;
+        if($scope.chatBoxVisible)
+        {
+          $scope.widthScreen = '120%';
+          $scope.heightScreen = '100%';
+        } else{
+          $scope.widthScreen = '100%';
+          $scope.heightScreen = '100%';
+        }
+
         $scope.$apply(function () {
           $scope.userMessages.push(data.username +': '+ data.message);
           logger.log("chat messsage received by "+data.username);
