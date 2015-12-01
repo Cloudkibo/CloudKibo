@@ -359,13 +359,13 @@ angular.module('cloudKiboApp')
       if (downloading[id] == true) {
         var span = document.getElementById(id + "-span");
         if (!span) {
-          filecontainer.innerHTML = '<span id="' + id + '-span"></span>';
+          filecontainer.innerHTML = '<span class= "fileName" id="' + id + '-span"></span>';
           /* add cancel button */
           var a = document.createElement('a');
           a.download = meta.name;
           a.id = id + '-cancel';
           a.href = 'javascript:void(0);';
-          a.style.cssText = 'color:red;';
+          a.style.cssText = 'color:#af4545;';
           a.textContent = '[c]';
           a.draggable = true;
           //append link!
@@ -413,7 +413,7 @@ angular.module('cloudKiboApp')
       a.id = 'upload_stop';
       a.href = 'javascript:void(0);';
       a.textContent = '[Stop Upload]';
-      a.style.cssText = 'color:red;';
+      a.style.cssText = 'color:#af4545;';
       a.draggable = true;
 
       //append link!

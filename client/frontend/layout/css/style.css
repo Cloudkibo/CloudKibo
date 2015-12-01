@@ -339,11 +339,19 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
   padding: 10px;
 }
 
+/*.contactIconPane
+{
+  position: absolute;
+  width: 70%;
+  #background: #f1fff1 ;  height: 450px;
+}*/
+
 .contactIconPane
 {
   position: absolute;
   width: 70%;
   #background: #f1fff1 ;  height: 450px;
+  left: 30px;
 
 }
 
@@ -820,11 +828,19 @@ form .progress {
   #border: 1px solid;
 }
 
-.fileTransferBox{
+/*.fileTransferBox{
   position : fixed;
   background : #fff000;
-}
+}*/
 
+.fileTransferBox{
+  position : fixed;
+  background : #cdd9ed;
+  border: 1px solid #84a2d4;
+  left: -3px;
+  #height:90px;
+
+}
 
 .course-sidepane
 {
