@@ -834,7 +834,7 @@ form .progress {
 }*/
 
 .fileTransferBox{
-  position : fixed;
+  position : absolute;
   background : #cdd9ed;
   border: 1px solid #84a2d4;
   left: -3px;
