@@ -164,7 +164,7 @@ angular.module('cloudKiboApp')
         $scope.chatBoxVisible = true;
         if($scope.chatBoxVisible)
         {
-          $scope.widthScreen = '120%';
+          $scope.widthScreen = '100%';
           $scope.heightScreen = '100%';
         } else{
           $scope.widthScreen = '100%';
