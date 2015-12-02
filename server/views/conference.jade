@@ -1,18 +1,29 @@
 .row
+  div(class='topPane row', ng-show='isAskingForMediaAccess()')
+    center
+      b Please allow the access to media devices
+  div(class='topPane row' ng-show='hasUserDeniedMedia()')
+    center
+      b {{error}}
   div(class='topPane row' ng-show='isLocalScreenShared()')
     center
       b You are sharing you computer screen.
   div(class='topPane row' ng-hide='isConnected()')
     center
       b You are disconnnected. We are trying to connect again. Please check your Internet connection.
-  .header
+  .header(ng-hide='isAskingForMediaAccess()')
     .container
       a(class='site-logo', href='#')
         img(src='/images/logo_small.png')
         | CloudKibo Conference
       a(href='javascript:void(0);', class='mobi-toggler')
         i(class='fa fa-bars')
-.row
+.row(ng-show='isAskingForMediaAccess()')
+  br
+  br
+  br
+  img(src='/images/askingCam.PNG')
+.row(ng-hide='isAskingForMediaAccess()')
   .col-sm-1.buttonTabVert
     .row
       .col-sm-1(ng-show='meetingStarted()')

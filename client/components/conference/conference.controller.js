@@ -39,13 +39,25 @@ angular.module('cloudKiboApp')
       }
     }, 1000);
 
+    $scope.isMediaDenied = false;
+    $scope.hasUserDeniedMedia = function(){
+      return $scope.isMediaDenied;
+    };
+
+    $scope.askingMedia = false;
+    $scope.isAskingForMediaAccess = function(){
+      return $scope.askingMedia;
+    };
+
     var stream;
 
     $scope.connect = function(){
       $log.info($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
       logger.log($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
+      $scope.askingMedia = true;
       Stream.get()
         .then(function (s) {
+          $scope.askingMedia = false;
           stream = s;
           Room.init(stream, $scope.user.username);
           stream = URL.createObjectURL(stream);
@@ -53,8 +65,10 @@ angular.module('cloudKiboApp')
           logger.log('Accesss to audio and video is given to the application, username : '+ $scope.user.username)
         }, function (err) {
           console.error(err);
+          $scope.askingMedia = false;
+          $scope.isMediaDenied = true;
           logger.log("audio video stream access was denied: error "+err+", username : "+ $scope.user.username);
-          $scope.error = 'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
+          $scope.error = 'No audio/video permissions. Please allow the audio/video capturing and refresh your browser.';
         });
     };
 
