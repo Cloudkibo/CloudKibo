@@ -313,6 +313,8 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 }
 
 .chatButtonUI{
+left: 1225px;
+top :195px;
 position : relative;
 left: 1230px;
 padding: 10px;
