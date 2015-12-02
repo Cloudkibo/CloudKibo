@@ -7,20 +7,7 @@
 angular.module('cloudKiboApp')
   .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
 
-    toastr.options = {
-      "closeButton": true,
-      "debug": false,
-      "positionClass": "toast-bottom-left",
-      "onclick": null,
-      "showDuration": "5000",
-      "hideDuration": "1000",
-      "timeOut": "5000",
-      "extendedTimeOut": "1000",
-      "showEasing": "swing",
-      "hideEasing": "linear",
-      "showMethod": "fadeIn",
-      "hideMethod": "fadeOut"
-    };
+
 
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
@@ -394,7 +381,7 @@ angular.module('cloudKiboApp')
           trace("Image chunk received");
           var notificationMessage ='You have received a file';
 
-          toastr['info'](notificationMessage, "Help");
+
         } else {
           androidPeerScreenStream = imageData;
           screenViewer.src = androidPeerScreenStream;
