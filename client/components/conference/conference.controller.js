@@ -32,7 +32,7 @@ angular.module('cloudKiboApp')
       if($scope.supportCall){
         $scope.supportCallData = {};
         $scope.supportCallData.role = $location.search().role;
-        if($scope.role==='agent'){
+        if($scope.supportCallData.role==='agent'){
           $scope.user.username = $location.search().agentname;
           $scope.supportCallData.from = $scope.user.username;
           $scope.supportCallData.to = $location.search().visitorname;
