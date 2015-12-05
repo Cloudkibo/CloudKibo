@@ -916,6 +916,7 @@ console.log(myJSONObject)
     json: true,   // <--Very important!!!
     body: myJSONObject
   }, function (error, response, body){
+	  console.log(error)
     console.log(response);
     console.log(body);
   });
