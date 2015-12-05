@@ -194,7 +194,10 @@ angular.module('cloudKiboApp')
     $scope.userMessages = [];
     $scope.sendData = function () {
       var data = $scope.dataChannelSend;
-      $scope.supportCallData.msg = data;
+      if($scope.supportCallData)
+		$scope.supportCallData.msg = data;
+		else
+		$scope.supportCallData = {};
       Room.sendChat(data, $scope.supportCallData);
       $scope.userMessages.push('Me: ' + data);
       $scope.dataChannelSend = '';
