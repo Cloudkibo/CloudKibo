@@ -262,8 +262,8 @@ angular.module('cloudKiboApp')
         source.connect(analyser);
         analyseAudio()
       },
-      sendChat: function (m) {
-        socket.emit('conference.chat', { message: m, username: username });
+      sendChat: function (m, s) {
+        socket.emit('conference.chat', { message: m, username: username, support_call: s });
       },
       sendDataChannelMessage: function (m) {
         for (var key in dataChannels) {

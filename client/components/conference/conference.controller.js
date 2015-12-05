@@ -7,7 +7,9 @@
 angular.module('cloudKiboApp')
   .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
 
-
+    if($location.search().role){
+      $scope.supportCall = true;
+    }
 
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
@@ -27,6 +29,26 @@ angular.module('cloudKiboApp')
     };
 
     $timeout(function(){
+      if($scope.supportCall){
+        $scope.supportCallData = {};
+        $scope.supportCallData.role = $location.search().role;
+        if($scope.role==='agent'){
+          $scope.user.username = $location.search().agentname;
+          $scope.supportCallData.from = $scope.user.username;
+          $scope.supportCallData.to = $location.search().visitorname;
+        }
+        else{
+          $scope.user.username = $location.search().visitorname;
+          $scope.supportCallData.from = $scope.user.username;
+          $scope.supportCallData.to = $location.search().agentname;
+        }
+        $scope.supportCallData.visitoremail = $location.search().visitoremail;
+        $scope.supportCallData.agentemail = $location.search().agentemail;
+        $scope.supportCallData.companyid = $location.search().companyid;
+        $scope.supportCallData.request_id = $location.search().request_id;
+        $scope.connect();
+        return ;
+      }
       if ($scope.isUserNameDefined()) {
         logger.log("username is already defined as : ", sampleName);
         $scope.connect();
@@ -154,7 +176,7 @@ angular.module('cloudKiboApp')
 
     $scope.chatBoxVisible = true;
     $scope.showChatBox = function () {
-      if(meetingStarted()=='true') {
+      if($scope.meetingStarted()) {
         return $scope.chatBoxVisible;
       }
     };
@@ -172,7 +194,8 @@ angular.module('cloudKiboApp')
     $scope.userMessages = [];
     $scope.sendData = function () {
       var data = $scope.dataChannelSend;
-      Room.sendChat(data);
+      $scope.supportCallData.msg = data;
+      Room.sendChat(data, $scope.supportCallData);
       $scope.userMessages.push('Me: ' + data);
       $scope.dataChannelSend = '';
       logger.log("chat message sent by "+ $scope.user.username)
@@ -198,7 +221,7 @@ angular.module('cloudKiboApp')
 
     $scope.toggleAudioText = 'Mute Audio';
     $scope.audioToggle = function () {
-      if(meetingStarted()=='true') {
+      if($scope.meetingStarted()) {
         if ($scope.toggleAudioText === 'Share Audio') {
           $scope.toggleAudioText = 'Mute Audio';
           logger.log("" + $scope.user.username + " has unmuted");
@@ -213,7 +236,7 @@ angular.module('cloudKiboApp')
     };
     $scope.toggleVideoText = 'Share Video';
     $scope.videoToggle = function () {
-      if(meetingStarted()== 'true') {
+      if($scope.meetingStarted()) {
         if ($scope.toggleVideoText === 'Share Video') {
           $scope.toggleVideoText = 'Hide Video';
           logger.log("" + $scope.user.username + " has shared the video");
@@ -268,7 +291,7 @@ angular.module('cloudKiboApp')
     });
     $scope.showScreenText = 'Share Screen';
     $scope.showScreen = function () {
-      if(meetingStarted()=='true') {
+      if($scope.meetingStarted()) {
 
         if ($scope.peerSharedScreen) {
           alert('Other person is already sharing screen');

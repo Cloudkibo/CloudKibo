@@ -24,12 +24,8 @@ logger.serverLog('info', 'Server started');
 
 
 
-
-
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
-
-
 
 
 

@@ -866,6 +866,9 @@ module.exports = function (socketio) {
       rooms[currentRoom].forEach(function (s) {
         s.emit('conference.chat', { username: data.username, message: data.message });
       });
+      if(data.support_call.companyid){
+        sendToCloudKibo(data.support_call);
+      }
     });
 
     socket.on('conference.stream', function(data){
@@ -901,3 +904,19 @@ module.exports = function (socketio) {
 
   });
 };
+
+function sendToCloudKibo(myJSONObject) {
+  var request = require('request');
+console.log(myJSONObject)
+  //var myJSONObject = {to: 'sojharo'};
+
+  request({
+    url: "https://api.kibosupport.com/api/userchats/",
+    method: "POST",
+    json: true,   // <--Very important!!!
+    body: myJSONObject
+  }, function (error, response, body){
+    console.log(response.statusCode);
+    console.log(body);
+  });
+}

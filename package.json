@@ -29,6 +29,7 @@
     "passport-local": "~0.1.6",
     "passport-twitter": "latest",
     "passport-windowslive": "latest",
+    "request": "^2.65.0",
     "sendgrid": "1.0.1",
     "serve-favicon": "~2.0.1",
     "socket.io": "^1.0.6",
