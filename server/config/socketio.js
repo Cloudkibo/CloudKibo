@@ -910,17 +910,19 @@ function sendToCloudKibo(myJSONObject) {
   console.log(myJSONObject)
 
   var fs = require('fs');
+  var path = require('path');
 
   var options = {
     url: "https://api.kibosupport.com/api/userchats/",
     method: "POST",
     json: true,   // <--Very important!!!
     body: myJSONObject,
-    ca: fs.readFileSync('server/security/gd_bundle-g2-g1.crt'),
-    key: fs.readFileSync('server/security/server.key'),
-    cert: fs.readFileSync('server/security/d499736eb44cc97a.crt')
+    ca: fs.readFileSync(path.resolve(__dirname, '../security/gd_bundle-g2-g1.crt')),
+    key: fs.readFileSync(path.resolve(__dirname, '../security/server.key')),
+    cert: fs.readFileSync(path.resolve(__dirname, '../security/d499736eb44cc97a.crt'))
   };
-  console.log(fs.readFileSync('server/security/gd_bundle-g2-g1.crt'))
+
+  console.log(fs.readFileSync(path.resolve(__dirname, '../security/d499736eb44cc97a.crt')));
 
   request(options,
     function (error, response, body){
