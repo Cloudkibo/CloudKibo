@@ -26,22 +26,23 @@
 .row(ng-hide='isAskingForMediaAccess()')
   .col-sm-1.buttonTabVert
     .row
-      .col-sm-1(ng-show='meetingStarted()')
+      .col-sm-1()
         a.icon-btn(id='showScreenButton', ng-click='showScreen()')
           i.fa.fa-desktop
           div {{showScreenText}}
     .row
-      .col-sm-1(ng-show='meetingStarted()')
+      //ng-show='meetingStarted()'
+      .col-sm-1()
         a.icon-btn(ng-click='audioToggle()')
           i.fa.fa-microphone
           div {{toggleAudioText}}
     .row
-      .col-sm-1(ng-show='meetingStarted()')
+      .col-sm-1()
         a.icon-btn(ng-click='videoToggle()')
           i.fa.fa-desktop
           div {{toggleVideoText}}
     .row
-      .fileUpload2(ng-show='meetingStarted()')
+      .fileUpload2()
         //label Send File
         input(id='file', type='file')
         //input(type='file', data-filename-placement='inside')
@@ -81,7 +82,7 @@
     .row
       .col-md-6.col-lg-offset-9(ng-show='showChatBox()')
         div(class='animate-show')
-          div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages')
+          div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages', style="word-wrap: break-word")
             .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
               | {{userMessage}}
           form

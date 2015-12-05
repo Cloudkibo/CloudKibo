@@ -154,7 +154,9 @@ angular.module('cloudKiboApp')
 
     $scope.chatBoxVisible = true;
     $scope.showChatBox = function () {
-      return $scope.chatBoxVisible;
+      if(meetingStarted()=='true') {
+        return $scope.chatBoxVisible;
+      }
     };
     $scope.toggleChatBoxVisibility = function () {
       if($scope.chatBoxVisible)
@@ -196,28 +198,32 @@ angular.module('cloudKiboApp')
 
     $scope.toggleAudioText = 'Mute Audio';
     $scope.audioToggle = function () {
-      if ($scope.toggleAudioText === 'Share Audio') {
-        $scope.toggleAudioText = 'Mute Audio';
-        logger.log(""+ $scope.user.username +" has unmuted");
-        Room.toggleAudio();
-      }
-      else {
-        logger.log(""+ $scope.user.username +" has muted");
-        $scope.toggleAudioText = 'Share Audio';
-        Room.toggleAudio();
+      if(meetingStarted()=='true') {
+        if ($scope.toggleAudioText === 'Share Audio') {
+          $scope.toggleAudioText = 'Mute Audio';
+          logger.log("" + $scope.user.username + " has unmuted");
+          Room.toggleAudio();
+        }
+        else {
+          logger.log("" + $scope.user.username + " has muted");
+          $scope.toggleAudioText = 'Share Audio';
+          Room.toggleAudio();
+        }
       }
     };
     $scope.toggleVideoText = 'Share Video';
     $scope.videoToggle = function () {
-      if ($scope.toggleVideoText === 'Share Video') {
-        $scope.toggleVideoText = 'Hide Video';
-        logger.log(""+ $scope.user.username +" has shared the video");
-        Room.toggleVideo(true);
-      }
-      else {
-        $scope.toggleVideoText = 'Share Video';
-        Room.toggleVideo(false);
-        logger.log(""+ $scope.user.username +" has hidden the video");
+      if(meetingStarted()== 'true') {
+        if ($scope.toggleVideoText === 'Share Video') {
+          $scope.toggleVideoText = 'Hide Video';
+          logger.log("" + $scope.user.username + " has shared the video");
+          Room.toggleVideo(true);
+        }
+        else {
+          $scope.toggleVideoText = 'Share Video';
+          Room.toggleVideo(false);
+          logger.log("" + $scope.user.username + " has hidden the video");
+        }
       }
     };
 
@@ -262,56 +268,58 @@ angular.module('cloudKiboApp')
     });
     $scope.showScreenText = 'Share Screen';
     $scope.showScreen = function () {
+      if(meetingStarted()=='true') {
 
-      if($scope.peerSharedScreen){
-        alert('Other person is already sharing screen');
-        logger.log(''+ $scope.user.username +' tried sharing screen while other was already sharing the screen');
-      } else {
-        if ($scope.showScreenText === 'Share Screen') {
-          if (!!navigator.webkitGetUserMedia) {
-            shareScreenUsingChromeExtension(function (err, stream) {
-              if (err) {
-                alert('Permission denied or could not capture the screen.');
-                logger.log('ERROR: Permission denied or could not capture the screen. Shown to: '+ $scope.user.username);
-              }
-              else {
+        if ($scope.peerSharedScreen) {
+          alert('Other person is already sharing screen');
+          logger.log('' + $scope.user.username + ' tried sharing screen while other was already sharing the screen');
+        } else {
+          if ($scope.showScreenText === 'Share Screen') {
+            if (!!navigator.webkitGetUserMedia) {
+              shareScreenUsingChromeExtension(function (err, stream) {
+                if (err) {
+                  alert('Permission denied or could not capture the screen.');
+                  logger.log('ERROR: Permission denied or could not capture the screen. Shown to: ' + $scope.user.username);
+                }
+                else {
+                  screenStream = stream;
+                  console.log(screenStream);
+                  screenStream.getVideoTracks()[0].onended = function () {
+                    console.log('function called on event of stop screen sharing');
+                    removeLocalScreen();
+                  };
+                  $scope.$apply(function () {
+                    $scope.showScreenText = 'Hide Screen';
+                    $scope.screenSharedLocal = true;
+                  });
+                  Room.toggleScreen(stream, true);
+                  logger.log("Screen captured by " + $scope.user.username + ", now informing other participants. (Chrome browser)");
+                }
+              });
+            }
+            else if (!!navigator.mozGetUserMedia) {
+              getUserMedia({
+                video: {
+                  mozMediaSource: 'screen',
+                  mediaSource: 'screen'
+                }
+              }, function (stream) {
                 screenStream = stream;
-                console.log(screenStream);
-                screenStream.getVideoTracks()[0].onended = function () {
-                  console.log('function called on event of stop screen sharing');
-                  removeLocalScreen();
-                };
-                $scope.$apply(function(){
+                $scope.$apply(function () {
                   $scope.showScreenText = 'Hide Screen';
                   $scope.screenSharedLocal = true;
                 });
                 Room.toggleScreen(stream, true);
-                logger.log("Screen captured by "+$scope.user.username+", now informing other participants. (Chrome browser)");
-              }
-            });
-          }
-          else if (!!navigator.mozGetUserMedia) {
-            getUserMedia({
-              video: {
-                mozMediaSource: 'screen',
-                mediaSource: 'screen'
-              }
-            }, function (stream) {
-              screenStream = stream;
-              $scope.$apply(function(){
-                $scope.showScreenText = 'Hide Screen';
-                $scope.screenSharedLocal = true;
+                logger.log("Screen captured by " + $scope.user.username + ", now informing other participants. (Firefox browser)");
+              }, function (err) {
+                alert('Permission denied or could not capture the screen.');
+                logger.log('ERROR: Permission denied or could not capture the screen. Shown to: ' + $scope.user.username);
               });
-              Room.toggleScreen(stream, true);
-              logger.log("Screen captured by "+$scope.user.username+", now informing other participants. (Firefox browser)");
-            }, function (err) {
-              alert('Permission denied or could not capture the screen.');
-              logger.log('ERROR: Permission denied or could not capture the screen. Shown to: '+ $scope.user.username);
-            });
+            }
           }
-        }
-        else {
-          removeLocalScreen();
+          else {
+            removeLocalScreen();
+          }
         }
       }
     };
