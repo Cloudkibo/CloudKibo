@@ -53,7 +53,8 @@ angular.module('cloudKiboApp')
       }
       var pc = new RTCPeerConnection(iceConfig, pc_constraints2);
       peerConnections[id] = pc;
-      pc.addStream(stream);
+      if(stream !== null)
+        pc.addStream(stream);
       pc.onicecandidate = function (evnt) {
         socket.emit('msg', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
@@ -96,7 +97,7 @@ angular.module('cloudKiboApp')
           //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000"); // todo added for testing by sojharo
           pc.setLocalDescription(sdp);
           $log.debug('Creating an offer for', id);
-          socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username });
+          socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username, camaccess : stream });
         }, function (e) {
           $log.error(e);
         },
@@ -133,6 +134,13 @@ angular.module('cloudKiboApp')
         data: data
       }]);
     }
+    function handlePeerWithoutAccessToMediaStream(i, n){
+      api.trigger('peer.stream', [{
+        id: i,
+        username: n,
+        stream: null
+      }]);
+    }
 
     function handleMessage(data) {
       var pc = getPeerConnection(data.by);
@@ -140,12 +148,15 @@ angular.module('cloudKiboApp')
       switch (data.type) {
         case 'offer':
           userNames[data.by] = data.username;
+          if(data.camaccess === null) {
+            handlePeerWithoutAccessToMediaStream(data.by, data.username)
+          }
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             $log.debug('Setting remote description by offer');
             pc.createAnswer(function (sdp) {
               //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
-              socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'answer' });
+              socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'answer', camaccess : stream });
             }, function (e) {
               console.log(e);
             }, sdpConstraints);
@@ -155,6 +166,9 @@ angular.module('cloudKiboApp')
           break;
         case 'answer':
           console.log('answer by '+ data.by);
+          if(data.camaccess === null) {
+            handlePeerWithoutAccessToMediaStream(data.by, userNames[data.by])
+          }
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             $log.debug('Setting remote description by answer');
           }, function (e) {
@@ -256,11 +270,13 @@ angular.module('cloudKiboApp')
         return d.promise;
       },
       init: function (s, n) {
-        stream = s;
         username = n;
-        var source = audioCtx.createMediaStreamSource(stream);
-        source.connect(analyser);
-        analyseAudio()
+        stream = s;
+        if(s!==null) {
+          var source = audioCtx.createMediaStreamSource(stream);
+          source.connect(analyser);
+          analyseAudio()
+        }
       },
       sendChat: function (m, s) {
         socket.emit('conference.chat', { message: m, username: username, support_call: s });

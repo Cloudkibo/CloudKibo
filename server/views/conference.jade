@@ -30,13 +30,13 @@
         a.icon-btn(id='showScreenButton', ng-click='showScreen()')
           i.fa.fa-desktop
           div {{showScreenText}}
-    .row
+    .row(ng-hide='hasUserDeniedMedia()')
       //ng-show='meetingStarted()'
       .col-sm-1()
         a.icon-btn(ng-click='audioToggle()')
           i.fa.fa-microphone
           div {{toggleAudioText}}
-    .row
+    .row(ng-hide='hasUserDeniedMedia()')
       .col-sm-1()
         a.icon-btn(ng-click='videoToggle()')
           i.fa.fa-desktop

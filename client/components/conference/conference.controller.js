@@ -93,6 +93,8 @@ angular.module('cloudKiboApp')
           $scope.isMediaDenied = true;
           logger.log("audio video stream access was denied: error "+err+", username : "+ $scope.user.username);
           $scope.error = 'No audio/video permissions. Please allow the audio/video capturing and refresh your browser.';
+          Room.init(null, $scope.user.username);
+          Room.joinRoom($routeParams.mname);
         });
     };
 
@@ -106,10 +108,10 @@ angular.module('cloudKiboApp')
       if($scope.screenSharedLocal) Room.toggleScreen(screenStream, true);
       $scope.peers.push({
         id: peer.id,
-        username: peer.username,
+        username: (peer.stream !== null) ? peer.username : peer.username + ' (No Mic/Cam)',
         sharedVideo: false,
         divClass: 'hideVideoBox',
-        stream: URL.createObjectURL(peer.stream)
+        stream: (peer.stream !== null) ? URL.createObjectURL(peer.stream) : ''
       });
     });
     Room.on('peer.screenStream', function (peer) {
@@ -195,9 +197,9 @@ angular.module('cloudKiboApp')
     $scope.sendData = function () {
       var data = $scope.dataChannelSend;
       if($scope.supportCallData)
-		$scope.supportCallData.msg = data;
-		else
-		$scope.supportCallData = {};
+		    $scope.supportCallData.msg = data;
+		  else
+		    $scope.supportCallData = {};
       Room.sendChat(data, $scope.supportCallData);
       $scope.userMessages.push('Me: ' + data);
       $scope.dataChannelSend = '';
