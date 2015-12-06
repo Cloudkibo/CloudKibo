@@ -906,7 +906,7 @@ module.exports = function (socketio) {
 };
 
 function sendToCloudKibo(myJSONObject) {
-  var request = require('request');
+  /*var request = require('request');
   console.log(myJSONObject)
 
   var fs = require('fs');
@@ -929,5 +929,16 @@ function sendToCloudKibo(myJSONObject) {
 	  console.log(error)
     console.log(response);
     console.log(body);
+  });*/
+
+  var needle = require('needle');
+
+  var options = {
+    headers: { 'X-Custom-Header': 'CloudKibo Web Application' }
+  }
+
+  needle.post('https://api.kibosupport.com/api/userchats/', myJSONObject, options, function(err, resp) {
+    console.log(err);
+    console.log(resp);
   });
 }
