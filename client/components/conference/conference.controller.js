@@ -146,7 +146,7 @@ angular.module('cloudKiboApp')
       });
     });
     Room.on('peer.disconnected', function (peer) {
-      $log.debug('Client disconnected, removing stream');
+      console.log('Client disconnected, removing stream');
       logger.log('Client disconnected, removing stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;

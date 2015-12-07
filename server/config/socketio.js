@@ -866,8 +866,10 @@ module.exports = function (socketio) {
       rooms[currentRoom].forEach(function (s) {
         s.emit('conference.chat', { username: data.username, message: data.message });
       });
-      if(data.support_call.companyid){
-        sendToCloudKibo(data.support_call);
+      if(data.support_call) {
+        if (data.support_call.companyid) {
+          sendToCloudKibo(data.support_call);
+        }
       }
     });
 
