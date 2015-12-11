@@ -8,6 +8,7 @@
 
 // Set default node environment to development
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 
 
@@ -24,12 +25,8 @@ logger.serverLog('info', 'Server started');
 
 
 
-
-
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
-
-
 
 
 
@@ -61,7 +58,7 @@ var socketio = require('socket.io')(httpsServer, {
 });
 */
 
-var socketio = require('socket.io').listen(httpsServer);		// USE THE UPPER CODE IN LONG RUN, IT USES THE NEW SOCKET.IO
+var socketio = require('socket.io').listen(httpsServer);
 
 
 require('./config/socketio')(socketio);

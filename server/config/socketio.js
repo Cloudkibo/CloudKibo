@@ -866,6 +866,11 @@ module.exports = function (socketio) {
       rooms[currentRoom].forEach(function (s) {
         s.emit('conference.chat', { username: data.username, message: data.message });
       });
+      if(data.support_call) {
+        if (data.support_call.companyid) {
+          sendToCloudKibo(data.support_call);
+        }
+      }
     });
 
     socket.on('conference.stream', function(data){
@@ -901,3 +906,41 @@ module.exports = function (socketio) {
 
   });
 };
+
+function sendToCloudKibo(myJSONObject) {
+  /*var request = require('request');
+  console.log(myJSONObject)
+
+  var fs = require('fs');
+  var path = require('path');
+
+  var options = {
+    url: "https://api.kibosupport.com/api/userchats/",
+    method: "POST",
+    json: true,   // <--Very important!!!
+    body: myJSONObject,
+    ca: fs.readFileSync(path.resolve(__dirname, '../security/gd_bundle-g2-g1.crt')),
+    key: fs.readFileSync(path.resolve(__dirname, '../security/server.key')),
+    cert: fs.readFileSync(path.resolve(__dirname, '../security/d499736eb44cc97a.crt'))
+  };
+
+  console.log(fs.readFileSync(path.resolve(__dirname, '../security/d499736eb44cc97a.crt')));
+
+  request(options,
+    function (error, response, body){
+	  console.log(error)
+    console.log(response);
+    console.log(body);
+  });*/
+
+  var needle = require('needle');
+
+  var options = {
+    headers: { 'X-Custom-Header': 'CloudKibo Web Application' }
+  }
+
+  needle.post('https://api.kibosupport.com/api/userchats/', myJSONObject, options, function(err, resp) {
+    console.log(err);
+    console.log(resp);
+  });
+}
