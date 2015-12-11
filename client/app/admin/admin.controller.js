@@ -10,6 +10,18 @@ angular.module('cloudKiboApp')
         logger.log('Fetching data '+ data)
       });
 
+    $http.get('/api/feedback')
+      .success(function(data){
+        $scope.feedbacks = data;
+        $log.info('Fetching data '+ data)
+        logger.log('Fetching data '+ data)
+      });
+
+    $http.get('/api/configurations/fetch')
+      .success(function(data){
+        $scope.supersettings = data;
+        $log.info('Fetching data '+ data)
+      });
     // Use the User $resource to fetch all users
     $scope.users = User.query();
 

@@ -144,39 +144,40 @@ block appbodycontent
         h2 User Feedback
         br
         input(type='text', ng-model='feedbackUserName', placeholder='Search')
-        //table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5', ng-init='feedback= #{JSON.stringify(feedback)}')
+
+
+
+        br
+        br
+
+        table(bgcolor="#00FFFF", width="1000px", border='1', bordercolor='#000000', cellspacing='0', cellpadding='5')
           tr
-           th
-             | User Name
-           th
-             | Date
-           th
-             | Audio
-           th
-             | Video
-           th
-             | Screen
-           th
-             | File Transfer
-           th
-             | Comments
-          tr(ng-repeat='fb in feedback | filter : {userid.username:feedbackUserName} | orderBy : "-datetime"', class='divCourseScheduleMain-Wrapper')
+            th
+              | Visitor Name
+            th
+              | Email
+            th
+              | Message
+            th
+              | Date
+            th
+              | Options
+          tr(ng-repeat='message in feedbacks | orderBy : "-date"', class='divCourseScheduleMain-Wrapper')
             td
-              b {{fb.userid.username | lowercase}}
+              b {{message.name}}
             td
-              | {{fb.datetime | date : 'medium'}}
+              | {{message.email}}
             td
-              | {{fb.audio}}
+              | {{message.message}}
             td
-              | {{fb.video}}
+              | {{message.date | date : 'medium'}}
             td
-              | {{fb.screen}}
-            td
-              | {{fb.filetransfer}}
-            td
-              | {{fb.comment}}
-        br
-        br
+              | Remove
+              //a(href='', ng-click='delete(account)')
+                | Remove
+          br
+          br
+
         h2 Call Log
         br
         input(type='text', ng-model='callBackName', placeholder='Search')
