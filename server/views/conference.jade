@@ -54,7 +54,7 @@
       .col-sm-1(id='filelist_container', ng-show='meetingStarted()')
     .row
       .col-sm-1.chatButtonUI()
-        a.icon-btn(ng-click='toggleChatBoxVisibility()')
+        a.icon-btn(ng-click='toggleChat 1BoxVisibility()')
           i.fa.fa-envelope-o
           div Chat
     //.row
@@ -75,6 +75,11 @@
       .col-sm-4(style='background-color:lavender;', ng-hide='hasChromeExtension() || isFireFox()')
         a(ng-click='installExtension()')
           i.fa.fa-plus-square-o Extension
+    .row(ng-repeat='peer in peers', ng-show='hasPeerSharedScreen()')
+      .col-sm-1
+          div
+            img(src='/assets/images/avatar.png', width='70px', height='72px')
+          span {{peer.username}}
 
 
 
