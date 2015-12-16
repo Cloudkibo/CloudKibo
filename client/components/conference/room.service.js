@@ -8,7 +8,8 @@ angular.module('cloudKiboApp')
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
       dataChannels = {}, currentId, roomId,
-      stream, username, screenSwitch = {};
+      stream, username, screenSwitch = {},
+      nullStreams = {};
 
     /** Audio Analyser variables **/
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -69,6 +70,7 @@ angular.module('cloudKiboApp')
           }]);
           screenSwitch[id] = false;
         } else {
+          if (nullStreams[id]) return ;
           api.trigger('peer.stream', [{
             id: id,
             username: userNames[id],
@@ -140,6 +142,7 @@ angular.module('cloudKiboApp')
         username: n,
         stream: null
       }]);
+      nullStreams[data.by] = data.username;
     }
 
     function handleMessage(data) {
