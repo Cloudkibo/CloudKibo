@@ -75,6 +75,9 @@
       .col-sm-4(style='background-color:lavender;', ng-hide='hasChromeExtension() || isFireFox()')
         a(ng-click='installExtension()')
           i.fa.fa-plus-square-o Extension
+    .row
+      .col-sm-1
+        | &nbsp;
     .row(ng-repeat='peer in peers', ng-show='hasPeerSharedScreen()')
       .col-sm-1
           div
