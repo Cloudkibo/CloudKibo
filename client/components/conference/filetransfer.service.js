@@ -364,6 +364,7 @@ angular.module('cloudKiboApp')
           var a = document.createElement('a');
           a.download = meta.name;
           a.id = id + '-cancel';
+          a.class = 'row';
           a.href = 'javascript:void(0);';
           a.style.cssText = 'color:#af4545;';
           a.textContent = '[c]';
@@ -411,6 +412,7 @@ angular.module('cloudKiboApp')
       var a = document.createElement('a');
       a.download = meta.name;
       a.id = 'upload_stop';
+      a.class = 'row';
       a.href = 'javascript:void(0);';
       a.textContent = '[Stop Upload]';
       a.style.cssText = 'color:#af4545;';
@@ -436,6 +438,7 @@ angular.module('cloudKiboApp')
       var a = document.createElement('a');
       a.download = meta.name;
       a.id = id + '-download';
+      a.class = 'row';
       a.href = 'javascript:void(0);';
       a.textContent = 'Download : ' + meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
       a.draggable = true;
@@ -486,6 +489,7 @@ angular.module('cloudKiboApp')
         a.href = window.URL.createObjectURL(fileEntry);
       }
       a.textContent = 'Save : ' + meta.name;
+      a.class = 'row';
       a.dataset.downloadurl = [filetype, a.download, a.href].join(':');
       a.draggable = true;
 
@@ -500,6 +504,7 @@ angular.module('cloudKiboApp')
       var can = document.createElement('a');
       can.download = meta.name;
       can.id = id + '-cancel';
+      a.class = 'row';
       can.href = 'javascript:void(0);';
       can.style.cssText = 'color:red;';
       can.textContent = '[d]';
