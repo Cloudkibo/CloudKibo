@@ -149,8 +149,104 @@ Unique token string
 `createdAt : {type: Date, required: true, default: Date.now, expires: '4h'}`
 time when token was created
 
-#### 11.
+#### 11. userchat
+This table stores chat of user with the contact.
 
+`to : String` 
+Email address of user to which chat is sent
+
+`from : String` 
+Email address of user who is sending chat
+
+`fromFullName : String` 
+Name address of user who is sending chat
+
+`msg : String`
+Chat message sent to user
+
+`date : {type: Date, default: Date.now }` 
+Date and time when chat is sent
+
+`owneruser : String` 
+Who started the chat, owner of the chat 
+
+#### 12. UserSchema
+This table stores information about the user and chan be edited from UI under user profile option.
+
+`username : String,`
+Cloudkibo username of user
+
+`firstname : String,`
+  First name of user
+  
+  `lastname : String,`
+  Last name of user
+  
+  `email: { type: String, lowercase: true },`
+  Email address of user
+  
+  `phone : String, `
+  Phone number of user
+  
+  `country : String,`
+  Country of user 
+  
+  `city : String,`
+  City where user lives 
+  
+  `state : String,`
+  State where user lives 
+  
+  `gender : String,`
+  Gender of user
+  
+  `role: {type: String,default: 'user'},`
+  Role of user defines the ownership. It can be either user or admin
+  
+  `fb_photo: String,`
+  If user signup via Facebook its facebook photo is stored here
+  
+  `google_photo: String,`
+  If user signup via Google+ its google+ photo is stored here
+  
+  `windows_photo: String,`
+  If user signup via Microsoft account its windows photo is stored here
+  
+  `isOwner : String,`
+  Check if user is Owner
+  
+  `picture: String,`
+  If user signup via signup regular form, Cloudkibo gives option to upload photo and is stored here stored here
+  
+  `accountVerified : {type: String, default: 'No' },`
+  Check if user has verified the account after signup
+  
+  `date  :  { type: Date, default: Date.now },`
+  Date when account was created
+  
+  `initialTesting : String,`
+  Initial testing checks if user audio video settings are set
+  
+  `status : {type: String, default: 'I am on CloudKibo' },`
+  User can update their status
+  
+  `hashedPassword: String,`
+  Account password is stored in hash encryption
+  
+  `facebook: {},`
+  Facebook object of user information is stored here 
+  
+  `twitter: {},`
+  Twitter object of user information is stored here (future implemention) 
+  
+  `google: {},`
+  Google object of user information is stored here 
+  
+  `windowslive: {},`
+  Microsoft object of user information is stored here 
+  
+  `github: {}`
+  Github object of user information is stored here. (future implemention) 
 
 
 
