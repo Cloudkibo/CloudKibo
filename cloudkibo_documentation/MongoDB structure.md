@@ -71,6 +71,41 @@ Identity of user ho is sending feed back
 
 `datetime : {type: Date, default: Date.now }`  Time when feedback was sent
 
+#### 5. feedbackvisitor
+
+This table stores feed back provided by any user to Cloudkibo
+
+`name : String,` Name of user sending feed back
+
+`email : String,` email address of user
+
+`message : String,` message sent by user
+
+`datetime : {type: Date, default: Date.now }` time and date when feedback was sent
+
+#### 6. groupuser
+This table stores all groups information.
+
+`creator_id : {type: Schema.ObjectId, ref: 'accounts'},`
+User object who created group
+ 
+`groupid : {type: Schema.ObjectId, ref: 'Groupcall'},`
+ Unique identity of group
+ 
+`user_id : {type: Schema.ObjectId, ref: 'accounts'}`
+User indentity who are added to group
+
+#### 7. groupcall
+This table stores information about group call
+
+`groupname : String,`
+Name of group
+
+`groupowner : String,`
+Name of owner of the group
+
+`createdate : {type: Date, default: Date.now }`
+Group created date
 
 
 
