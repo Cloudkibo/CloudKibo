@@ -107,6 +107,62 @@ Name of owner of the group
 `createdate : {type: Date, default: Date.now }`
 Group created date
 
+#### 8. meetingrecord
+This table stores information of conference call.
+
+`creator : String,`
+Name of user who started the coonference
+
+`roomname : String,`
+Room name, this name to conference
+
+`members : [String],` 
+Name of paticipants in a conference
+
+`starttime : {type: Date, default: Date.now },`
+Time when conference was started
+
+`endtime : {type: Date, default: Date.now }`
+Time when conference call was ended
+
+#### 9. passwordResetTokenSchema
+This table stores information of token to reset a password.
+
+`user : {type: Schema.ObjectId, required: true, ref: 'Account'},`
+User object who has sent request to reset password
+
+`token : {type: String, required: true},`
+Stores token which will expire after 4 hours from creation.
+
+`createdAt : {type: Date, required: true, default: Date.now, expires: '4h'}`
+Request created time
+
+#### 10. Verificationtoken
+This table stores information of verification token, when user sign up
+
+`user : {type: Schema.ObjectId, required: true, ref: 'Account'},`
+User object who has signed in 
+
+`token : {type: String, required: true},`
+Unique token string
+
+`createdAt : {type: Date, required: true, default: Date.now, expires: '4h'}`
+time when token was created
+
+#### 11.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
