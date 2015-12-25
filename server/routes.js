@@ -153,6 +153,15 @@ module.exports = function(app) {
   app.route("/verifyview/*")
     .get(viewroutes.verifyViewRoute);
 
+  // in NodeJS/Express (server)
+  app.all('/*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods", "GET, POST","PUT");
+    next();
+
+  });
+
 
   app.route('/feedback')
     .post(function(req, res) {
