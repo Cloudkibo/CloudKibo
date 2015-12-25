@@ -325,6 +325,7 @@ The following example enables authentication on a standalone mongod using the au
 
     mongod --auth --config /etc/mongodb/mongodb.conf
 
+Detail structure of MongoDB for Cloudkibo can be seen in  [MongoDB Cloudkibo document](https://github.com/Cloudkibo/CloudKibo/blob/master/cloudkibo_documentation/MongoDB%20structure.md)
 ##### Create additional users. 
 
 Log in with the user administrator’s credentials and create additional users. See Manage User and Roles.
