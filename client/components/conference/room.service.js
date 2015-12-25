@@ -142,7 +142,7 @@ angular.module('cloudKiboApp')
         username: n,
         stream: null
       }]);
-      nullStreams[data.by] = data.username;
+      nullStreams[i] = n;
     }
 
     function handleMessage(data) {
@@ -181,6 +181,7 @@ angular.module('cloudKiboApp')
         case 'ice':
           if (data.ice) {
             $log.debug('Adding ice candidates');
+            $log.debug(data.ice)
             pc.addIceCandidate(new RTCIceCandidate(data.ice));
           }
           break;
