@@ -60,7 +60,7 @@ exports.saveVisitorFeedback = function(req, res) {
 exports.index = function(req, res) {
   FeedbackVisitor.find({}, function (err, fb) {
     if(err) return res.send(500, err);
-    logger.serverLog('info', 'feedback.controller : Feedbacks data sent to super user');
+    //logger.serverLog('info', 'feedback.controller : Feedbacks data sent to super user');
     res.json(200, fb);
   });
 };
