@@ -169,7 +169,7 @@ angular.module('cloudKiboApp')
           break;
         case 'answer':
           console.log('answer by '+ data.by);
-          if(data.camaccess === null) {
+          if(data.camaccess === null && !nullStreams[data.by]) {
             handlePeerWithoutAccessToMediaStream(data.by, userNames[data.by])
           }
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
