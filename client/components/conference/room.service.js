@@ -151,7 +151,7 @@ angular.module('cloudKiboApp')
       switch (data.type) {
         case 'offer':
           userNames[data.by] = data.username;
-          if(data.camaccess === null) {
+          if(data.camaccess === null && !nullStreams[data.by]) {
             handlePeerWithoutAccessToMediaStream(data.by, data.username)
           }
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
