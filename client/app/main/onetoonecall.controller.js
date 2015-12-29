@@ -257,7 +257,7 @@ angular.module('cloudKiboApp')
       }
     }
 
-    FileHangout.accept_inbound_files();
+    //FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
       if (typeof data.data === 'string') {
         if (data.data === 'Speaking') {
