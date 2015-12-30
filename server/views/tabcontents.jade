@@ -45,8 +45,8 @@ block bodycontent
                 li(ng-if='isUserAdmin()')
                   a(href='#admin')
                     | Admin Dashboard
- div(ng-init='otherUser=#{JSON.stringify(otherUser)}', ng-controller='OneToOneCallController')
-  div
+ div(id='theMainDOMForApp', ng-init='otherUser=#{JSON.stringify(otherUser)}', ng-controller='MainController')
+  div(ng-controller='OneToOneCallController')
      div(ng-show='!isUserNameDefined()')
        div(class='row margin-bottom-40')
          div(class='well well-lg modalBox')
