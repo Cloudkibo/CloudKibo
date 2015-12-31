@@ -83,10 +83,10 @@ block appbodycontent
                                 div(id='0')
                                 div(id='filelist_cointainer')
                               .chatArea
-                                .chatBox(schroll-bottom='messages')
+                                .chatBox(schroll-bottom='messages()')
                                   div(ng-show='loadUnderProgress()', style='text-align:center;')
                                     img(src='/images/ProgressIcon.gif', width='60px', height='60px')
-                                  div(ng-repeat='message in messages')
+                                  div(ng-repeat='message in messages()')
                                     .chatMessage
                                       .senderInfoInMessage
                                         b {{message.fromFullName}}
@@ -188,10 +188,10 @@ block appbodycontent
                             input.statusTextField(type='text', ng-model='user.status', placeholder='Update your status here')
 
                    .contactsPaneContainer(ng-hide='isCallStarted()')
-                     div(ng-if='addRequestslist.length > 0')
+                     div(ng-if='addRequestslist().length > 0')
                               b Friend Requests
-                     div(ng-if='addRequestslist.length > 0')
-                              .contact(ng-controller='AddRequestsController', ng-repeat = 'contact in addRequestslist')
+                     div(ng-if='addRequestslist().length > 0')
+                              .contact(ng-controller='AddRequestsController', ng-repeat = 'contact in addRequestslist()')
                                   table(width='100%')
                                     tr
                                       td(width='5%')
@@ -216,7 +216,7 @@ block appbodycontent
                          i.fa.fa-search
                          input.form-control(type='text', placeholder='Search Contacts', ng-model='searchContactText')
                        .contacts
-                        .contact(ng-controller='ContactsListController', ng-repeat='contact in contactslist | filter: {contactid.firstname: searchContactText}')
+                        .contact(ng-controller='ContactsListController', ng-repeat='contact in contactslist() | filter: {contactid.firstname: searchContactText}')
                           a(href='#contact/{{contact.contactid.username}}')
                             table(width='100%')
                               tr
@@ -240,10 +240,10 @@ block appbodycontent
 
                  //.videoCallSidePane(ng-show='localCameraCaptured()')
                    .chatArea
-                     .chatBox(schroll-bottom='messages')
+                     .chatBox(schroll-bottom='messages()')
                        div(ng-show='loadUnderProgress()', style='text-align:center;')
                          img(src='/images/ProgressIcon.gif', width='60px', height='60px')
-                       div(ng-repeat='message in messages')
+                       div(ng-repeat='message in messages()')
                          .chatMessage
                            .senderInfoInMessage
                              b {{message.fromFullName}}

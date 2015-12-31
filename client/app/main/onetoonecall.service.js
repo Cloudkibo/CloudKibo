@@ -8,15 +8,6 @@
 angular.module('cloudKiboApp')
   .factory('OneToOneCallService', function ($rootScope, $q, socket, $log, logger) {
 
-    socket.emit('join global chatroom', {room: 'globalchatroom', user: 'sojharo'});
-
-    socket.on('youareonline', function (friends) {
-      console.log('you are online')
-    });
-
-
-
-
     function addHandlers(socket) {
       socket.on('calleeisoffline', function (nickname) {
         $log.info('Callee is OFFLINE');
@@ -35,6 +26,9 @@ angular.module('cloudKiboApp')
       });
       socket.on('message', function (data) {
         api.trigger('message', [data]);
+      });
+      socket.on('disconnected', function (data) {
+        api.trigger('disconnected');
       });
     }
 

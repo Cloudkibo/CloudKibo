@@ -528,6 +528,15 @@ angular.module('cloudKiboApp')
         $scope.callStarted = true;
       }
     });
+    OneToOneCallService.on('disconnected', function (data) {
+
+      Sound.load();
+      Sound.pause();
+
+      $scope.ringing = false;
+      $scope.amInCall = false;
+      $scope.amInCallWith = '';
+    });
 
     //Group Call logic for socket
     GroupCallService.on('groupmemberisoffline', function(data){
