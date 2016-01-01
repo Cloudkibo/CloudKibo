@@ -31,7 +31,7 @@ angular.module('cloudKiboApp')
 
     function createOrJoinRoom() {
 
-      socket.emit('join global chatroom', {room: roomid, user: Auth.getCurrentUser().username});
+      socket.emit('join global chatroom', {room: roomid, user: Auth.getCurrentUser()});
       console.log("Joining Chat Room, "+ roomid +" username : "+ Auth.getCurrentUser().username)
       $log.info("Joining Chat Room")
       logger.log("Joining Chat Room")
@@ -42,7 +42,7 @@ angular.module('cloudKiboApp')
       $log.info('Leaving room', {room: roomid, username: Auth.getCurrentUser().username});
       logger.log('Leaving room', {room: roomid, username: Auth.getCurrentUser().username});
 
-      socket.emit('leaveChat', {room: roomid, user: Auth.getCurrentUser().username});
+      socket.emit('leaveChat', {room: roomid, user: Auth.getCurrentUser()});
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -139,7 +139,7 @@ angular.module('cloudKiboApp')
     });
 
     socket.on('online', function (friend) {
-      for (i in contactslist) {
+      for (var i in contactslist) {
         if (contactslist[i].contactid.username == friend.username) {
           contactslist[i].online = true;
           console.log("show online friends " + contactslist[i].online)
@@ -150,9 +150,10 @@ angular.module('cloudKiboApp')
     });
 
     socket.on('offline', function (friend) {
-      for (i in contactslist) {
+      for (var i in contactslist) {
         if (contactslist[i].contactid.username == friend.username) {
           contactslist[i].online = false;
+          $rootScope.$broadcast('offline', friend.username);
           console.log("show Offline friends " + contactslist[i].online)
           logger.log("show Offline friends " + contactslist[i].online)
           $log.info("show Offline friends " + contactslist[i].online)
@@ -162,7 +163,7 @@ angular.module('cloudKiboApp')
 
     socket.on('youareonline', function (friends) {
       console.log(friends)
-      for (i in friends) {
+      for (var i in friends) {
         for (var j in contactslist) {
           if (contactslist[j].contactid.username == friends[i].username) {
             contactslist[j].online = true;
@@ -176,7 +177,7 @@ angular.module('cloudKiboApp')
     });
 
     socket.on('theseareonline', function (friends) {
-      for (i in friends) {
+      for (var i in friends) {
         for (var j in contactslist) {
           if (contactslist[j].contactid.username == friends[i].username) {
             contactslist[j].online = true;
@@ -193,7 +194,7 @@ angular.module('cloudKiboApp')
           messages.push(im);
         }
         else if (im.to == Auth.getCurrentUser().username && im.from != otherUser.username) {
-          for (i in contactslist) {
+          for (var i in contactslist) {
             if (contactslist[i].contactid.username == im.from) {
               contactslist[i].unreadMessage = true;
             }
@@ -206,6 +207,7 @@ angular.module('cloudKiboApp')
 
       if (otherUser.username == user.username)
         otherUser.status = user.status;
+      console.log('status updated')
       logger.log("status updated")
     });
 

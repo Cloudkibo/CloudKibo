@@ -39,8 +39,19 @@ angular.module('cloudKiboApp', [
     $httpProvider.interceptors.push('authInterceptor');
   })
 
-  .factory('socket', function (socketFactory) {
-     return socketFactory();
+  .factory('CoreSocketService', function(socketFactory){
+    var socket = socketFactory();
+
+    return {
+      socket: socket
+    };
+  })
+
+  .factory('socket', function (CoreSocketService) {
+     var socketObject = CoreSocketService.socket;
+
+    return socketObject;
+
   })
 
   .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {

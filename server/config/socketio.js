@@ -251,6 +251,8 @@ function onConnect(socketio, socket) {
 
       socket.username= room.user.username;
 
+      console.log(room)
+
       logger.serverLog('info', 'Data Sent to global chat room handler: '+ room);
 
       logger.serverLog('info', 'you are trying to join global chat room now.');
@@ -593,15 +595,11 @@ function onConnect(socketio, socket) {
 
 		});
 
-		socket.on('leave', function (room) {
+		socket.on('leaveChat', function (room) {
 
       socketio.in(room.room).emit('left', room);
 			socket.leave(room.room);
-			socket.emit('left', room);
-
-
-
-
+			socket.emit('offline', room);
 
 			//console.log(socketio.sockets.manager.rooms)
 

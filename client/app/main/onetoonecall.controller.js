@@ -8,7 +8,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, logger, Room, $timeout, $log, ScreenShare, FileHangout, Sound, OneToOneCallService, GroupCallService, $http, RestApi) {
+  .controller('OneToOneCallController', function ($sce, Stream, $location, $routeParams, $scope, logger, Room, $timeout, $log, ScreenShare, FileHangout, Sound, OneToOneCallService, GroupCallService, $http, RestApi, MainService) {
 
     var room = 'globalchatroom';
     var callroom = '';
@@ -26,11 +26,11 @@ angular.module('cloudKiboApp')
     var stream;
 
     $scope.connect = function(){
-      $log.info($scope.user.username +' is connecting in call with '+ $scope.amInCallWith);
+      console.log($scope.user.username +' is connecting in call with '+ $scope.amInCallWith);
       logger.log($scope.user.username +' is connecting in call with '+ $scope.amInCallWith);
       Stream.get()
         .then(function (s) {
-          $log.info($scope.user.username +' has got the stream');
+          console.log($scope.user.username +' has got the stream');
           logger.log($scope.user.username +' has got the stream');
           stream = s;
           Room.init(stream, $scope.user.username);
@@ -425,29 +425,37 @@ angular.module('cloudKiboApp')
       Stream.reset();
       Room.end();
     };
+    window.onbeforeunload = function (e) {
+      if($scope.amInCall)
+        sendMessage('hangup');
+    };
+    $scope.$on('offline', function(event, data){
+      if(data === $scope.amInCallWith)
+        endCall();
+    });
 
     $scope.amInCallWith = '';
     $scope.amInCall = false;
-    OneToOneCallService.on('calleeisoffline', function(data){
+    $scope.$on('calleeisoffline', function(event, data){
       $scope.OutgoingCallStatement = data + ' is offline.';
       $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
       $scope.amInCall = false;
       $scope.amInCallWith = '';
       logger.log("callee is offline")
     });
-    OneToOneCallService.on('calleeisbusy', function(data){
+    $scope.$on('calleeisbusy', function(event, data){
       $scope.OutgoingCallStatement = data.callee + ' is busy on other call.';
       $timeout(function () { $scope.areYouCallingSomeone = false; }, 6000);
       $scope.amInCall = false;
       $scope.amInCallWith = '';
       logger.log("callee is busy")
     });
-    OneToOneCallService.on('othersideringing', function(data){
+    $scope.$on('othersideringing', function(event, data){
       $scope.otherSideRinging = true;
       $scope.amInCall = true;
       $scope.amInCallWith = data.callee;
     });
-    OneToOneCallService.on('areyoufreeforcall', function(data){
+    $scope.$on('areyoufreeforcall', function(event, data){
       $log.info("checking if callee is free for call");
       logger.log("checking if callee is free for call");
       if ($scope.amInCall == false) {
@@ -468,7 +476,7 @@ angular.module('cloudKiboApp')
         logger.log("I the callee is busy");
       }
     });
-    OneToOneCallService.on('message', function (message) {
+    $scope.$on('message', function (event, message) {
       $log.info('Client received message: '+ message);
       logger.log('Client received message: '+ message);
       if(typeof message == 'string'){
@@ -499,7 +507,7 @@ angular.module('cloudKiboApp')
       if (message === 'Accept Call') {
         $scope.otherSideRinging = false;
         $scope.areYouCallingSomeone = false;
-        $log.info("Other party sent accept call message");
+        console.log("Other party sent accept call message");
         logger.log("Other party sent accept call message");
         callroom = Math.random().toString(36).substring(10);
         $scope.connect();
@@ -528,7 +536,7 @@ angular.module('cloudKiboApp')
         $scope.callStarted = true;
       }
     });
-    OneToOneCallService.on('disconnected', function (data) {
+    $scope.$on('disconnected', function (event, data) {
 
       Sound.load();
       Sound.pause();
@@ -708,8 +716,8 @@ angular.module('cloudKiboApp')
 
     $scope.$on('$routeChangeStart', function () {
       if($scope.isCallStarted()){
-        endCall();
         sendMessage('hangup');
+        endCall();
       }
     });
 
