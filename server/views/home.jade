@@ -73,9 +73,11 @@ block appbodycontent
                                     span
                                       button.btn.btn-info.btn-sm(ng-click='removeFriend(otherUser)') Remove Friend
                                     span
-                                      button.btn.btn-info.btn-sm(ng-click='removechathistory(otherUser)') Remove Conversation
+                                      button.btn.btn-info.btn-sm(ng-click='removechathistory(otherUser)') Delete Chat
                                     span
                                       button.btn.btn-info.btn-sm(ng-click='startFileChat()') Send File
+                                    span
+                                      a.btn.btn-info.btn-sm(href='#app') Home
                               div(ng-show='openFileSendView()')
                                 label Send File
                                 input(id='file', type='file')
