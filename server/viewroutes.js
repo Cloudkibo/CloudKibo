@@ -5,6 +5,7 @@ var fs = require('fs');
 var crypto = require("crypto");
 var verificationtoken = require("./api/tokens/verificationtoken.model");
 var passwordresettoken = require("./api/tokens/passwordresettoken.model");
+var configuration = require('./api/configuration/configuration.model');
 
 var html_dir = './public/';
 
@@ -295,26 +296,32 @@ exports.superUserViewRoute = function(req, res) {
 		else if(req.get('host') == 'www.synaps3webrtc.com')
 		  	title = 'Synaps3WebRTC';
 
-    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+    configuration.findOne({}, function(err, gotConfig) {
+      if (err) logger.serverLog('error', 'user.controller (create user) : ', err);
 
-    var sendgrid  = require('sendgrid')(gotConfig.sendgridusername, gotConfig.sendgridpassword);
+      if (!gotConfig) logger.serverLog('error', 'user.controller (create user) : No configuration defined by super user');
 
-    var email     = new sendgrid.Email({
-      to:       'security@cloudkibo.com, sojharo@gmail.com',
-      from:     'support@cloudkibo.com',
-      subject:  'CloudKibo: Owner Dashboard Opened',
-      text:     'Welcome to CloudKibo'
+      var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+
+      var sendgrid  = require('sendgrid')(gotConfig.sendgridusername, gotConfig.sendgridpassword);
+
+      var email     = new sendgrid.Email({
+        to:       'security@cloudkibo.com, sojharo@gmail.com',
+        from:     'support@cloudkibo.com',
+        subject:  'CloudKibo: Owner Dashboard Opened',
+        text:     'Welcome to CloudKibo'
+      });
+
+      email.setHtml('<h1>CloudKibo</h1><br><br>CloudKibo Owner Dashboard has been opened just now. <br><br> IP ADDRESS: '+ ip);
+
+      sendgrid.send(email, function(err, json) {
+        if (err) { return console.log(err); }
+
+        logger.serverLog('info', "new user verification link sent");
+
+      });
+      
     });
-
-    email.setHtml('<h1>CloudKibo</h1><br><br>CloudKibo Owner Dashboard has been opened just now. <br><br> IP ADDRESS: '+ ip);
-
-    sendgrid.send(email, function(err, json) {
-      if (err) { return console.log(err); }
-
-      logger.serverLog('info', "new user verification link sent");
-
-    });
-
 
 		Account.findById(req.user._id, function (err, gotUser) {
 			if (err) return console.log(err);
