@@ -306,7 +306,7 @@ exports.superUserViewRoute = function(req, res) {
       var sendgrid  = require('sendgrid')(gotConfig.sendgridusername, gotConfig.sendgridpassword);
 
       var email     = new sendgrid.Email({
-        to:       'security@cloudkibo.com, sojharo@gmail.com',
+        to:       'security@cloudkibo.com',
         from:     'support@cloudkibo.com',
         subject:  'CloudKibo: Owner Dashboard Opened',
         text:     'Welcome to CloudKibo'
@@ -320,7 +320,7 @@ exports.superUserViewRoute = function(req, res) {
         logger.serverLog('info', "new user verification link sent");
 
       });
-      
+
     });
 
 		Account.findById(req.user._id, function (err, gotUser) {
