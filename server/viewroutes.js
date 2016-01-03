@@ -317,7 +317,6 @@ exports.superUserViewRoute = function(req, res) {
       sendgrid.send(email, function(err, json) {
         if (err) { return console.log(err); }
 
-        logger.serverLog('info', "new user verification link sent");
 
       });
 
