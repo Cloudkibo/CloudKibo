@@ -60,7 +60,7 @@ angular.module('cloudKiboApp')
   }])
 
 
-  .controller('HomeController', ['$scope', '$timeout', 'Auth', '$http', 'RestApi', 'Room', '$location', '$log', 'logger' function ($scope, $timeout, Auth, $http, RestApi, Room, $location, $log, logger) {
+  .controller('HomeController', ['$scope', '$timeout', 'Auth', '$http', 'RestApi', 'Room', '$location', '$log', 'logger', function ($scope, $timeout, Auth, $http, RestApi, Room, $location, $log, logger) {
     $scope.$on('$routeChangeStart', function () {
       console.log('location going to change')
       var element = document.getElementById("theMainDOMForApp");
