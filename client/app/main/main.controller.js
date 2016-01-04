@@ -72,7 +72,7 @@ angular.module('cloudKiboApp')
       $http.post(RestApi.contacts.rejectContactRequest, $scope.addRequestslist[index].userid)
         .success(function (data) {
           if (data.status == 'success') {
-            MainService.spliceAddRequestList(index)
+            MainService.spliceAddRequestList(index);
             console.log("Friend request rejected");
             $log.info("Friend request rejected");
             logger.log("Friend request rejected");
@@ -83,6 +83,7 @@ angular.module('cloudKiboApp')
     $scope.removeFriend = function (index) {
       $http.post(RestApi.contacts.removeFromContactList, index)
         .success(function (data) {
+          MainService.spliceContactList(index);
           //console.log(data);
           console.log("Friend removed")
           $log.info("Friend removed")

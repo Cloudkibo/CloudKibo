@@ -18,6 +18,11 @@
         | CloudKibo Conference
       a(href='javascript:void(0);', class='mobi-toggler')
         i(class='fa fa-bars')
+      div(class='header-navigation pull-right font-transform-inherit')
+        ul
+          li
+            a(ng-href='#/app')
+              | Home
 .row(ng-show='isAskingForMediaAccess()')
   br
   br
@@ -91,14 +96,19 @@
 
   .col-sm-11(class='animate-show')
     .row
-      .col-md-6.col-lg-offset-9(ng-show='showChatBox()')
-        div(class='animate-show')
+      .col-md-6.col-lg-offset-9()
+        div(class='animate-show', ng-show='showChatBox()')
           div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages', style="word-wrap: break-word")
             .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
               | {{userMessage}}
           form
             input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
             button(ng-click='sendData()') Send
+        //.row
+          .col-sm-1.chatButtonUI()
+            a.icon-btn(ng-click='toggleChatBoxVisibility()')
+              i.fa.fa-envelope-o
+              div Chat
       .contactIconPane
         div(class='animate-show', ng-hide='hasPeerSharedScreen() || hasAndroidPeerSharedScreen()')
           center

@@ -233,6 +233,9 @@ angular.module('cloudKiboApp')
       setContactsList : function(d){
         contactslist = d;
       },
+      spliceContactList: function(index){
+        contactslist.splice(index, 1);
+      },
       getAddRequestslist : function(){
         return addRequestslist;
       },
