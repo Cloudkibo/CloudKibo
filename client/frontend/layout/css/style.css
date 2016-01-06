@@ -312,9 +312,7 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
   left: 0px;
 }
 
-.chatButtonUI{
-  padding-top : 10px;
-}
+
 
 /*.meetingChatBox
 {
@@ -330,11 +328,22 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 .meetingChatBox
 {
   overflow : auto;
-  width : 40%;#240px;
+  width : 93%;#240px;
   height : 430px;
   background: #f8fafe;
   border: 1px solid #badfef;
   padding: 10px;
+}
+
+.chatButtonRow{
+
+
+  float : right;
+
+}
+
+.chatButtonUI{
+
 }
 
 /*.contactIconPane

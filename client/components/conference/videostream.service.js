@@ -22,11 +22,13 @@ angular.module('cloudKiboApp')
         }
       },
       reset: function () {
-        if(stream) {
+        console.log('going to stop local stream')
+        if(stream || stream.getTracks()[0]) {
 
+          console.log('stopping local stream now')
           stream.getTracks()[0].stop();
           stream = null;
-          
+
         }
       }
     };

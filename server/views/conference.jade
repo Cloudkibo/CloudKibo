@@ -57,7 +57,7 @@
       .col-sm-1.fileTransferBox(id='0', ng-show='meetingStarted()')
     .row
       .col-sm-1(id='filelist_container', ng-show='meetingStarted()')
-    .row
+    //.row
       .col-sm-1.chatButtonUI()
         a.icon-btn(ng-click='toggleChatBoxVisibility()')
           i.fa.fa-envelope-o
@@ -96,20 +96,7 @@
 
   .col-sm-11(class='animate-show')
     .row
-      .col-md-6.col-lg-offset-9()
-        div(class='animate-show', ng-show='showChatBox()')
-          div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages', style="word-wrap: break-word")
-            .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
-              | {{userMessage}}
-          form
-            input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
-            button(ng-click='sendData()') Send
-        //.row
-          .col-sm-1.chatButtonUI()
-            a.icon-btn(ng-click='toggleChatBoxVisibility()')
-              i.fa.fa-envelope-o
-              div Chat
-      .contactIconPane
+      .col-sm-9
         div(class='animate-show', ng-hide='hasPeerSharedScreen() || hasAndroidPeerSharedScreen()')
           center
             span
@@ -130,3 +117,17 @@
         br
         alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
         br
+      .col-sm-3
+        .row.chatButtonRow(ng-show='meetingStarted()')
+          .col-sm-1.chatButtonUI()
+            a.icon-btn(ng-click='toggleChatBoxVisibility()')
+              i.fa.fa-envelope-o
+              div Chat
+        .row(class='animate-show', ng-show='showChatBox()')
+          div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages', style="word-wrap: break-word")
+            .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
+              | {{userMessage}}
+          form
+            input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
+            button(ng-click='sendData()') Send
+
