@@ -3,7 +3,7 @@
  */
 
 angular.module('cloudKiboApp')
-  .controller('TabsController', function ($scope, $location, Auth, $http, socket, RestApi, logger, $log) {
+  .controller('TabsController', function ($scope, $location, Auth, $http, socket, RestApi, logger, $log, MainService) {
 
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
@@ -20,6 +20,9 @@ angular.module('cloudKiboApp')
         socket.emit('leaveChat', {room: 'globalchatroom', username: Auth.getCurrentUser().username});
 
       }
+
+      MainService.emptyContactList();
+      MainService.emptyAddRequestList();
 
       console.log("Left gloal chat room");
       logger.log("Left gloal chat room");

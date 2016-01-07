@@ -236,11 +236,17 @@ angular.module('cloudKiboApp')
       spliceContactList: function(index){
         contactslist.splice(index, 1);
       },
+      emptyContactList: function(){
+        contactslist = [];
+      },
       getAddRequestslist : function(){
         return addRequestslist;
       },
       spliceAddRequestList: function(index){
         addRequestslist.splice(index, 1);
+      },
+      emptyAddRequestList: function(){
+        addRequestslist = {};
       },
       getMessages: function(){
         return messages;
