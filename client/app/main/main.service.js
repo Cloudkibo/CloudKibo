@@ -55,24 +55,9 @@ angular.module('cloudKiboApp')
 
     var contactslist;
 
-    $http.get(RestApi.contacts.contactListOfUser).success(function (data) {
-      contactslist = data;
-      console.log("contact list data and chat fetched");
-      $log.info("contact list data and chat fetched");
-      logger.log("contact list data and chat fetched");
-    }).error(function (err) {
-      console.log('error ', err)
-      logger.log('error ', err)
-    });
-
     var addRequestslist = {};
 
-    $http.get(RestApi.contacts.pendingAddRequest).success(function (data) {
-      addRequestslist = data;
-      console.log("pending requests shown " + addRequestslist);
-      $log.info("pending requests shown " + addRequestslist);
-      logger.log("pending requests shown " + addRequestslist);
-    });
+
 
     var otherUser = {};
 
@@ -163,17 +148,35 @@ angular.module('cloudKiboApp')
 
     socket.on('youareonline', function (friends) {
       console.log(friends)
-      for (var i in friends) {
-        for (var j in contactslist) {
-          if (contactslist[j].contactid.username == friends[i].username) {
-            contactslist[j].online = true;
-            console.log("show online to " + contactslist[j].online)
-            $log.info("show online to " + contactslist[j].online)
-            logger.log("show online to " + contactslist[j].online)
-            break;
+      $http.get(RestApi.contacts.contactListOfUser).success(function (data) {
+        contactslist = data;
+        console.log("contact list data and chat fetched");
+        $log.info("contact list data and chat fetched");
+        logger.log("contact list data and chat fetched");
+        for (var i in friends) {
+          for (var j in contactslist) {
+            if (contactslist[j].contactid.username == friends[i].username) {
+              contactslist[j].online = true;
+              console.log("show online to " + contactslist[j].online)
+              $log.info("show online to " + contactslist[j].online)
+              logger.log("show online to " + contactslist[j].online)
+              break;
+            }
           }
         }
-      }
+
+        $http.get(RestApi.contacts.pendingAddRequest).success(function (data) {
+          addRequestslist = data;
+          console.log("pending requests shown " + addRequestslist);
+          $log.info("pending requests shown " + addRequestslist);
+          logger.log("pending requests shown " + addRequestslist);
+        });
+
+      }).error(function (err) {
+        console.log('error ', err)
+        logger.log('error ', err)
+      });
+
     });
 
     socket.on('theseareonline', function (friends) {
