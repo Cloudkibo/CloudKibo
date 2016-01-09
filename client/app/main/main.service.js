@@ -16,19 +16,6 @@ angular.module('cloudKiboApp')
     var meetingroom;
     var roomid;
 
-
-    $timeout(function () {
-
-      meetingroom = 'm_' + Auth.getCurrentUser().username;
-
-      roomid = 'globalchatroom';
-
-      createOrJoinRoom();
-      connected = true;
-
-    }, 1000);
-
-
     function createOrJoinRoom() {
 
       socket.emit('join global chatroom', {room: roomid, user: Auth.getCurrentUser()});
@@ -62,7 +49,7 @@ angular.module('cloudKiboApp')
     var otherUser = {};
 
     var fetchOtherUserData = function () {
-      if ($location.url() != '/app') {
+      if ($location.url() != '/app' && $location.url() != '/conference') {
         $http.post(RestApi.user.searchByUsername, {searchusername: $location.url().split('/')[2]})
           .success(function (data) {
             otherUser = data;
@@ -71,7 +58,7 @@ angular.module('cloudKiboApp')
       }
     };
 
-    fetchOtherUserData();
+
 
     var messages = [];
 
@@ -148,6 +135,7 @@ angular.module('cloudKiboApp')
 
     socket.on('youareonline', function (friends) {
       console.log(friends)
+      fetchOtherUserData();
       $http.get(RestApi.contacts.contactListOfUser).success(function (data) {
         contactslist = data;
         console.log("contact list data and chat fetched");
@@ -223,6 +211,14 @@ angular.module('cloudKiboApp')
     var api = {
       sendMessage: function (m, d) {
         socket.emit(m, d);
+      },
+      join: function(){
+        meetingroom = 'm_' + Auth.getCurrentUser().username;
+
+        roomid = 'globalchatroom';
+
+        createOrJoinRoom();
+        connected = true;
       },
       leave: function (){
         LeaveRoom();

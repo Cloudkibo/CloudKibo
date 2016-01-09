@@ -80,6 +80,8 @@ angular.module('cloudKiboApp')
 
       $scope.user = $scope.getCurrentUser();
 
+      MainService.join();
+
     }, 1000);
 
     $scope.isUserNameDefined = function () {
