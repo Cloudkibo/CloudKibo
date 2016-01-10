@@ -9,6 +9,12 @@ angular.module('cloudKiboApp')
       });
     });
 
+    Auth.isLoggedInAsync(function(data){
+      if(data){
+        $location.path('/app');
+      }
+    })
+
     $scope.user = {};
     $scope.errors = {};
 
