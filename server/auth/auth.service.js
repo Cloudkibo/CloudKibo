@@ -17,11 +17,34 @@ function isAuthenticated() {
   return compose()
     // Validate jwt
     .use(function(req, res, next) {
-      // allow access_token to be passed through query parameter as well
-      if(req.query && req.query.hasOwnProperty('access_token')) {
-        req.headers.authorization = 'Bearer ' + req.query.access_token;
+      if(req.headers.hasOwnProperty('kibo-app-id')){
+        if(req.headers['kibo-app-id'] === '5wdqvvi8jyvfhxrxmu73dxun9za8x5u6n59'){
+          console.log('app id is known');
+          if(req.headers['kibo-app-secret'] === 'jcmhec567tllydwhhy2z692l79j8bkxmaa98do1bjer16cdu5h79xvx'){
+            console.log('client secret is correct')
+
+            User.findOne({username: req.headers['kibo-client-id']}, function(err, user){
+              console.log(err)
+              console.log(user)
+              if(err) return next(err);
+              if(user) {
+                req.user = user;
+                next();
+              } else {
+                console.log('client app is not authorized');
+                return res.send(401);
+              }
+            })
+
+          }
+        }
+      } else {
+        // allow access_token to be passed through query parameter as well
+        if(req.query && req.query.hasOwnProperty('access_token')) {
+          req.headers.authorization = 'Bearer ' + req.query.access_token;
+        }
+        validateJwt(req, res, next);
       }
-      validateJwt(req, res, next);
     })
     // Attach user to request
     .use(function(req, res, next) {
