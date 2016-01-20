@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints) {
+  .factory('MeetingRoom', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},

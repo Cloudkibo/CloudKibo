@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints) {
+  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, logger, sdpConstraints) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -69,6 +69,7 @@ angular.module('cloudKiboApp')
             stream: evnt.stream
           }]);
           screenSwitch[id] = false;
+          logger.log('Received screen sharing stream by '+ username);
         } else {
           if (nullStreams[id]) return ;
           api.trigger('peer.stream', [{
@@ -82,7 +83,7 @@ angular.module('cloudKiboApp')
         }
       };
       pc.ondatachannel = function (evnt) {
-        $log.debug('Received DataChannel from '+ id);
+        logger.log('Received DataChannel from '+ userNames[id] +' by '+ username);
         dataChannels[id] = evnt.channel;
         dataChannels[id].onmessage = function (evnt) {
           handleDataChannelMessage(id, evnt.data);
@@ -114,7 +115,7 @@ angular.module('cloudKiboApp')
           dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: true});
         }
         catch (e) {
-          $log.warn('Unreliable DataChannel for '+ id +': '+ e);
+          logger.log('Reliable createDataChannel() failed with exception: ' + JSON.stringify(e.message) +' for username: '+ username +' (Not supported in chrome)');
           dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: false});
         }
         dataChannels[id].onmessage = function (evnt) {
@@ -124,7 +125,7 @@ angular.module('cloudKiboApp')
       } catch (e) {
         alert('Failed to create data channel. ' +
         'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
-        $log.error('createDataChannel() failed with exception: ' + e.message);
+        logger.log('createDataChannel() failed with exception: ' + JSON.stringify(e.message) +' for username: '+ username);
       }
     }
 
@@ -161,10 +162,10 @@ angular.module('cloudKiboApp')
               pc.setLocalDescription(sdp);
               socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'answer', camaccess : stream });
             }, function (e) {
-              console.log(e);
+              logger.log('Error in creating answer : '+ JSON.stringify(e) +' shown to '+ username +' sent by '+ data.username);
             }, sdpConstraints);
           }, function (e) {
-            $log.error(e);
+            logger.log('Error in setting remote offer : '+ JSON.stringify(e) +' shown to '+ username +' sent by '+ data.username);
           });
           break;
         case 'answer':
@@ -175,7 +176,7 @@ angular.module('cloudKiboApp')
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             $log.debug('Setting remote description by answer');
           }, function (e) {
-            $log.error(e);
+            logger.log('Error in setting remote answer : '+ JSON.stringify(e) +' shown to '+ username +' sent by '+ data.username);
           });
           break;
         case 'ice':

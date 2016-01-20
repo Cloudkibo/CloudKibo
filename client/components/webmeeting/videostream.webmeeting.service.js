@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .factory('Stream', function ($q) {
+  .factory('MeetingStream', function ($q) {
     var stream;
     return {
       get: function () {

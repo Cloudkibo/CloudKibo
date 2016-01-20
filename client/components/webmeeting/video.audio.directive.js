@@ -4,7 +4,7 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .directive('videoPlayer', function ($sce) {
+  .directive('meetingPlayer', function ($sce) {
     return {
       template: '<div class="videoBoxContainer">' +
       '<div class="{{divBoxClass}}" ng-hide="hasSharedVideo()"></div>' +

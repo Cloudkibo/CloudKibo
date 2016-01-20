@@ -81,6 +81,28 @@ exports.conferenceRoute = function (req, res) {
   }
 };
 
+exports.webmeetingRoute = function (req, res) {
+  if (typeof req.user == 'undefined')
+    res.render('webmeeting', { title: title, user: '', meetingroom : req.params[0]});
+  else{
+
+    var title = 'CloudKibo';
+
+    if(req.get('host') == 'www.cloudkibo.com')
+      title = 'CloudKibo';
+    else if(req.get('host') == 'www.synaps3webrtc.com')
+      title = 'Synaps3WebRTC';
+
+    Account.findById(req.user._id, function (err, gotUser) {
+      if (err) return console.log(err);
+
+      res.render('webmeeting', { title: title, user: gotUser, meetingroom : req.params[0]});
+
+    })
+
+  }
+};
+
   // Make the following route good, see if the person demanding this data is friend or not.. should he be
   // given that data or not? and what if data is not available, and one should not chat with himself
   // Links of names, click to go to home

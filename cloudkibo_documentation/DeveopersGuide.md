@@ -190,7 +190,7 @@ https://github.com/Cloudkibo/CloudKibo/wiki/Cloudkibo-Client-Structure
 
 ##### *Modified logic for conference call*
 
-Modified logic for conference has one controller (conference.controller.js) which changes the UI according to actions happening on page. Other thing in modified logic has WebRTC module (room.service.js). This webrtc module is made in such a way that it supports N members in a call and controller is attached to this in such a way that it updates the UI for N members and based on array updates the UI when someone leaves or joins again. Conference related code can be found in /client/components/conference
+Modified logic for conference has one controller (webmeeting.controller.js) which changes the UI according to actions happening on page. Other thing in modified logic has WebRTC module (room.webmeeting.service.js). This webrtc module is made in such a way that it supports N members in a call and controller is attached to this in such a way that it updates the UI for N members and based on array updates the UI when someone leaves or joins again. Conference related code can be found in /client/components/conference
 
 ### Integration
 

@@ -22,6 +22,11 @@ angular.module('cloudKiboApp', [
         controller: 'ConferenceController'
     })
 
+    .when('/webmeeting/:mname', {
+        templateUrl: function(params){ return '/webmeeting/'+ params.mname},
+        controller: 'WebMeetingController'
+    })
+
     .when('/livehelp/:mname', {
       templateUrl: function(params){ console.log(params); return '/livehelp/'+ params.mname +'?role='+ params.role},
       controller: 'LiveHelpController'
