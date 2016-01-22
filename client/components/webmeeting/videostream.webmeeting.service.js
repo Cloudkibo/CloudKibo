@@ -1,33 +1,62 @@
 'use strict';
 
 angular.module('cloudKiboApp')
-  .factory('MeetingStream', function ($q) {
-    var stream;
+  .factory('MeetingStream', function ($q, logger) {
+    var audioStream;
+    var videoStream;
     return {
-      get: function () {
-        if (stream) {
-          return $q.when(stream);
+      getAudio: function () {
+        if (audioStream) {
+          return $q.when(audioStream);
         } else {
           var d = $q.defer();
           navigator.getUserMedia({
-            video: true,
+            video: false,
             audio: true
           }, function (s) {
-            stream = s;
-            d.resolve(stream);
+            logger.log('given audio stream');
+            audioStream = s;
+            d.resolve(audioStream);
           }, function (e) {
             d.reject(e);
           });
           return d.promise;
         }
       },
-      reset: function () {
-        console.log('going to stop local stream')
-        if(stream || stream.getTracks()[0]) {
+      resetAudio: function () {
+        logger.log('going to stop audio local stream');
+        if(audioStream || audioStream.getTracks()[0]) {
 
-          console.log('stopping local stream now')
-          stream.getTracks()[0].stop();
-          stream = null;
+          logger.log('stopping local audio stream now');
+          audioStream.getTracks()[0].stop();
+          audioStream = null;
+
+        }
+      },
+      getVideo: function () {
+        if (videoStream) {
+          return $q.when(videoStream);
+        } else {
+          var d = $q.defer();
+          navigator.getUserMedia({
+            video: true,
+            audio: false
+          }, function (s) {
+            videoStream = s;
+            d.resolve(videoStream);
+          }, function (e) {
+            d.reject(e);
+          });
+          return d.promise;
+        }
+      },
+      resetVideo: function () {
+        logger.log('going to stop local video stream')
+        if(videoStream || videoStream.getTracks()[0]) {
+
+          logger.log('stopping local video stream now')
+          videoStream.getTracks()[0].stop();
+          videoStream = null;
 
         }
       }

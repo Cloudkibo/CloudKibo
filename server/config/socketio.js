@@ -850,11 +850,56 @@ module.exports = function (socketio) {
       }
     });
 
+    socket.on('init.new', function (data, fn) {
+      currentRoom = (data || {}).room || uuid.v4();
+      var room = rooms[currentRoom];
+      if (!room) {
+        socket.username = data.username;
+        rooms[currentRoom] = [socket];
+        id = userIds[currentRoom] = 0;
+        fn(currentRoom, id);
+        logger.serverLog('info', 'Room created, with #', currentRoom);
+      } else {
+        if (!room) {
+          return;
+        }
+        userIds[currentRoom] += 1;
+        id = userIds[currentRoom];
+        fn(currentRoom, id);
+        room.forEach(function (s) {
+          s.emit('peer.connected.new', { id: id, username: data.username });
+        });
+        socket.username = data.username;
+        room[id] = socket;
+        logger.serverLog('info', 'Peer connected to room', currentRoom, 'with #', id);
+      }
+    });
+
     socket.on('msg', function (data) {
       var to = parseInt(data.to, 10);
       if (rooms[currentRoom] && rooms[currentRoom][to]) {
         //logger.serverLog('info', 'Redirecting message to', to, 'by', data.by);
         rooms[currentRoom][to].emit('msg', data);
+      } else {
+        //logger.serverLog('warn', 'Invalid user');
+      }
+    });
+
+    socket.on('msgAudio', function (data) {
+      var to = parseInt(data.to, 10);
+      if (rooms[currentRoom] && rooms[currentRoom][to]) {
+        //logger.serverLog('info', 'Redirecting message to', to, 'by', data.by);
+        rooms[currentRoom][to].emit('msgAudio', data);
+      } else {
+        //logger.serverLog('warn', 'Invalid user');
+      }
+    });
+
+    socket.on('msgVideo', function (data) {
+      var to = parseInt(data.to, 10);
+      if (rooms[currentRoom] && rooms[currentRoom][to]) {
+        //console.log('info', 'Redirecting message to', to, 'by', data.by);
+        rooms[currentRoom][to].emit('msgVideo', data);
       } else {
         //logger.serverLog('warn', 'Invalid user');
       }
@@ -877,6 +922,12 @@ module.exports = function (socketio) {
       });
     });
 
+    socket.on('conference.streamVideo', function(data){
+      rooms[currentRoom].forEach(function (s) {
+        s.emit('conference.streamVideo', { username: data.username, type: data.type, action: data.action, id: data.id });
+      });
+    });
+
     function conferenceDisconnect(socketio, socket){
       if (!currentRoom || !rooms[currentRoom]) {
         return;
@@ -887,6 +938,7 @@ module.exports = function (socketio) {
       rooms[currentRoom].forEach(function (socket) {
         if (socket) {
           socket.emit('peer.disconnected', { id: id });
+          socket.emit('peer.disconnected.new', { id: id });
         }
       });
       /*userIds[currentRoom] -= 1;

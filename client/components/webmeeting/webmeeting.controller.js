@@ -5,7 +5,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('WebMeetingController', function ($sce, MeetingStream, $location, $routeParams, $scope, MeetingRoom, $timeout, logger, ScreenShare, FileHangout, $log) {
+  .controller('WebMeetingController', function ($sce, MeetingStream, $location, $routeParams, $scope, MeetingRoom, MeetingRoomVideo, $timeout, logger, ScreenShare, FileHangout, $log) {
 
     if($location.search().role){
       $scope.supportCall = true;
@@ -79,7 +79,7 @@ angular.module('cloudKiboApp')
       $log.info($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
       logger.log($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
       $scope.askingMedia = true;
-      MeetingStream.get()
+      MeetingStream.getAudio()
         .then(function (s) {
           $scope.askingMedia = false;
           stream = s;
@@ -112,7 +112,8 @@ angular.module('cloudKiboApp')
         username: (peer.stream !== null) ? peer.username : peer.username + ' (No Mic/Cam)',
         sharedVideo: false,
         divClass: 'hideVideoBox',
-        stream: (peer.stream !== null) ? URL.createObjectURL(peer.stream) : ''
+        audioStream: (peer.stream !== null) ? URL.createObjectURL(peer.stream) : ''
+        //stream: (peer.stream !== null) ? URL.createObjectURL(peer.stream) : ''
       });
     });
     MeetingRoom.on('peer.screenStream', function (peer) {
@@ -246,6 +247,22 @@ angular.module('cloudKiboApp')
         if ($scope.toggleVideoText === 'Share Video') {
           $scope.toggleVideoText = 'Hide Video';
           logger.log("" + $scope.user.username + " has shared the video");
+          MeetingStream.getVideo()
+            .then(function (s) {
+              stream = s;
+              MeetingRoom.init(stream, $scope.user.username);
+              stream = URL.createObjectURL(stream);
+              MeetingRoom.joinRoom($routeParams.mname);
+              logger.log('Accesss to audio and video is given to the application, username : '+ $scope.user.username)
+            }, function (err) {
+              console.error(err);
+              $scope.askingMedia = false;
+              $scope.isMediaDenied = true;
+              logger.log("audio video stream access was denied: error "+err+", username : "+ $scope.user.username);
+              $scope.error = 'No audio/video permissions. Please allow the audio/video capturing and refresh your browser.';
+              MeetingRoom.init(null, $scope.user.username);
+              MeetingRoom.joinRoom($routeParams.mname);
+            });
           MeetingRoom.toggleVideo(true);
         }
         else {

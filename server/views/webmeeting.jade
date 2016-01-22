@@ -100,7 +100,7 @@
                 div(class='{{divBoxClass}}', ng-hide='isLocalVideoShared()')
                 video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='170px', ng-show='isLocalVideoShared()' muted)
                 span {{getUsername()}}
-              meeting-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}', div-box-class='{{peer.divClass}}')
+              meeting-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', aud-src='{{peer.audioStream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}', div-box-class='{{peer.divClass}}')
         div(ng-show='hasPeerSharedScreen()')
           center
             span

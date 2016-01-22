@@ -57,7 +57,7 @@ angular.module('cloudKiboApp')
       if(stream !== null)
         pc.addStream(stream);
       pc.onicecandidate = function (evnt) {
-        socket.emit('msg', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
+        socket.emit('msgAudio', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
       pc.onaddstream = function (evnt) {
         $log.debug('Received stream from '+ id);
@@ -99,7 +99,7 @@ angular.module('cloudKiboApp')
           //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000"); // todo added for testing by sojharo
           pc.setLocalDescription(sdp);
           $log.debug('Creating an offer for', id);
-          socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username, camaccess : stream });
+          socket.emit('msgAudio', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username, camaccess : stream });
         }, function (e) {
           $log.error(e);
         },
@@ -159,7 +159,7 @@ angular.module('cloudKiboApp')
             pc.createAnswer(function (sdp) {
               //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
-              socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'answer', camaccess : stream });
+              socket.emit('msgAudio', { by: currentId, to: data.by, sdp: sdp, type: 'answer', camaccess : stream });
             }, function (e) {
               console.log(e);
             }, sdpConstraints);
@@ -191,12 +191,12 @@ angular.module('cloudKiboApp')
     var connected = false;
 
     function addHandlers(socket) {
-      socket.on('peer.connected', function (params) {
+      socket.on('peer.connected.new', function (params) {
         userNames[params.id] = params.username;
         screenSwitch[params.id] = false;
         makeOffer(params.id);
       });
-      socket.on('peer.disconnected', function (data) {
+      socket.on('peer.disconnected.new', function (data) {
         api.trigger('peer.disconnected', [data]);
         if (!$rootScope.$$digest) {
           $rootScope.$apply();
@@ -204,7 +204,7 @@ angular.module('cloudKiboApp')
         delete userNames[data.id];
         delete screenSwitch[data.id];
       });
-      socket.on('msg', function (data) {
+      socket.on('msgAudio', function (data) {
         handleMessage(data);
       });
       socket.on('conference.chat', function(data){
@@ -247,7 +247,7 @@ angular.module('cloudKiboApp')
 
     function connectRoom (r){
       if (!connected) {
-        socket.emit('init', { room: r, username: username }, function (roomid, id) {
+        socket.emit('init.new', { room: r, username: username }, function (roomid, id) {
           if(id === null){
             alert('You cannot join conference. Room is full');
             connected = false;
@@ -262,16 +262,6 @@ angular.module('cloudKiboApp')
     var api = {
       joinRoom: function (r) {
         connectRoom(r);
-      },
-      createRoom: function () { // DEPRECATED, not using anymore.
-        var d = $q.defer();
-        socket.emit('init', null, function (roomid, id) {
-          d.resolve(roomid);
-          roomId = roomid;
-          currentId = id;
-          connected = true;
-        });
-        return d.promise;
       },
       init: function (s, n) {
         username = n;
