@@ -284,6 +284,7 @@ angular.module('cloudKiboApp')
 
     ScreenShare.on('extensioninstalled',function(data){
       // todo this fix is work around for demo... the right fix would require to work on extension
+      $scope.extensionAvailable = true;
       $scope.showScreen();
       //location.reload();
     })
