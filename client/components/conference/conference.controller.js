@@ -311,6 +311,8 @@ angular.module('cloudKiboApp')
             if (!!navigator.webkitGetUserMedia) {
               shareScreenUsingChromeExtension(function (err, stream) {
                 if (err) {
+                  console.log(err);
+                  logger.log(err);
                   alert('Permission denied or could not capture the screen.');
                   logger.log('Chrome ERROR: Permission denied or could not capture the screen. Shown to: ' + $scope.user.username);
                 }
