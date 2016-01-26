@@ -379,11 +379,13 @@ angular.module('cloudKiboApp')
             console.log(error)
             // if exception occurred or access denied
             if (error && error == 'PermissionDeniedError') {
+              console.log('inside permission denied error in shareScreenUsingChromeExtension')
               ScreenShare.setSourceIdValue(undefined);
               ScreenShare.setChromeMediaSource();
               //alert('PermissionDeniedError: User denied to share content of his/her screen.');
               logger.log('PermissionDeniedError: User denied to share content of his/her screen. Shown to: ' + $scope.user.username);
             }
+            console.log(error);
             // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
             if (ScreenShare.getChromeMediaSource() == 'desktop') {
               ScreenShare.setSourceIdInConstraints();
