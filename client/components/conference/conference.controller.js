@@ -286,8 +286,7 @@ angular.module('cloudKiboApp')
 
 
       $timeout(function(){
-        //ScreenShare.setChromeMediaSource();
-        //ScreenShare.setSourceIdValue(null);
+        ScreenShare.setScreenConstraintsForFirstTimeInstall();
         $scope.extensionAvailable = true;
         $scope.showScreen();
         //location.reload();

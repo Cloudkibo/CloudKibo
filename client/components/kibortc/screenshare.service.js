@@ -118,6 +118,10 @@ angular.module('kiboRtc.services')
 
       },
 
+      setScreenConstraintsForFirstTimeInstall: function(){
+        screen_constraints.mandatory.chromeMediaSource = 'desktop';
+      },
+
       /**
        * Returns the object of screen_constraints
        *
