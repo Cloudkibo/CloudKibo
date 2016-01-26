@@ -286,6 +286,7 @@ angular.module('cloudKiboApp')
 
 
       $timeout(function(){
+        ScreenShare.setSourceIdValue(null);
         $scope.extensionAvailable = true;
         $scope.showScreen();
         //location.reload();
