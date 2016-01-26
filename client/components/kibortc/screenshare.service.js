@@ -87,8 +87,6 @@ angular.module('kiboRtc.services')
         if (!callback) throw '"callback" parameter is mandatory.';
         screenCallback = callback;
         $window.postMessage('get-sourceId', '*');
-        $log.debug(callback)
-        $log.info('getting source id '+callback)
       },
 
       /**

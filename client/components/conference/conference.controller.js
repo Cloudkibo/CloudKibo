@@ -287,6 +287,7 @@ angular.module('cloudKiboApp')
 
       $timeout(function(){
         ScreenShare.setSourceIdValue(null);
+        ScreenShare.setChromeMediaSource();
         $scope.extensionAvailable = true;
         $scope.showScreen();
         //location.reload();
@@ -375,6 +376,7 @@ angular.module('cloudKiboApp')
         if (ScreenShare.getChromeMediaSource() == 'desktop' && !ScreenShare.getSourceIdValue()) {
 
           ScreenShare.getSourceId(function (error) {
+            console.log(error)
             // if exception occurred or access denied
             if (error && error == 'PermissionDeniedError') {
               ScreenShare.setSourceIdValue(undefined);
