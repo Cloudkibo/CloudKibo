@@ -86,13 +86,13 @@ File Description: Indexes the REST URIs for Chat
 
 File Category: userchat
 
-**/userchat/userchat.controller.js**
+**/userchat/meetingchat.controller.js**
 
 File Description: Route Handlers for Chat
 
 File Category: Route Handlers
 
-**/userchat/userchat.model.js**
+**/userchat/meetingchat.model.js**
 
 File Description: Code for MongoDB Collection for Chat
 

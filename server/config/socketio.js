@@ -850,6 +850,48 @@ module.exports = function (socketio) {
       }
     });
 
+    socket.on('msg', function (data) {
+      var to = parseInt(data.to, 10);
+      if (rooms[currentRoom] && rooms[currentRoom][to]) {
+        //logger.serverLog('info', 'Redirecting message to', to, 'by', data.by);
+        rooms[currentRoom][to].emit('msg', data);
+      } else {
+        //logger.serverLog('warn', 'Invalid user');
+      }
+    });
+
+    socket.on('conference.chat', function(data){
+      rooms[currentRoom].forEach(function (s) {
+        s.emit('conference.chat', { username: data.username, message: data.message });
+      });
+      if(data.support_call) {
+        if (data.support_call.companyid) {
+          var meetingchat = require('./../api/meetingchat/meetingchat.model.js');
+
+          var newUserChat = new meetingchat({
+            to : data.support_call.to,
+            from : data.support_call.from,
+            visitoremail : data.support_call.visitoremail,
+            agentemail : data.support_call.agentemail,
+            msg : data.message,
+            request_id : data.support_call.request_id,
+            companyid: data.support_call.companyid
+          });
+
+          newUserChat.save(function (err2) {
+            if (err2) return console.log('Error 2' + err2);
+          });
+          sendToCloudKibo(data.support_call);
+        }
+      }
+    });
+
+    socket.on('conference.stream', function(data){
+      rooms[currentRoom].forEach(function (s) {
+        s.emit('conference.stream', { username: data.username, type: data.type, action: data.action, id: data.id });
+      });
+    });
+
     socket.on('init.new', function (data, fn) {
       currentRoom = (data || {}).room || uuid.v4();
       var room = rooms[currentRoom];
@@ -875,16 +917,6 @@ module.exports = function (socketio) {
       }
     });
 
-    socket.on('msg', function (data) {
-      var to = parseInt(data.to, 10);
-      if (rooms[currentRoom] && rooms[currentRoom][to]) {
-        //logger.serverLog('info', 'Redirecting message to', to, 'by', data.by);
-        rooms[currentRoom][to].emit('msg', data);
-      } else {
-        //logger.serverLog('warn', 'Invalid user');
-      }
-    });
-
     socket.on('msgAudio', function (data) {
       var to = parseInt(data.to, 10);
       if (rooms[currentRoom] && rooms[currentRoom][to]) {
@@ -905,24 +937,33 @@ module.exports = function (socketio) {
       }
     });
 
-    socket.on('conference.chat', function(data){
-      rooms[currentRoom].forEach(function (s) {
-        s.emit('conference.chat', { username: data.username, message: data.message });
-      });
-      if(data.support_call) {
-        if (data.support_call.companyid) {
-          sendToCloudKibo(data.support_call);
-        }
+    socket.on('msgScreen', function (data) {
+      var to = parseInt(data.to, 10);
+      if (rooms[currentRoom] && rooms[currentRoom][to]) {
+        //console.log('info', 'Redirecting message to', to, 'by', data.by);
+        rooms[currentRoom][to].emit('msgScreen', data);
+      } else {
+        //logger.serverLog('warn', 'Invalid user');
       }
     });
 
-    socket.on('conference.stream', function(data){
-      rooms[currentRoom].forEach(function (s) {
-        s.emit('conference.stream', { username: data.username, type: data.type, action: data.action, id: data.id });
-      });
+    socket.on('msgData', function (data) {
+      var to = parseInt(data.to, 10);
+      if (rooms[currentRoom] && rooms[currentRoom][to]) {
+        //console.log('info', 'Redirecting message to', to, 'by', data.by);
+        rooms[currentRoom][to].emit('msgData', data);
+      } else {
+        //logger.serverLog('warn', 'Invalid user');
+      }
     });
 
     socket.on('conference.streamVideo', function(data){
+      rooms[currentRoom].forEach(function (s) {
+        s.emit('conference.streamVideo', { username: data.username, type: data.type, action: data.action, id: data.id });
+      });
+    });
+
+    socket.on('conference.streamScreen', function(data){
       rooms[currentRoom].forEach(function (s) {
         s.emit('conference.streamVideo', { username: data.username, type: data.type, action: data.action, id: data.id });
       });

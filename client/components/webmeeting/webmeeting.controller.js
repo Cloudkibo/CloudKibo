@@ -5,7 +5,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('WebMeetingController', function ($sce, MeetingStream, $location, $routeParams, $scope, MeetingRoom, MeetingRoomVideo, $timeout, logger, ScreenShare, FileHangout, $log) {
+  .controller('WebMeetingController', function ($sce, MeetingStream, $location, $routeParams, $scope, MeetingRoom, MeetingRoomVideo, MeetingRoomScreen, MeetingRoomData, $timeout, logger, ScreenShare, FileHangout, $log) {
 
     if($location.search().role){
       $scope.supportCall = true;
@@ -302,9 +302,15 @@ angular.module('cloudKiboApp')
     };
 
     ScreenShare.on('extensioninstalled',function(data){
-      // todo this fix is work around for demo... the right fix would require to work on extension
-      //$scope.showScreen();
-      location.reload();
+
+
+      $timeout(function(){
+        ScreenShare.setScreenConstraintsForFirstTimeInstall();
+        $scope.extensionAvailable = true;
+        $scope.showScreen();
+        //location.reload();
+      }, 2000);
+
     })
 
 
@@ -417,7 +423,7 @@ angular.module('cloudKiboApp')
 
     var imageData = '';
     FileHangout.accept_inbound_files();
-    MeetingRoom.on('dataChannel.message', function(data){
+    MeetingRoom.on('dataChannel.message.new', function(data){
       console.log(data.data);
       console.log(data)
       if($scope.hasAndroidPeerSharedScreen()){
