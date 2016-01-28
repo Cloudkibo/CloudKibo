@@ -166,14 +166,12 @@ angular.module('cloudKiboApp')
       });
       socket.on('conference.stream', function(data){
         if(data.id !== currentId){
-          if(data.type === 'screen' && data.action) screenSwitch[data.id] = true;
           api.trigger('conference.stream', [{
             username: data.username,
             type: data.type,
             action: data.action,
             id: data.id
           }]);
-          if(data.type === 'screen') makeOffer(data.id);
         }
       });
       socket.on('connect', function(){
@@ -205,6 +203,11 @@ angular.module('cloudKiboApp')
           }
           currentId = id;
           roomId = roomid;
+          api.trigger('connection.joined', [{
+            username : username,
+            roomId : roomId,
+            currentId : currentId
+          }]);
         });
         connected = true;
       }

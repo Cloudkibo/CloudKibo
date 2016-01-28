@@ -90,7 +90,7 @@ angular.module('cloudKiboApp')
     function addHandlers(socket) {
       socket.on('peer.connected.new', function (params) {
         userNames[params.id] = params.username;
-        screenSwitch[params.id] = false;
+        //screenSwitch[params.id] = false;
         makeOffer(params.id);
       });
       socket.on('peer.disconnected.new', function (data) {
@@ -99,7 +99,7 @@ angular.module('cloudKiboApp')
           $rootScope.$apply();
         }
         delete userNames[data.id];
-        delete screenSwitch[data.id];
+        //delete screenSwitch[data.id];
       });
       socket.on('msgScreen', function (data) {
         handleMessage(data);

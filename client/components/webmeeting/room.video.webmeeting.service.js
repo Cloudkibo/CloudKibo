@@ -103,6 +103,7 @@ angular.module('cloudKiboApp')
         handleMessage(data);
       });
       socket.on('conference.streamVideo', function(data){
+        console.log('some one is about to share video '+ JSON.stringify(data))
         if(data.id !== currentId){
           api.trigger('conference.streamVideo', [{
             username: data.username,

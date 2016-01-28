@@ -965,7 +965,7 @@ module.exports = function (socketio) {
 
     socket.on('conference.streamScreen', function(data){
       rooms[currentRoom].forEach(function (s) {
-        s.emit('conference.streamVideo', { username: data.username, type: data.type, action: data.action, id: data.id });
+        s.emit('conference.streamScreen', { username: data.username, type: data.type, action: data.action, id: data.id });
       });
     });
 

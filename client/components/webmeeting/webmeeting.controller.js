@@ -116,15 +116,28 @@ angular.module('cloudKiboApp')
         //stream: (peer.stream !== null) ? URL.createObjectURL(peer.stream) : ''
       });
     });
-    MeetingRoom.on('peer.screenStream', function (peer) {
+    MeetingRoomScreen.on('peer.screenStream', function (peer) {
       $log.debug('Client shared screen, adding stream');
       logger.log('Client shared screen, adding stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
       peerScreenStream = URL.createObjectURL(peer.stream);
     });
-    MeetingRoom.on('conference.stream', function (peer) {
-      $log.debug('hiding / showing video or screen');
+    MeetingRoomVideo.on('peer.videoStream', function (peer) {
+      $log.debug('Client shared video, adding stream');
+      logger.log('Client shared video, adding stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
+      $scope.peers.forEach(function (p) {
+        if(p.id === peer.id){
+          if(peer.type === 'video'){
+            $scope.$apply(function(){
+              p.stream = URL.createObjectURL(peer.stream);
+            });
+          }
+        }
+      });
+    });
+    MeetingRoomVideo.on('conference.streamVideo', function (peer) {
+      $log.debug('hiding / showing video');
       console.log(peer)
-      logger.log('hiding / showing video or screen, username : '+ $scope.user.username +' and peer name : '+ peer.username);
+      logger.log('hiding / showing video, username : '+ $scope.user.username +' and peer name : '+ peer.username);
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
           if(peer.type === 'video'){
@@ -132,20 +145,27 @@ angular.module('cloudKiboApp')
               p.sharedVideo = peer.action;
             });
           }
-          else if(peer.type === 'screen'){
-            $scope.$apply(function(){
-              $scope.screenSharerId = peer.id;
-              $scope.peerSharedScreen = peer.action;
-            });
-          }
-          else if(peer.type === 'screenAndroid'){
-            $scope.$apply(function(){
-              $scope.screenSharerId = peer.id;
-              $scope.androidPeerSharedScreen = peer.action;
-            });
-          }
         }
       });
+    });
+    MeetingRoomScreen.on('conference.streamScreen', function (peer) {
+      $log.debug('hiding / showing screen');
+      console.log(peer)
+      logger.log('hiding / showing screen, username : '+ $scope.user.username +' and peer name : '+ peer.username);
+      if(p.id === peer.id){
+        if(peer.type === 'screen'){
+          $scope.$apply(function(){
+            $scope.screenSharerId = peer.id;
+            $scope.peerSharedScreen = peer.action;
+          });
+        }
+        else if(peer.type === 'screenAndroid'){
+          $scope.$apply(function(){
+            $scope.screenSharerId = peer.id;
+            $scope.androidPeerSharedScreen = peer.action;
+          });
+        }
+      }
     });
     MeetingRoom.on('peer.disconnected', function (peer) {
       console.log('Client disconnected, removing stream');
@@ -158,7 +178,7 @@ angular.module('cloudKiboApp')
     });
 
     $scope.getLocalVideo = function () {
-      return $sce.trustAsResourceUrl(stream);
+      return $sce.trustAsResourceUrl(videostream);
     };
     $scope.isLocalVideoShared = function () {
       return ($scope.toggleVideoText === 'Hide Video');
@@ -241,6 +261,7 @@ angular.module('cloudKiboApp')
         }
       }
     };
+    var videostream;
     $scope.toggleVideoText = 'Share Video';
     $scope.videoToggle = function () {
       if($scope.meetingStarted()) {
@@ -249,25 +270,22 @@ angular.module('cloudKiboApp')
           logger.log("" + $scope.user.username + " has shared the video");
           MeetingStream.getVideo()
             .then(function (s) {
-              stream = s;
-              MeetingRoom.init(stream, $scope.user.username);
-              stream = URL.createObjectURL(stream);
-              MeetingRoom.joinRoom($routeParams.mname);
-              logger.log('Accesss to audio and video is given to the application, username : '+ $scope.user.username)
+              videostream = s;
+              videostream = URL.createObjectURL(s);
+              logger.log('Accesss to video is given to the application, username : '+ $scope.user.username)
             }, function (err) {
               console.error(err);
               $scope.askingMedia = false;
               $scope.isMediaDenied = true;
-              logger.log("audio video stream access was denied: error "+err+", username : "+ $scope.user.username);
-              $scope.error = 'No audio/video permissions. Please allow the audio/video capturing and refresh your browser.';
-              MeetingRoom.init(null, $scope.user.username);
-              MeetingRoom.joinRoom($routeParams.mname);
+              logger.log("video stream access was denied: error "+err+", username : "+ $scope.user.username);
+              $scope.error = 'No video permissions. Please allow the video capturing and refresh your browser.';
             });
-          MeetingRoom.toggleVideo(true);
+          MeetingRoomVideo.toggleVideo(true);
         }
         else {
           $scope.toggleVideoText = 'Share Video';
-          MeetingRoom.toggleVideo(false);
+          MeetingRoomVideo.toggleVideo(false);
+          MeetingStream.resetVideo();
           logger.log("" + $scope.user.username + " has hidden the video");
         }
       }
@@ -344,7 +362,7 @@ angular.module('cloudKiboApp')
                     $scope.showScreenText = 'Hide Screen';
                     $scope.screenSharedLocal = true;
                   });
-                  MeetingRoom.toggleScreen(stream, true);
+                  MeetingRoomScreen.toggleScreen(stream, true);
                   logger.log("Screen captured by " + $scope.user.username + ", now informing other participants. (Chrome browser)");
                 }
               });
@@ -361,7 +379,7 @@ angular.module('cloudKiboApp')
                   $scope.showScreenText = 'Hide Screen';
                   $scope.screenSharedLocal = true;
                 });
-                MeetingRoom.toggleScreen(stream, true);
+                MeetingRoomScreen.toggleScreen(stream, true);
                 logger.log("Screen captured by " + $scope.user.username + ", now informing other participants. (Firefox browser)");
               }, function (err) {
                 alert('Permission denied or could not capture the screen.');
@@ -378,7 +396,7 @@ angular.module('cloudKiboApp')
     function removeLocalScreen(){
       ScreenShare.setSourceIdValue(null);
       screenStream.getTracks()[0].stop();
-      MeetingRoom.toggleScreen(screenStream, false);
+      MeetingRoomScreen.toggleScreen(screenStream, false);
       $scope.showScreenText = 'Share Screen';
       $scope.screenSharedLocal = false;
       logger.log('ERROR: Permission denied or could not capture the screen. Shown to: '+ $scope.user.username);
@@ -423,7 +441,7 @@ angular.module('cloudKiboApp')
 
     var imageData = '';
     FileHangout.accept_inbound_files();
-    MeetingRoom.on('dataChannel.message.new', function(data){
+    MeetingRoomData.on('dataChannel.message.new', function(data){
       console.log(data.data);
       console.log(data)
       if($scope.hasAndroidPeerSharedScreen()){
@@ -477,13 +495,13 @@ angular.module('cloudKiboApp')
       $scope.$apply(function(){
         $scope.divBoxClass = 'hideVideoBoxSpeaking';
       });
-      MeetingRoom.sendDataChannelMessage('Speaking');
+      MeetingRoomData.sendDataChannelMessage('Speaking');
     });
     $scope.$on('Silent', function () {
       $scope.$apply(function(){
         $scope.divBoxClass = 'hideVideoBox';
       });
-      MeetingRoom.sendDataChannelMessage('Silent');
+      MeetingRoomData.sendDataChannelMessage('Silent');
     });
 
     $scope.connected = true;

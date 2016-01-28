@@ -21,7 +21,7 @@ angular.module('cloudKiboApp')
         socket.emit('msgData', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
       pc.ondatachannel = function (evnt) {
-        $log.debug('Received DataChannel from '+ id);
+        console.log('Received DataChannel from '+ id);
         dataChannels[id] = evnt.channel;
         dataChannels[id].onmessage = function (evnt) {
           handleDataChannelMessage(id, evnt.data);
@@ -38,7 +38,7 @@ angular.module('cloudKiboApp')
           //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000"); // todo added for testing by sojharo
           pc.setLocalDescription(sdp);
           $log.debug('Creating an offer for'+ id +' for data');
-          socket.emit('msgData', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username, camaccess : stream });
+          socket.emit('msgData', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username });
         }, function (e) {
           $log.error(e);
         },
@@ -68,7 +68,7 @@ angular.module('cloudKiboApp')
     }
 
     function handleDataChannelMessage(id, data) {
-      //console.log('datachannel message '+ data);
+      console.log('datachannel message '+ data);
       api.trigger('dataChannel.message.new', [{
         id: id,
         username: userNames[id],
@@ -87,7 +87,7 @@ angular.module('cloudKiboApp')
             pc.createAnswer(function (sdp) {
               //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
-              socket.emit('msgData', { by: currentId, to: data.by, sdp: sdp, type: 'answer', camaccess : stream });
+              socket.emit('msgData', { by: currentId, to: data.by, sdp: sdp, type: 'answer' });
             }, function (e) {
               console.log(e);
             }, sdpConstraints);
