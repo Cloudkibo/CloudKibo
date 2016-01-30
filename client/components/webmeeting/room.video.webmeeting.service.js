@@ -133,7 +133,11 @@ angular.module('cloudKiboApp')
             peerConnections[key].addStream(s);
           }
           else {
-            peerConnections[key].removeStream(s);
+            var isChrome = !!navigator.webkitGetUserMedia;
+            if(isChrome)
+              peerConnections[key].removeStream(s);
+            else
+              removeTrack(peerConnections[key], s);
           }
         }
         socket.emit('conference.streamVideo', { username: username, type: 'video', action: p, id: currentId });
@@ -144,6 +148,17 @@ angular.module('cloudKiboApp')
         stream.getTracks()[0].stop();
       }
     };
+
+    function removeTrack(pc, stream){
+      pc.getSenders().forEach(function(sender){
+        stream.getTracks.forEach(function(track){
+          if(track == sender.track){
+            pc.removeTrack(sender);
+          }
+        })
+      });
+    }
+
     EventEmitter.call(api);
     Object.setPrototypeOf(api, EventEmitter.prototype);
 

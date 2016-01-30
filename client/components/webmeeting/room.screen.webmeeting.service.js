@@ -132,7 +132,11 @@ angular.module('cloudKiboApp')
             peerConnections[key].addStream(s);
           }
           else {
-            peerConnections[key].removeStream(s);
+            var isChrome = !!navigator.webkitGetUserMedia;
+            if(isChrome)
+              peerConnections[key].removeStream(s);
+            else
+              removeTrack(peerConnections[key], s);
           }
         }
         socket.emit('conference.streamScreen', { username: username, type: 'screen', action: p, id: currentId });
