@@ -5,7 +5,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('WebMeetingController', function ($sce, MeetingStream, $location, $routeParams, $scope, MeetingRoom, MeetingRoomVideo, MeetingRoomScreen, MeetingRoomData, $timeout, logger, ScreenShare, FileHangout, $log) {
+  .controller('WebMeetingController', function ($sce, MeetingStream, $location, $routeParams, $scope, MeetingRoom, MeetingRoomVideo, MeetingRoomScreen, MeetingRoomData, $timeout, logger, ScreenShare, MeetingRoomFileHangout, $log) {
 
     if($location.search().role){
       $scope.supportCall = true;
@@ -442,7 +442,7 @@ angular.module('cloudKiboApp')
     screenAndroidImage.insertBefore(canvas, screenAndroidImage.firstChild);
 
     var imageData = '';
-    FileHangout.accept_inbound_files();
+    MeetingRoomFileHangout.accept_inbound_files();
     MeetingRoomData.on('dataChannel.message.new', function(data){
       if($scope.hasAndroidPeerSharedScreen()){
         console.log('Android shared screen is true')
@@ -488,7 +488,7 @@ angular.module('cloudKiboApp')
           });
         }
       }
-      FileHangout.dataChannelMessage(data.id, data.data);
+      MeetingRoomFileHangout.dataChannelMessage(data.id, data.data);
     });
     $scope.divBoxClass = 'hideVideoBox';
     $scope.$on('Speaking', function () {

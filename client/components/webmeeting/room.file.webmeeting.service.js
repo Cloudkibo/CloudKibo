@@ -10,7 +10,7 @@
  * details from application.
  */
 angular.module('cloudKiboApp')
-  .factory('FileHangout', function FileHangout($rootScope, Room, FileUtility, $log,) {
+  .factory('MeetingRoomFileHangout', function MeetingRoomFileHangout($rootScope, MeetingRoomData, MeetingRoom, FileUtility, $log) {
 
     var isChrome = !!navigator.webkitGetUserMedia;
 
@@ -171,7 +171,7 @@ angular.module('cloudKiboApp')
 
       send_meta();
 
-      Room.sendChat("You have received a file. Download and Save it.");
+      MeetingRoom.sendChat("You have received a file. Download and Save it.");
 
       /* user 0 is this user! */
       create_upload_stop_link(file_to_upload.name, 0);//, username);
@@ -278,7 +278,7 @@ angular.module('cloudKiboApp')
         $log.debug("DEBUG: requesting chunk " + chunk_num + " from " + id);
       }
 
-      Room.sendDataChannelMessage(JSON.stringify({ //id, JSON.stringify({
+      MeetingRoomData.sendDataChannelMessage(JSON.stringify({ //id, JSON.stringify({
         "eventName": "request_chunk",
         "data": {
           "chunk": chunk_num,
@@ -438,7 +438,7 @@ angular.module('cloudKiboApp')
       var a = document.createElement('a');
       a.download = meta.name;
       a.id = id + '-download';
-      a.class = 'row';
+      a.class = 'icon-btn';
       a.href = 'javascript:void(0);';
       a.textContent = 'Download : ' + meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
       a.draggable = true;
@@ -489,7 +489,7 @@ angular.module('cloudKiboApp')
         a.href = window.URL.createObjectURL(fileEntry);
       }
       a.textContent = 'Save : ' + meta.name;
-      a.class = 'row';
+      a.class = 'icon-btn';
       a.dataset.downloadurl = [filetype, a.download, a.href].join(':');
       a.draggable = true;
 
@@ -504,7 +504,7 @@ angular.module('cloudKiboApp')
       var can = document.createElement('a');
       can.download = meta.name;
       can.id = id + '-cancel';
-      a.class = 'row';
+      a.class = 'icon-btn';
       can.href = 'javascript:void(0);';
       can.style.cssText = 'color:red;';
       can.textContent = '[d]';
@@ -525,7 +525,7 @@ angular.module('cloudKiboApp')
       //console.log("sending meta data");
       //console.log(meta);
 
-      Room.sendDataChannelMessage(JSON.stringify({
+      MeetingRoomData.sendDataChannelMessage(JSON.stringify({
         eventName: "data_msg",
         data: {
           file_meta: meta
@@ -562,7 +562,7 @@ angular.module('cloudKiboApp')
             //$log.debug('sending: ' + CryptoJS.SHA256(FileUtility._arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
           }
 
-          Room.sendDataChannelMessage(event.target.result);
+          MeetingRoomData.sendDataChannelMessage(event.target.result);
 
         }
 
