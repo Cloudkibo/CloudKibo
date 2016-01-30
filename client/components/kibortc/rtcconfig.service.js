@@ -92,12 +92,23 @@ angular.module('kiboRtc.services')
  * NOTE: Applications should not use them directly
  */
   .factory('sdpConstraints', function () {
-    return {
-      'mandatory': {
-        'OfferToReceiveAudio': true,
-        'OfferToReceiveVideo': true
-      }
-    };
+
+    var isChrome = !!navigator.webkitGetUserMedia;
+
+    if (isChrome) {
+      return {
+        'mandatory': {
+          'OfferToReceiveAudio': true,
+          'OfferToReceiveVideo': true
+        }
+      };
+    } else {
+      return {
+          'offerToReceiveAudio': true,
+          'offerToReceiveVideo': true
+      };
+    }
+
   })
 
 /**
