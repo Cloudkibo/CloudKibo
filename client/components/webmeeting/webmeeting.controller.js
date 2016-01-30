@@ -122,7 +122,6 @@ angular.module('cloudKiboApp')
       });
     });
     MeetingRoomScreen.on('peer.screenStream', function (peer) {
-      $log.debug('Client shared screen, adding stream');
       logger.log('Client shared screen, adding stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
       peerScreenStream = URL.createObjectURL(peer.stream);
     });
@@ -152,7 +151,6 @@ angular.module('cloudKiboApp')
       });
     });
     MeetingRoomScreen.on('conference.streamScreen', function (peer) {
-      $log.debug('hiding / showing screen');
       console.log(peer)
       logger.log('hiding / showing screen, username : '+ $scope.user.username +' and peer name : '+ peer.username);
       if(peer.type === 'screen'){

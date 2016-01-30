@@ -38,9 +38,8 @@ angular.module('cloudKiboApp')
     function makeOffer(id) {
       var pc = getPeerConnection(id);
       pc.createOffer(function (sdp) {
-          console.log(sdp)
           pc.setLocalDescription(sdp);
-          $log.debug('Creating an offer for '+ id +' for screen');
+          console.log('Creating an offer for '+ id +' for screen');
           socket.emit('msgScreen', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username, camaccess : stream });
         }, function (e) {
           $log.error(e);
@@ -55,7 +54,7 @@ angular.module('cloudKiboApp')
         case 'offer':
           userNames[data.by] = data.username;
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            $log.debug('Setting remote description by offer for screen');
+            console.log('Setting remote description by offer for screen');
             pc.createAnswer(function (sdp) {
               //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
@@ -70,15 +69,14 @@ angular.module('cloudKiboApp')
         case 'answer':
           console.log('answer by '+ data.by +' for screen');
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            $log.debug('Setting remote description by answer');
+            console.log('Setting remote description by answer for screen');
           }, function (e) {
             $log.error(e);
           });
           break;
         case 'ice':
           if (data.ice) {
-            $log.debug('Adding ice candidates for screen');
-            $log.debug(data.ice)
+            console.log('Adding ice candidates for screen');
             pc.addIceCandidate(new RTCIceCandidate(data.ice));
           }
           break;
