@@ -264,7 +264,7 @@ angular.module('cloudKiboApp')
     var vidStream;
     $scope.toggleVideoText = 'Share Video';
     $scope.videoToggle = function () {
-      if($scope.meetingStarted()) {
+      if($scope.meetingStarted()) { // todo try commenting this out.. as user might test cam while waiting for conference to start
         if ($scope.toggleVideoText === 'Share Video') {
           $scope.toggleVideoText = 'Hide Video';
           logger.log("" + $scope.user.username + " has shared the video");
@@ -383,6 +383,7 @@ angular.module('cloudKiboApp')
                 MeetingRoomScreen.toggleScreen(stream, true);
                 logger.log("Screen captured by " + $scope.user.username + ", now informing other participants. (Firefox browser)");
               }, function (err) {
+                console.log(err);
                 alert('Permission denied or could not capture the screen.');
                 logger.log('ERROR: Permission denied or could not capture the screen. Shown to: ' + $scope.user.username);
               });

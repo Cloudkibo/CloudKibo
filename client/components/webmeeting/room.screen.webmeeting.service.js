@@ -148,6 +148,7 @@ angular.module('cloudKiboApp')
       }
     };
 
+    // thanks to http://stackoverflow.com/questions/33271154/pc-removestreamstream-not-implemented-firefox-webrtc
     function removeTrack(pc, stream){
       pc.getSenders().forEach(function(sender){
         stream.getTracks().forEach(function(track){
