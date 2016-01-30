@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('MeetingRoomScreen', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints) {
+  .factory('MeetingRoomScreen', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints, logger) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -123,6 +123,11 @@ angular.module('cloudKiboApp')
     }
 
     var api = {
+      init : function(d){
+        username = d.username;
+        roomId = d.roomId;
+        currentId = d.currentId;
+      },
       toggleScreen: function (s, p) {
         for (var key in peerConnections) {
           if (p) {

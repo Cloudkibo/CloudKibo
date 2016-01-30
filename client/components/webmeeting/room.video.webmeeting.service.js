@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('MeetingRoomVideo', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints) {
+  .factory('MeetingRoomVideo', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints, logger) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -16,8 +16,8 @@ angular.module('cloudKiboApp')
       }
       var pc = new RTCPeerConnection(iceConfig, pc_constraints2);
       peerConnections[id] = pc;
-      //pc.addStream(stream); // todo see that video should be added only when we share video
       pc.onicecandidate = function (evnt) {
+        console.log('ice got for video');
         socket.emit('msgVideo', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
       pc.onaddstream = function (evnt) {
@@ -122,7 +122,20 @@ angular.module('cloudKiboApp')
     }
 
     var api = {
-      toggleVideo: function (p) {
+      init : function(d){
+        username = d.username;
+        roomId = d.roomId;
+        currentId = d.currentId;
+      },
+      toggleVideo: function (p, s) {
+        for (var key in peerConnections) {
+          if (p) {
+            peerConnections[key].addStream(s);
+          }
+          else {
+            peerConnections[key].removeStream(s);
+          }
+        }
         socket.emit('conference.streamVideo', { username: username, type: 'video', action: p, id: currentId });
       },
       end: function () {

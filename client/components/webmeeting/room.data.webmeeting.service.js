@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('MeetingRoomData', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints) {
+  .factory('MeetingRoomData', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints, logger) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -68,7 +68,7 @@ angular.module('cloudKiboApp')
     }
 
     function handleDataChannelMessage(id, data) {
-      console.log('datachannel message '+ data);
+      //console.log('datachannel message '+ data);
       api.trigger('dataChannel.message.new', [{
         id: id,
         username: userNames[id],
@@ -139,6 +139,11 @@ angular.module('cloudKiboApp')
     }
 
     var api = {
+      init : function(d){
+        username = d.username;
+        roomId = d.roomId;
+        currentId = d.currentId;
+      },
       sendDataChannelMessage: function (m) {
         for (var key in dataChannels) {
           if(dataChannels[key].readyState === 'open') {
