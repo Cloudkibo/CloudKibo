@@ -155,19 +155,17 @@ angular.module('cloudKiboApp')
       $log.debug('hiding / showing screen');
       console.log(peer)
       logger.log('hiding / showing screen, username : '+ $scope.user.username +' and peer name : '+ peer.username);
-      if(p.id === peer.id){
-        if(peer.type === 'screen'){
-          $scope.$apply(function(){
-            $scope.screenSharerId = peer.id;
-            $scope.peerSharedScreen = peer.action;
-          });
-        }
-        else if(peer.type === 'screenAndroid'){
-          $scope.$apply(function(){
-            $scope.screenSharerId = peer.id;
-            $scope.androidPeerSharedScreen = peer.action;
-          });
-        }
+      if(peer.type === 'screen'){
+        $scope.$apply(function(){
+          $scope.screenSharerId = peer.id;
+          $scope.peerSharedScreen = peer.action;
+        });
+      }
+      else if(peer.type === 'screenAndroid'){
+        $scope.$apply(function(){
+          $scope.screenSharerId = peer.id;
+          $scope.androidPeerSharedScreen = peer.action;
+        });
       }
     });
     MeetingRoom.on('peer.disconnected', function (peer) {
