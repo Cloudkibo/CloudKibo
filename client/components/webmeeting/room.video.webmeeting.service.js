@@ -151,7 +151,7 @@ angular.module('cloudKiboApp')
 
     function removeTrack(pc, stream){
       pc.getSenders().forEach(function(sender){
-        stream.getTracks.forEach(function(track){
+        stream.getTracks().forEach(function(track){
           if(track == sender.track){
             pc.removeTrack(sender);
           }
