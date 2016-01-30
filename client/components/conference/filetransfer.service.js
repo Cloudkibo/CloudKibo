@@ -10,7 +10,7 @@
  * details from application.
  */
 angular.module('cloudKiboApp')
-  .factory('FileHangout', function FileHangout($rootScope, Room, FileUtility, $log,) {
+  .factory('FileHangout', function FileHangout($rootScope, Room, FileUtility, $log) {
 
     var isChrome = !!navigator.webkitGetUserMedia;
 
