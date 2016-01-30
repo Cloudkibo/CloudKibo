@@ -135,7 +135,7 @@ angular.module('cloudKiboApp')
             peerConnections[key].removeStream(s);
           }
         }
-        socket.emit('conference.streamScreen', { username: username, type: 'video', action: p, id: currentId });
+        socket.emit('conference.streamScreen', { username: username, type: 'screen', action: p, id: currentId });
       },
       end: function () {
         peerConnections = {}; userNames = {};
