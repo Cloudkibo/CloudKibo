@@ -774,6 +774,7 @@ function onConnect(socketio, socket) {
 
 
   // Insert sockets below
+  require('../api/companyaccount/companyaccount.socket').register(socket);
   //require('../api/thing/thing.socket').register(socket);
 }
 

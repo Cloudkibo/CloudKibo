@@ -12,6 +12,35 @@ exports.index = function(req, res) {
   });
 };
 
+exports.specific_conference = function(req, res) {
+  console.log(req.body)
+  Userchat.find({companyid: req.body.companyid, request_id : req.body.request_id}, function (err, userchats) {
+    if(err) { return handleError(res, err); }
+    return res.json(200, userchats);
+  });
+};
+
+exports.generate_url_agent = function(req, res) {
+
+  var today = new Date();
+  var uid = Math.random().toString(36).substring(7);
+  var unique_id = 'h' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate() + '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
+
+  var meetingurl = 'https://api.cloudkibo.com/#/webmeeting/'+ unique_id +'?role=agent&companyid='+ req.body.companyid +'&agentemail='+ req.body.agentemail +'&agentname='+ req.body.agentname +'&visitorname='+ req.body.visitorname +'&visitoremail='+ req.body.visitoremail+'&request_id='+req.body.request_id;
+
+  res.json(200, {url : meetingurl});
+};
+
+exports.generate_url_visitor = function(req, res) {
+
+  var today = new Date();
+  var uid = Math.random().toString(36).substring(7);
+  var unique_id = 'h' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate() + '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
+
+  var meetingurl = 'https://api.cloudkibo.com/#/webmeeting/'+ unique_id +'?role=visitor&companyid='+ req.body.companyid +'&agentemail='+ req.body.agentemail +'&agentname='+ req.body.agentname +'&visitorname='+ req.body.visitorname +'&visitoremail='+ req.body.visitoremail+'&request_id='+req.body.request_id;
+
+  res.json(200, {url : meetingurl});
+};
 
 function handleError(res, err) {
   return res.send(500, err);

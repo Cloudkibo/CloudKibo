@@ -12,8 +12,16 @@ angular.module('cloudKiboApp')
       nullStreams = {};
 
     /** Audio Analyser variables **/
-    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    var analyser = audioCtx.createAnalyser();
+    var audioCtx;
+    if(!!window.AudioContext)
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    else
+      audioCtx = {};
+    var analyser;
+    if(!!window.AudioContext)
+      analyser = audioCtx.createAnalyser();
+    else
+      analyser = {};
     analyser.minDecibels = -90;
     analyser.maxDecibels = -10;
     analyser.smoothingTimeConstant = 0.85;
@@ -220,9 +228,11 @@ angular.module('cloudKiboApp')
         username = n;
         stream = s;
         if(s!==null) {
-          var source = audioCtx.createMediaStreamSource(stream);
-          source.connect(analyser);
-          analyseAudio()
+          if(!!window.AudioContext) {
+            var source = audioCtx.createMediaStreamSource(stream);
+            source.connect(analyser);
+            analyseAudio()
+          }
         }
       },
       sendChat: function (m, s) {
