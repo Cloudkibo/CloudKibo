@@ -268,6 +268,7 @@ exports.updateimage = function(req, res, next){
  * Search by username
  */
 exports.searchbyusername = function(req, res, next){
+	console.log('user name is :' + req.body.searchusername);
 	User.findOne({username : req.body.searchusername}, function (err, gotUser) {
 		res.json(gotUser);
 	})

@@ -1,0 +1,88 @@
+extends header
+
+block append head
+  //script(src='/javascripts/cloudKiboApp.js')
+
+block bodycontent
+ div(class='main')
+   .container
+     div(class='row margin-bottom-40')
+       div(class='sidebar col-md-2')
+         ul(class='list-group margin-bottom-25 sidebar-menu')
+           li(class='list-group-item clearfix')
+             a(href='#solutionoverview')
+               i(class='fa fa-angle-right')
+               | Solution Overview
+           li(class='list-group-item clearfix')
+             a(href='#gettingstarted')
+               i(class='fa fa-angle-right')
+               | Getting Started
+           li(class='list-group-item clearfix')
+             a(href='#myaccount')
+               i(class='fa fa-angle-right')
+               | My Account
+           li(class='list-group-item clearfix')
+             a(href='#howtoauthenticate')
+               i(class='fa fa-angle-right')
+               | How to Authenticate
+           li(class='list-group-item clearfix')
+             a(href='#restapi')
+               i(class='fa fa-angle-right')
+               | REST API
+           li(class='list-group-item clearfix')
+             a(href='#samplecode')
+               i(class='fa fa-angle-right')
+               | Sample Code
+           li(class='list-group-item clearfix')
+             a(href='#definitions')
+               i(class='fa fa-angle-right')
+               | Definitions               
+
+       div(class='contet col-md-9 col-sm-9')
+         h1 Welcome to CloudKibo Documentation
+  .footer
+    .container
+      .row
+        div(class='col-md-6 col-sm-6 padding-top-10')
+          | CloudKibo &copy; (Beta Version) All Rights Reserved
+        div(class='col-md-6 col-sm-6')
+          ul(class='social-footer list-unstyled list-inline pull-right')
+                li
+                  a(href='#')
+                    i(class='fa fa-facebook')
+                li
+                  a(href='#')
+                    i(class='fa fa-google-plus')
+                li
+                  a(href='#')
+                    i(class='fa fa-linkedin')
+                li
+                  a(href='#')
+                    i(class='fa fa-twitter')
+                li
+                  a(href='#')
+                    i(class='fa fa-youtube')
+
+ script(src='/global/plugins/jquery-1.11.0.min.js')
+ script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
+ script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
+ script(src='/frontend/layout/scripts/back-to-top.js')
+
+ script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
+ script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
+
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
+ script(src='/frontend/pages/scripts/revo-slider-init.js')
+
+ script(src='/frontend/layout/scripts/layout.js')
+
+ script(type='text/javascript').
+        jQuery(document).ready(function() {
+            Layout.init();
+            Layout.initOWL();
+            RevosliderInit.initRevoSlider();
+            Layout.initTwitter();
+            //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
+            //Layout.initNavScrolling();
+        });

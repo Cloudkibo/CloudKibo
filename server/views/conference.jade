@@ -1,136 +1,137 @@
-.row
-  div(class='topPane row', ng-show='isAskingForMediaAccess()')
-    center
-      b Please allow the access to media devices
-  div(class='topPane row' ng-show='hasUserDeniedMedia()')
-    center
-      b {{error}}
-  div(class='topPane row' ng-show='isLocalScreenShared()')
-    center
-      b You are sharing you computer screen.
-  div(class='topPane row' ng-hide='isConnected()')
-    center
-      b You are disconnnected. We are trying to connect again. Please check your Internet connection.
-  .header(ng-hide='isAskingForMediaAccess()')
-    .container
-      a(class='site-logo', href='#')
-        img(src='/images/logo_small.png')
-        | CloudKibo Conference
-      a(href='javascript:void(0);', class='mobi-toggler')
-        i(class='fa fa-bars')
-      div(class='header-navigation pull-right font-transform-inherit')
-        ul
-          li
-            a(ng-href='#/app')
-              | Home
-.row(ng-show='isAskingForMediaAccess()')
-  br
-  br
-  br
-  img(src='/images/askingCam.PNG', width='412', height='252')
-.row(ng-hide='isAskingForMediaAccess()')
-  .col-sm-1.buttonTabVert
-    .row
-      .col-sm-1()
-        a.icon-btn(id='showScreenButton', ng-click='showScreen()')
-          i.fa.fa-desktop
-          div {{showScreenText}}
-    .row(ng-hide='hasUserDeniedMedia()')
-      //ng-show='meetingStarted()'
-      .col-sm-1()
-        a.icon-btn(ng-click='audioToggle()')
-          i.fa.fa-microphone
-          div {{toggleAudioText}}
-    .row(ng-hide='hasUserDeniedMedia()')
-      .col-sm-1()
-        a.icon-btn(ng-click='videoToggle()')
-          i.fa.fa-desktop
-          div {{toggleVideoText}}
-    .row
-      .fileUpload2()
-        //label Send File
-        input(id='file', type='file')
-        //input(type='file', data-filename-placement='inside')
+div.conference
+    .row.conference
+      div(class='topPane row ', ng-show='isAskingForMediaAccess()')
+        center
+          b Please allow the access to media devices
+      div(class='topPane row' ng-show='hasUserDeniedMedia()')
+        center
+          b {{error}}
+      div(class='topPane row' ng-show='isLocalScreenShared()')
+        center
+          b You are sharing you computer screen.
+      div(class='topPane row' ng-hide='isConnected()')
+        center
+          b You are disconnnected. We are trying to connect again. Please check your Internet connection.
+      .header(ng-hide='isAskingForMediaAccess()')
+        .container
+          a(class='site-logo', href='#')
+            img(src='/images/logo_small.png')
+            | CloudKibo Conference
+          a(href='javascript:void(0);', class='mobi-toggler')
+            i(class='fa fa-bars')
+          div(class='header-navigation pull-right font-transform-inherit')
+            ul
+              li
+                a(ng-href='#/app')
+                  | Home
+    .row(ng-show='isAskingForMediaAccess()' class='conference')
+      br
+      br
+      br
+      img(src='/images/askingCam.PNG', width='412', height='252')
+    .row(ng-hide='isAskingForMediaAccess()' class='conference')
+      .col-sm-1.buttonTabVert
+        .row
+          .col-sm-1()
+            a.icon-btn(id='showScreenButton', ng-click='showScreen()')
+              i.fa.fa-desktop
+              div {{showScreenText}}
+        .row(ng-hide='hasUserDeniedMedia()' class='conference')
+          //ng-show='meetingStarted()'
+          .col-sm-1()
+            a.icon-btn(ng-click='audioToggle()')
+              i.fa.fa-microphone
+              div {{toggleAudioText}}
+        .row(ng-hide='hasUserDeniedMedia()' class='conference')
+          .col-sm-1()
+            a.icon-btn(ng-click='videoToggle()')
+              i.fa.fa-desktop
+              div {{toggleVideoText}}
+        .row
+          .fileUpload2()
+            //label Send File
+            input(id='file', type='file')
+            //input(type='file', data-filename-placement='inside')
 
-        //input.upload(type='file')
-    .row
-      .col-sm-1.fileTransferBox(id='0', ng-show='meetingStarted()')
-    .row
-      .col-sm-1(id='filelist_container', ng-show='meetingStarted()')
-    //.row
-      .col-sm-1.chatButtonUI()
-        a.icon-btn(ng-click='toggleChatBoxVisibility()')
-          i.fa.fa-envelope-o
-          div Chat
-    //.row
-      .col-sm-1(ng-hide='hasChromeExtension() || isFireFox()')
-        a.btn.btn-lg.green(ng-click='installExtension()')
-          i.fa.fa-plus-square-o
-          div Extension
-    .row
-      .col-sm-1
-        | &nbsp;
-    .row
-      .col-sm-1(ng-show='isFireFox()')
-        a.btn.btn-lg.green(target='self', ng-href='https://addons.mozilla.org/en-US/firefox/addon/cloudkibo-screen-capturing-in-/')
-          i.fa.fa-plus-square-o
-          div Extension
-    //.row(class = "buttonConference")
-      .col-sm-4(style='background-color:lavenderblush;', ng-show='meetingStarted()')
-        a(id='showScreenButton', ng-click='showScreen()')
-          i.fa.fa-desktop {{showScreenText}}
-    //.row(class = "buttonConference")
-      .col-sm-4(style='background-color:lavender;', ng-hide='hasChromeExtension() || isFireFox()')
-        a(ng-click='installExtension()')
-          i.fa.fa-plus-square-o Extension
-    .row
-      .col-sm-1
-        | &nbsp;
-    br
-    br
-    br
-    .row(ng-repeat='peer in peers', ng-show='hasPeerSharedScreen()')
-      .col-sm-1
-          div
-            img(src='/assets/images/avatar.png', width='70px', height='72px')
-          span {{peer.username}}
-
-
-
-  .col-sm-11(class='animate-show')
-    .row
-      .col-sm-9
-        div(class='animate-show', ng-hide='hasPeerSharedScreen() || hasAndroidPeerSharedScreen()')
-          center
-            span
-              .videoBoxContainer
-                div(class='{{divBoxClass}}', ng-hide='isLocalVideoShared()')
-                video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='170px', ng-show='isLocalVideoShared()' muted)
-                span {{getUsername()}}
-              video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}', div-box-class='{{peer.divClass}}')
-        div(ng-show='hasPeerSharedScreen()')
-          center
-            span
-              video(ng-src='{{getPeerScreen()}}',autoplay='true', style='width: {{widthScreen}}; height: {{heightScreen}}', class='videoelementscreen', controls='true')
-        div(ng-show='hasAndroidPeerSharedScreen()')
-          center
-            span
-              img(id='screenViewer', ng-src='{{getAndroidPeerScreen()}}')
-              div(id='screenAndroidImage')
-        br
-        alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
-        br
-      .col-sm-3
-        .row.chatButtonRow(ng-show='meetingStarted()')
+            //input.upload(type='file')
+        .row
+          .col-sm-1.fileTransferBox(id='0', ng-show='meetingStarted()')
+        .row
+          .col-sm-1(id='filelist_container', ng-show='meetingStarted()')
+        //.row
           .col-sm-1.chatButtonUI()
             a.icon-btn(ng-click='toggleChatBoxVisibility()')
               i.fa.fa-envelope-o
               div Chat
-        .row(class='animate-show', ng-show='showChatBox()')
-          div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages', style="word-wrap: break-word")
-            .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
-              | {{userMessage}}
-          form
-            input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
-            button(ng-click='sendData()') Send
+        //.row
+          .col-sm-1(ng-hide='hasChromeExtension() || isFireFox()')
+            a.btn.btn-lg.green(ng-click='installExtension()')
+              i.fa.fa-plus-square-o
+              div Extension
+        .row
+          .col-sm-1
+            | &nbsp;
+        .row
+          .col-sm-1(ng-show='isFireFox()')
+            a.btn.btn-lg.green(target='self', ng-href='https://addons.mozilla.org/en-US/firefox/addon/cloudkibo-screen-capturing-in-/')
+              i.fa.fa-plus-square-o
+              div Extension
+        //.row(class = "buttonConference")
+          .col-sm-4(style='background-color:lavenderblush;', ng-show='meetingStarted()')
+            a(id='showScreenButton', ng-click='showScreen()')
+              i.fa.fa-desktop {{showScreenText}}
+        //.row(class = "buttonConference")
+          .col-sm-4(style='background-color:lavender;', ng-hide='hasChromeExtension() || isFireFox()')
+            a(ng-click='installExtension()')
+              i.fa.fa-plus-square-o Extension
+        .row
+          .col-sm-1
+            | &nbsp;
+        br
+        br
+        br
+        .row(ng-repeat='peer in peers', ng-show='hasPeerSharedScreen()' class='conference')
+          .col-sm-1
+              div
+                img(src='/assets/images/avatar.png', width='70px', height='72px')
+              span {{peer.username}}
+
+
+
+      .col-sm-11(class='animate-show' class='conference')
+        .row
+          .col-sm-9
+            div(class='animate-show conference', ng-hide='hasPeerSharedScreen() || hasAndroidPeerSharedScreen()')
+              center
+                span
+                  .videoBoxContainer(class='conference')
+                    div(class='{{divBoxClass}}', ng-hide='isLocalVideoShared()')
+                    video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='170px', ng-show='isLocalVideoShared()' muted)
+                    span {{getUsername()}}
+                  video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}', div-box-class='{{peer.divClass}}')
+            div(ng-show='hasPeerSharedScreen()' class='conference')
+              center
+                span
+                  video(ng-src='{{getPeerScreen()}}',autoplay='true', style='width: {{widthScreen}}; height: {{heightScreen}}', class='videoelementscreen', controls='true')
+            div(ng-show='hasAndroidPeerSharedScreen()' class='conference')
+              center
+                span
+                  img(id='screenViewer', ng-src='{{getAndroidPeerScreen()}}')
+                  div(id='screenAndroidImage')
+            br
+            alert(ng-repeat='alertCall in alertsCallStart', type='alert.type', close='closeAlertCallStart($index)') {{alertCall.msg}}
+            br
+          .col-sm-3(class='conference')
+            .row.chatButtonRow(ng-show='meetingStarted()' class='conference')
+              .col-sm-1.chatButtonUI()
+                a.icon-btn(ng-click='toggleChatBoxVisibility()')
+                  i.fa.fa-envelope-o
+                  div Chat
+            .row(class='animate-show', ng-show='showChatBox()' class='conference')
+              div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages', style="word-wrap: break-word")
+                .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
+                  | {{userMessage}}
+              form
+                input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
+                button(ng-click='sendData()') Send
 

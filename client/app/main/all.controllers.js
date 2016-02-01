@@ -11,7 +11,7 @@ angular.module('cloudKiboApp')
     $scope.getCurrentUser = Auth.getCurrentUser;
 
     $scope.user = $scope.getCurrentUser() || {};
-
+   
     $scope.logout = function () {
 
 
