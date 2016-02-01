@@ -1,0 +1,88 @@
+<html>
+  <head>
+    <link rel="stylesheet", href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+    <link rel ="stylesheet",href ="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"/>
+    <link(rel='stylesheet', href='css/style.css'>
+    <script src="/javascripts/jquery.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
+    <script src="/javascripts/slide-panel.js"></script>
+    <script src="/javascripts/lightJsTableFilter.js"></script>
+  </head>
+  <body>
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">CloudKibo</a>
+        </div>
+     </div>
+     <div class="">
+      <div class ="menu col-md-2">
+        <ul>
+             <li class='list-group-item clearfix'>
+               <a href='solutionoverview.html'>
+                 <i class='fa fa-angle-right'>
+                  Solution Overview
+                  </i>
+               </a>
+             </li>
+             <li class='list-group-item clearfix'>
+               <a href='gettingstarted.html'>
+                 <i class='fa fa-angle-right'>
+                  Getting Started
+                  </i>
+               </a>   
+             </li>
+             <li class='list-group-item clearfix'>
+               <a href='myaccount.html'>
+                 <i class='fa fa-angle-right'>
+                  My account
+                  </i>
+              </a>    
+             </li>  
+             <li class='list-group-item clearfix'>
+               <a href='authenticate.html'>
+                 <i class='fa fa-angle-right'>
+                  How to Authenticate
+                  </i>
+              </a>    
+             </li>           
+             <li class='list-group-item clearfix'>
+               <a href='restapi.html'>
+                 <i class='fa fa-angle-right'>
+                  REST API
+                  </i>
+               </a>
+             </li> 
+             <li class='list-group-item clearfix'>
+               <a href='samplecode.html'>
+                 <i class='fa fa-angle-right'>
+                  Sample Code
+                  </i>
+               </a>   
+             </li>
+       </ul>
+      </div>
+      
+      <div class="content col-md-9 col-sm-9">
+      <h1> Solution Overview</h1>
+      <h2>Overview</h2>
+      <p>Cloudkibo uses nodejs on server side and angularjs on client side. Instead of html, Cloudkibo use jade templates which are then converted to html when served to client. Great care has been taken to separate the server side code from client side. To maintain great modularity, code has been separated into files according to role. Cloudkibo has configuration files on both server side and client side.Cloudkibo database, Mongodb, tables are defined in the code on server side with all the constraints defined with them.</p>
+      <p>On client side, Cloudkibo have modules to separate code. One of the core module, KiboRTC, is webrtc module. Currently conference services in this are not in use and have been replaced by new logic. However, new conference logic has been placed in conference folder. Othere such modules are: socket.io module, authentication module, rest api and sound module</p> 
+      
+      <h2> Architecture </h2>
+      <p>Cloudkibo application uses purchased droplet from digitalocean (https://www.digitalocean.com/) for deployment. Our mongodb database is running in same droplet as of our application. For sending emails, we have integrated our application with sendgrid service. Turn server is running on IP address 45.55.232.65 and this droplet is named as “kibosupporttest”. Application’s basic architecture was generated using Angular-FullStack generator. On every commit, our repository tested and built on shippable. Next, we would integrate our application with docker also for auto-deployment.
+      </p>
+      <img src = "img/architecture.png"/>
+      <p>Currently, our deployments are manual. We push the code to github and then access our droplet by ssh and pull the latest code there. With docker, we would just make a code push and docker will make build image for us.</p>
+      <h2>Design</h2>
+      <h3>Client Side</h3>
+      <img src = "img/client-design-diagram.png">
+      <h3>Server Side</h3>
+      <img src = "img/Server-Architecture.png">
+      <h3>Authentication Management </h3>
+      <p>Cloudkibo uses Passport as authentication middleware for it's Node server. As passport support authentication using a username and password, Facebook, Google and Microsoft. Passport recognizes that each application has unique authentication requirements. The verify callback for local authentication accepts username and password arguments, which are submitted to the Cloudkibo application via login form. Cloudkibo login form allows the user to enter their credentials and log in.</p>
+      <p> The login form is submitted to the Cloudkibo server via the POST method. Using authenticate() with the local strategy which will handle the login request. It authenticates with passport and jade templete is updated for the user who has logged in. This view is updated by angular.js, it is now the application. Angularjs now handles all the requests i.e. requests data from server and sends data to server.</p>
+      <img src = "img/authenication-server.png"/>
+      </div>
+</div>
+      </body>
+</html>

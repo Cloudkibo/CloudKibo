@@ -20,6 +20,10 @@ angular.module('cloudKiboApp')
 
     $scope.alerts = [];
 
+  $scope.openDoc = function() {
+    alert('hello');
+	$window.location.href = '/developers.html'
+  };  
 	$scope.addAlert = function(newtype, newMsg) {
 		$log.error('Error type '+ newtype+ " message "+ newMsg)
     logger.log('Error type '+ newtype+ " message "+ newMsg)

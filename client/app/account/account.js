@@ -7,6 +7,7 @@ angular.module('cloudKiboApp')
         templateUrl: '/loginview',
         controller: 'LoginCtrl'
       })
+      
       .when('/register', {
         templateUrl: '/registerview',
         controller: 'SignupCtrl'
