@@ -4,20 +4,15 @@
 
 'use strict';
 
-var CompanyaccountEvents = require('./companyaccount.events');
+var CompanyAccount = require('./companyaccount.model.js');
 
-// Model events to emit
-var events = ['save', 'remove'];
-
-exports.register = function (socket) {
-  // Bind model events to socket events
-  for (var i = 0, eventsLength = events.length; i < eventsLength; i++) {
-    var event = events[i];
-    var listener = createListener('companyaccount:' + event, socket);
-
-    CompanyaccountEvents.on(event, listener);
-    socket.on('disconnect', removeListener(event, listener));
-  }
+exports.register = function(socket) {
+  CompanyAccount.schema.post('save', function (doc) {
+    onSave(socket, doc);
+  });
+  CompanyAccount.schema.post('remove', function (doc) {
+    onRemove(socket, doc);
+  });
 }
 
 
