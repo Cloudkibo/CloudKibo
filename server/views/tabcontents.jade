@@ -1,7 +1,6 @@
 extends header
-
 block bodycontent
- .header(ng-show='isLoggedIn()')
+  .header(ng-show='isLoggedIn()')
     .container
       a(class='site-logo', href='#app')
         img(src='/images/logo_small.png')
@@ -9,285 +8,277 @@ block bodycontent
       a(href='javascript:void(0);', class='mobi-toggler')
         i(class='fa fa-bars')
       div(ng-show='isUserNameDefined()')
-       div(ng-show='!isMeetingPage()')
-        div(class='header-navigation pull-right font-transform-inherit')
-              ul
-                li
-                  a(href='', ng-click='openGroupCall()', ng-if='!isGroupCallSelected()')
-                    | Group Call
-                  a(href='', ng-click='openGroupCall()', ng-if='isGroupCallSelected()')
-                    b Group Call
-                li
-                  a(href='', ng-click='openMeeting()', ng-if='!isMeetingSelected()')
-                    | Conference Call
-                  a(href='', ng-click='openMeeting()', ng-if='isMeetingSelected()')
-                    b Conference Call
-                li
-                  a(href='', ng-click='openCall()', ng-if='!isCallSelected()')
-                    | Call
-                  a(href='', ng-click='openCall()', ng-if='isCallSelected()')
-                    b Call
-                li
-                  a(href='', ng-click='openInvite()', ng-if='!isInviteSelected()')
-                    | Invite People
-                  a(href='', ng-click='openInvite()', ng-if='isInviteSelected()')
-                    b Invite People
-                li
-                  a(href='', ng-click='openAddContact()', ng-if='!isAddContactSelected()')
-                    | Add Contact
-                  a(href='', ng-click='openAddContact()', ng-if='isAddContactSelected()')
-                    b Add Contact
-                li
-                  a(href='', ng-click='openSettings()', ng-show='!isSettingsSelected()')
-                    | Settings
-                  a(href='', ng-click='openSettings()', ng-show='isSettingsSelected()')
-                    b Settings
-                li(ng-if='isUserAdmin()')
-                  a(href='#admin')
-                    | Admin Dashboard
- div(id='theMainDOMForApp', ng-init='otherUser=#{JSON.stringify(otherUser)}', ng-controller='MainController')
-  div(ng-controller='OneToOneCallController')
-     div(ng-show='!isUserNameDefined()')
-       div(class='row margin-bottom-40')
-         div(class='well well-lg modalBox')
-           .animate-show
-             form(role='form', novalidate, name='form', class='css-form form-horizontal', enctype='multipart/form-data', ng-submit='saveNewUserName(userTemp)')
-               fieldset
-                 legend Completing your registration now...
-                 .form-group
-                   label(for='email', class='col-lg-4 control-label') Username
-                     span(class='require')
-                       | *
-                   .col-lg-8
-                     input.form-control(type='text', name="username", placeholder='Enter Username (kiboname)', ng-model='userTemp.username', required, ng-minlength='3', ng-maxlength='20', ng-focus)
-                     div(ng-show!="form.username.$dirty && !form.username.$focused")
-                       div(ng-show="form.username.$invalid")
-                         span(ng-show="form.username.$error.required")
-                           | Enter the username.
-                         span(ng-show="form.username.$error.minlength")
-                           | Username is too short.
-                         span(ng-show="form.username.$error.maxlength")
-                           | Username is too big.
-                 .form-group
-                   label(for='email', class='col-lg-4 control-label') Email Address
-                     span(class='require')
-                       | *
-                   .col-lg-8
-                     input.form-control(type='email', name="email", placeholder='Email Address', ng-model="userTemp.email", required, ng-focus)
-                     div(ng-show="form.email.$dirty && !form.email.$focused")
-                       div(ng-show="form.email.$invalid")
-                         span(ng-show="form.email.$error.required")
-                           | Enter your email address.
-                         span(ng-show="form.email.$error.email")
-                           | This is not a valid email address.
-                 .form-group
-                   label(for='email', class='col-lg-4 control-label') Phone Number
-                     span(class='require')
-                       | *
-                   .col-lg-8
-                     input.form-control(type='text', name="phoneNumber", placeholder='Phone Number', ng-model="userTemp.phone", required, ng-focus)
-                     div(ng-show="form.phoneNumber.$dirty && !form.phoneNumber.$focused")
-                       div(ng-show="form.phoneNumber.$invalid")
-                         span(ng-show="form.phoneNumber.$error.required")
-                           | Enter your contact number.
-                         span(ng-show="form.email.$error.phoneNumber")
-                           | This is not a valid phone number.
-               .row
-                 div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
-                   button.myButton(type='submit', ng-disabled="form.$invalid || isUnchanged(user)") Submit
-               .row
-                 div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20 usernameerror', ng-show='showError()')
-                   h5 {{errorMessage}}
-
-     div(ng-show='isUserNameDefined()')
-      div
-        div(ng-show='testingDefined()', class='well well-lg modalBoxTabContent')
-          .animate-show
-            h3 Checking Browser Compatibility
-            br
+        div(ng-show='!isMeetingPage()')
+          div(class='header-navigation pull-right font-transform-inherit')
             ul
               li
-                div(ng-show='supportedBrowser')
-                  | Your browser supports WebRTC.
-                div(ng-show='!supportedBrowser')
-                  b Your browser does not support WebRTC.
+                a(href='', ng-click='openGroupCall()', ng-if='!isGroupCallSelected()')
+                  | Group Call
+                a(href='', ng-click='openGroupCall()', ng-if='isGroupCallSelected()')
+                  b Group Call
               li
-                div(ng-show='hasDeviceAccess()')
-                  | You have access to your Video and Audio input devices.
-                div(ng-show='!hasDeviceAccess()')
-                  b You do not have access to your Video and Audio input devices.
+                a(href='', ng-click='openMeeting()', ng-if='!isMeetingSelected()')
+                  | Conference Call
+                a(href='', ng-click='openMeeting()', ng-if='isMeetingSelected()')
+                  b Conference Call
+              li
+                a(href='', ng-click='openCall()', ng-if='!isCallSelected()')
+                  | Call
+                a(href='', ng-click='openCall()', ng-if='isCallSelected()')
+                  b Call
+              li
+                a(href='', ng-click='openInvite()', ng-if='!isInviteSelected()')
+                  | Invite People
+                a(href='', ng-click='openInvite()', ng-if='isInviteSelected()')
+                  b Invite People
+              li
+                a(href='', ng-click='openAddContact()', ng-if='!isAddContactSelected()')
+                  | Add Contact
+                a(href='', ng-click='openAddContact()', ng-if='isAddContactSelected()')
+                  b Add Contact
+              li
+                a(href='', ng-click='openSettings()', ng-show='!isSettingsSelected()')
+                  | Settings
+                a(href='', ng-click='openSettings()', ng-show='isSettingsSelected()')
+                  b Settings
+              li(ng-if='isUserAdmin()')
+                a(href='#admin')
+                  | Admin Dashboard
+  div(id='theMainDOMForApp', ng-init='otherUser=#{JSON.stringify(otherUser)}', ng-controller='MainController')
+    div(ng-controller='OneToOneCallController')
+      div(ng-show='!isUserNameDefined()')
+        div(class='row margin-bottom-40')
+          div(class='well well-lg modalBox')
+            .animate-show
+              form(role='form', novalidate, name='form', class='css-form form-horizontal', enctype='multipart/form-data', ng-submit='saveNewUserName(userTemp)')
+                fieldset
+                  legend Completing your registration now...
+                  .form-group
+                    label(for='email', class='col-lg-4 control-label') Username
+                      span(class='require')
+                        | *
+                    .col-lg-8
+                      input.form-control(type='text', name="username", placeholder='Enter Username (kiboname)', ng-model='userTemp.username', required, ng-minlength='3', ng-maxlength='20', ng-focus)
+                      div(ng-show!="form.username.$dirty && !form.username.$focused")
+                        div(ng-show="form.username.$invalid")
+                          span(ng-show="form.username.$error.required")
+                            | Enter the username.
+                          span(ng-show="form.username.$error.minlength")
+                            | Username is too short.
+                          span(ng-show="form.username.$error.maxlength")
+                            | Username is too big.
+                  .form-group
+                    label(for='email', class='col-lg-4 control-label') Email Address
+                      span(class='require')
+                        | *
+                    .col-lg-8
+                      input.form-control(type='email', name="email", placeholder='Email Address', ng-model="userTemp.email", required, ng-focus)
+                      div(ng-show="form.email.$dirty && !form.email.$focused")
+                        div(ng-show="form.email.$invalid")
+                          span(ng-show="form.email.$error.required")
+                            | Enter your email address.
+                          span(ng-show="form.email.$error.email")
+                            | This is not a valid email address.
+                  .form-group
+                    label(for='email', class='col-lg-4 control-label') Phone Number
+                      span(class='require')
+                        | *
+                    .col-lg-8
+                      input.form-control(type='text', name="phoneNumber", placeholder='Phone Number', ng-model="userTemp.phone", required, ng-focus)
+                      div(ng-show="form.phoneNumber.$dirty && !form.phoneNumber.$focused")
+                        div(ng-show="form.phoneNumber.$invalid")
+                          span(ng-show="form.phoneNumber.$error.required")
+                            | Enter your contact number.
+                          span(ng-show="form.email.$error.phoneNumber")
+                            | This is not a valid phone number.
+                .row
+                  div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20')
+                    button.myButton(type='submit', ng-disabled="form.$invalid || isUnchanged(user)") Submit
+                .row
+                  div(class='col-lg-8 col-md-offset-4 padding-left-0 padding-top-20 usernameerror', ng-show='showError()')
+                    h5 {{errorMessage}}
+      div(ng-show='isUserNameDefined()')
+        div
+          div(ng-show='testingDefined()', class='well well-lg modalBoxTabContent')
+            .animate-show
+              h3 Checking Browser Compatibility
+              br
+              ul
+                li
+                  div(ng-show='supportedBrowser')
+                    | Your browser supports WebRTC.
+                  div(ng-show='!supportedBrowser')
+                    b Your browser does not support WebRTC.
+                li
+                  div(ng-show='hasDeviceAccess()')
+                    | You have access to your Video and Audio input devices.
+                  div(ng-show='!hasDeviceAccess()')
+                    b You do not have access to your Video and Audio input devices.
+              br
+              center
+                video(id='testvideo', autoplay='true', width='160', height='120')
+              br
+              br
+              b Note:
+              | Latest version of Google Chrome is recommended.
+              div(style='text-align:right;')
+                button.btn.btn-default(ng-click='ReadyToGo()') I'm Ready
+          div(ng-show='isMeetingSelected()', class='well well-lg animate-show modalBoxTabContent')
+            label.col-md-4.col-sm-offset-4 Name your Meeting Room
+            input.form-control.col-lg-7.col-md-offset-1.padding-left-1.ng-pristine.ng-valid(type='text', ng-model='meetingroom')
+            br
+            label.col-lg-9.col-md-offset-3.padding-left-0.padding-top-10 Please ask participants to join meeting using this meeting name
+            br
+            b.col-lg-8.col-md-offset-5.padding-left-0.padding-top-20.ng-binding {{meetingroom}}
             br
             center
-              video(id='testvideo', autoplay='true', width='160', height='120')
+              a(href='/#/conference/{{meetingroom}}')
+                h4 Join My Meeting Room
             br
             br
-            b Note:
-            | Latest version of Google Chrome is recommended.
             div(style='text-align:right;')
-              button.btn.btn-default(ng-click='ReadyToGo()') I'm Ready
-
-        div(ng-show='isMeetingSelected()', class='well well-lg animate-show modalBoxTabContent')
-          label.col-md-4.col-sm-offset-4 Name your Meeting Room
-          input.form-control.col-lg-7.col-md-offset-1.padding-left-1.ng-pristine.ng-valid(type='text', ng-model='meetingroom')
-          br
-          label.col-lg-9.col-md-offset-3.padding-left-0.padding-top-10 Please ask participants to join meeting using this meeting name
-          br
-          b.col-lg-8.col-md-offset-5.padding-left-0.padding-top-20.ng-binding {{meetingroom}}
-          br
-          center
-            a(href='/#/conference/{{meetingroom}}')
-              h4 Join My Meeting Room
-          br
-          br
-          div(style='text-align:right;')
-            button.myButton1(ng-click='openMeeting()') Hide Me!
-
-        div(ng-show='isCallSelected()', class='well well-lg animate-show modalBoxTabContent')
-          div
-            div(ng-show='isUserNameSearchSelected()', class='innerbox')
-              form(role='form', ng-submit='searchUserName()', novalidate, name='form5', class='col-lg-8 col-lg-offset-2 css-form')
-                .form-group1
-                  center Enter Kiboname to make call
-                  input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='search.searchusername')
-                a(ng-click='switchSearchOption()')
-                  center Call using email
-                br
-                div
-                  button.myButton.center(type='submit', ng-disabled="form5.$invalid") Call
-            div(ng-show='!isUserNameSearchSelected()', class='wellz')
-              form(role='form', ng-submit='searchEmail()', novalidate, name='form4', class='col-lg-8 col-lg-offset-2 css-form')
-                .form-group1.text-center
-                  label Type the person's email address to make a call
-                  input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='search.searchemail')
-                div(ng-show="form4.email.$dirty && !form4.email.$focused")
-                  div(ng-show="form4.email.$invalid")
-                    span.center-block(ng-show="form4.email.$error.required")
-                      | Enter the email address.
-                    span(ng-show="form4.email.$error.email")
-                      | This is not a valid email address.
-                a(ng-click='switchSearchOption()')
-                  small Call using username
-                br
-                br
-                div
-                  button.myButton(type='submit', ng-disabled="form4.$invalid") Call
-            br
-            div(class='well well-lg animate-show', ng-show='userFound == null')
-              b User, you are trying to call is not registered on CloudKibo
-              br
-              a(ng-click='openInvite()')
-                small Invite to CloudKibo
-              div(style='text-align:right;')
-                button.myButton1(ng-click='openCall()') Hide Me!
-
-        div(ng-show='isInviteSelected()', class='animate-show modalBoxTabContent')
-          div(class='')
-            div(style='text-align:right;', class='')
-              //button.myButton1(ng-click='openInvite()') Hide Me!
-            #inviteEmailBox1(class='')
-              form(role='form', method="post", novalidate, name='form6', class='col-lg-10 col-lg-offset-2 formcss', ng-submit='emailInvite(inviteemail)')
-                br
-                label.col-sm-10 Invite your friend to CloudKibo
-                .form-group4
-                  input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='inviteemail.recipientEmail')
-                div(ng-show="form6.email.$dirty && !form6.email.$focused")
-                  div(ng-show="form6.email.$invalid")
-                    span(ng-show="form6.email.$error.required")
-                      | Enter the email address.
-                    span(ng-show="form6.email.$error.email")
-                      | This is not a valid email address.
-                br
-                br
-                label.col-sm-10 Optional Message
-                .form-group2
-                  textarea.form-control(rows=8, cols=40, name="smessage", ng-model='inviteemail.shortmessage', ng-focus)
-                br
-                div
-                  button.myButton(type='submit', ng-disabled="form6.$invalid") Invite
-                  button.myButton1(ng-click='openInvite()') Hide Me!
-
-              alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
-
-        div(ng-show='isAddContactSelected()', class='animate-show modalBoxTabContent')
-          div
-            div(ng-show='isUserNameAddSelected()', class='')
-              form(role='form', ng-submit='addUserName(add)', novalidate, name='form999', class='css-form')
-                .form-group
-                  label.btnAdd.col-md-offset-4 Add contact by username
-                  input.form-control.col-md-2.col-md-offset-2(type='text', name="username",class="col-md-2.col-md-offset-2", placeholder='Enter Username', required, ng-model='add.searchusername')
-                a(ng-click='switchAddOption()' class="col-md-4 col-md-offset-4 labelAddContact")
-                  label.btnAdd.col-md-4 Add contact by email
+              button.myButton1(ng-click='openMeeting()') Hide Me!
+          div(ng-show='isCallSelected()', class='well well-lg animate-show modalBoxTabContent')
+            div
+              div(ng-show='isUserNameSearchSelected()', class='innerbox')
+                form(role='form', ng-submit='searchUserName()', novalidate, name='form5', class='col-lg-8 col-lg-offset-2 css-form')
+                  .form-group1
+                    center Enter Kiboname to make call
+                    input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='search.searchusername')
+                  a(ng-click='switchSearchOption()')
+                    center Call using email
+                  br
+                  div
+                    button.myButton.center(type='submit', ng-disabled="form5.$invalid") Call
+              div(ng-show='!isUserNameSearchSelected()', class='wellz')
+                form(role='form', ng-submit='searchEmail()', novalidate, name='form4', class='col-lg-8 col-lg-offset-2 css-form')
+                  .form-group1.text-center
+                    label Type the person's email address to make a call
+                    input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='search.searchemail')
+                  div(ng-show="form4.email.$dirty && !form4.email.$focused")
+                    div(ng-show="form4.email.$invalid")
+                      span.center-block(ng-show="form4.email.$error.required")
+                        | Enter the email address.
+                      span(ng-show="form4.email.$error.email")
+                        | This is not a valid email address.
+                  a(ng-click='switchSearchOption()')
+                    small Call using username
                   br
                   br
-
-                br
-                br
-                div
-                  button(type='submit', ng-disabled="form999.$invalid",class="btn btn-secondary col-md-2 col-md-offset-4") Add
-            div(ng-show='!isUserNameAddSelected()', class='')
-              form(role='form', ng-submit='addEmail(add)', novalidate, name='form41', class='css-form')
-                .form-group
-                  label.btnAdd.col-md-offset-4 Add contact by email
-                  input.form-control.col-md-2.col-md-offset-2(type='email',class="col-md-2.col-md-offset-2", name="email", placeholder='Enter Email Address', required, ng-model='add.searchemail')
-                div(ng-show="form41.email.$dirty && !form41.email.$focused")
-                  div(ng-show="form41.email.$invalid")
-                    span(ng-show="form41.email.$error.required")
-                      | Enter the email address.
-                    span(ng-show="form41.email.$error.email")
-                      | This is not a valid email address.
-                a(ng-click='switchAddOption()')
-                  label.btnAdd.col-md-offset-4 Add contact by username
-                br
-                br
-                div
-                  button(type='submit', ng-disabled="form41.$invalid", class="btn btn-secondary col-md-2 col-md-offset-4") Add
-            br
-            div(class='animate-show', ng-show='userFound == null')
-              b User, you are trying to add is not registered on CloudKibo
+                  div
+                    button.myButton(type='submit', ng-disabled="form4.$invalid") Call
               br
-              a(ng-click='openInvite()')
-                small Invite to CloudKibo
-            div(class='well well-lg animate-show', ng-show='userFound == "danger"')
-              b {{addUserResponseMessage}}
-          div(style='text-align:right;')
-            button.myButton1(ng-click='openAddContact()') Hide Me!
-
-        div(ng-show='isSettingsSelected()', class='modalBoxTabContent')
-          div(class='lalz')
-            tabset(justified='true', class='tabbable')
-              tab(heading='Profile')
-                div(class='lalz')
-                  #profileLeft
-                    form(role='form', novalidate, name='form', class='css-form col-md-12', enctype='multipart/form-data', ng-submit='updateProfile(user)')
-                      br
-                      h4 My Profile
-                      br
-                      label Unique KiboName
-                      input.form-control(type='text', name="username", ng-model='user.username', disabled)
-                      br
-                      #profileItemLeft
-                        label First Name
-                        input.form-control(type='text', name="firstname", ng-model='user.firstname')
-                      #profileItemRight
-                        label Last Name
-                        input.form-control(type='text', name="lastname", ng-model='user.lastname')
-                      br
-                      #profileItemLeft
-                        label Email Address
-                        input.form-control(type='text', name="email", ng-model='user.email', disabled)
-                      #profileItemRight
-                        label Phone
-                        input.form-control(type='text', name="phone", ng-model='user.phone')
-                      br
-                      #profileItemLeft
-                        label City
-                        input.form-control(type='text', name="city", ng-model='user.city')
-                      #profileItemRight
-                        label State
-                        input.form-control(type='text', name="state", ng-model='user.state')
-                      br
-                      label Country
-                      .form-group
+              div(class='well well-lg animate-show', ng-show='userFound == null')
+                b User, you are trying to call is not registered on CloudKibo
+                br
+                a(ng-click='openInvite()')
+                  small Invite to CloudKibo
+                div(style='text-align:right;')
+                  button.myButton1(ng-click='openCall()') Hide Me!
+          div(ng-show='isInviteSelected()', class='animate-show modalBoxTabContent')
+            div(class='')
+              div(style='text-align:right;', class='')
+                //button.myButton1(ng-click='openInvite()') Hide Me!
+              #inviteEmailBox1(class='')
+                form(role='form', method="post", novalidate, name='form6', class='col-lg-10 col-lg-offset-2 formcss', ng-submit='emailInvite(inviteemail)')
+                  br
+                  label.col-sm-10 Invite your friend to CloudKibo
+                  .form-group4
+                    input.form-control(type='email', name="email", placeholder='Enter Email Address', required, ng-model='inviteemail.recipientEmail')
+                  div(ng-show="form6.email.$dirty && !form6.email.$focused")
+                    div(ng-show="form6.email.$invalid")
+                      span(ng-show="form6.email.$error.required")
+                        | Enter the email address.
+                      span(ng-show="form6.email.$error.email")
+                        | This is not a valid email address.
+                  br
+                  br
+                  label.col-sm-10 Optional Message
+                  .form-group2
+                    textarea.form-control(rows=8, cols=40, name="smessage", ng-model='inviteemail.shortmessage', ng-focus)
+                  br
+                  div
+                    button.myButton(type='submit', ng-disabled="form6.$invalid") Invite
+                    button.myButton1(ng-click='openInvite()') Hide Me!
+                alert(ng-repeat='alert in alerts', type='alert.type', close='closeAlert($index)') {{alert.msg}}
+          div(ng-show='isAddContactSelected()', class='animate-show modalBoxTabContent')
+            div
+              div(ng-show='isUserNameAddSelected()', class='')
+                form(role='form', ng-submit='addUserName(add)', novalidate, name='form999', class='css-form')
+                  .form-group
+                    label.btnAdd.col-md-offset-4 Add contact by username
+                    input.form-control.col-md-2.col-md-offset-2(type='text', name="username",class="col-md-2.col-md-offset-2", placeholder='Enter Username', required, ng-model='add.searchusername')
+                  a(ng-click='switchAddOption()' class="col-md-4 col-md-offset-4 labelAddContact")
+                    label.btnAdd.col-md-4 Add contact by email
+                    br
+                    br
+                  br
+                  br
+                  div
+                    button(type='submit', ng-disabled="form999.$invalid",class="btn btn-secondary col-md-2 col-md-offset-4") Add
+              div(ng-show='!isUserNameAddSelected()', class='')
+                form(role='form', ng-submit='addEmail(add)', novalidate, name='form41', class='css-form')
+                  .form-group
+                    label.btnAdd.col-md-offset-4 Add contact by email
+                    input.form-control.col-md-2.col-md-offset-2(type='email',class="col-md-2.col-md-offset-2", name="email", placeholder='Enter Email Address', required, ng-model='add.searchemail')
+                  div(ng-show="form41.email.$dirty && !form41.email.$focused")
+                    div(ng-show="form41.email.$invalid")
+                      span(ng-show="form41.email.$error.required")
+                        | Enter the email address.
+                      span(ng-show="form41.email.$error.email")
+                        | This is not a valid email address.
+                  a(ng-click='switchAddOption()')
+                    label.btnAdd.col-md-offset-4 Add contact by username
+                  br
+                  br
+                  div
+                    button(type='submit', ng-disabled="form41.$invalid", class="btn btn-secondary col-md-2 col-md-offset-4") Add
+              br
+              div(class='animate-show', ng-show='userFound == null')
+                b User, you are trying to add is not registered on CloudKibo
+                br
+                a(ng-click='openInvite()')
+                  small Invite to CloudKibo
+              div(class='well well-lg animate-show', ng-show='userFound == "danger"')
+                b {{addUserResponseMessage}}
+            div(style='text-align:right;')
+              button.myButton1(ng-click='openAddContact()') Hide Me!
+          div(ng-show='isSettingsSelected()', class='modalBoxTabContent')
+            div(class='lalz')
+              tabset(justified='true', class='tabbable')
+                tab(heading='Profile')
+                  div(class='lalz')
+                    #profileLeft
+                      form(role='form', novalidate, name='form', class='css-form col-md-12', enctype='multipart/form-data', ng-submit='updateProfile(user)')
+                        br
+                        h4 My Profile
+                        br
+                        label Unique KiboName
+                        input.form-control(type='text', name="username", ng-model='user.username', disabled)
+                        br
+                        #profileItemLeft
+                          label First Name
+                          input.form-control(type='text', name="firstname", ng-model='user.firstname')
+                        #profileItemRight
+                          label Last Name
+                          input.form-control(type='text', name="lastname", ng-model='user.lastname')
+                        br
+                        #profileItemLeft
+                          label Email Address
+                          input.form-control(type='text', name="email", ng-model='user.email', disabled)
+                        #profileItemRight
+                          label Phone
+                          input.form-control(type='text', name="phone", ng-model='user.phone')
+                        br
+                        #profileItemLeft
+                          label City
+                          input.form-control(type='text', name="city", ng-model='user.city')
+                        #profileItemRight
+                          label State
+                          input.form-control(type='text', name="state", ng-model='user.state')
+                        br
+                        label Country
+                        .form-group
                           select.form-control(name="country", ng-model='user.country', required)
                             option(value="Afghanistan") Afghanistan
                             option(value="Albania") Albania
@@ -486,186 +477,170 @@ block bodycontent
                             option(value="Yemen") Yemen
                             option(value="Zambia") Zambia
                             option(value="Zimbabwe") Zimbabwe
-                      br
-                      div
-                        button.myButton(type='submit') Save
-                  #profileRight(ng-controller='UploadCtrl')
+                        br
+                        div
+                          button.myButton(type='submit') Save
+                    #profileRight(ng-controller='UploadCtrl')
                       #pictureBox
-                       if(user.picture)
-                         img(src='/api/users/userimage'+user.picture, width='152px', height='152px', class='img-frame')
-                         br
-                         br
-                         form(name='myForm')
-                           div Upload new image
-                           button(ngf-select='', ng-model='picFile', accept='image/*')
-                             | Select Picture
-                           .cropArea(ngf-drop='', ng-model='picFile', ngf-pattern='image/*')
-                             img-crop(image='picFile  | ngfDataUrl', result-image='croppedDataUrl', ng-init="croppedDataUrl=''")
-                           div
-                             img(ng-src='{{croppedDataUrl}}')
-                           button(ng-click='upload(croppedDataUrl)') Submit
-                           span.progress(ng-show='progress >= 0')
-                             div(style='width:{{progress}}%', ng-bind="progress + '%'")
-                           span(ng-show='result') Upload Successful
-                           span.err(ng-show='errorMsg') {{errorMsg}}
-                       else if(user.fb_photo)
-                         img(src='{{user.fb_photo}}', width='152px', height='152px', class='img-frame')
-                       else if(user.google_photo)
-                         img(src='{{user.google_photo}}', width='152px', height='152px', class='img-frame')
-                       else if(user.windows_photo)
-                         img(src='{{user.windows_photo}}', width='152px', height='152px', class='img-frame')
-                       else
-                         img(src='/images/displayPic.jpg', width='152px', height='152px', class='img-frame')
-                         br
-                         br
-                         form(name='myForm')
-                           div New Image upload
-                           button(ngf-select='', ng-model='picFile', accept='image/*')
-                             | Select Picture
-                           .cropArea(ngf-drop='', ng-model='picFile', ngf-pattern='image/*')
-                             img-crop(image='picFile  | ngfDataUrl', result-image='croppedDataUrl', ng-init="croppedDataUrl=''")
-                           div
-                             img(ng-src='{{croppedDataUrl}}')
-                           button(ng-click='upload(croppedDataUrl)') Submit
-                           span.progress(ng-show='progress >= 0')
-                             div(style='width:{{progress}}%', ng-bind="progress + '%'")
-                           span(ng-show='result') Upload Successful
-                           span.err(ng-show='errorMsg') {{errorMsg}}
-                div(style='text-align:right;')
-                  button.myButton1(ng-click='openSettings()') Hide Me!
-              tab(heading='Support Test')
-                div(class='tabh')
-                  h3 Checking Browser Compatibility
-                  br
-                  ul
-                    li
-                      div(ng-show='supportedBrowser')
-                        | Your browser supports WebRTC.
-                      div(ng-show='!supportedBrowser')
-                        b Your browser does not support WebRTC.
-                    li
-                      div(ng-show='hasDeviceAccess()')
-                        | You have access to your Video and Audio input devices.
-                      div(ng-show='!hasDeviceAccess()')
-                        b You do not have access to your Video and Audio input devices.
-                  br
-                  center
-                    video(id='testvideo2', autoplay='true', width='160', class='videoelement')
-                  br
-                  div(style='text-align:center;')
-                    button.myButton(ng-click='checkDeviceAccess()') Test Audio/Video
-                  br
-                  br
-                  b Note:
-                  | Latest version of Google Chrome is recommended.
+                        if(user.picture)
+                          img(src='/api/users/userimage' + user.picture, width='152px', height='152px', class='img-frame')
+                          br
+                          br
+                          form(name='myForm')
+                            div Upload new image
+                            button(ngf-select='', ng-model='picFile', accept='image/*')
+                              | Select Picture
+                            .cropArea(ngf-drop='', ng-model='picFile', ngf-pattern='image/*')
+                              img-crop(image='picFile  | ngfDataUrl', result-image='croppedDataUrl', ng-init="croppedDataUrl=''")
+                            div
+                              img(ng-src='{{croppedDataUrl}}')
+                            button(ng-click='upload(croppedDataUrl)') Submit
+                            span.progress(ng-show='progress >= 0')
+                              div(style='width:{{progress}}%', ng-bind="progress + '%'")
+                            span(ng-show='result') Upload Successful
+                            span.err(ng-show='errorMsg') {{errorMsg}}
+                        else if(user.fb_photo)
+                          img(src='{{user.fb_photo}}', width='152px', height='152px', class='img-frame')
+                        else if(user.google_photo)
+                          img(src='{{user.google_photo}}', width='152px', height='152px', class='img-frame')
+                        else if(user.windows_photo)
+                          img(src='{{user.windows_photo}}', width='152px', height='152px', class='img-frame')
+                        else
+                          img(src='/images/displayPic.jpg', width='152px', height='152px', class='img-frame')
+                          br
+                          br
+                          form(name='myForm')
+                            div New Image upload
+                            button(ngf-select='', ng-model='picFile', accept='image/*')
+                              | Select Picture
+                            .cropArea(ngf-drop='', ng-model='picFile', ngf-pattern='image/*')
+                              img-crop(image='picFile  | ngfDataUrl', result-image='croppedDataUrl', ng-init="croppedDataUrl=''")
+                            div
+                              img(ng-src='{{croppedDataUrl}}')
+                            button(ng-click='upload(croppedDataUrl)') Submit
+                            span.progress(ng-show='progress >= 0')
+                              div(style='width:{{progress}}%', ng-bind="progress + '%'")
+                            span(ng-show='result') Upload Successful
+                            span.err(ng-show='errorMsg') {{errorMsg}}
                   div(style='text-align:right;')
                     button.myButton1(ng-click='openSettings()') Hide Me!
-
-
-
-        div(ng-show='isGroupCallSelected()', class='animate-show modalBoxTabContent')
-          div
-            div(class='nameAdd')
-              form(role='form', ng-submit='createGroup(group)', novalidate, name='form9', class='css-form')
-                .form-group
-                  label Group Name
-                  input.form-control(type='text', name="username", placeholder='Enter group name here to create group', required, ng-model='group.groupname')
-
-                div(class="labelAddContact")
-                  button.myButton(type='submit', ng-disabled="form9.$invalid", ) Create group
-
-              br
-              br
-              b My Groups
-              br
-              .table-responsive.col-md-12
-                table.table.table-bordered.table-hover
-                  thead
-                    tr
-                      th
-                        | #
-                      th
-                        | Group Name
-                      th
-                        | Group Owner
-                      th(colspan=3)
-                        | Actions
-                  tbody
-                    tr(ng-repeat = 'grp in allGroups')
-                      td()
-                        | {{$index+1}}
-                      td
-                        | {{grp.groupname}}
-                      td
-                        | {{grp.groupowner}}
-                      td
-                        button(ng-click='openGroupView(grp)') View
-                      td
-                        button(ng-click= 'deleteGroup(grp)') Delete
-                      td
-                        button(ng-click= 'callThisGroup(grp)') Call
-              br
-              b Groups I am member of
-              br
-              .table-responsive.col-md-12
-                table.table.table-bordered.table-hover
-                  thead
-                    tr
-                      th
-                        | #
-                      th
-                        | Group Name
-                      th
-                        | Group Owner
-                  tbody
-                    tr(ng-repeat = 'grp in allOtherGroups')
-                      td()
-                        | {{$index+1}}
-                      td
-                        | {{grp.groupid.groupname}}
-                      td
-                        | {{grp.groupid.groupowner}}
-
-        div(ng-show='isOpenGroupViewSelected()', class='animate-show modalBoxTabContent')
-          div
-            div(class='nameAdd')
-              h4 {{selectedGroup.groupname}}
-              form(role='form', ng-submit='addContactToGroup(contact, selectedGroup)', novalidate, name='form99', class='css-form')
-                .form-group
-                  label Add contact in this group
-                  input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='contact.contactusername')
-                div(class="labelAddContact")
-                  button.myButton(type='submit', ng-disabled="form99.$invalid") Add
+                tab(heading='Support Test')
+                  div(class='tabh')
+                    h3 Checking Browser Compatibility
+                    br
+                    ul
+                      li
+                        div(ng-show='supportedBrowser')
+                          | Your browser supports WebRTC.
+                        div(ng-show='!supportedBrowser')
+                          b Your browser does not support WebRTC.
+                      li
+                        div(ng-show='hasDeviceAccess()')
+                          | You have access to your Video and Audio input devices.
+                        div(ng-show='!hasDeviceAccess()')
+                          b You do not have access to your Video and Audio input devices.
+                    br
+                    center
+                      video(id='testvideo2', autoplay='true', width='160', class='videoelement')
+                    br
+                    div(style='text-align:center;')
+                      button.myButton(ng-click='checkDeviceAccess()') Test Audio/Video
+                    br
+                    br
+                    b Note:
+                    | Latest version of Google Chrome is recommended.
+                    div(style='text-align:right;')
+                      button.myButton1(ng-click='openSettings()') Hide Me!
+          div(ng-show='isGroupCallSelected()', class='animate-show modalBoxTabContent')
+            div
+              div(class='nameAdd')
+                form(role='form', ng-submit='createGroup(group)', novalidate, name='form9', class='css-form')
+                  .form-group
+                    label Group Name
+                    input.form-control(type='text', name="username", placeholder='Enter group name here to create group', required, ng-model='group.groupname')
+                  div(class="labelAddContact")
+                    button.myButton(type='submit', ng-disabled="form9.$invalid", ) Create group
                 br
-              .table-responsive.col-md-12
-                table.table.table-bordered.table-hover
-                  thead
-                    tr
-                      th
-                        | #
-                      th
-                        | Member Name
-                      th
-                        | Actions
-
-                  tbody
-                    tr(ng-repeat = 'grp in selectedGroupDetails')
-                      td()
-                        | {{$index+1}}
-                      td
-                        | {{grp.user_id.firstname}} {{grp.user_id.lastname}}
-                      td
-                        button(ng-click="removeContactToGroup(grp)") Delete
-              div(class="labelAddContact")
-                button.myButton(ng-click='closeGroupCallView()') Go Back
-
-
-
-
-
-
-
-
-        //fullBodyLightCoverShow(ng-show='isCallSelected() || isInviteSelected() || isSettingsSelected() || isMeetingSelected()')
-
-        block appbodycontent
+                br
+                b My Groups
+                br
+                .table-responsive.col-md-12
+                  table.table.table-bordered.table-hover
+                    thead
+                      tr
+                        th
+                          | #
+                        th
+                          | Group Name
+                        th
+                          | Group Owner
+                        th(colspan=3)
+                          | Actions
+                    tbody
+                      tr(ng-repeat = 'grp in allGroups')
+                        td()
+                          | {{$index+1}}
+                        td
+                          | {{grp.groupname}}
+                        td
+                          | {{grp.groupowner}}
+                        td
+                          button(ng-click='openGroupView(grp)') View
+                        td
+                          button(ng-click= 'deleteGroup(grp)') Delete
+                        td
+                          button(ng-click= 'callThisGroup(grp)') Call
+                br
+                b Groups I am member of
+                br
+                .table-responsive.col-md-12
+                  table.table.table-bordered.table-hover
+                    thead
+                      tr
+                        th
+                          | #
+                        th
+                          | Group Name
+                        th
+                          | Group Owner
+                    tbody
+                      tr(ng-repeat = 'grp in allOtherGroups')
+                        td()
+                          | {{$index+1}}
+                        td
+                          | {{grp.groupid.groupname}}
+                        td
+                          | {{grp.groupid.groupowner}}
+          div(ng-show='isOpenGroupViewSelected()', class='animate-show modalBoxTabContent')
+            div
+              div(class='nameAdd')
+                h4 {{selectedGroup.groupname}}
+                form(role='form', ng-submit='addContactToGroup(contact, selectedGroup)', novalidate, name='form99', class='css-form')
+                  .form-group
+                    label Add contact in this group
+                    input.form-control(type='text', name="username", placeholder='Enter Username', required, ng-model='contact.contactusername')
+                  div(class="labelAddContact")
+                    button.myButton(type='submit', ng-disabled="form99.$invalid") Add
+                  br
+                .table-responsive.col-md-12
+                  table.table.table-bordered.table-hover
+                    thead
+                      tr
+                        th
+                          | #
+                        th
+                          | Member Name
+                        th
+                          | Actions
+                    tbody
+                      tr(ng-repeat = 'grp in selectedGroupDetails')
+                        td()
+                          | {{$index+1}}
+                        td
+                          | {{grp.user_id.firstname}} {{grp.user_id.lastname}}
+                        td
+                          button(ng-click="removeContactToGroup(grp)") Delete
+                div(class="labelAddContact")
+                  button.myButton(ng-click='closeGroupCallView()') Go Back
+          //fullBodyLightCoverShow(ng-show='isCallSelected() || isInviteSelected() || isSettingsSelected() || isMeetingSelected()')
+          block appbodycontent

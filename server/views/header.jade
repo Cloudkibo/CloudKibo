@@ -1,80 +1,77 @@
 .pre-header(ng-show='isLoggedIn()')
-     .container
-       .row
-         div(class='col-md-6 col-sm-6 additional-shop-info')
-           ul(class='list-unstyled list-inline')
-             li
-               i(class='fa fa-phone')
-               span
-                 |  1-425-890-414
-             li
-               i(class='fa fa-envelope-o')
-               a(ng-href='#contact')
-                 span
-                   | support@cloudkibo.com
-             li
-               i(class='fa')
-                 button(onclick='loadKiboWidget("cd89f71715f2014725163952")')
-                   | Live Help
-         div(class='col-md-6 col-sm-6 additional-nav')
-           ul(class='list-unstyled list-inline pull-right')
-             li(ng-show='isActive("/")')
-               a(href='#app')
-                 b Go To Application
-             li
-               a(href='#', ng-click='logout()')
-                 | Log Out
-.pre-header(ng-hide='isLoggedIn()')
-     .container
-       .row
-         div(class='col-md-6 col-sm-6 additional-shop-info')
-           ul(class='list-unstyled list-inline')
-             li
-               i(class='fa fa-phone')
-               span
-                 |  1-425-890-414
-             li
-               i(class='fa fa-envelope-o')
-               a(ng-href='http://www.cloudkibo.com/contact')
-                 span
-                   | support@cloudkibo.com
-             li
-               i(class='fa')
-                 button(onclick='loadKiboWidget("cd89f71715f2014725163952")')
-                   | Live Help
-         div(class='col-md-6 col-sm-6 additional-nav')
-           ul(class='list-unstyled list-inline pull-right')
-             li
-               a(href='#login')
-                 | Log In
-             li
-               a(href='#register')
-                 | Sign up
-             li
-               button(onclick='openDoc()')
-                 | Developers
-.header(ng-hide='isLoggedIn()')
-    .container
-      a(class='site-logo', href='#')
-        if(title == 'CloudKibo')
-          img(src='/images/logo_small.png')
-          | #{title}
-        else
-          img(src='/images/logo.jpg', width='38%', height='38%')
-      a(href='javascript:void(0);', class='mobi-toggler')
-        i(class='fa fa-bars')
-      //div(class='header-navigation pull-right font-transform-inherit')
-        ul
+  .container
+    .row
+      div(class='col-md-6 col-sm-6 additional-shop-info')
+        ul(class='list-unstyled list-inline')
           li
-            a(ng-href='#')
-              | Home
+            i(class='fa fa-phone')
+            span
+              |  1-425-890-414
           li
-            a(ng-href='#aboutus')
-              | About Us
-          li
-            a(ng-href='#features')
-              | Features
-          li
+            i(class='fa fa-envelope-o')
             a(ng-href='#contact')
-              | Contact
+              span
+                | support@cloudkibo.com
+          li
+            i(class='fa')
+              button(onclick='loadKiboWidget("cd89f71715f2014725163952")')
+                | Live Help
+      div(class='col-md-6 col-sm-6 additional-nav')
+        ul(class='list-unstyled list-inline pull-right')
+          li(ng-show='isActive("/")')
+            a(href='#app')
+              b Go To Application
+          li
+            a(href='#', ng-click='logout()')
+              | Log Out
+.pre-header(ng-hide='isLoggedIn()')
+  .container
+    .row
+      div(class='col-md-6 col-sm-6 additional-shop-info')
+        ul(class='list-unstyled list-inline')
+          li
+            i(class='fa fa-phone')
+            span
+              |  1-425-890-414
+          li
+            i(class='fa fa-envelope-o')
+            a(ng-href='http://www.cloudkibo.com/contact')
+              span
+                | support@cloudkibo.com
+          li
+            i(class='fa')
+              button(onclick='loadKiboWidget("cd89f71715f2014725163952")')
+                | Live Help
+      div(class='col-md-6 col-sm-6 additional-nav')
+        ul(class='list-unstyled list-inline pull-right')
+          li
+            a(href='#login')
+              | Log In
+          li
+            a(href='#register')
+              | Sign up
+.header(ng-hide='isLoggedIn()')
+  .container
+    a(class='site-logo', href='#')
+      if(title == 'CloudKibo')
+        img(src='/images/logo_small.png')
+        | #{title}
+      else
+        img(src='/images/logo.jpg', width='38%', height='38%')
+    a(href='javascript:void(0);', class='mobi-toggler')
+      i(class='fa fa-bars')
+    //div(class='header-navigation pull-right font-transform-inherit')
+      ul
+        li
+          a(ng-href='#')
+            | Home
+        li
+          a(ng-href='#aboutus')
+            | About Us
+        li
+          a(ng-href='#features')
+            | Features
+        li
+          a(ng-href='#contact')
+            | Contact
 block bodycontent
