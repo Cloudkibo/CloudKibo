@@ -831,6 +831,8 @@ module.exports = function (socketio) {
       var room = rooms[currentRoom];
       if (!room) {
         socket.username = data.username;
+        if(data.supportcall)
+          socket.supportcall = data.supportcall;
         rooms[currentRoom] = [socket];
         id = userIds[currentRoom] = 0;
         fn(currentRoom, id);
@@ -898,6 +900,7 @@ module.exports = function (socketio) {
       var room = rooms[currentRoom];
       if (!room) {
         socket.username = data.username;
+        if(data.supportcall) socket.supportcall = data.supportcall;
         rooms[currentRoom] = [socket];
         id = userIds[currentRoom] = 0;
         fn(currentRoom, id);
@@ -971,6 +974,43 @@ module.exports = function (socketio) {
     });
 
     function conferenceDisconnect(socketio, socket){
+
+      if(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].supportcall) {
+        if(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].supportcall.role === 'agent') {
+          console.log('do the support call webhook logic here');
+          console.log(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].supportcall)
+
+          /*
+           var options = {
+           url: 'https://api.kibosupport.com/api/users/allagents', // replace this with client webhook url
+           rejectUnauthorized : false,
+           };
+
+           function callback(error, response, body) {
+           if (!error && response.statusCode == 200) {
+           var info = JSON.parse(body);
+           var data =[];
+           var i =0;
+           console.log(info.agents.length)
+           console.log(info.agents);
+           res.render('agents',{mydata:info.agents});
+
+           }
+           else
+           {
+           data = null;
+           console.log(error);
+
+           //  res.render('agents',data);
+
+           }
+           }
+
+           request(options, callback);
+           */
+        }
+      }
+
       if (!currentRoom || !rooms[currentRoom]) {
         return;
 

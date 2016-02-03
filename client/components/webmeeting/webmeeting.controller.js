@@ -83,7 +83,10 @@ angular.module('cloudKiboApp')
         .then(function (s) {
           $scope.askingMedia = false;
           stream = s;
-          MeetingRoom.init(stream, $scope.user.username);
+          if($scope.supportCall)
+            MeetingRoom.init(stream, $scope.user.username, $scope.supportCallData);
+          else
+            MeetingRoom.init(stream, $scope.user.username, null);
           stream = URL.createObjectURL(stream);
           MeetingRoom.joinRoom($routeParams.mname);
           logger.log('Accesss to audio and video is given to the application, username : '+ $scope.user.username)
@@ -93,7 +96,10 @@ angular.module('cloudKiboApp')
           $scope.isMediaDenied = true;
           logger.log("audio video stream access was denied: error "+err+", username : "+ $scope.user.username);
           $scope.error = 'No audio/video permissions. Please allow the audio/video capturing and refresh your browser.';
-          MeetingRoom.init(null, $scope.user.username);
+          if($scope.supportCall)
+            MeetingRoom.init(null, $scope.user.username, $scope.supportCallData);
+          else
+            MeetingRoom.init(null, $scope.user.username, null);
           MeetingRoom.joinRoom($routeParams.mname);
         });
     };

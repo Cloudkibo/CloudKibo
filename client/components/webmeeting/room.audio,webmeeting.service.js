@@ -8,7 +8,7 @@ angular.module('cloudKiboApp')
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
       currentId, roomId,
-      stream, username,
+      stream, username, supportCallData,
       nullStreams = {};
 
     /** Audio Analyser variables **/
@@ -203,7 +203,7 @@ angular.module('cloudKiboApp')
 
     function connectRoom (r){
       if (!connected) {
-        socket.emit('init.new', { room: r, username: username }, function (roomid, id) {
+        socket.emit('init.new', { room: r, username: username, supportcall : supportCallData }, function (roomid, id) {
           if(id === null){
             alert('You cannot join conference. Room is full');
             connected = false;
@@ -224,9 +224,10 @@ angular.module('cloudKiboApp')
       joinRoom: function (r) {
         connectRoom(r);
       },
-      init: function (s, n) {
+      init: function (s, n, c) {
         username = n;
         stream = s;
+        supportCallData = c;
         if(s!==null) {
           if(!!window.AudioContext) {
             var source = audioCtx.createMediaStreamSource(stream);
