@@ -400,18 +400,20 @@ angular.module('cloudKiboApp')
             }
           }
           else {
-            //removeLocalScreen();
+            removeLocalScreen();
           }
         }
       }
     };
     function removeLocalScreen(){
-      ScreenShare.setSourceIdValue(null);
-      screenStream.getTracks()[0].stop();
-      MeetingRoomScreen.toggleScreen(screenStream, false);
-      $scope.showScreenText = 'Share Screen';
-      $scope.screenSharedLocal = false;
-      logger.log('ERROR: Permission denied or could not capture the screen. Shown to: '+ $scope.user.username);
+      if($scope.screenSharedLocal) {
+        ScreenShare.setSourceIdValue(null);
+        screenStream.getTracks()[0].stop();
+        MeetingRoomScreen.toggleScreen(screenStream, false);
+        $scope.showScreenText = 'Share Screen';
+        $scope.screenSharedLocal = false;
+        logger.log('ERROR: Permission denied or could not capture the screen. Shown to: ' + $scope.user.username);
+      }
     }
     function shareScreenUsingChromeExtension(cb) {
 
