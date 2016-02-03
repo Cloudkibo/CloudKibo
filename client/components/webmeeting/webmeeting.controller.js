@@ -382,6 +382,10 @@ angular.module('cloudKiboApp')
                 }
               }, function (stream) {
                 screenStream = stream;
+                screenStream.getVideoTracks()[0].onended = function () {
+                  console.log('function called on event of stop screen sharing');
+                  removeLocalScreen();
+                };
                 $scope.$apply(function () {
                   $scope.showScreenText = 'Hide Screen';
                   $scope.screenSharedLocal = true;
@@ -402,12 +406,14 @@ angular.module('cloudKiboApp')
       }
     };
     function removeLocalScreen(){
-      ScreenShare.setSourceIdValue(null);
-      screenStream.getTracks()[0].stop();
-      MeetingRoomScreen.toggleScreen(screenStream, false);
-      $scope.showScreenText = 'Share Screen';
-      $scope.screenSharedLocal = false;
-      logger.log('ERROR: Permission denied or could not capture the screen. Shown to: '+ $scope.user.username);
+      if($scope.screenSharedLocal) {
+        ScreenShare.setSourceIdValue(null);
+        screenStream.getTracks()[0].stop();
+        MeetingRoomScreen.toggleScreen(screenStream, false);
+        $scope.showScreenText = 'Share Screen';
+        $scope.screenSharedLocal = false;
+        //logger.log('ERROR: Permission denied or could not capture the screen. Shown to: ' + $scope.user.username);
+      }
     }
     function shareScreenUsingChromeExtension(cb) {
 

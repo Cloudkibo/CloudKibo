@@ -16,7 +16,6 @@ angular.module('cloudKiboApp')
       }
       var pc = new RTCPeerConnection(iceConfig, pc_constraints2);
       peerConnections[id] = pc;
-      //pc.addStream(stream); // todo see that screen should be added only when we share screen
       pc.onicecandidate = function (evnt) {
         socket.emit('msgScreen', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
@@ -103,6 +102,7 @@ angular.module('cloudKiboApp')
         handleMessage(data);
       });
       socket.on('conference.streamScreen', function(data){
+        console.log(''+ data.username +' is about to hide or share screen')
         if(data.id !== currentId){
           api.trigger('conference.streamScreen', [{
             username: data.username,
