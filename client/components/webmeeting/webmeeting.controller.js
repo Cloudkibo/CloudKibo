@@ -382,6 +382,10 @@ angular.module('cloudKiboApp')
                 }
               }, function (stream) {
                 screenStream = stream;
+                screenStream.getVideoTracks()[0].onended = function () {
+                  console.log('function called on event of stop screen sharing');
+                  removeLocalScreen();
+                };
                 $scope.$apply(function () {
                   $scope.showScreenText = 'Hide Screen';
                   $scope.screenSharedLocal = true;
@@ -396,7 +400,7 @@ angular.module('cloudKiboApp')
             }
           }
           else {
-            removeLocalScreen();
+            //removeLocalScreen();
           }
         }
       }
