@@ -412,7 +412,7 @@ angular.module('cloudKiboApp')
         MeetingRoomScreen.toggleScreen(screenStream, false);
         $scope.showScreenText = 'Share Screen';
         $scope.screenSharedLocal = false;
-        logger.log('ERROR: Permission denied or could not capture the screen. Shown to: ' + $scope.user.username);
+        //logger.log('ERROR: Permission denied or could not capture the screen. Shown to: ' + $scope.user.username);
       }
     }
     function shareScreenUsingChromeExtension(cb) {
