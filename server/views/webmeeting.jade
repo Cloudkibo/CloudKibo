@@ -1,4 +1,4 @@
-.row
+.row(class = 'changebckcolor')
   div(class='topPane row', ng-show='isAskingForMediaAccess()')
     center
       b Please allow the access to media devices
@@ -23,12 +23,12 @@
           li
             a(ng-href='#/app')
               | Home
-.row(ng-show='isAskingForMediaAccess()')
+.row(ng-show='isAskingForMediaAccess()' class = 'changebckcolor')
   br
   br
   br
   img(src='/images/askingCam.PNG', width='412', height='252')
-.row(ng-hide='isAskingForMediaAccess()')
+.row(ng-hide='isAskingForMediaAccess()' class = 'changebckcolor')
   .col-sm-1.buttonTabVert
     .row
       .col-sm-1()
@@ -88,15 +88,15 @@
     br
     br
     br
-    .row(ng-repeat='peer in peers', ng-show='hasPeerSharedScreen()')
+    .row(ng-repeat='peer in peers', ng-show='hasPeerSharedScreen()' class = 'changebckcolor' )
       .col-sm-1
         div
           img(src='/assets/images/avatar.png', width='70px', height='72px')
         span {{peer.username}}
   .col-sm-11(class='animate-show')
-    .row
+    .row(class = 'changebckcolor')
       .col-sm-9
-        div(class='animate-show', ng-hide='hasPeerSharedScreen() || hasAndroidPeerSharedScreen()')
+        div(class='animate-show', ng-hide='hasPeerSharedScreen() || hasAndroidPeerSharedScreen()' class = 'changebckcolor')
           center
             span
               .videoBoxContainer
@@ -122,7 +122,7 @@
             a.icon-btn(ng-click='toggleChatBoxVisibility()')
               i.fa.fa-envelope-o
               div Chat
-        .row(class='animate-show', ng-show='showChatBox()')
+        .row(class='animate-show', ng-show='showChatBox()' class = 'changebckcolor')
           div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages', style="word-wrap: break-word")
             .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
               | {{userMessage}}
