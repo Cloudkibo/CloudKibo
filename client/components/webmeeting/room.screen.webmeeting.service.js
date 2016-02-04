@@ -10,6 +10,10 @@ angular.module('cloudKiboApp')
       currentId, roomId,
       stream, username;
 
+    var ffIceRenogatiationParametersToSave;
+
+    var isChrome = !!navigator.webkitGetUserMedia;
+
     function getPeerConnection(id) {
       if (peerConnections[id]) {
         return peerConnections[id];
@@ -51,6 +55,12 @@ angular.module('cloudKiboApp')
       console.log(JSON.stringify(data));
       switch (data.type) {
         case 'offer':
+          if(!isChrome) { // todo this hack is for chrome to firefox interoperability... will be removed soon when chrome fix
+            var sub = data.sdp.sdp;
+            ffIceRenogatiationParametersToSave = ffIceRenogatiationParametersToSave || sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing"));
+            data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
+            data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
+          }
           userNames[data.by] = data.username;
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             console.log('Setting remote description by offer for screen');
@@ -66,6 +76,12 @@ angular.module('cloudKiboApp')
           });
           break;
         case 'answer':
+          if(!isChrome) { // todo this hack is for chrome to firefox interoperability... will be removed soon when chrome fix
+            var sub = data.sdp.sdp;
+            ffIceRenogatiationParametersToSave = ffIceRenogatiationParametersToSave || sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing"));
+            data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
+            data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
+          }
           console.log('answer by '+ data.by +' for screen');
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             console.log('Setting remote description by answer for screen');

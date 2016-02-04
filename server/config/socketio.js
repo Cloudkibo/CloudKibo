@@ -975,6 +975,11 @@ module.exports = function (socketio) {
 
     function conferenceDisconnect(socketio, socket){
 
+      if (!currentRoom || !rooms[currentRoom]) {
+        return;
+
+      }
+
       if(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].supportcall) {
         if(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].supportcall.role === 'agent') {
           console.log('do the support call webhook logic here');
@@ -1011,10 +1016,6 @@ module.exports = function (socketio) {
         }
       }
 
-      if (!currentRoom || !rooms[currentRoom]) {
-        return;
-
-      }
       logger.serverLog('info', rooms[currentRoom][rooms[currentRoom].indexOf(socket)].username+' is disconnected from room '+rooms[currentRoom][rooms[currentRoom].indexOf(socket)]);
       delete rooms[currentRoom][rooms[currentRoom].indexOf(socket)];
       rooms[currentRoom].forEach(function (socket) {

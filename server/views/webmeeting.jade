@@ -127,5 +127,5 @@
             .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
               | {{userMessage}}
           form
-            input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message here", autocomplete='off')
+            input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message Here", autocomplete='off')
             button(ng-click='sendData()') Send
