@@ -10,7 +10,7 @@ var UserSchema = new Schema({
   firstname : String,
   lastname : String,
   email: { type: String, lowercase: true },
-  phone : String, 
+  phone : String,
   country : String,
   city : String,
   state : String,
@@ -19,22 +19,22 @@ var UserSchema = new Schema({
     type: String,
     default: 'user'
   },
-  
+
   fb_photo: String,
   google_photo: String,
   windows_photo: String,
-  
+
   isOwner : String,
   picture: String,
   accountVerified : {type: String, default: 'No' },
   date  :  { type: Date, default: Date.now },
   initialTesting : String,
   status : {type: String, default: 'I am on CloudKibo' },
-  
+
   hashedPassword: String,
   provider: String,
   salt: String,
-  
+
   facebook: {},
   twitter: {},
   google: {},
@@ -208,3 +208,4 @@ UserSchema.methods = {
 };
 
 module.exports = mongoose.model('accounts', UserSchema);
+
