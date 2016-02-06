@@ -83,6 +83,8 @@ angular.module('cloudKiboApp')
             ffIceRenogatiationParametersToSave = ffIceRenogatiationParametersToSave || sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing"));
             data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
             data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
+            data.sdp.sdp = data.sdp.sdp.replace('fmtp:96 apt=100\r\n', '');
+            data.sdp.sdp = data.sdp.sdp.replace('a=rtpmap:96 rtx/90000\r\n', '');
           }
           console.log('answer by '+ data.by +' for video');
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {

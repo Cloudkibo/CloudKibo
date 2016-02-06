@@ -87,7 +87,7 @@ angular.module('cloudKiboApp')
             MeetingRoom.init(stream, $scope.user.username, $scope.supportCallData);
           else
             MeetingRoom.init(stream, $scope.user.username, null);
-          stream = URL.createObjectURL(stream);
+          //stream = URL.createObjectURL(stream);
           MeetingRoom.joinRoom($routeParams.mname);
           logger.log('Accesss to audio and video is given to the application, username : '+ $scope.user.username)
         }, function (err) {
@@ -222,15 +222,21 @@ angular.module('cloudKiboApp')
     };
     $scope.userMessages = [];
     $scope.sendData = function () {
-      var data = $scope.dataChannelSend;
-      if($scope.supportCallData)
-		    $scope.supportCallData.msg = data;
-		  else
-		    $scope.supportCallData = {};
-      MeetingRoom.sendChat(data, $scope.supportCallData);
-      $scope.userMessages.push('Me: ' + data);
-      $scope.dataChannelSend = '';
-      logger.log("chat message sent by "+ $scope.user.username)
+
+      if ($scope.dataChannelSend != null) {
+        if ($scope.dataChannelSend != '') {
+          var data = $scope.dataChannelSend;
+          if($scope.supportCallData)
+            $scope.supportCallData.msg = data;
+          else
+            $scope.supportCallData = {};
+          MeetingRoom.sendChat(data, $scope.supportCallData);
+          $scope.userMessages.push('Me: ' + data);
+          $scope.dataChannelSend = '';
+          logger.log("chat message sent by "+ $scope.user.username)
+        }
+      }
+
     };
     MeetingRoom.on('conference.chat', function(data){
       if(data.username !== $scope.user.username) {
