@@ -10,8 +10,6 @@ angular.module('cloudKiboApp')
       currentId, roomId,
       stream, username;
 
-    var ffIceRenogatiationParametersToSave;
-
     var isChrome = !!navigator.webkitGetUserMedia;
 
     function getPeerConnection(id) {
@@ -24,7 +22,7 @@ angular.module('cloudKiboApp')
         socket.emit('msgScreen', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
       pc.onaddstream = function (evnt) {
-        logger.log('Received screen stream from '+ id);
+        console.log('Received screen stream from '+ id);
         console.log(evnt.stream);
         api.trigger('peer.screenStream', [{
           id: id,
@@ -55,12 +53,6 @@ angular.module('cloudKiboApp')
       console.log(JSON.stringify(data));
       switch (data.type) {
         case 'offer':
-          if(!isChrome) { // todo this hack is for chrome to firefox interoperability... will be removed soon when chrome fix
-            var sub = data.sdp.sdp;
-            ffIceRenogatiationParametersToSave = ffIceRenogatiationParametersToSave || sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing"));
-            data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
-            data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
-          }
           userNames[data.by] = data.username;
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             console.log('Setting remote description by offer for screen');
@@ -76,14 +68,6 @@ angular.module('cloudKiboApp')
           });
           break;
         case 'answer':
-          if(!isChrome) { // todo this hack is for chrome to firefox interoperability... will be removed soon when chrome fix
-            var sub = data.sdp.sdp;
-            ffIceRenogatiationParametersToSave = ffIceRenogatiationParametersToSave || sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing"));
-            data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
-            data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
-            data.sdp.sdp = data.sdp.sdp.replace('fmtp:96 apt=100\r\n', '');
-            data.sdp.sdp = data.sdp.sdp.replace('a=rtpmap:96 rtx/90000\r\n', '');
-          }
           console.log('answer by '+ data.by +' for screen');
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             console.log('Setting remote description by answer for screen');
@@ -120,15 +104,15 @@ angular.module('cloudKiboApp')
         handleMessage(data);
       });
       socket.on('conference.streamScreen', function(data){
-        console.log(''+ data.username +' is about to hide or share screen')
         if(data.id !== currentId){
+          console.log(''+ data.username +' is about to hide or share screen')
           api.trigger('conference.streamScreen', [{
             username: data.username,
             type: data.type,
             action: data.action,
             id: data.id
           }]);
-          makeOffer(data.id);
+          //makeOffer(data.id);
         }
       });
       socket.on('disconnect', function () {
@@ -150,12 +134,12 @@ angular.module('cloudKiboApp')
             peerConnections[key].addStream(s);
           }
           else {
-            var isChrome = !!navigator.webkitGetUserMedia;
             if(isChrome)
               peerConnections[key].removeStream(s);
             else
               removeTrack(peerConnections[key], s);
           }
+          makeOffer(key);
         }
         socket.emit('conference.streamScreen', { username: username, type: 'screen', action: p, id: currentId });
       },
