@@ -22,3 +22,15 @@ exports.webhook = function (req, res){
   })
 
 };
+
+exports.index = function (req, res){ // put it in docs and database
+
+  CompanyAccount.findOne({companyid: req.body.companyid}, function (err, company) {
+    if (err) return done(err);
+    if (!company) return res.json(501, {status: 'Company not registered'});
+
+    res.json(200, {company: company});
+
+  })
+
+};
