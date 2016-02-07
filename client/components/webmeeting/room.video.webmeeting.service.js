@@ -10,6 +10,8 @@ angular.module('cloudKiboApp')
       currentId, roomId,
       stream, username;
 
+    var otherStream; // note this is workaround for firefox as firefoxs doesn't support renegotiation
+
     var isChrome = !!navigator.webkitGetUserMedia;
 
     function getPeerConnection(id) {
@@ -25,13 +27,16 @@ angular.module('cloudKiboApp')
       pc.onaddstream = function (evnt) {
         console.log('Received video stream from '+ id);
         console.log(evnt.stream);
-        api.trigger('peer.streamVideo', [{
-          id: id,
-          username: userNames[id],
-          stream: evnt.stream
-        }]);
-        if (!$rootScope.$$digest) {
-          $rootScope.$apply();
+        if(!otherStream) {
+          api.trigger('peer.streamVideo', [{
+            id: id,
+            username: userNames[id],
+            stream: evnt.stream
+          }]);
+          if (!$rootScope.$$digest) {
+            $rootScope.$apply();
+          }
+          otherStream = evnt.stream;
         }
       };
       return pc;
@@ -115,6 +120,7 @@ angular.module('cloudKiboApp')
           if(data.action) {
             makeOffer(data.id);
           } else {
+            otherStream = false;
             delete peerConnections[data.id];
           }
         }
@@ -137,6 +143,7 @@ angular.module('cloudKiboApp')
           peerConnections = {};
         }
         stream = s;
+        console.log('letting other peer know that video is being shared')
         socket.emit('conference.streamVideo', { username: username, type: 'video', action: p, id: currentId });
       },
       end: function () {
