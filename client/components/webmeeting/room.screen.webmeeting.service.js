@@ -53,6 +53,7 @@ angular.module('cloudKiboApp')
       console.log(JSON.stringify(data));
       switch (data.type) {
         case 'offer':
+          pc.addStream(stream);
           userNames[data.by] = data.username;
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             console.log('Setting remote description by offer for screen');
@@ -89,16 +90,13 @@ angular.module('cloudKiboApp')
     function addHandlers(socket) {
       socket.on('peer.connected.new', function (params) {
         userNames[params.id] = params.username;
-        //screenSwitch[params.id] = false;
-        makeOffer(params.id);
+        //makeOffer(params.id);
       });
       socket.on('peer.disconnected.new', function (data) {
-        //api.trigger('peer.disconnected', [data]); // todo test this later
         if (!$rootScope.$$digest) {
           $rootScope.$apply();
         }
         delete userNames[data.id];
-        //delete screenSwitch[data.id];
       });
       socket.on('msgScreen', function (data) {
         handleMessage(data);
@@ -112,7 +110,11 @@ angular.module('cloudKiboApp')
             action: data.action,
             id: data.id
           }]);
-          //makeOffer(data.id);
+          if(data.action) {
+            makeOffer(data.id);
+          } else {
+            delete peerConnections[data.id];
+          }
         }
       });
       socket.on('disconnect', function () {
@@ -129,18 +131,10 @@ angular.module('cloudKiboApp')
         currentId = d.currentId;
       },
       toggleScreen: function (s, p) {
-        for (var key in peerConnections) {
-          if (p) {
-            peerConnections[key].addStream(s);
-          }
-          else {
-            if(isChrome)
-              peerConnections[key].removeStream(s);
-            else
-              removeTrack(peerConnections[key], s);
-          }
-          makeOffer(key);
+        if (!p) {
+          peerConnections = {};
         }
+        stream = s;
         socket.emit('conference.streamScreen', { username: username, type: 'screen', action: p, id: currentId });
       },
       end: function () {

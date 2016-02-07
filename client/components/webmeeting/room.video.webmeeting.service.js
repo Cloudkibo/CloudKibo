@@ -54,13 +54,9 @@ angular.module('cloudKiboApp')
       //console.log(JSON.stringify(data));
       switch (data.type) {
         case 'offer':
-          /*if(!isChrome) { // todo this hack is for chrome to firefox interoperability... will be removed soon when chrome fix
-            var sub = data.sdp.sdp;
-            ffIceRenogatiationParametersToSave = ffIceRenogatiationParametersToSave || sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing"));
-            data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
-            data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
-          }*/
+          pc.addStream(stream);
           userNames[data.by] = data.username;
+          console.log(userNames)
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             console.log('Setting remote description by offer for video '+ data.by);
             pc.createAnswer(function (sdp) {
@@ -75,14 +71,6 @@ angular.module('cloudKiboApp')
           });
           break;
         case 'answer':
-          /*if(!isChrome) { // todo this hack is for chrome to firefox interoperability... will be removed soon when chrome fix
-            var sub = data.sdp.sdp;
-            ffIceRenogatiationParametersToSave = ffIceRenogatiationParametersToSave || sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing"));
-            data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
-            data.sdp.sdp = data.sdp.sdp.replace(sub.substring(sub.indexOf("a=ice-uf"), sub.indexOf("a=fing")), ffIceRenogatiationParametersToSave);
-            data.sdp.sdp = data.sdp.sdp.replace('fmtp:96 apt=100\r\n', '');
-            data.sdp.sdp = data.sdp.sdp.replace('a=rtpmap:96 rtx/90000\r\n', '');
-          }*/
           console.log('answer by '+ data.by +' for video');
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             $log.debug('Setting remote description by answer');
@@ -104,10 +92,9 @@ angular.module('cloudKiboApp')
     function addHandlers(socket) {
       socket.on('peer.connected.new', function (params) {
         userNames[params.id] = params.username;
-        makeOffer(params.id);
+        //makeOffer(params.id);
       });
       socket.on('peer.disconnected.new', function (data) {
-        //api.trigger('peer.disconnected', [data]); // todo test this later
         if (!$rootScope.$$digest) {
           $rootScope.$apply();
         }
@@ -117,8 +104,6 @@ angular.module('cloudKiboApp')
         handleMessage(data);
       });
       socket.on('conference.streamVideo', function(data){
-        console.log(data)
-        console.log(currentId)
         if(data.id !== currentId){
           console.log('some one is about to share video '+ JSON.stringify(data))
           api.trigger('conference.streamVideo', [{
@@ -127,7 +112,11 @@ angular.module('cloudKiboApp')
             action: data.action,
             id: data.id
           }]);
-          //makeOffer(data.id);
+          if(data.action) {
+            makeOffer(data.id);
+          } else {
+            delete peerConnections[data.id];
+          }
         }
       });
       socket.on('disconnect', function () {
@@ -144,18 +133,10 @@ angular.module('cloudKiboApp')
         currentId = d.currentId;
       },
       toggleVideo: function (p, s) {
-        for (var key in peerConnections) {
-          if (p) {
-            peerConnections[key].addStream(s);
-          }
-          else {
-            if(isChrome)
-              peerConnections[key].removeStream(s);
-            else
-              removeTrack(peerConnections[key], s);
-          }
-          makeOffer(key);
+        if (!p) {
+          peerConnections = {};
         }
+        stream = s;
         socket.emit('conference.streamVideo', { username: username, type: 'video', action: p, id: currentId });
       },
       end: function () {
