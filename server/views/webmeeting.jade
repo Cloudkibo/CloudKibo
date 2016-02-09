@@ -6,6 +6,11 @@ div(class = 'changebckcolor' style="height:100vh")
       div(class='topPane row' ng-show='hasUserDeniedMedia()')
         center
           b {{error}}
+      div(class='topPane row', ng-show='isFireFoxScreenShareDenied()')
+        center
+          b Screen capture denied. Looks like you don't have CloudKibo FireFox Addon installed.
+            a(target='self', ng-href='https://addons.mozilla.org/en-US/firefox/addon/cloudkibo-screen-sharing-addon/')
+              | Click here to install.
       div(class='topPane row' ng-show='isLocalScreenShared()')
         center
           b You are sharing you computer screen.
@@ -97,7 +102,7 @@ div(class = 'changebckcolor' style="height:100vh")
         .row
           .col-sm-1
             | &nbsp;
-        .row
+        //.row
           .col-sm-1(ng-show='isFireFox()')
             a.icon-btn(target='self', ng-href='https://addons.mozilla.org/en-US/firefox/addon/cloudkibo-screen-sharing-addon/')
               i.fa.fa-plus-square-o

@@ -170,6 +170,10 @@ angular.module('cloudKiboApp')
       return ($scope.peers.length > 0)
     };
 
+    $scope.fireFoxScreenDenied = false;
+    $scope.isFireFoxScreenShareDenied = function(){
+      return $scope.fireFoxScreenDenied;
+    };
     $scope.extensionAvailable = false;
     $scope.hasChromeExtension = function () {
       return $scope.extensionAvailable;
@@ -357,7 +361,8 @@ angular.module('cloudKiboApp')
                 Room.toggleScreen(stream, true);
                 logger.log("Screen captured by " + $scope.user.username + ", now informing other participants. (Firefox browser)");
               }, function (err) {
-                alert('Permission denied or could not capture the screen.');
+                $scope.fireFoxScreenDenied = true;
+                //alert('Permission denied or could not capture the screen.');
                 logger.log('Firefox ERROR: Permission denied or could not capture the screen. Shown to: ' + $scope.user.username);
               });
             }
