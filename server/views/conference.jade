@@ -12,9 +12,24 @@ div(class = 'changebckcolor' style="height:100vh")
       div(class='topPane row' ng-hide='isConnected()')
         center
           b You are disconnnected. We are trying to connect again. Please check your Internet connection.
+      .pre-header(class = 'bckcolor-preheader')
+        .container
+          .row
+            .col-md-6.col-sm-6.additional-shop-info
+              ul.list-unstyled.list-inline
+                li &nbsp;
+            .col-md-6.col-sm-6.additional-nav
+              ul.list-unstyled.list-inline.pull-right
+                li
+                  h4
+                    a(href='#')
+                      img(src='/images/logo_small_black.png')
+                      | CloudKibo
       .header(ng-hide='isAskingForMediaAccess()')
         .container
-          a(class='site-logo', href='#')
+          | &nbsp;
+        .container
+          //a(class='site-logo', href='#')
             img(src='/images/logo_small.png')
             | CloudKibo Conference
           a(href='javascript:void(0);', class='mobi-toggler')
@@ -22,8 +37,20 @@ div(class = 'changebckcolor' style="height:100vh")
           div(class='header-navigation pull-right font-transform-inherit')
             ul
               li
-                a(ng-href='#/app')
-                  | Home
+                .col-sm-1
+                  a.icon-btn(id='showScreenButton', ng-click='showScreen()')
+                    i.fa.fa-desktop
+                    div {{showScreenText}}
+              li(ng-hide='hasUserDeniedMedia()')
+                .col-sm-1()
+                  a.icon-btn(ng-click='audioToggle()')
+                    i.fa.fa-microphone
+                    div {{toggleAudioText}}
+              li(ng-hide='hasUserDeniedMedia()')
+                .col-sm-1()
+                  a.icon-btn(ng-click='videoToggle()')
+                    i.fa.fa-desktop
+                    div {{toggleVideoText}}
     .row(ng-show='isAskingForMediaAccess()' class = 'changebckcolor')
       br
       br

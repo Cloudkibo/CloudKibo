@@ -1368,10 +1368,7 @@ textarea
 /********************************************************************************/
 /* File Upload                                                                  */
 /********************************************************************************/
-.buttonTabVert {
 
-  left: 16px;
-}
 
 .fileUpload {
   position: relative;
@@ -5056,4 +5053,9 @@ Styler Panel
 .changebckcolor
 {
   background-color:#DFE2DB!important;
+}
+.bckcolor-preheader
+{
+  background-color:#000000!important;
+  color: #FFFFFF!important;
 }
