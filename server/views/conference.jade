@@ -58,18 +58,18 @@ div(class = 'changebckcolor' style="height:100vh")
       img(src='/images/askingCam.PNG', width='412', height='252')
     .row(ng-hide='isAskingForMediaAccess()' class = 'changebckcolor')
       .col-sm-1.buttonTabVert
-        .row
+        //.row
           .col-sm-1()
             a.icon-btn(id='showScreenButton', ng-click='showScreen()')
               i.fa.fa-desktop
               div {{showScreenText}}
-        .row(ng-hide='hasUserDeniedMedia()')
+        //.row(ng-hide='hasUserDeniedMedia()')
           //ng-show='meetingStarted()'
           .col-sm-1()
             a.icon-btn(ng-click='audioToggle()')
               i.fa.fa-microphone
               div {{toggleAudioText}}
-        .row(ng-hide='hasUserDeniedMedia()')
+        //.row(ng-hide='hasUserDeniedMedia()')
           .col-sm-1()
             a.icon-btn(ng-click='videoToggle()')
               i.fa.fa-desktop
