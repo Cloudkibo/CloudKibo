@@ -15,4 +15,4 @@ var CompanyAccountSchema = new Schema({
 
 // Note: company id is same as kibo client id
 
-module.exports = mongoose.model('companyaccount', CompanyAccountSchema);
+module.exports = mongoose.model('companyaccounts', CompanyAccountSchema);

@@ -7,6 +7,7 @@ var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
 var User = require('../api/user/user.model');
+var CompanyAccount = require('../api/companyaccount/companyaccount.model');
 var validateJwt = expressJwt({ secret: config.secrets.session });
 
 /**
@@ -34,8 +35,15 @@ function isAuthenticated() {
                 if(req.headers['kibo-client-id'] === 'cd89f71715f2014725163952') {
                   next();
                 } else {
-                  console.log('client app is not authorized');
-                  return res.send(401);
+                  CompanyAccount.findOne({appid: req.headers['kibo-app-id'], appsecret: req.headers['kibo-app-secret'], companyid: req.headers['kibo-client-id']}, function(err, company){
+                    if(err) return next(err)
+                    if(company){
+                      next();
+                    } else {
+                      console.log('client app is not authorized');
+                      return res.send(401);
+                    }
+                  })
                 }
               }
             })
