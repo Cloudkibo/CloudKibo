@@ -336,9 +336,11 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 }
 
 .chatButtonRow{
-
-
-  float : right;
+ 
+float: right;
+position: relative;
+margin-top: -90px;
+z-index: 99999;
 
 }
 
@@ -844,8 +846,9 @@ form .progress {
 position : absolute;
 background : #cdd9ed;
 border: 1px solid #84a2d4;
-left: -3px;
+left: 20px;
 width: 110px;
+z-index:9999;
 }
 
 .course-sidepane
@@ -1380,11 +1383,13 @@ textarea
 
 
 .fileUpload2 {
-  position: relative;
-  overflow: hidden;
-  left: 10px;
-  width: 100px;
-  margin : 0.3px;
+ position: relative;
+ overflow: hidden;
+ left: 10px;
+ width: 100px;
+ margin-top: -95px;
+ z-index: 9999;
+    /* margin: 0.3px; */
 }
 
 
@@ -2472,6 +2477,7 @@ body.page-header-fixed {
 
 .header .container {
   position: relative;
+  height:auto;
 }
 .ie8 .header {
   border-bottom: 1px solid #eee;
@@ -2511,19 +2517,26 @@ body.page-header-fixed {
 /* Navigation */
 .header-navigation {
   font: 15px "Open Sans", sans-serif;
-  margin: 0 10px 0 0;
-  padding: 0;
-  float: left;
+  padding: 6px 0;
+  position:fixed;
+  top:0px;
+  left:0px;
+  right:0px;
   text-transform: uppercase;
 }
 .header-navigation ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+    text-align: center;
+    list-style:none;
+    padding:0;
+    margin:0;
+   list-style: none;
 }
-.header-navigation > ul > li {
-  float: left;
+.header-navigation ul li{
+    vertical-align: top;
+    display: inline-block;
+   
 }
+
 .header-navigation > ul > li > a {
   color: #333;
   display: block;
