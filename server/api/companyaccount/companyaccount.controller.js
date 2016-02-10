@@ -15,7 +15,7 @@ exports.webhook = function (req, res){
     if (!company) return res.json(501, {status: 'Company not registered'});
 
     company.webhook = req.body.webhook;
-    CompanyAccount.save(function(err) {
+    company.save(function(err) {
       if (err) return validationError(res, err);
       res.json(200, {status: 'Updated Webhook URL'});
     });
