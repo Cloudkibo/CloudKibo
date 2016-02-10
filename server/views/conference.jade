@@ -1,4 +1,4 @@
-div(class = 'changebckcolor' style="height:100vh")
+div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
     .row(class = 'changebckcolor')
       div(class='topPane row', ng-show='isAskingForMediaAccess()')
         center
@@ -31,15 +31,14 @@ div(class = 'changebckcolor' style="height:100vh")
                       img(src='/images/logo_small_black.png')
                       | CloudKibo
       .header(ng-hide='isAskingForMediaAccess()')
-        .container
-          | &nbsp;
+        
         .container
           //a(class='site-logo', href='#')
             img(src='/images/logo_small.png')
             | CloudKibo Conference
           a(href='javascript:void(0);', class='mobi-toggler')
             i(class='fa fa-bars')
-          div(class='header-navigation pull-right font-transform-inherit')
+          div(class='header-navigation font-transform-inherit')
             ul
               li
                 .col-sm-1
@@ -79,8 +78,8 @@ div(class = 'changebckcolor' style="height:100vh")
             a.icon-btn(ng-click='videoToggle()')
               i.fa.fa-desktop
               div {{toggleVideoText}}
-        .row
-          .fileUpload2()
+        
+        .fileUpload2()
             //label Send File
             input(id='file', type='file')
             //input(type='file', data-filename-placement='inside')
