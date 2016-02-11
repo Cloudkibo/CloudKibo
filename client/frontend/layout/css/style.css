@@ -339,7 +339,7 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
  
 float: right;
 position: relative;
-margin-top: -90px;
+margin-top: -93px;
 z-index: 99999;
 
 }
@@ -2476,8 +2476,10 @@ body.page-header-fixed {
 /* FIX styles END */
 
 .header .container {
+
   position: relative;
   height:auto;
+  
 }
 .ie8 .header {
   border-bottom: 1px solid #eee;
@@ -2523,12 +2525,14 @@ body.page-header-fixed {
   left:0px;
   right:0px;
   text-transform: uppercase;
+ 
 }
 .header-navigation ul {
-    text-align: center;
-    list-style:none;
+    text-align:right;
+   
     padding:0;
     margin:0;
+    margin-right:-20px;
    list-style: none;
 }
 .header-navigation ul li{
