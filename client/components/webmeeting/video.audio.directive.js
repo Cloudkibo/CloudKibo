@@ -7,10 +7,10 @@ angular.module('cloudKiboApp')
   .directive('meetingPlayer', function ($sce) {
     return {
       template: '<div class="videoBoxContainer">' +
-      '<div class="{{divBoxClass}}" ng-hide="hasSharedVideo()"></div>' +
-      '<video ng-src="{{trustSrc()}}" autoplay width="170px" ng-show="hasSharedVideo()" class="videoelement"></video>' +
+      '<div class="{{divBoxClass}}" ng-hide="hasSharedVideo()">{{peerUserName()[0]}}</div>' +
+      '<video ng-src="{{trustSrc()}}" autoplay width="180px" height="200px" ng-show="hasSharedVideo()" class="videoelement"></video>' +
       '<audio ng-src="{{trustAudioSrc()}}" autoplay ng-show="false"></audio>' +
-      '<span>{{peerUserName()}}</span>' +
+      '<span class="uname">{{peerUserName()}}</span>' +
       '</div>',
       restrict: 'E',
       replace: true,

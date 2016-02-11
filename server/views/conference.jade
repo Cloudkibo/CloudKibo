@@ -124,7 +124,7 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
           .col-sm-1
             div
               img(src='/assets/images/avatar.png', width='70px', height='72px')
-            span {{peer.username}}
+            span.uname{{peer.username}}
       .col-sm-11(class='animate-show' class = 'changebckcolor')
         .row(class = 'changebckcolor')
           .col-sm-9
@@ -132,10 +132,11 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
               center
                 span
                   .videoBoxContainer
-                    div(class='{{divBoxClass}}', ng-hide='isLocalVideoShared()')
-                    video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='170px', ng-show='isLocalVideoShared()' muted)
-                    span {{getUsername()}}
+                    div(class='{{divBoxClass}}', ng-hide='isLocalVideoShared()'){{getUsername()[0]}}
+                    video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='180px',height='200px', ng-show='isLocalVideoShared()' muted)
+                    span.uname{{getUsername()}}
                   video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}', div-box-class='{{peer.divClass}}')
+                      
             div(ng-show='hasPeerSharedScreen()')
               center
                 span

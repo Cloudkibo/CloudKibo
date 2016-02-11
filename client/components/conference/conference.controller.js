@@ -120,6 +120,7 @@ angular.module('cloudKiboApp')
         username: (peer.stream !== null) ? peer.username : peer.username + ' (No Mic/Cam)',
         sharedVideo: false,
         divClass: 'hideVideoBox',
+       
         stream: (peer.stream !== null) ? URL.createObjectURL(peer.stream) : ''
       });
     });

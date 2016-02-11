@@ -884,48 +884,65 @@ textarea
 .videoBoxContainer
 {
   display: inline-block;
-  margin: 0.5em;
-  width : 170px;
-  height: 190px;
-  #background: #fff000;
+  text-align:center;
+  width : 180px;
+  height: 240px;
+  margin-left:20px;
+  padding:0;
+  border-radius: 20px;
+  border: 1px solid #C8C8C8;
+  box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.4);
+}
+span.uname{
+width:180px;
+height:40px;
+font-size:14px;
+vertical-align:center;
+text-transform:capitalize;
+display:block;
+
 }
 
 .videoelement
 {
-  border: 1px solid #badfef;
-  -webkit-border-bottom-right-radius: 25px;
-  -webkit-border-bottom-left-radius: 25px;
-  -moz-border-radius-bottomright: 25px;
-  -moz-border-radius-bottomleft: 25px;
-  border-bottom-right-radius: 25px;
-  border-bottom-left-radius: 25px;
-  -webkit-border-top-right-radius: 25px;
-  -webkit-border-top-left-radius: 25px;
-  -moz-border-radius-topright: 25px;
-  -moz-border-radius-topleft: 25px;
-  border-top-right-radius: 25px;
-  border-top-left-radius: 25px;
-//margin: 0.5em;
-  width : 170px;
-  height: 150px;
+  margin:0px;
+  padding:0px;
+  
+   width: 180px    !important;
+  height: 200px   !important;
 }
 
 .hideVideoBox
 {
   display: inline-block;
-  background-image: url('/assets/images/avatar.png');
+  background:#999;
+//background-image: url('/assets/images/avatar.png');
 //margin:0.5em;
-  width : 150px;
-  height: 152px;
+  width : 180px;
+  height: 200px;
+  font-size:132px;
+  vertical-align:center;
+  text-align:center;
+  font-family:"Century Gothic";
+  padding-top:90px;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.26);
 }
 .hideVideoBoxSpeaking
 {
   display: inline-block;
-  background-image: url('/assets/images/avatar.png');
+  background:#999;
+//background-image: url('/assets/images/avatar.png');
 //margin:0.5em;
-  width : 150px;
-  height: 152px;
+  width : 180px;
+  height: 200px;
+  font-size:132px;
+  vertical-align:center;
+  text-align:center;
+  font-family:"Century Gothic";
+  padding-top:90px;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.26);
   border : 2px solid #000000;
+  
 }
 
 
