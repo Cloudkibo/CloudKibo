@@ -128,14 +128,22 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
         .row(class = 'changebckcolor')
           .col-sm-9
             div(class='animate-show', ng-hide='hasPeerSharedScreen() || hasAndroidPeerSharedScreen()' class = 'changebckcolor')
-              center
-                span
-                  .videoBoxContainer
-                    div(class='{{divBoxClass}}', ng-hide='isLocalVideoShared()'){{getUsername()[0]}}
-                    video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='180px',height='200px', ng-show='isLocalVideoShared()' muted)
-                    span.uname{{getUsername()}}
-                  meeting-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', aud-src='{{peer.audioStream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}', div-box-class='{{peer.divClass}}')
-            div(ng-show='hasPeerSharedScreen()')
+                  div.no-meeting(ng-show = '!meetingStarted()')
+                      span.title Welcome to CloudKibo Conference
+                      article(class="clock bounce")
+                        div(class="hours-container")
+                          div(class="hours")
+                        div(class="minutes-container")
+                          div(class="minutes")
+                        div(class="seconds-container")
+                          div(class="seconds")
+                  div.in-meeting  
+                    .videoBoxContainer(ng-show = 'meetingStarted()')
+                      div(class='{{divBoxClass}}', ng-hide='isLocalVideoShared()'){{getUsername()[0]}}
+                      video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='180px',height='200px', ng-show='isLocalVideoShared()' muted)
+                      span.uname{{getUsername()}}
+                    meeting-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', aud-src='{{peer.audioStream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}', div-box-class='{{peer.divClass}}')
+              div(ng-show='hasPeerSharedScreen()')
               center
                 span
                   video(ng-src='{{getPeerScreen()}}',autoplay='true', style='width: {{widthScreen}}; height: {{heightScreen}}', class='videoelementscreen', controls='true')

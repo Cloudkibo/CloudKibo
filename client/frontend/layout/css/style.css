@@ -953,6 +953,7 @@ display:block;
 }*/
 
 
+
 .videoelementscreen{
   border: 1.5px solid #badfef;
   #margin: 0.1em;
@@ -5092,4 +5093,122 @@ Styler Panel
 {
   background-color:#000000!important;
   color: #FFFFFF!important;
+}
+
+.no-meeting
+{
+text-align:center;
+width:100%;
+margin-left:10%;
+margin-right:10%;
+  
+ 
+}
+.in-meeting
+{
+text-align:center;
+width:100%;
+margin-left:10%;
+margin-right:10%;
+  
+ 
+}
+.no-meeting  span.title
+{
+    font-size: 22px;
+    color: #303030;
+    line-height: 32px;
+    font-family: "Proxima Nova Regular", Helvetica, sans-serif;
+    text-align:center;
+}
+
+/**************** Clock ***************/
+.clock {
+  border-radius: 50%;
+  background: #fff url(../img/ios_clock.svg) no-repeat center;
+  background-size: 275px;
+  height: 300px;
+  padding-bottom: 5px;
+  position: relative;
+  width: 300px;
+  margin: 0 auto; 
+  border:1px solid #31708F;
+  box-shadow: 5px 5px 5px  #31708F;
+  
+ 
+}
+
+.clock::after {
+  background: red;
+  border-radius: 50%;
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 4%;
+  height: 4%;
+  z-index: 10;
+}
+.minutes-container, .hours-container, .seconds-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.hours {
+  background: #000;
+  height: 20%;
+  left: 48.75%;
+  position: absolute;
+  top: 30%;
+  transform-origin: 50% 100%;
+  width: 2.5%;
+}
+.minutes {
+  background: #000;
+  height: 40%;
+  left: 49%;
+  position: absolute;
+  top: 10%;
+  transform-origin: 50% 100%;
+  width: 2%;
+  background:#31708F;
+}
+.seconds {
+   background: red;
+  width: 1.5%;
+  height: 42%;
+  position: absolute;
+  left: 49.25%;
+  top: 20%;
+  transform-origin: 50% 71%;
+  z-index: 8;
+}
+.seconds::before {
+  background: red;
+  border-radius: 50%;
+  content: "";
+  position: absolute;
+  top: -9%;
+  left: -200%;
+  height: 18%;
+  width: 500%;
+}
+@keyframes rotate {
+  100% {
+    transform: rotateZ(360deg);
+  }
+}
+.hours-container {
+  animation: rotate 43200s infinite linear;
+}
+
+
+.minutes-container {
+  transition: transform 0.3s cubic-bezier(.4,2.08,.55,.44);
+}
+.seconds-container {
+  transition: transform 0.2s cubic-bezier(.4,2.08,.55,.44);
 }

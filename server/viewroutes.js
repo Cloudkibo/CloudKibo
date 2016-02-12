@@ -58,6 +58,7 @@ exports.homeRoute = function (req, res) {
   };
 
 exports.conferenceRoute = function (req, res) {
+  
   if (typeof req.user == 'undefined')
     res.render('conference', { title: title, user: '', meetingroom : req.params[0]});
   else{
