@@ -8,7 +8,7 @@ angular.module('cloudKiboApp')
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
       currentId, roomId,
-      stream, username;
+      stream, username, localVideoShared=false;
 
     var otherStream = {}; // note this is workaround for firefox as firefoxs doesn't support renegotiation
 
@@ -59,11 +59,16 @@ angular.module('cloudKiboApp')
       //console.log(JSON.stringify(data));
       switch (data.type) {
         case 'offer':
+          if(otherStream[data.by]){ // workaround for firefox as it doesn't support renegotiation (ice restart unsupported error in firefox)
+            otherStream[data.by] = false;
+            delete peerConnections[data.by];
+            pc = getPeerConnection(data.by);
+          }
           pc.addStream(stream);
           userNames[data.by] = data.username;
-          console.log(userNames)
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             console.log('Setting remote description by offer for video '+ data.by);
+            console.log(data.sdp.sdp)
             pc.createAnswer(function (sdp) {
               //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
@@ -77,8 +82,9 @@ angular.module('cloudKiboApp')
           break;
         case 'answer':
           console.log('answer by '+ data.by +' for video');
+          console.log(data.sdp.sdp)
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            $log.debug('Setting remote description by answer');
+            console.log('Setting remote description by answer');
           }, function (e) {
             $log.error(e);
           });
@@ -104,6 +110,7 @@ angular.module('cloudKiboApp')
           $rootScope.$apply();
         }
         delete userNames[data.id];
+        delete otherStream[data.id];
       });
       socket.on('msgVideo', function (data) {
         handleMessage(data);
@@ -118,6 +125,10 @@ angular.module('cloudKiboApp')
             id: data.id
           }]);
           if(data.action) {
+            if(localVideoShared) { // workaround for firefox as it doesn't support renegotiation (ice restart unsupported error in firefox)
+              otherStream[data.id] = false;
+              delete peerConnections[data.id];
+            }
             makeOffer(data.id);
           } else {
             otherStream[data.id] = false;
@@ -128,6 +139,7 @@ angular.module('cloudKiboApp')
       socket.on('disconnect', function () {
         peerConnections = {};
         userNames = {};
+        otherStream = {};
         connected = false;
       });
     }
@@ -142,6 +154,8 @@ angular.module('cloudKiboApp')
         if (!p) {
           peerConnections = {};
         }
+        if(p) localVideoShared = true;
+        else localVideoShared = false;
         stream = s;
         console.log('letting other peer know that video is being shared')
         socket.emit('conference.streamVideo', { username: username, type: 'video', action: p, id: currentId });

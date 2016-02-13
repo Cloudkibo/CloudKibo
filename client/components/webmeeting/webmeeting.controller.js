@@ -295,6 +295,7 @@ angular.module('cloudKiboApp')
               console.error(err);
               $scope.askingMedia = false;
               $scope.isMediaDenied = true;
+              $scope.toggleVideoText = 'Share Video';
               logger.log("video stream access was denied: error "+err+", username : "+ $scope.user.username);
               $scope.error = 'No video permissions. Please allow the video capturing and refresh your browser.';
             });
