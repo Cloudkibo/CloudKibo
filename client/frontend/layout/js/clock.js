@@ -56,7 +56,8 @@ function initLocalClocks() {
  */
 function setUpMinuteHands() {
   // Find out how far into the minute we are
-  var containers = document.querySelectorAll('.minutes-container');
+  var containers = $('.minutes-container');
+  console.log('Seconds container length : '+containers.length);
   var secondAngle = containers[0].getAttribute("data-second-angle");
   if (secondAngle > 0) {
     // Set a timeout until the end of the current minute, to move the hand
@@ -93,7 +94,8 @@ function moveMinuteHands(containers) {
  * Move the second containers
  */
 function moveSecondHands() {
-  var containers = document.querySelectorAll('.seconds-container');
+  var containers = $('.seconds-container');
+  console.log('Seconds container length : '+ containers.length);
   setInterval(function() {
     for (var i = 0; i < containers.length; i++) {
       if (containers[i].angle === undefined) {
