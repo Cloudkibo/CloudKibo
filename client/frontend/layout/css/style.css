@@ -2546,11 +2546,9 @@ body.page-header-fixed {
  
 }
 .header-navigation ul {
-    text-align:right;
-   
+    text-align:center;
     padding:0;
     margin:0;
-    margin-right:-20px;
    list-style: none;
 }
 .header-navigation ul li{
@@ -5104,6 +5102,7 @@ margin-right:10%;
   
  
 }
+
 .in-meeting
 {
 text-align:center;
@@ -5123,17 +5122,20 @@ margin-right:10%;
 }
 
 /**************** Clock ***************/
+
 .clock {
   border-radius: 50%;
   background: #fff url(../img/ios_clock.svg) no-repeat center;
-  background-size: 275px;
-  height: 300px;
+  background-size: 200px;
+  height: 250px;
   padding-bottom: 5px;
   position: relative;
-  width: 300px;
+  width: 250px;
   margin: 0 auto; 
-  border:1px solid #31708F;
-  box-shadow: 5px 5px 5px  #31708F;
+  margin-top:40px;
+  float:left;
+  margin-right:10%;
+  border: 10px solid #4B5E20;
   
  
 }
@@ -5174,7 +5176,7 @@ margin-right:10%;
   top: 10%;
   transform-origin: 50% 100%;
   width: 2%;
-  background:#31708F;
+  background:#2E7826;
 }
 .seconds {
    background: red;
