@@ -1,10 +1,8 @@
 /* Reset */
 .hasDatepicker{
-width:350px;
+width:275px;
 float:left;
-margin-top: 30px;
-margin-right: 70px;
-margin-left:10%;
+margin-top: 20px;
 border: 2px solid #4B5E20;
 
 }
@@ -14,7 +12,7 @@ border: 2px solid #4B5E20;
 .ui-datepicker td,
 .ui-datepicker th {
 	margin: 0;
-	padding: 12px;
+	padding: 0px;
 	border: none;
 	border-spacing: 0;
 }
@@ -22,7 +20,7 @@ border: 2px solid #4B5E20;
 /* Calendar Wrapper */
 .ui-datepicker {
 	display: none;
-	padding: 15px;
+	padding: 12px;
 	cursor: default;
   text-transform: uppercase;
 	font-family: Tahoma;
@@ -118,19 +116,17 @@ box-shadow: 1px 1px 1px #88AE34, inset 1px 1px 1px rgb(136, 174, 52);
 
 /* Calendar "Days" */
 .ui-datepicker-calendar th {
-	padding-top: 15px;
-	padding-bottom: 10px;
-	
-	text-align: center;
-	font-weight: normal;
-	color: #a8a8a8;
+	padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+    font-weight: normal;
+    color: #4B5E20;
 }
 
 .ui-datepicker-calendar td {
-	padding: 0 7px;
-	
-	text-align: center;
-	line-height: 26px;
+    padding: 0 5px;
+    text-align: center;
+    line-height: 25px;
 }
 
 .ui-datepicker-calendar .ui-state-default {

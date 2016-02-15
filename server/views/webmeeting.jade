@@ -132,14 +132,15 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                       span.title Welcome to CloudKibo Conference
                       br
                       br
-                      div(id="calendar")
-                      article(class="clock bounce")
-                        div(class="hours-container")
-                          div(class="hours")
-                        div(class="minutes-container")
-                          div(class="minutes")
-                        div(class="seconds-container")
-                          div(class="seconds")
+                      div.cc
+                        div(id="calendar")
+                        article(class="clock bounce")
+                          div(class="hours-container")
+                            div(class="hours")
+                          div(class="minutes-container")
+                            div(class="minutes")
+                          div(class="seconds-container")
+                            div(class="seconds")
                   div.in-meeting  
                     .videoBoxContainer(ng-show = 'meetingStarted()')
                       div(class='{{divBoxClass}}', ng-hide='isLocalVideoShared()'){{getUsername()[0]}}
