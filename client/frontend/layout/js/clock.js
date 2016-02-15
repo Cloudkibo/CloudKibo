@@ -11,6 +11,7 @@ window.onload = function(){
         showOtherMonths: true,
         dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
     });
+    console.log('Jquery loaded version is ' + $().jquery);
   initLocalClocks();
   moveSecondHands();
   setUpMinuteHands();
