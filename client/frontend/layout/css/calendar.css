@@ -5,7 +5,8 @@ float:left;
 margin-top: 30px;
 margin-right: 70px;
 margin-left:10%;
- 
+border: 2px solid #4B5E20;
+
 }
 .ui-datepicker,
 .ui-datepicker table,
@@ -13,7 +14,7 @@ margin-left:10%;
 .ui-datepicker td,
 .ui-datepicker th {
 	margin: 0;
-	padding: 0;
+	padding: 12px;
 	border: none;
 	border-spacing: 0;
 }
@@ -21,7 +22,7 @@ margin-left:10%;
 /* Calendar Wrapper */
 .ui-datepicker {
 	display: none;
-	padding: 35px;
+	padding: 15px;
 	cursor: default;
   text-transform: uppercase;
 	font-family: Tahoma;

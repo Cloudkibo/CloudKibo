@@ -5126,13 +5126,13 @@ margin-right:10%;
 .clock {
   border-radius: 50%;
   background: #fff url(../img/ios_clock.svg) no-repeat center;
-  background-size: 200px;
-  height: 250px;
+  background-size: 150px;
+  height: 200px;
   padding-bottom: 5px;
   position: relative;
-  width: 250px;
+  width: 200px;
   margin: 0 auto; 
-  margin-top:40px;
+  margin-top:50px;
   float:left;
   margin-right:10%;
   border: 10px solid #4B5E20;
