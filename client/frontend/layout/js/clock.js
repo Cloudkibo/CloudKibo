@@ -11,7 +11,7 @@ window.onload = function(){
         showOtherMonths: true,
         dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
     });
-    console.log('Jquery loaded version is ' + $().jquery);
+  console.log('Jquery loaded version is ' + $().jquery);
   initLocalClocks();
   moveSecondHands();
   setUpMinuteHands();
@@ -58,14 +58,20 @@ function initLocalClocks() {
 function setUpMinuteHands() {
   // Find out how far into the minute we are
   var containers = $('.minutes-container');
-  console.log('Seconds container length : '+containers.length);
-  var secondAngle = containers[0].getAttribute("data-second-angle");
-  if (secondAngle > 0) {
-    // Set a timeout until the end of the current minute, to move the hand
-    var delay = (((360 - secondAngle) / 6) + 0.1) * 1000;
-    setTimeout(function() {
-      moveMinuteHands(containers);
-    }, delay);
+  console.log('Minutes container length : '+containers.length);
+  if (containers.length == 0) {
+    location.reload();
+   }
+  else
+  {    
+      var secondAngle = containers[0].getAttribute("data-second-angle");
+      if (secondAngle > 0) {
+        // Set a timeout until the end of the current minute, to move the hand
+        var delay = (((360 - secondAngle) / 6) + 0.1) * 1000;
+        setTimeout(function() {
+          moveMinuteHands(containers);
+        }, delay);
+      }
   }
 }
 
@@ -97,15 +103,21 @@ function moveMinuteHands(containers) {
 function moveSecondHands() {
   var containers = $('.seconds-container');
   console.log('Seconds container length : '+ containers.length);
-  setInterval(function() {
-    for (var i = 0; i < containers.length; i++) {
-      if (containers[i].angle === undefined) {
-        containers[i].angle = 6;
-      } else {
-        containers[i].angle += 6;
-      }
-      containers[i].style.webkitTransform = 'rotateZ('+ containers[i].angle +'deg)';
-      containers[i].style.transform = 'rotateZ('+ containers[i].angle +'deg)';
-    }
-  }, 1000);
+  if (containers.length == 0) {
+    location.reload();
+   }
+  else
+  {  
+      setInterval(function() {
+        for (var i = 0; i < containers.length; i++) {
+          if (containers[i].angle === undefined) {
+            containers[i].angle = 6;
+          } else {
+            containers[i].angle += 6;
+          }
+          containers[i].style.webkitTransform = 'rotateZ('+ containers[i].angle +'deg)';
+          containers[i].style.transform = 'rotateZ('+ containers[i].angle +'deg)';
+        }
+      }, 1000);
+  }
 }
