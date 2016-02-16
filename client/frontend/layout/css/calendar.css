@@ -1,8 +1,8 @@
 /* Reset */
 .hasDatepicker{
-width:275px;
+width:240px;
 float:left;
-margin-top: 20px;
+margin-top: 15px;
 border: 2px solid #4B5E20;
 
 }
@@ -17,10 +17,11 @@ border: 2px solid #4B5E20;
 	border-spacing: 0;
 }
 
+
 /* Calendar Wrapper */
 .ui-datepicker {
 	display: none;
-	padding: 12px;
+	padding: 10px;
 	cursor: default;
   text-transform: uppercase;
 	font-family: Tahoma;
@@ -124,7 +125,7 @@ box-shadow: 1px 1px 1px #88AE34, inset 1px 1px 1px rgb(136, 174, 52);
 }
 
 .ui-datepicker-calendar td {
-    padding: 0 5px;
+   padding: 0 3px;
     text-align: center;
     line-height: 25px;
 }

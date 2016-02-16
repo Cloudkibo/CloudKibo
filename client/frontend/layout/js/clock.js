@@ -9,7 +9,7 @@ window.onload = function(){
         inline: true,
         firstDay: 1,
         showOtherMonths: true,
-        dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+        dayNamesMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
     });
   console.log('Jquery loaded version is ' + $().jquery);
   initLocalClocks();
