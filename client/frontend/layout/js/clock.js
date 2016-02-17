@@ -4,7 +4,7 @@
  * From: cssanimation.rocks/clocks
  */
 window.onload = function(){
-  
+   
   $('#calendar').datepicker({
         inline: true,
         firstDay: 1,

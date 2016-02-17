@@ -57,11 +57,21 @@ angular.module('cloudKiboApp')
         $scope.connect();
       } else {
         var sampleName = "user " + Math.floor((Math.random() * 100) + 1);
-        $scope.user.username = window.prompt("Please write your username", sampleName);
+      /*  alertify.prompt("Enter your username", function (e,str) {
+                                                  if (e) {
+                                                    $scope.user.username = str;
+                                                    console.log('str : '+$scope.user.username);
+                                                  }
+                                                  else{
+                                                     $scope.user.username = sampleName;
+                                                     console.log('str : '+$scope.user.username);
+                                                  }
+                                                  },sampleName);*/
+          $scope.user.username =window.prompt("Please write your username", sampleName);
+       
 
-        if ($scope.user.username == null)
-          $scope.user.username = sampleName;
-
+       if ($scope.user.username == null)
+            console.log('username :'+$scope.user.username);
         logger.log('Username got resolved to '+ $scope.user.username)
         $scope.connect();
       }

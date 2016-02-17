@@ -1404,9 +1404,14 @@ display:block;
  position: relative;
  overflow: hidden;
  left: 10px;
- width: 100px;
- margin-top: -95px;
+ top:-93px;
  z-index: 9999;
+ height: 60px;
+ min-width: 80px;
+ margin: 0 5px 5px 0;
+ border: 1px solid #ddd;
+ padding: 12px 0px 0px 0px;
+ background-color: #fafafa !important;
     /* margin: 0.3px; */
 }
 
@@ -1424,7 +1429,7 @@ display:block;
 }
 
 input#file {
-  left: -1px;
+  /*left: -1px;
   height: 60px;
   width: 35px;
   min-width: 86px;
@@ -1447,8 +1452,37 @@ input#file {
   -moz-transition: all 0.3s ease !important;
   -ms-transition: all 0.3s ease !important;
   -o-transition: all 0.3s ease !important;
-  transition: all 0.3s ease !important;
+  transition: all 0.3s ease !important;*/
+  width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+  
 }
+/*input#file+ label {
+   max-width: 80%;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+}
+input#file+ label  i {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+    margin-top: -0.25em;
+    margin-right: 0.25em;
+}
+input#file:focus + label,
+input#file + label:hover {
+    background-color: red;
+}*/
 .sub {
   font-size: smaller;
   color: #777;
@@ -3805,7 +3839,7 @@ Custom icon buttons
 }
 
 .icon-btn i {
-  font-size: 18px;
+  font-size: 25px;
 }
 
 .ie8 .icon-btn:hover {
