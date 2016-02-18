@@ -77,7 +77,7 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
             a.icon-btn(ng-click='videoToggle()')
               i.fa.fa-desktop
               div {{toggleVideoText}}
-        
+
         .fileUpload2()
             //label Send File
             input(id='file', type='file')
@@ -141,13 +141,13 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                             div(class="minutes")
                           div(class="seconds-container")
                             div(class="seconds")
-                  div.in-meeting  
+                  div.in-meeting
                     .videoBoxContainer(ng-show = 'meetingStarted()')
                       div(class='{{divBoxClass}}', ng-hide='isLocalVideoShared()'){{getUsername()[0]}}
                       video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='180px',height='200px', ng-show='isLocalVideoShared()' muted)
                       span.uname{{getUsername()}}
                     meeting-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', aud-src='{{peer.audioStream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}', div-box-class='{{peer.divClass}}')
-              div(ng-show='hasPeerSharedScreen()')
+            div(ng-show='hasPeerSharedScreen()')
               center
                 span
                   video(ng-src='{{getPeerScreen()}}',autoplay='true', style='width: {{widthScreen}}; height: {{heightScreen}}', class='videoelementscreen', controls='true')

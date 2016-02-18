@@ -116,8 +116,8 @@ angular.module('cloudKiboApp')
       console.log('Client connected, adding new stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
       logger.log('Client connected, adding new stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
       // Inform the new joiner that you are sharing video
-      if($scope.isLocalVideoShared()) MeetingRoomVideo.toggleVideo($scope.isLocalVideoShared());
-      if($scope.screenSharedLocal) MeetingRoomScreen.toggleScreen(screenStream, true);
+      if($scope.isLocalVideoShared()) MeetingRoomVideo.toggleVideo($scope.isLocalVideoShared(), vidStream);
+      if($scope.screenSharedLocal) MeetingRoomScreen.toggleScreen(screenStream, $scope.screenSharedLocal);
       $scope.peers.push({
         id: peer.id,
         username: (peer.stream !== null) ? peer.username : peer.username + ' (No Mic/Cam)',
