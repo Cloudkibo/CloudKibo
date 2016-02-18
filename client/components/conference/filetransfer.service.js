@@ -170,7 +170,7 @@ angular.module('cloudKiboApp')
       //console.log(meta);
 
       send_meta();
-
+     
       Room.sendChat("You have received a file. Download and Save it.");
 
       /* user 0 is this user! */
@@ -210,6 +210,10 @@ angular.module('cloudKiboApp')
      */
     function process_data(data) {
       data = JSON.parse(data).data;
+      console.log(data.username);
+      $('.modal-title').html('');
+      $('.modal-title').html('You have received a file');
+     
       $log.debug('process_data function: ', data)
       if (data.file_meta) {
         /* we are recieving file meta data */
@@ -430,22 +434,32 @@ angular.module('cloudKiboApp')
       //create a place to store this if it does not already
       create_or_clear_container(id);
       var filecontainer = document.getElementById(id);
-
+      
+      var modelbody = document.getElementById('modelbody');
+      modelbody.innerHTML = '';
       //create the link
-      var span = document.createElement('span');
-      span.textContent = '';
-
+      var p = document.createElement('p');
+      p.textContent = meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
+      var p1 = document.createElement('p');
+      p1.textContent = 'Click on download button to download file';
+    
       var a = document.createElement('a');
+         
       a.download = meta.name;
       a.id = id + '-download';
-      a.class = 'row';
+      a.className = 'btn btn-primary btn-md fa fa-download';
       a.href = 'javascript:void(0);';
-      a.textContent = 'Download : ' + meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
+      a.textContent = 'Download';
       a.draggable = true;
-
+      console.log(a.href);
+      modelbody.appendChild(p);
+      modelbody.appendChild(p1);
+      
+      modelbody.appendChild(a);
+       $('#myModal').modal('show');
       //append link!
-      filecontainer.appendChild(span);
-      filecontainer.appendChild(a);
+  //    filecontainer.appendChild(span);
+  //    filecontainer.appendChild(a);
 
       //append to chat
       //Room.sendChat($scope.user.username + " is now offering file " + meta.name);
@@ -477,7 +491,7 @@ angular.module('cloudKiboApp')
 
       //create the link
       var span = document.createElement('span');
-      span.textContent = '';
+      span.textContent = meta.name;
       var a = document.createElement('a');
       a.download = meta.name;
       /* One difference with Chrome & FF :( */
@@ -488,30 +502,35 @@ angular.module('cloudKiboApp')
         /* fileEntry is actually not a FileEntry, but a blob in Chrome */
         a.href = window.URL.createObjectURL(fileEntry);
       }
-      a.textContent = 'Save : ' + meta.name;
-      a.class = 'row';
+      console.log(meta);
+      console.log('id:' +id);
+      document.getElementById(id+'-download').disabled = true;
+      a.textContent = 'Save';
+      a.className = 'pull-left btn btn-primary btn-md fa fa-floppy-o';
       a.dataset.downloadurl = [filetype, a.download, a.href].join(':');
       a.draggable = true;
 
       //append link!
       var messages = document.getElementById('messages');
-      filecontainer.appendChild(span);
-      filecontainer.appendChild(a);
-
+    //  filecontainer.appendChild(span);
+    //  filecontainer.appendChild(a);
+      var modelfooter = document.getElementById('modelfooter');
+     // modelbody.appendChild(span);
+      modelfooter.appendChild(a);
+      
       /* make delete button */
       filecontainer.innerHTML = filecontainer.innerHTML + " ";
       /* add cancel button */
       var can = document.createElement('a');
       can.download = meta.name;
       can.id = id + '-cancel';
-      a.class = 'row';
+      a.class = 'btn btn-default';
       can.href = 'javascript:void(0);';
-      can.style.cssText = 'color:red;';
+      can.style.cssText = 'color:purple;';
       can.textContent = '[d]';
       can.draggable = true;
       //append link!
-      filecontainer.appendChild(can);
-
+     // filecontainer.appendChild(can);
       //append to chat
       //Room.sendChat("File " + meta.name + " is ready to save locally");
     }

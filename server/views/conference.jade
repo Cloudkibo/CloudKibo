@@ -91,6 +91,22 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
           .col-sm-1.fileTransferBox(id='0', ng-show='meetingStarted()')
         .row
           .col-sm-1(id='filelist_container', ng-show='meetingStarted()')
+        
+        div(id="myModal" class="modal fade" role="dialog")
+          div(class="modal-dialog")
+            div(class="modal-content")
+              div(class="modal-header")
+                  button(type="button" class="close" data-dismiss="modal")
+                    | Close
+                    
+                  h4(class="modal-title")
+                    
+              div(class="modal-body" id="modelbody")
+                  
+              div(class="modal-footer" id="modelfooter")
+                    button(type="button" class="pull-right btn btn-primary" data-dismiss="modal")
+                      | Cancel
+      
         //.row
           .col-sm-1.chatButtonUI()
             a.icon-btn(ng-click='toggleChatBoxVisibility()')

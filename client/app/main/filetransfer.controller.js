@@ -3,7 +3,6 @@
  */
 angular.module('cloudKiboApp')
   .controller('FileSharingController', function ($scope, $http, socket, Signalling, FileTransfer, $timeout, $location, RestApi, logger, $log) {
-
     var isChrome = !!navigator.webkitGetUserMedia;
 
     $scope.openFileView = false;
@@ -323,7 +322,6 @@ angular.module('cloudKiboApp')
       logger.log("file info: "+meta);
 
       send_meta();
-
       FileTransfer.sendData("You have received a file. Download and Save it.");
       $log.info("can download and save file now")
       logger.log("can download and save file now")
@@ -378,6 +376,7 @@ angular.module('cloudKiboApp')
 
     function process_data(data) {
       data = JSON.parse(data).data;
+      alert('file recieved');
       $log.info('process_data function: ', data)
       logger.log('process_data function: ', data)
       if (data.file_meta) {
@@ -401,8 +400,8 @@ angular.module('cloudKiboApp')
         // if auto-download, start the process
 
 
-        $log.info("dowanload link "+recieved_meta[0]);
-        logger.log("dowanload link "+recieved_meta[0]);
+        $log.info("download link "+recieved_meta[0]);
+        logger.log("download link "+recieved_meta[0]);
       } else if (data.kill) {
         // if it is a kill msg, then the user on the other end has stopped uploading!
 
@@ -518,7 +517,7 @@ angular.module('cloudKiboApp')
     function create_or_clear_container(id) {
       var filelist = document.getElementById('filelist_cointainer');
       var filecontainer = document.getElementById(id);
-
+    
       // if the user is downloading something from this person, we should only clear the inside span to save the cancel button
       if (downloading[id] == true) {
         var span = document.getElementById(id + "-span");
@@ -529,7 +528,7 @@ angular.module('cloudKiboApp')
           a.download = meta.name;
           a.id = id + '-cancel';
           a.href = 'javascript:void(0);';
-          a.style.cssText = 'color:red;';
+          a.style.cssText = 'color:purple;';
           a.textContent = '[c]';
           a.draggable = true;
           //append link!
@@ -602,7 +601,6 @@ angular.module('cloudKiboApp')
       //create the link
       var span = document.createElement('span');
       span.textContent = '';
-
       var a = document.createElement('a');
       a.download = meta.name;
       a.id = id + '-download';
@@ -642,7 +640,8 @@ angular.module('cloudKiboApp')
       //create a place to store this if it does not already
       create_or_clear_container(id);
       var filecontainer = document.getElementById(id);
-
+      console.log('I am called');
+      alert('i am called');
       //create the link
       var span = document.createElement('span');
       span.textContent = '';
@@ -664,7 +663,7 @@ angular.module('cloudKiboApp')
       var messages = document.getElementById('messages');
       filecontainer.appendChild(span);
       filecontainer.appendChild(a);
-
+    
       // make delete button
       filecontainer.innerHTML = filecontainer.innerHTML + " ";
       // add cancel button
