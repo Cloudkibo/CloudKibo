@@ -11,7 +11,6 @@
  */
 angular.module('cloudKiboApp')
   .factory('FileHangout', function FileHangout($rootScope, Room, FileUtility, $log) {
-
     var isChrome = !!navigator.webkitGetUserMedia;
 
     window.URL = window.URL || window.webkitURL;
@@ -211,9 +210,7 @@ angular.module('cloudKiboApp')
     function process_data(data) {
       data = JSON.parse(data).data;
       console.log(data.username);
-      $('.modal-title').html('');
-      $('.modal-title').html('You have received a file');
-     
+      
       $log.debug('process_data function: ', data)
       if (data.file_meta) {
         /* we are recieving file meta data */
@@ -290,12 +287,8 @@ angular.module('cloudKiboApp')
         }
       }));
     }
-
-    /* bootstrap alerts! */
-    function boot_alert(text) {
-      console.log('Boot_alert: ', text);
-      //$("#alerts").append('<div class="alert alert-danger alert-dismissable">'+text+'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>');
-    }
+    
+    
 
     /* request id's file by sending request for block 0 */
     function download_file(id) {
@@ -357,6 +350,7 @@ angular.module('cloudKiboApp')
     function create_or_clear_container(id) {
       var filelist = document.getElementById('filelist_cointainer');
       var filecontainer = document.getElementById(id);
+      var mymodal = document.getElementById('modelbody')
       //username = FileUtility.sanitize(username);
 
       /* if the user is downloading something from this person, we should only clear the inside span to save the cancel button */
@@ -365,16 +359,18 @@ angular.module('cloudKiboApp')
         if (!span) {
           filecontainer.innerHTML = '<span class= "fileName" id="' + id + '-span"></span>';
           /* add cancel button */
-          var a = document.createElement('a');
+          var a = document.getElementById(id + '-cancel');
+          if(!a)
+            a = document.createElement('a');
           a.download = meta.name;
           a.id = id + '-cancel';
-          a.class = 'row';
+          a.className = 'mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round';
+          a.style.cssText = 'margin-right: 5px;';
           a.href = 'javascript:void(0);';
-          a.style.cssText = 'color:#af4545;';
-          a.textContent = '[c]';
+          a.textContent = 'Cancel Download';
           a.draggable = true;
           //append link!
-          filecontainer.appendChild(a);
+          mymodal.appendChild(a);
         } else {
           span.innerHTML = "";
         }
@@ -408,26 +404,27 @@ angular.module('cloudKiboApp')
       //create a place to store this if it does not already
       create_or_clear_container(id);//, username);
       var filecontainer = document.getElementById(id);
-
+      var mymodalbody = document.getElementById('modelbodyupload');
+      var mymodalfooter = document.getElementById('modelfooterupload');
       //create the link
-      var span = document.createElement('span');
-      span.textContent = '' + filename + ' ';
-
-      var a = document.createElement('a');
+      var span = document.getElementById('uploadspan'); 
+      span.innerHTML = '';
+      span.innerHTML = 'File : ' + filename + ' ';
+      var a = document.getElementById('upload_stop');
       a.download = meta.name;
-      a.id = 'upload_stop';
-      a.class = 'row';
+    //  a.id = 'upload_stop';
+      a.className = 'pull-left mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round';
       a.href = 'javascript:void(0);';
-      a.textContent = '[Stop Upload]';
-      a.style.cssText = 'color:#af4545;';
+      a.textContent = 'Stop Upload';
       a.draggable = true;
-
+      $('#myModalUpload').modal('show');
       //append link!
-      filecontainer.appendChild(span);
-      filecontainer.appendChild(a);
-
+ //     filecontainer.appendChild(span);
+ //     filecontainer.appendChild(a);
+   
     }
-
+    
+    
     /* create a link that will let the user start the download */
     function create_pre_file_link(meta, id, username) {
 
@@ -436,22 +433,28 @@ angular.module('cloudKiboApp')
       var filecontainer = document.getElementById(id);
       
       var modelbody = document.getElementById('modelbody');
+      var savebtn = document.getElementById('savefile');
+      savebtn.href = '';
+      savebtn.style.cssText = 'display :none';
       modelbody.innerHTML = '';
       //create the link
       var p = document.createElement('p');
-      p.textContent = meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
+      var i = document.createElement('i');
+      i.className = 'fa fa-download';
+      p.textContent = 'File : ' + meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
       var p1 = document.createElement('p');
       p1.textContent = 'Click on download button to download file';
-    
+      p1.className = 'makemargin';
       var a = document.createElement('a');
-         
       a.download = meta.name;
       a.id = id + '-download';
-      a.className = 'btn btn-primary btn-md fa fa-download';
+      a.className = 'mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round';
       a.href = 'javascript:void(0);';
+       a.appendChild(i);
       a.textContent = 'Download';
       a.draggable = true;
       console.log(a.href);
+     
       modelbody.appendChild(p);
       modelbody.appendChild(p1);
       
@@ -467,14 +470,15 @@ angular.module('cloudKiboApp')
 
     /* update a file container with a DL % */
     function update_container_percentage(id, chunk_num, chunk_total, total_size) {
-
+      var modelbody = document.getElementById('modelbody');
+    
       create_or_clear_container(id);
       var span = document.getElementById(id + '-span');
 
       /* create file % based on chunk # downloaded */
       var percentage = (chunk_num / chunk_total) * 100;
       span.innerHTML = percentage.toFixed(1) + "% of " + FileUtility.getReadableFileSizeString(total_size) + ' ';
-
+      modelbody.appendChild(span);
     }
 
     /* create a link to this file */
@@ -492,7 +496,8 @@ angular.module('cloudKiboApp')
       //create the link
       var span = document.createElement('span');
       span.textContent = meta.name;
-      var a = document.createElement('a');
+      var a = document.getElementById('savefile');
+       a.style.cssText = 'display:block';
       a.download = meta.name;
       /* One difference with Chrome & FF :( */
       if (isChrome) {
@@ -506,7 +511,7 @@ angular.module('cloudKiboApp')
       console.log('id:' +id);
       document.getElementById(id+'-download').disabled = true;
       a.textContent = 'Save';
-      a.className = 'pull-left btn btn-primary btn-md fa fa-floppy-o';
+      a.className = 'pull-left mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round';
       a.dataset.downloadurl = [filetype, a.download, a.href].join(':');
       a.draggable = true;
 
@@ -514,12 +519,9 @@ angular.module('cloudKiboApp')
       var messages = document.getElementById('messages');
     //  filecontainer.appendChild(span);
     //  filecontainer.appendChild(a);
-      var modelfooter = document.getElementById('modelfooter');
-     // modelbody.appendChild(span);
-      modelfooter.appendChild(a);
       
       /* make delete button */
-      filecontainer.innerHTML = filecontainer.innerHTML + " ";
+     // filecontainer.innerHTML = filecontainer.innerHTML + " ";
       /* add cancel button */
       var can = document.createElement('a');
       can.download = meta.name;

@@ -5155,6 +5155,7 @@ button.close {
 .modal-title {
   margin: 0;
   line-height: 1.42857143;
+  display:inline;
 }
 .modal-body {
   position: relative;

@@ -340,7 +340,7 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 float: right;
 position: relative;
 margin-top: -93px;
-z-index: 99999;
+z-index: 1000;
 
 }
 
@@ -1405,7 +1405,7 @@ display:block;
  overflow: hidden;
  left: 10px;
  top:-93px;
- z-index: 9999;
+ z-index: 1000;
  height: 60px;
  min-width: 80px;
  margin: 0 5px 5px 0;
@@ -1512,7 +1512,6 @@ input#file + label:hover {
 
 button {
   padding: 1px 5px;
-  font-size: smaller;
   margin: 0 3px;
 }
 
@@ -5248,4 +5247,115 @@ margin-right:10%;
 }
 .seconds-container {
   transition: transform 0.2s cubic-bezier(.4,2.08,.55,.44);
+}
+/**************** Styling Modal ******/
+.modal .modal-header {
+    background: rgba(221, 221, 221, 0.62);
+    padding: 10px;
+}
+
+.modal .modal-header  i 
+{
+  font-size: 32px;
+  color: rgb(60, 99, 118);
+  margin-right: 15px;
+}
+.modal-footer{
+padding:10px;
+}
+.modal-body  img
+{
+margin-left: auto;
+margin-right: auto;
+display: block;
+width: 250px;
+height:167px;
+}
+h4.model-title{
+  display:inline;
+}
+#modelbody p {
+text-align:left;
+font-size:16px;
+padding-top:10px;
+
+}
+.nounderline {text-decoration: none; }
+
+/****************** Custom bootstrap buttons *************/
+.mybtn {
+    padding: 14px 24px;
+    border: 0 none;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+ 
+.mybtn:focus, .mybtn:active:focus, .mybtn.active:focus {
+    outline: 0 none;
+}
+.mybtn:hover {
+  text-decoration: none !important;
+  border-color: #999 !important;
+  color: #31708F !important;
+  text-shadow: none !important;
+  -webkit-transition: all 0.3s ease !important;
+  -moz-transition: all 0.3s ease !important;
+  -ms-transition: all 0.3s ease !important;
+  -o-transition: all 0.3s ease !important;
+  transition: all 0.3s ease !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+}
+.mybtn-primary {
+    background: #0099cc;
+    color: #ffffff;
+}
+ 
+.mybtn-primary:hover, .mybtn-primary:focus, .mybtn-primary:active, .mybtn-primary.active, .open > .dropdown-toggle.mybtn-primary {
+    background: #33a6cc;
+    text-decoration:none;
+}
+ 
+.mybtn-primary:active, .mybtn-primary.active {
+    background: #007299;
+    box-shadow: none;
+}
+.mybtn.sharp {
+  border-radius:0;
+}
+.mybtn-primary.gradient {
+    background: -moz-linear-gradient(top,  #33a6cc 50%, #0099cc 50%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#33a6cc), color-stop(50%,#0099cc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* IE10+ */
+    background: linear-gradient(to bottom,  #33a6cc 50%,#0099cc 50%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#33a6cc', endColorstr='#0099cc',GradientType=0 ); /* IE6-9 */
+}
+.mybtn-primary.gradient:hover, .mybtn-primary.gradient:focus, .mybtn-primary.gradient:active, .mybtn-primary.gradient.active, .open > .dropdown-toggle.mybtn-primary {
+    background: -moz-linear-gradient(top,  #66b2cc 50%, #33a6cc 50%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#66b2cc), color-stop(50%,#33a6cc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #66b2cc 50%,#33a6cc 50%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #66b2cc 50%,#33a6cc 50%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #66b2cc 50%,#33a6cc 50%); /* IE10+ */
+    background: linear-gradient(to bottom,  #66b2cc 50%,#33a6cc 50%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#66b2cc', endColorstr='#33a6cc',GradientType=0 ); /* IE6-9 */
+}
+.mybtn-primary.gradient:active, .mybtn-primary.gradient.active {
+    background: -moz-linear-gradient(top,  #267c99 50%, #007299 50%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#267c99), color-stop(50%,#007299)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #267c99 50%,#007299 50%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #267c99 50%,#007299 50%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #267c99 50%,#007299 50%); /* IE10+ */
+    background: linear-gradient(to bottom,  #267c99 50%,#007299 50%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#267c99', endColorstr='#007299',GradientType=0 ); /* IE6-9 */
+}
+.mybtn-lg.round {
+    border-radius: 24px;
+}
+
+.makemargin{
+margin-bottom: 20px;
 }
