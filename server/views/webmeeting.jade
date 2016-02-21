@@ -78,9 +78,12 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
               i.fa.fa-desktop
               div {{toggleVideoText}}
 
-        .fileUpload2()
+        .fileUpload2(class = "icon-btn")
             //label Send File
             input(id='file', type='file')
+            label(for = "file") 
+              i.fa.fa-file-text-o
+              div Share File
             //input(type='file', data-filename-placement='inside')
             //input.upload(type='file')
         .row

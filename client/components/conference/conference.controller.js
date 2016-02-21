@@ -199,9 +199,13 @@ angular.module('cloudKiboApp')
     $scope.chatBoxVisible = true;
     $scope.showChatBox = function () {
       if($scope.meetingStarted()) {
+     
+        call_me_toclear(); //clear clock seconds interval in clock.js
         return $scope.chatBoxVisible;
       }
     };
+    
+       
     $scope.toggleChatBoxVisibility = function () {
       if($scope.chatBoxVisible)
       {
