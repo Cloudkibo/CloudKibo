@@ -1,6 +1,4 @@
 div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
-    a(href = "frontend/layout/webrtc-test.html")
-      | Click to test
     .row(class = 'changebckcolor')
       div(class='topPane row', ng-show='isAskingForMediaAccess()')
         center
@@ -135,6 +133,10 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
             div(class='animate-show', ng-hide='hasPeerSharedScreen() || hasAndroidPeerSharedScreen()' class = 'changebckcolor')
                   div.no-meeting(ng-show = '!meetingStarted()')
                       span.title Welcome to CloudKibo Conference
+                      br
+                      br
+                      a( class= "mybtn mybtn-primary mybtn-round" href = "frontend/layout/webrtc-test.html")
+                        | WebRTC Troubleshoot
                       br
                       br
                       div.cc

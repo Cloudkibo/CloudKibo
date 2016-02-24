@@ -1,0 +1,34 @@
+ .webrtc-header{
+    text-align: center;
+    color: red;
+
+ }
+ .testRTC {
+    margin: 0 auto 0 auto;
+    max-width: 500px;
+}
+.system-test {
+    height: 55px;
+    line-height: 55px;
+    background-color: #E5E5E5;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    padding-left:10px;
+}
+.system-test  span {
+    float: right;
+    padding-right: 10px;
+}
+.system-test span i.good {
+    font-size: 18px;
+    font-weight: bold;
+    color : green;
+     
+}
+.system-test span i.bad {
+    font-size: 18px;
+    font-weight: bold;
+    color : red;
+    
+}
