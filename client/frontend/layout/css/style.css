@@ -5147,6 +5147,12 @@ margin-right:10%;
   
  
 }
+.no-meeting span.subtitle{
+    font-style: italic;
+    font-weight: 600;
+    color: #555;
+
+}
 .no-meeting  span.title
 {
     font-size: 22px;
