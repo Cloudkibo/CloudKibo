@@ -57,17 +57,7 @@ angular.module('cloudKiboApp')
         $scope.connect();
       } else {
         var sampleName = "user " + Math.floor((Math.random() * 100) + 1);
-      /*  alertify.prompt("Enter your username", function (e,str) {
-                                                  if (e) {
-                                                    $scope.user.username = str;
-                                                    console.log('str : '+$scope.user.username);
-                                                  }
-                                                  else{
-                                                     $scope.user.username = sampleName;
-                                                     console.log('str : '+$scope.user.username);
-                                                  }
-                                                  },sampleName);*/
-          $scope.user.username =window.prompt("Please write your username", sampleName);
+        $scope.user.username =window.prompt("Please write your username", sampleName);
        
 
        if ($scope.user.username == null)
@@ -163,6 +153,7 @@ angular.module('cloudKiboApp')
       });
     });
     Room.on('peer.disconnected', function (peer) {
+      console.log('i am called');
       logger.log('Client disconnected, removing stream from username : '+ $scope.user.username +' and peer name : '+ peer.username);
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
@@ -507,6 +498,7 @@ angular.module('cloudKiboApp')
       return $scope.connected;
     };
     Room.on('connection.status', function(data){
+      console.log('called after endMeeting');
       $scope.connected = data.status;
       if(!data.status){
         $scope.peers = [];
@@ -519,5 +511,19 @@ angular.module('cloudKiboApp')
       location.reload();
     });
 
-
+    
+    
+    /****** end meeting ***********/
+     $scope.endMeeting = function () {
+      $log.info("end meeting selected");
+      logger.log("end meeting selected");
+      logger.log("end meeting selected");
+      $scope.userMessages = [];
+      $scope.peers = [];
+      Room.sendChat($scope.user.username + ' has left', $scope.supportCallData);
+      if($scope.screenSharedLocal)
+        screenStream.getTracks()[0].stop();
+      Stream.reset();
+      Room.end();
+    };
   });

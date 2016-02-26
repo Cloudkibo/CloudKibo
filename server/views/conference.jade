@@ -211,6 +211,10 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
             br
           .col-sm-3(class = 'changebckcolor')
             .row.chatButtonRow(ng-show='meetingStarted()')
+              .col-sm-1.endmeetingButtonUI()
+                a.icon-btn(ng-click='endMeeting()')
+                  i.fa.fa-group
+                  div End Meeting
               .col-sm-1.chatButtonUI()
                 a.icon-btn(ng-click='toggleChatBoxVisibility()')
                   i.fa.fa-envelope-o

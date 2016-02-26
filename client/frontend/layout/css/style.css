@@ -5147,6 +5147,9 @@ margin-right:10%;
   
  
 }
+.endmeetingButtonUI{
+ right:70px;
+}
 .no-meeting span.subtitle{
     font-style: italic;
     font-weight: 600;
