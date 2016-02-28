@@ -315,7 +315,9 @@ angular.module('cloudKiboApp')
       end: function () {
         peerConnections = {}; userNames = {}; dataChannels = {};
         connected = false;
-        stream.getTracks()[0].stop();
+        
+      // stream.getTracks()[0].stop();
+      
       }
     };
     EventEmitter.call(api);

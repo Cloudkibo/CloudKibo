@@ -345,7 +345,10 @@ z-index: 1000;
 }
 
 .chatButtonUI{
-
+    width: 48px;
+    height: 48px;
+    right: 70px;
+    top: 15px;
 }
 
 /*.contactIconPane
@@ -1401,19 +1404,16 @@ display:block;
 
 
 .fileUpload2 {
- position: relative;
- overflow: hidden;
- left: 10px;
- top:-93px;
- z-index: 1000;
- height: 60px;
- min-width: 80px;
- margin: 0 5px 5px 0;
- border: 1px solid #ddd;
- padding: 12px 0px 0px 0px;
- background-color: #fafafa !important;
-    /* margin: 0.3px; */
-}
+    position: relative;
+    overflow: hidden;
+    left: 10px;
+    top: -78px;
+    z-index: 1000;
+    height: 48px;
+    width:48px;
+    margin: 0 5px 5px 0;
+    border: 1px solid #ddd;
+  }
 
 
 .fileUpload input.upload {
@@ -5148,7 +5148,10 @@ margin-right:10%;
  
 }
 .endmeetingButtonUI{
- right:70px;
+     right: 70px;
+    width: 48px;
+    height: 48px;
+    top: 15px;
 }
 .no-meeting span.subtitle{
     font-style: italic;
@@ -5369,4 +5372,50 @@ padding-top:10px;
 margin-bottom: 20px;
 }
 
+/************* Conference buttons icons******/
+.my-camera{
+    background :url('../img/hangout-icons.png') -407px -293px no-repeat;
+    height: 30px;
+    width: 30px;
+}
+.my-microphone{
+    background :url('../img/hangout-icons.png') -191px -272px no-repeat;
+    height: 30px;
+    width: 30px;
+}
+.not-working{
+    background: #db4437 !important;
 
+}
+.myscreen-sharebtn{
+    background :url('../img/hangout-icons.png') -229px 0 no-repeat;
+    height: 30px;
+    width: 30px;
+    }
+
+.myicon-btn{
+    background-color: #000;
+    border: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding: 9px;
+    margin: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    outline-offset: -5px;
+    -webkit-transition: background-color .1s linear;
+    transition: background-color .1s linear;
+}
+
+.endmeeting{
+    background :url('../img/hangout-icons.png')  -1273px -535px no-repeat;
+    height: 30px;
+    width: 30px;
+}
+.mychat-icon{
+    background:url('../img/hangout-icons.png') -581px -434px no-repeat;
+    height: 32px;
+    width: 32px;
+}
