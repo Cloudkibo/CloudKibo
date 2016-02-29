@@ -6,7 +6,6 @@
 
 angular.module('cloudKiboApp')
   .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
-
     if($location.search().role){
       logger.log('This is a Support Call');
       $scope.supportCall = true;
@@ -57,11 +56,11 @@ angular.module('cloudKiboApp')
         $scope.connect();
       } else {
         var sampleName = "user " + Math.floor((Math.random() * 100) + 1);
-        $scope.user.username = window.prompt("Please write your username", sampleName);
+        $scope.user.username =window.prompt("Please write your username", sampleName);
+       
 
-        if ($scope.user.username == null)
-          $scope.user.username = sampleName;
-
+       if ($scope.user.username == null)
+            console.log('username :'+$scope.user.username);
         logger.log('Username got resolved to '+ $scope.user.username)
         $scope.connect();
       }
@@ -153,6 +152,7 @@ angular.module('cloudKiboApp')
       });
     });
     Room.on('peer.disconnected', function (peer) {
+      console.log('i am called');
       logger.log('Client disconnected, removing stream from username : '+ $scope.user.username +' and peer name : '+ peer.username);
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
@@ -189,9 +189,13 @@ angular.module('cloudKiboApp')
     $scope.chatBoxVisible = true;
     $scope.showChatBox = function () {
       if($scope.meetingStarted()) {
+     
+        call_me_toclear(); //clear clock seconds interval in clock.js
         return $scope.chatBoxVisible;
       }
     };
+    
+       
     $scope.toggleChatBoxVisibility = function () {
       if($scope.chatBoxVisible)
       {
@@ -240,16 +244,21 @@ angular.module('cloudKiboApp')
 
     $scope.toggleAudioText = 'Mute Audio';
     $scope.audioToggle = function () {
+      
       if($scope.meetingStarted()) {
         if ($scope.toggleAudioText === 'Share Audio') {
           $scope.toggleAudioText = 'Mute Audio';
           logger.log("" + $scope.user.username + " has unmuted");
           Room.toggleAudio();
+          $('#bck-audio').toggleClass('not-working');
+        
         }
         else {
           logger.log("" + $scope.user.username + " has muted");
           $scope.toggleAudioText = 'Share Audio';
           Room.toggleAudio();
+          $('#bck-audio').toggleClass('not-working');
+     
         }
       }
     };
@@ -260,11 +269,13 @@ angular.module('cloudKiboApp')
           $scope.toggleVideoText = 'Hide Video';
           logger.log("" + $scope.user.username + " has shared the video");
           Room.toggleVideo(true);
+          $('#bck-camera').toggleClass('not-working');
         }
         else {
           $scope.toggleVideoText = 'Share Video';
           Room.toggleVideo(false);
           logger.log("" + $scope.user.username + " has hidden the video");
+          $('#bck-camera').toggleClass('not-working');
         }
       }
     };
@@ -493,6 +504,7 @@ angular.module('cloudKiboApp')
       return $scope.connected;
     };
     Room.on('connection.status', function(data){
+      console.log('called after endMeeting');
       $scope.connected = data.status;
       if(!data.status){
         $scope.peers = [];
@@ -505,5 +517,21 @@ angular.module('cloudKiboApp')
       location.reload();
     });
 
-
+    
+    
+    /****** end meeting ***********/
+     $scope.endMeeting = function () {
+      $log.info("end meeting selected");
+      logger.log("end meeting selected");
+      logger.log("end meeting selected");
+      $scope.userMessages = [];
+      $scope.peers = [];
+      $routeParams.mname = '';
+      Room.sendChat($scope.user.username + ' has left', $scope.supportCallData);
+      if($scope.screenSharedLocal)
+        screenStream.getTracks()[0].stop();
+      Stream.reset();
+      Room.end();
+      $location.path('/survey/'+$scope.user.username);
+    };
   });

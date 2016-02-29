@@ -236,6 +236,7 @@ angular.module('cloudKiboApp')
       });
       socket.on('disconnect', function () {
         console.log('disconnected')
+        aftermeetingstop() /**** start clock animation in clock.js ***/
         api.trigger('connection.status', [{
           status: false
         }]);
@@ -314,7 +315,9 @@ angular.module('cloudKiboApp')
       end: function () {
         peerConnections = {}; userNames = {}; dataChannels = {};
         connected = false;
-        stream.getTracks()[0].stop();
+        
+      // stream.getTracks()[0].stop();
+      
       }
     };
     EventEmitter.call(api);

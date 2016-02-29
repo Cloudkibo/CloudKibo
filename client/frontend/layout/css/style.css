@@ -340,12 +340,15 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 float: right;
 position: relative;
 margin-top: -93px;
-z-index: 99999;
+z-index: 1000;
 
 }
 
 .chatButtonUI{
-
+    width: 48px;
+    height: 48px;
+    right: 70px;
+    top: 15px;
 }
 
 /*.contactIconPane
@@ -1401,14 +1404,16 @@ display:block;
 
 
 .fileUpload2 {
- position: relative;
- overflow: hidden;
- left: 10px;
- width: 100px;
- margin-top: -95px;
- z-index: 9999;
-    /* margin: 0.3px; */
-}
+    position: relative;
+    overflow: hidden;
+    left: 10px;
+    top: -78px;
+    z-index: 1000;
+    height: 48px;
+    width:48px;
+    margin: 0 5px 5px 0;
+    border: 1px solid #ddd;
+  }
 
 
 .fileUpload input.upload {
@@ -1424,7 +1429,7 @@ display:block;
 }
 
 input#file {
-  left: -1px;
+  /*left: -1px;
   height: 60px;
   width: 35px;
   min-width: 86px;
@@ -1447,8 +1452,37 @@ input#file {
   -moz-transition: all 0.3s ease !important;
   -ms-transition: all 0.3s ease !important;
   -o-transition: all 0.3s ease !important;
-  transition: all 0.3s ease !important;
+  transition: all 0.3s ease !important;*/
+  width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+  
 }
+/*input#file+ label {
+   max-width: 80%;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+}
+input#file+ label  i {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+    margin-top: -0.25em;
+    margin-right: 0.25em;
+}
+input#file:focus + label,
+input#file + label:hover {
+    background-color: red;
+}*/
 .sub {
   font-size: smaller;
   color: #777;
@@ -1478,7 +1512,6 @@ input#file {
 
 button {
   padding: 1px 5px;
-  font-size: smaller;
   margin: 0 3px;
 }
 
@@ -3805,7 +3838,7 @@ Custom icon buttons
 }
 
 .icon-btn i {
-  font-size: 18px;
+  font-size: 25px;
 }
 
 .ie8 .icon-btn:hover {
@@ -5114,6 +5147,18 @@ margin-right:10%;
   
  
 }
+.endmeetingButtonUI{
+     right: 70px;
+    width: 48px;
+    height: 48px;
+    top: 15px;
+}
+.no-meeting span.subtitle{
+    font-style: italic;
+    font-weight: 600;
+    color: #555;
+
+}
 .no-meeting  span.title
 {
     font-size: 22px;
@@ -5214,4 +5259,163 @@ margin-right:10%;
 }
 .seconds-container {
   transition: transform 0.2s cubic-bezier(.4,2.08,.55,.44);
+}
+/**************** Styling Modal ******/
+.modal .modal-header {
+    background: rgba(221, 221, 221, 0.62);
+    padding: 10px;
+}
+
+.modal .modal-header  i 
+{
+  font-size: 32px;
+  color: rgb(60, 99, 118);
+  margin-right: 15px;
+}
+.modal-footer{
+padding:10px;
+}
+.modal-body  img
+{
+margin-left: auto;
+margin-right: auto;
+display: block;
+width: 250px;
+height:167px;
+}
+h4.model-title{
+  display:inline;
+}
+#modelbody p {
+text-align:left;
+font-size:16px;
+padding-top:10px;
+
+}
+.nounderline {text-decoration: none; }
+
+/****************** Custom bootstrap buttons *************/
+.mybtn {
+    padding: 14px 24px;
+    border: 0 none;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+ 
+.mybtn:focus, .mybtn:active:focus, .mybtn.active:focus {
+    outline: 0 none;
+}
+.mybtn:hover {
+  text-decoration: none !important;
+  border-color: #999 !important;
+  color: #31708F !important;
+  text-shadow: none !important;
+  -webkit-transition: all 0.3s ease !important;
+  -moz-transition: all 0.3s ease !important;
+  -ms-transition: all 0.3s ease !important;
+  -o-transition: all 0.3s ease !important;
+  transition: all 0.3s ease !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+}
+.mybtn-primary {
+    background: #0099cc;
+    color: #ffffff;
+}
+ 
+.mybtn-primary:hover, .mybtn-primary:focus, .mybtn-primary:active, .mybtn-primary.active, .open > .dropdown-toggle.mybtn-primary {
+    background: #33a6cc;
+    text-decoration:none;
+}
+ 
+.mybtn-primary:active, .mybtn-primary.active {
+    background: #007299;
+    box-shadow: none;
+}
+.mybtn.sharp {
+  border-radius:0;
+}
+.mybtn-primary.gradient {
+    background: -moz-linear-gradient(top,  #33a6cc 50%, #0099cc 50%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#33a6cc), color-stop(50%,#0099cc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* IE10+ */
+    background: linear-gradient(to bottom,  #33a6cc 50%,#0099cc 50%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#33a6cc', endColorstr='#0099cc',GradientType=0 ); /* IE6-9 */
+}
+.mybtn-primary.gradient:hover, .mybtn-primary.gradient:focus, .mybtn-primary.gradient:active, .mybtn-primary.gradient.active, .open > .dropdown-toggle.mybtn-primary {
+    background: -moz-linear-gradient(top,  #66b2cc 50%, #33a6cc 50%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#66b2cc), color-stop(50%,#33a6cc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #66b2cc 50%,#33a6cc 50%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #66b2cc 50%,#33a6cc 50%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #66b2cc 50%,#33a6cc 50%); /* IE10+ */
+    background: linear-gradient(to bottom,  #66b2cc 50%,#33a6cc 50%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#66b2cc', endColorstr='#33a6cc',GradientType=0 ); /* IE6-9 */
+}
+.mybtn-primary.gradient:active, .mybtn-primary.gradient.active {
+    background: -moz-linear-gradient(top,  #267c99 50%, #007299 50%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#267c99), color-stop(50%,#007299)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #267c99 50%,#007299 50%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #267c99 50%,#007299 50%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #267c99 50%,#007299 50%); /* IE10+ */
+    background: linear-gradient(to bottom,  #267c99 50%,#007299 50%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#267c99', endColorstr='#007299',GradientType=0 ); /* IE6-9 */
+}
+.mybtn-lg.round {
+    border-radius: 24px;
+}
+
+.makemargin{
+margin-bottom: 20px;
+}
+
+/************* Conference buttons icons******/
+.my-camera{
+    background :url('../img/hangout-icons.png') -407px -293px no-repeat;
+    height: 30px;
+    width: 30px;
+}
+.my-microphone{
+    background :url('../img/hangout-icons.png') -191px -272px no-repeat;
+    height: 30px;
+    width: 30px;
+}
+.not-working{
+    background: #db4437 !important;
+
+}
+.myscreen-sharebtn{
+    background :url('../img/hangout-icons.png') -229px 0 no-repeat;
+    height: 30px;
+    width: 30px;
+    }
+
+.myicon-btn{
+    background-color: #000;
+    border: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding: 9px;
+    margin: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    outline-offset: -5px;
+    -webkit-transition: background-color .1s linear;
+    transition: background-color .1s linear;
+}
+
+.endmeeting{
+    background :url('../img/hangout-icons.png')  -1273px -535px no-repeat;
+    height: 30px;
+    width: 30px;
+}
+.mychat-icon{
+    background:url('../img/hangout-icons.png') -581px -434px no-repeat;
+    height: 32px;
+    width: 32px;
 }

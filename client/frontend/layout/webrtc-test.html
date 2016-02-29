@@ -1,0 +1,318 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <base href="/">
+    <title>CloudKibo</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(client) app/vendor.css -->
+      <!-- bower:css -->
+      <link rel="stylesheet" href="bower_components/ngImgCrop/compile/minified/ng-img-crop.css" />
+      <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css({.tmp,client}) app/app.css -->
+    <link rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css'>
+
+      <link href= 'https://chrome.google.com/webstore/detail/mjifcjeiodmblbjeagolckinomlcjefi' rel='chrome-webstore-item'>
+    <!--
+    <link href= 'https://chrome.google.com/webstore/detail/cloudkibo-screen-sharing/mjifcjeiodmblbjeagolckinomlcjefi' rel='chrome-webstore-item'>
+    -->
+      <!-- injector:css -->
+      <link rel="stylesheet" href="global/css/components.css">
+      <link rel="stylesheet" href="global/plugins/bootstrap.css">
+      <link rel="stylesheet" href="global/plugins/font-awesome.css">
+      <link rel="stylesheet" href="global/plugins/jquery.fancybox.css">
+      <link rel="stylesheet" href="global/plugins/owl.carousel.css">
+      <link rel="stylesheet" href="global/plugins/settings.css">
+      <link rel="stylesheet" href="frontend/pages/css/style-revolution-slider.css">
+      <link rel="stylesheet" href="frontend/layout/css/custom.css">
+      <link rel="stylesheet" href="frontend/layout/css/style-responsive.css">
+      <link rel="stylesheet" href="frontend/layout/css/style.css">
+      <link rel="stylesheet" href="frontend/layout/css/themes/red.css">
+      <link rel="stylesheet" href="frontend/layout/css/calendar.css">
+       <link rel="stylesheet" href="frontend/layout/css/webrtc-test.css">
+      <!-- endinjector -->
+        
+      
+        <!-- 
+            Script used to detect WebRTC features!
+            https://github.com/muaz-khan/DetectRTC#how-to-link
+        -->
+        <script src="https://cdn.webrtc-experiment.com/DetectRTC.js"> </script>
+        <script src="https://cdn.webrtc-experiment.com/screenshot.js"></script>
+        <script src="https://cdn.webrtc-experiment.com/gumadapter.js"></script>
+
+    </head>
+
+    <body>
+        <div class = "pre-header bckcolor-preheader">
+          <div class = "container">
+           <div class = "row">
+             <div class = "col-md-6.col-sm-6.additional-shop-info">
+               <ul class= "list-unstyled list-inline pull-right">
+                 <li>
+                  <h4>
+                    <a href='#'>
+                      <img src='/images/logo_small_black.png'>
+                      | CloudKibo
+                    </a>
+                  </h4>
+                  </li>
+               </ul>
+             </div>
+             </div>
+             </div>
+             </div>
+             
+        <div>
+        
+                <h1 class ="webrtc-header"> Test Results </h1>            
+                <button id="save" class = "mybtn mybtn-primary pull-right">Print & Save As Image</button>
+           
+                <div class = "testRTC" id="browser-features"></div>
+            
+                <!-- dirty trick to bypass webrtc blockers -->
+                <iframe id="iframe" sandbox="allow-same-origin" style="display: none"></iframe>
+        </div>   
+            <script>
+                var browserFeaturesTable = document.querySelector('#browser-features');
+
+                function appendTR(firstValue, secondValue) {
+                    var div = document.createElement('div');
+                    var span = document.createElement('span');
+                    var i = document.createElement('i');
+                    if(secondValue == 'Yes')
+                        i.className = "good glyphicon glyphicon-ok";
+                    else if(secondValue == 'No')
+                        i.className = "bad glyphicon glyphicon-remove";
+                    div.className = "system-test";
+                    div.innerHTML = firstValue;
+                    span.appendChild(i);
+                    div.appendChild(span);
+                    browserFeaturesTable.appendChild(div);
+                    return div;
+                }
+
+                function printVal(value) {
+                    return value == true ? 'Yes' : value == false ? 'No' : value;
+                }
+
+                function getInfoDiv(id) {
+                    return '<div class="info-div" id="' + id + '"></div>';
+                }
+
+                var output = '';
+
+                function onDetectRTCLoaded() {
+                    browserFeaturesTable.innerHTML = '';
+
+                  //  appendTR('Operating System', printVal(DetectRTC.osName) + ' version: ' + printVal(DetectRTC.osVersion));
+                  //  appendTR('Browser', printVal(DetectRTC.browser.name) + ' version: ' + printVal(DetectRTC.browser.fullVersion) + '<br>Private browsing? ' + printVal(DetectRTC.browser.isPrivateBrowsing));
+
+                  //  appendTR('Display resolutions', printVal(DetectRTC.displayResolution));
+
+                    output = printVal(DetectRTC.hasSpeakers);
+                 /*   if(DetectRTC.audioOutputDevices.length) {
+                        output += '<br>Found speaker devices: ' + DetectRTC.audioOutputDevices.length;
+
+                        var labels = [];
+                        DetectRTC.audioOutputDevices.forEach(function(device) {
+                           labels.push(device.label);
+                        });
+
+                        output += '<br><div style="margin-left:15px;">' + labels.join('<br>') + '</div>';
+                    }
+                    */
+                    appendTR('System has Speakers?', output);
+
+                    output = printVal(DetectRTC.hasMicrophone);
+                  /*  if(DetectRTC.audioInputDevices.length) {
+                        output += '<br>Found microphone devices: ' + DetectRTC.audioInputDevices.length;
+
+                        var labels = [];
+                        DetectRTC.audioInputDevices.forEach(function(device) {
+                           labels.push(device.label);
+                        });
+
+                        output += '<br><div style="margin-left:15px;">' + labels.join('<br>') + '</div>';
+                    }
+                    */
+                    appendTR('System has Microphone?', output);
+                    
+                    output = printVal(DetectRTC.hasWebcam);
+                   /* if(DetectRTC.videoInputDevices.length) {
+                        output += '<br>Found webcam devices: ' + DetectRTC.videoInputDevices.length;
+
+                        var labels = [];
+                        DetectRTC.videoInputDevices.forEach(function(device) {
+                           labels.push(device.label);
+                        });
+
+                        output += '<br><div style="margin-left:15px;">' + labels.join('<br>') + '</div>';
+                    }*/
+                    appendTR('System has Webcam?', output);
+
+                    appendTR('CloudKibo has webcam permissions?', printVal(DetectRTC.isWebsiteHasWebcamPermissions));
+                    appendTR('CloudKibo has microphone permissions?', printVal(DetectRTC.isWebsiteHasMicrophonePermissions));
+                    
+                    appendTR('Browser allows getUserMedia on this page?', printVal(DetectRTC.isGetUserMediaSupported));
+
+          
+          
+                    appendTR('Browser Supports WebRTC (Either 1.0 or 1.1)?', printVal(DetectRTC.isWebRTCSupported));
+                  //  appendTR('Browser Supports ORTC (WebRTC 1.1)?', printVal(DetectRTC.isORTCSupported));
+
+          
+                 //   appendTR('Browser Supports WebSockets API?', printVal(DetectRTC.isWebSocketsSupported));
+                    
+               /*     var tr = appendTR('Your system blocked WebSockets protocol or WebSockets server is not accessible?', printVal(DetectRTC.isWebSocketsBlocked));
+                    DetectRTC.checkWebSocketsSupport(function() {
+                        tr.querySelectorAll('td')[1].innerHTML = printVal(DetectRTC.isWebSocketsBlocked);
+                    });
+                */
+                    appendTR('Browser Supports WebAudio API?', printVal(DetectRTC.isAudioContextSupported));
+                    appendTR('Browser Supports SCTP Data Channels?', printVal(DetectRTC.isSctpDataChannelsSupported));
+                    appendTR('Browser Supports RTP Data Channels?', printVal(DetectRTC.isRtpDataChannelsSupported));
+                    appendTR('Is Screen Capturing Supported ?', printVal(DetectRTC.isScreenCapturingSupported));
+
+                //    appendTR('Is this browser supports multi-monitor selection & capturing screen of any monitor?', printVal(DetectRTC.isMultiMonitorScreenCapturingSupported));
+
+
+                    appendTR('Is it a mobile device?', printVal(DetectRTC.isMobileDevice));
+                    appendTR('Browser Supports WebSockets?', printVal(DetectRTC.isWebSocketsSupported));
+                    
+                    var rightSide = '';
+
+                    // you can even use "DetectRTC.audioInputDevices", "audioOutputDevices" and "videoInputDevices"
+                    var audioDevices = [];
+                    var videoDevices = [];
+                    DetectRTC.MediaDevices.forEach(function(device) {
+                        if (device.kind.indexOf('audio') !== -1 && audioDevices.indexOf(device.label) == -1) {
+                            audioDevices.push(device.label || 'unable to detect');
+                        }
+                        if (device.kind.indexOf('video') !== -1 && videoDevices.indexOf(device.label) == -1) {
+                            videoDevices.push(device.label || 'unable to detect');
+                        }
+                    });
+
+                    rightSide += '<h2>Audio Devices</h2><br>' + audioDevices.join('<br>');
+                    rightSide += '<br><br><h2>Video Devices</h2><br>' + videoDevices.join('<br>');
+
+               //     appendTR(audioDevices.length + ' audio and ' + videoDevices.length + ' video devices', rightSide);
+
+               //     appendTR('Is Browser Supports Stream Capturing from Canvas?', printVal(DetectRTC.isVideoSupportsStreamCapturing));
+               //     appendTR('Is Browser Supports Stream Capturing from Video?', printVal(DetectRTC.isVideoSupportsStreamCapturing));
+
+                    /*
+                    DetectRTC.DetectLocalIPAddress(function(ipAddress) {
+                        if (ipAddress.indexOf('Local') !== -1) {
+                            appendTR('Your <strong>Local</strong> IP Address', ipAddress);
+                        } else {
+                            appendTR('Your <strong>Public</strong> IP Address', ipAddress);
+                        }
+                    });
+                    */
+
+    
+   
+                }
+
+                function reloadDetectRTC() {
+                    DetectRTC.load(onDetectRTCLoaded);
+                }
+
+                DetectRTC.load(function() {
+                    if(DetectRTC.MediaDevices[0] && DetectRTC.MediaDevices[0].label === 'Please invoke getUserMedia once.') {
+                        navigator.mediaDevices.getUserMedia({audio: true, video: true}).then(reloadDetectRTC).catch(reloadDetectRTC);
+                        return;
+                    }
+
+                    onDetectRTCLoaded();
+                });
+
+                document.getElementById('save').onclick = function() {
+                    //this.parentNode.removeChild(this);
+
+                    html2canvas(browserFeaturesTable.parentNode, {
+                        grabMouse: false,
+                        onrendered: function(canvas) {
+                            var image = canvas.toDataURL('image/jpeg');
+                            // document.write('<img src="' + image +'">');
+                            SaveToDisk(image);
+                        }
+                    });
+                };
+
+                function SaveToDisk(dataURL) {
+                    if (DetectRTC.browser.isEdge) {
+                        var blob = dataURLToBlob(dataURL);
+                        if (typeof navigator.msSaveOrOpenBlob !== 'undefined') {
+                            return navigator.msSaveOrOpenBlob(blob, 'CloudKibo-WebRTC-TestReport.jpg');
+                        } else if (typeof navigator.msSaveBlob !== 'undefined') {
+                            return navigator.msSaveBlob(blob, 'CloudKibo-WebRTC-TestReport.jpg');
+                        }
+                    }
+
+                    var hyperlink = document.createElement('a');
+                    hyperlink.href = dataURL;
+                    hyperlink.target = '_blank';
+                    hyperlink.download = 'CloudKibo-WebRTC-TestReport.jpg';
+
+                    if (DetectRTC.browser.name === 'Firefox') {
+                        hyperlink.onclick = function() {
+                            (document.body || document.documentElement).removeChild(hyperlink);
+                        };
+                        (document.body || document.documentElement).appendChild(hyperlink);
+                    }
+
+                    var evt = new MouseEvent('click', {
+                        view: window,
+                        bubbles: true,
+                        cancelable: true
+                    });
+
+                    hyperlink.dispatchEvent(evt);
+
+                    if (DetectRTC.browser.name === 'Firefox') {
+                        URL.revokeObjectURL(hyperlink.href);
+                    }
+                }
+
+                function dataURLToBlob(dataURL) {
+                    var BASE64_MARKER = ';base64,';
+                    if (dataURL.indexOf(BASE64_MARKER) == -1) {
+                        var parts = dataURL.split(',');
+                        var contentType = parts[0].split(':')[1];
+                        var raw = decodeURIComponent(parts[1]);
+
+                        return new Blob([raw], {
+                            type: contentType
+                        });
+                    }
+
+                    var parts = dataURL.split(BASE64_MARKER);
+                    var contentType = parts[0].split(':')[1];
+                    var raw = window.atob(parts[1]);
+                    var rawLength = raw.length;
+
+                    var uInt8Array = new Uint8Array(rawLength);
+
+                    for (var i = 0; i < rawLength; ++i) {
+                        uInt8Array[i] = raw.charCodeAt(i);
+                    }
+
+                    return new Blob([uInt8Array], {
+                        type: contentType
+                    });
+                }
+            </script>
+
+     </body>
+</html>

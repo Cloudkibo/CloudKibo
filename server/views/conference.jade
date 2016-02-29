@@ -41,20 +41,27 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
           div(class='header-navigation  font-transform-inherit')
             ul
               li
-                .col-sm-1
-                  a.icon-btn(id='showScreenButton', ng-click='showScreen()')
-                    i.fa.fa-desktop
-                    div {{showScreenText}}
+                .myicon-btn
+                  a(id='showScreenButton', ng-click='showScreen()')
+                   // i.fa.fa-desktop(style ="color:#FFF")
+                   // div {{showScreenText}}
+                   div.myscreen-sharebtn
               li(ng-hide='hasUserDeniedMedia()')
-                .col-sm-1()
-                  a.icon-btn(ng-click='audioToggle()')
-                    i.fa.fa-microphone
-                    div {{toggleAudioText}}
+                .myicon-btn(id="bck-audio")
+                  a(ng-click='audioToggle()' title="Hooray!")
+                    //i.fa.fa-microphone
+                    //div {{toggleAudioText}}
+                    div.my-microphone
               li(ng-hide='hasUserDeniedMedia()')
-                .col-sm-1()
-                  a.icon-btn(ng-click='videoToggle()')
-                    i.fa.fa-desktop
-                    div {{toggleVideoText}}
+                .myicon-btn(id="bck-camera")
+                  a(ng-click='videoToggle()')
+                   // i.fa.fa-desktop
+                   div.my-camera
+                  // div {{toggleVideoText}}
+              li(ng-show='meetingStarted()')    
+                .myicon-btn()
+                  a(ng-click='endMeeting()')
+                   div.endmeeting    
     .row(ng-show='isAskingForMediaAccess()' class = 'changebckcolor')
       br
       br
@@ -75,24 +82,65 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
               div {{toggleAudioText}}
         //.row(ng-hide='hasUserDeniedMedia()')
           .col-sm-1()
-            a.icon-btn(ng-click='videoToggle()')
+            a.icon-btn(ng-click='videoToggle()' )
               i.fa.fa-desktop
               div {{toggleVideoText}}
         
-        .fileUpload2()
+        .fileUpload2(class = "myicon-btn")
             //label Send File
             input(id='file', type='file')
+            label(for = "file") 
+              i.fa.fa-file-text-o(style = "font-size:32px;color:white;")
+             // div Share File
             //input(type='file', data-filename-placement='inside')
             //input.upload(type='file')
         .row
-          .col-sm-1.fileTransferBox(id='0', ng-show='meetingStarted()')
+          .col-sm-1.fileTransferBox(id='0', ng-show='meetingStarted()' style='opacity:0;')
         .row
-          .col-sm-1(id='filelist_container', ng-show='meetingStarted()')
+          .col-sm-1(id='filelist_container', ng-show='meetingStarted()' style='opacity:0;')
+        
+        div(id="myModal" class="modal fade" role="dialog")
+          div(class="modal-dialog")
+            div(class="modal-content")
+              div(class="modal-header")
+                  button(type="button" class="close" data-dismiss="modal")
+                    | Close
+                  img(src = '/assets/images/file.png')
+                  h4(class="modal-title") You have received a file
+                    
+                    
+              div(class="modal-body")
+                  img(src = '/assets/images/file_transfer.png')
+                  div(id = "modelbody")
+              div(class="modal-footer" id="modelfooter")
+                    button(type="button" class="pull-right mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round" data-dismiss="modal")
+                      | Close
+                    a(id="savefile")  
+        div(id="myModalUpload" class="modal fade" role="dialog")
+          div(class="modal-dialog")
+            div(class="modal-content")
+              div(class="modal-header")
+                  button(type="button" class="close" data-dismiss="modal")
+                    | Close
+                  img(src = '/assets/images/file.png')
+                  h4(class="modal-title") You have uploaded a file
+                    
+                    
+              div(class="modal-body")
+                  img(src = '/assets/images/file_transfer.png')
+                  div(id = "modelbodyupload")
+                    span(style= "margin-top:20px;" id="uploadspan")
+              div(class="modal-footer" id="modelfooterupload")
+                    button(type="button" class="pull-right mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round" data-dismiss="modal")
+                      | Close
+                    a(id="upload_stop")  
+      
         //.row
-          .col-sm-1.chatButtonUI()
-            a.icon-btn(ng-click='toggleChatBoxVisibility()')
-              i.fa.fa-envelope-o
-              div Chat
+          .col-sm-1.chatButtonUI(class ="myicon-btn")
+                a(ng-click='toggleChatBoxVisibility()')
+                //i.fa.fa-envelope-o(style = "font-size:32px;color:white;")
+                // div Chat
+                div.mychat-icon
         //.row
           .col-sm-1(ng-hide='hasChromeExtension() || isFireFox()')
             a.btn.btn-lg.green(ng-click='installExtension()')
@@ -134,6 +182,12 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                   div.no-meeting(ng-show = '!meetingStarted()')
                       span.title Welcome to CloudKibo Conference
                       br
+                      span.subtitle Secured Encrypted Communication
+                      br
+                      br
+                      a( style= "font-weight: 600;" href = "frontend/layout/webrtc-test.html")
+                        | Test System Compatibility
+                      br
                       br
                       div.cc
                         div(id="calendar" class="datepicker")
@@ -165,10 +219,11 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
             br
           .col-sm-3(class = 'changebckcolor')
             .row.chatButtonRow(ng-show='meetingStarted()')
-              .col-sm-1.chatButtonUI()
-                a.icon-btn(ng-click='toggleChatBoxVisibility()')
-                  i.fa.fa-envelope-o
-                  div Chat
+              .col-sm-1.chatButtonUI(class = "myicon-btn")
+                a(ng-click='toggleChatBoxVisibility()')
+                 // i.fa.fa-envelope-o(style = "font-size:32px;color:white;")
+                 // div Chat
+                 div.mychat-icon
             .row(class='animate-show', ng-show='showChatBox()' class = 'changebckcolor')
               div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages', style="word-wrap: break-word")
                 .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)

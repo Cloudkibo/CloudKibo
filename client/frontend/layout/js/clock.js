@@ -3,8 +3,11 @@
  * Starts any clocks using the user's local time
  * From: cssanimation.rocks/clocks
  */
+ var refreshIntervalId_seconds;
+  var refreshIntervalId_minutes;
+  var refreshIntervalId_hours; 
 window.onload = function(){
-  
+   
   $('#calendar').datepicker({
         inline: true,
         firstDay: 1,
@@ -16,6 +19,12 @@ window.onload = function(){
   moveSecondHands();
   setUpMinuteHands();
 } 
+function aftermeetingstop()
+{
+  initLocalClocks();
+  moveSecondHands();
+  setUpMinuteHands();
+}
 function initLocalClocks() {
   // Get the local time using JS
   var date = new Date;
@@ -84,7 +93,7 @@ function moveMinuteHands(containers) {
     containers[i].style.transform = 'rotateZ(6deg)';
   }
   // Then continue with a 60 second interval
-  setInterval(function() {
+  refreshIntervalId_minutes = setInterval(function() {
     for (var i = 0; i < containers.length; i++) {
       if (containers[i].angle === undefined) {
         containers[i].angle = 12;
@@ -100,6 +109,15 @@ function moveMinuteHands(containers) {
 /*
  * Move the second containers
  */
+ 
+  
+ /*** call when meeting started ***/ 
+function call_me_toclear()
+{
+  clearInterval(refreshIntervalId_seconds);
+  clearInterval(refreshIntervalId_minutes);
+  clearInterval(refreshIntervalId_hours);
+}  
 function moveSecondHands() {
   var containers = $('.seconds-container');
   console.log('Seconds container length : '+ containers.length);
@@ -108,7 +126,7 @@ function moveSecondHands() {
    }
   else
   {  
-      setInterval(function() {
+    refreshIntervalId_seconds =  setInterval(function() {
         for (var i = 0; i < containers.length; i++) {
           if (containers[i].angle === undefined) {
             containers[i].angle = 6;

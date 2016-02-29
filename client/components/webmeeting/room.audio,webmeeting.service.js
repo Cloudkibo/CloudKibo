@@ -191,7 +191,8 @@ angular.module('cloudKiboApp')
           connectRoom(roomId);
       });
       socket.on('disconnect', function () {
-        console.log('disconnected')
+        console.log('disconnected');
+        aftermeetingstop() /**** start clock animation in clock.js ***/
         api.trigger('connection.status', [{
           status: false
         }]);

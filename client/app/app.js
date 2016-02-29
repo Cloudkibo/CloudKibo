@@ -21,12 +21,16 @@ angular.module('cloudKiboApp', [
         templateUrl: function(params){ return '/conference/'+ params.mname},
         controller: 'ConferenceController'
     })
-
+    
+    .when('/survey/:mname', {
+        templateUrl: function(params){return '/survey/'+ params.mname},
+        controller: 'SurveyController'
+    })
     .when('/webmeeting/:mname', {
         templateUrl: function(params){ return '/webmeeting/'+ params.mname},
         controller: 'WebMeetingController'
     })
-
+    
     .when('/livehelp/:mname', {
       templateUrl: function(params){ console.log(params); return '/livehelp/'+ params.mname +'?role='+ params.role},
       controller: 'LiveHelpController'
