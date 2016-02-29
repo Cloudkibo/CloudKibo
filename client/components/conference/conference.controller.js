@@ -6,6 +6,7 @@
 
 angular.module('cloudKiboApp')
   .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
+    $('[data-toggle="tooltip"]').tooltip();
     if($location.search().role){
       logger.log('This is a Support Call');
       $scope.supportCall = true;
@@ -251,6 +252,9 @@ angular.module('cloudKiboApp')
           logger.log("" + $scope.user.username + " has unmuted");
           Room.toggleAudio();
           $('#bck-audio').toggleClass('not-working');
+          $('#bck-audio >a').attr('data-original-title', function(index, attr){
+                  return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
+          }).tooltip('show');
         
         }
         else {
@@ -258,7 +262,9 @@ angular.module('cloudKiboApp')
           $scope.toggleAudioText = 'Share Audio';
           Room.toggleAudio();
           $('#bck-audio').toggleClass('not-working');
-     
+          $('#bck-audio >a').attr('data-original-title', function(index, attr){
+                  return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
+          }).tooltip('show');
         }
       }
     };
@@ -270,12 +276,18 @@ angular.module('cloudKiboApp')
           logger.log("" + $scope.user.username + " has shared the video");
           Room.toggleVideo(true);
           $('#bck-camera').toggleClass('not-working');
+          $('#bck-camera >a').attr('data-original-title', function(index, attr){
+                  return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
+          }).tooltip('show');
         }
         else {
           $scope.toggleVideoText = 'Share Video';
           Room.toggleVideo(false);
           logger.log("" + $scope.user.username + " has hidden the video");
           $('#bck-camera').toggleClass('not-working');
+           $('#bck-camera >a').attr('data-original-title', function(index, attr){
+                  return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
+          }).tooltip('show');
         }
       }
     };

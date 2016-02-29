@@ -40,27 +40,22 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
             i(class='fa fa-bars')
           div(class='header-navigation  font-transform-inherit')
             ul
-              li
-                .myicon-btn
-                  a(id='showScreenButton', ng-click='showScreen()')
-                   // i.fa.fa-desktop(style ="color:#FFF")
-                   // div {{showScreenText}}
-                   div.myscreen-sharebtn
+               
               li(ng-hide='hasUserDeniedMedia()')
                 .myicon-btn(id="bck-audio")
-                  a(ng-click='audioToggle()' title="Hooray!")
+                  a(ng-click='audioToggle()' data-toggle="tooltip" data-placement="bottom" title="Mute Audio")
                     //i.fa.fa-microphone
                     //div {{toggleAudioText}}
                     div.my-microphone
               li(ng-hide='hasUserDeniedMedia()')
-                .myicon-btn(id="bck-camera")
-                  a(ng-click='videoToggle()')
+                .myicon-btn(id="bck-camera" class = "not-working")
+                  a(ng-click='videoToggle()' data-toggle="tooltip" data-placement="bottom" title="Show Video")
                    // i.fa.fa-desktop
                    div.my-camera
                   // div {{toggleVideoText}}
-              li(ng-show='meetingStarted()')    
+              li()    
                 .myicon-btn()
-                  a(ng-click='endMeeting()')
+                  a(ng-click='endMeeting()' data-toggle="tooltip" data-placement="bottom" title="End Call")
                    div.endmeeting    
     .row(ng-show='isAskingForMediaAccess()' class = 'changebckcolor')
       br
@@ -86,14 +81,18 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
               i.fa.fa-desktop
               div {{toggleVideoText}}
         
-        .fileUpload2(class = "myicon-btn")
+        .fileUpload2(class = "icon-btn" )
             //label Send File
             input(id='file', type='file')
             label(for = "file") 
-              i.fa.fa-file-text-o(style = "font-size:32px;color:white;")
-             // div Share File
+              i.fa.fa-file-text-o
+              div Share File
             //input(type='file', data-filename-placement='inside')
             //input.upload(type='file')
+         .col-sm-1(class = 'screen-sharebtn')
+              a.icon-btn(id='showScreenButton', ng-click='showScreen()')
+                i.fa.fa-desktop
+                div {{showScreenText}}
         .row
           .col-sm-1.fileTransferBox(id='0', ng-show='meetingStarted()' style='opacity:0;')
         .row
@@ -219,11 +218,11 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
             br
           .col-sm-3(class = 'changebckcolor')
             .row.chatButtonRow(ng-show='meetingStarted()')
-              .col-sm-1.chatButtonUI(class = "myicon-btn")
-                a(ng-click='toggleChatBoxVisibility()')
-                 // i.fa.fa-envelope-o(style = "font-size:32px;color:white;")
-                 // div Chat
-                 div.mychat-icon
+              .col-sm-1.chatButtonUI()
+                a.icon-btn(ng-click='toggleChatBoxVisibility()')
+                  i.fa.fa-envelope-o
+                  div Chat
+                 
             .row(class='animate-show', ng-show='showChatBox()' class = 'changebckcolor')
               div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages', style="word-wrap: break-word")
                 .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)

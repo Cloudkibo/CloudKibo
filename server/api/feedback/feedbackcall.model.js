@@ -5,6 +5,7 @@ var Schema = mongoose.Schema;
 
 var feedbackcall = new Schema({
 		   userid : {type: Schema.ObjectId, ref: 'accounts'},
+       username : String,
 		   audio : Number,
 		   video : Number,
 		   screen : Number,

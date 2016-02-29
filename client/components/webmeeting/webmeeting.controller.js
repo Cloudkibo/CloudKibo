@@ -6,7 +6,8 @@
 
 angular.module('cloudKiboApp')
   .controller('WebMeetingController', function ($sce, MeetingStream, $location, $routeParams, $scope, MeetingRoom, MeetingRoomVideo, MeetingRoomScreen, MeetingRoomData, $timeout, logger, ScreenShare, MeetingRoomFileHangout, $log) {
-
+     $('[data-toggle="tooltip"]').tooltip();
+   
     if($location.search().role){
       $scope.supportCall = true;
     }
@@ -268,12 +269,23 @@ angular.module('cloudKiboApp')
         if ($scope.toggleAudioText === 'Share Audio') {
           $scope.toggleAudioText = 'Mute Audio';
           logger.log("" + $scope.user.username + " has unmuted");
+          
           MeetingRoom.toggleAudio();
+          $('#bck-audio').toggleClass('not-working');
+          $('#bck-audio >a').attr('data-original-title', function(index, attr){
+                  return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
+          }).tooltip('show');
+        
         }
         else {
           logger.log("" + $scope.user.username + " has muted");
           $scope.toggleAudioText = 'Share Audio';
           MeetingRoom.toggleAudio();
+           $('#bck-audio').toggleClass('not-working');
+          $('#bck-audio >a').attr('data-original-title', function(index, attr){
+                  return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
+          }).tooltip('show');
+        
         }
       }
     };
@@ -300,12 +312,23 @@ angular.module('cloudKiboApp')
               logger.log("video stream access was denied: error "+err+", username : "+ $scope.user.username);
               $scope.error = 'No video permissions. Please allow the video capturing and refresh your browser.';
             });
+            
+          $('#bck-camera').toggleClass('not-working');
+          $('#bck-camera >a').attr('data-original-title', function(index, attr){
+                  return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
+          }).tooltip('show');
+        
         }
         else {
           $scope.toggleVideoText = 'Share Video';
           MeetingRoomVideo.toggleVideo(false, vidStream);
           MeetingStream.resetVideo();
           logger.log("" + $scope.user.username + " has hidden the video");
+          $('#bck-camera').toggleClass('not-working');
+          $('#bck-camera >a').attr('data-original-title', function(index, attr){
+                  return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
+          }).tooltip('show');
+        
         }
       }
     };
