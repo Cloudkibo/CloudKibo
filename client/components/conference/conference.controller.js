@@ -7,6 +7,7 @@
 angular.module('cloudKiboApp')
   .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
     $('[data-toggle="tooltip"]').tooltip();
+    myclockStart();
     if($location.search().role){
       logger.log('This is a Support Call');
       $scope.supportCall = true;

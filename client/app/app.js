@@ -23,8 +23,8 @@ angular.module('cloudKiboApp', [
     })
     
     .when('/survey/:mname', {
-        templateUrl: function(params){return '/survey/'+ params.mname},
-        controller: 'SurveyController'
+          templateUrl: function(params){return '/survey/' + params.mname},
+          controller: 'SurveyController'
     })
     .when('/webmeeting/:mname', {
         templateUrl: function(params){ return '/webmeeting/'+ params.mname},
@@ -44,6 +44,7 @@ angular.module('cloudKiboApp', [
 	  enabled: true,
 	  requireBase: false
 	});*/
+    
 
     $httpProvider.interceptors.push('authInterceptor');
   })
@@ -174,3 +175,6 @@ angular.module('cloudKiboApp', [
 			}
 		  }
 		}]);
+
+    
+    

@@ -6,7 +6,7 @@
  var refreshIntervalId_seconds;
   var refreshIntervalId_minutes;
   var refreshIntervalId_hours; 
-window.onload = function(){
+myclockStart = function(){
    
   $('#calendar').datepicker({
         inline: true,

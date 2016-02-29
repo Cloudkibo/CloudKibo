@@ -85,8 +85,8 @@ exports.conferenceRoute = function (req, res) {
 
 exports.surveyRoute = function (req, res) {
       console.log('Req params ' + req.params[0]);
-      res.render('survey', {title: 'CloudKibo',yourname : req.params[0]});
-  
+      res.render('survey', {title: 'CloudKibo'});
+    
 };
 
 exports.webmeetingRoute = function (req, res) {
