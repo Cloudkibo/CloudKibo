@@ -110,6 +110,7 @@ angular.module('cloudKiboApp')
       MeetingRoomVideo.init(d);
       MeetingRoomData.init(d);
       MeetingRoomScreen.init(d);
+      logger.log('Initialized MeetingRoomVideo, MeetingRoomData, and MeetingRoomScreen Angularjs services');
     })
     MeetingRoom.on('peer.stream', function (peer) {
       console.info(peer.stream)
