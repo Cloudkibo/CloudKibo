@@ -5,8 +5,8 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('SurveyController', function ($location, $routeParams, $scope) {
-    $scope.message = $routeParams.mname;
+  .controller('SurveyController', function ($scope) {
+   // $scope.message = $routeParams.mname;
     $scope.title = "This is a survey page"
-    console.log('Your name is '+$routeParams.mname);
+   // console.log('Your name is '+$routeParams.mname);
   });

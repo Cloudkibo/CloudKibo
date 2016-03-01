@@ -39,21 +39,22 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
             i(class='fa fa-bars')
           div(class='header-navigation  font-transform-inherit')
             ul
-              li
-                .col-sm-1
-                  a.icon-btn(id='showScreenButton', ng-click='showScreen()')
-                    i.fa.fa-desktop
-                    div {{showScreenText}}
               li(ng-hide='hasUserDeniedMedia()')
-                .col-sm-1()
-                  a.icon-btn(ng-click='audioToggle()')
-                    i.fa.fa-microphone
-                    div {{toggleAudioText}}
+                .myicon-btn(id="bck-audio")
+                  a(ng-click='audioToggle()' data-toggle="tooltip" data-placement="bottom" title="Mute Audio")
+                    //i.fa.fa-microphone
+                    //div {{toggleAudioText}}
+                    div.my-microphone
               li(ng-hide='hasUserDeniedMedia()')
-                .col-sm-1()
-                  a.icon-btn(ng-click='videoToggle()')
-                    i.fa.fa-desktop
-                    div {{toggleVideoText}}
+                .myicon-btn(id="bck-camera" class = "not-working")
+                  a(ng-click='videoToggle()' data-toggle="tooltip" data-placement="bottom" title="Show Video")
+                   // i.fa.fa-desktop
+                   div.my-camera
+                  // div {{toggleVideoText}}
+              li()    
+                .myicon-btn()
+                  a(ng-click='endMeeting()' data-toggle="tooltip" data-placement="bottom" title="End Call")
+                   div.endmeeting    
     .row(ng-show='isAskingForMediaAccess()', class = 'changebckcolor')
       br
       br
@@ -86,6 +87,10 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
               div Share File
             //input(type='file', data-filename-placement='inside')
             //input.upload(type='file')
+          .col-sm-1(class = 'screen-sharebtn')
+              a.icon-btn(id='showScreenButton', ng-click='showScreen()')
+                i.fa.fa-desktop
+                div {{showScreenText}}    
         .row
           .col-sm-1.fileTransferBox(id='0', ng-show='meetingStarted()')
         .row
