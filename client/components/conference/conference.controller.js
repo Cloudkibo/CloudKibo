@@ -155,6 +155,7 @@ angular.module('cloudKiboApp')
     });
     Room.on('peer.disconnected', function (peer) {
       console.log('i am called');
+       aftermeetingstop(); /**** start clock animation in clock.js ***/
       logger.log('Client disconnected, removing stream from username : '+ $scope.user.username +' and peer name : '+ peer.username);
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
