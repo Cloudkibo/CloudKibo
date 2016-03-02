@@ -26,6 +26,10 @@ angular.module('cloudKiboApp', [
           templateUrl: function(params){return '/survey/' + params.mname},
           controller: 'SurveyController'
     })
+    .when('/otherBrowser', {
+          templateUrl: '/otherBrowser/',
+          controller: 'OtherBrowserController'
+    })
     .when('/webmeeting/:mname', {
         templateUrl: function(params){ return '/webmeeting/'+ params.mname},
         controller: 'WebMeetingController'
@@ -100,9 +104,26 @@ angular.module('cloudKiboApp', [
       Auth.isLoggedInAsync(function(loggedIn) {
         if (next.authenticate && !loggedIn) {
           $location.path('/login');
+          return;
         }
+        
+    
+        
       });
+      if (!window.RTCPeerConnection || !navigator.getUserMedia) {
+    //  $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
+    //  $log.error('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
+    //  logger.log('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
+    //  return;
+    $location.path('/otherBrowser');
+    }
+      
+      
+      
+    
     });
+    
+
   })
 
 

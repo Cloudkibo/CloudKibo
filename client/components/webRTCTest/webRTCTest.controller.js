@@ -9,9 +9,4 @@ angular.module('cloudKiboApp')
    // $scope.message = $routeParams.mname;
     $scope.title = "This is a survey page"
    // console.log('Your name is '+$routeParams.mname);
-   $('#example').barrating({
-        theme: 'fontawesome-stars'
-      });
-
-  
   });

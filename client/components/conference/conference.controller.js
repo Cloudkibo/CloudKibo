@@ -6,6 +6,13 @@
 
 angular.module('cloudKiboApp')
   .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
+    
+     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
+      $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
+      logger.log('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
+     // $location.path('/otherBrowser');
+      return;
+    }
     $('[data-toggle="tooltip"]').tooltip();
     myclockStart(); //callme to start clock animation
     if($location.search().role){
@@ -13,11 +20,7 @@ angular.module('cloudKiboApp')
       $scope.supportCall = true;
     }
 
-    if (!window.RTCPeerConnection || !navigator.getUserMedia) {
-      $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
-      logger.log('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
-      return;
-    }
+   
     var screenViewer = document.getElementById('screenViewer');
     var screenAndroidImage = document.getElementById('screenAndroidImage');
 

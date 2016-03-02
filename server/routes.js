@@ -129,6 +129,8 @@ module.exports = function(app) {
     .get(viewroutes.conferenceRoute);
   app.route('/survey/*')
     .get(viewroutes.surveyRoute);
+  app.route('/otherBrowser')
+    .get(viewroutes.otherBrowserRoute);  
   app.route('/webmeeting/*')
     .get(viewroutes.webmeetingRoute);
  

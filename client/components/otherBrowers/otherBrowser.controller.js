@@ -5,13 +5,9 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('SurveyController', function ($scope) {
+  .controller('OtherBrowserController', function ($scope,$location) {
    // $scope.message = $routeParams.mname;
-    $scope.title = "This is a survey page"
+    $scope.title = "You are on browser other than Chrome and FF"
    // console.log('Your name is '+$routeParams.mname);
-   $('#example').barrating({
-        theme: 'fontawesome-stars'
-      });
 
-  
   });
