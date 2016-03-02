@@ -6,18 +6,21 @@
 
 angular.module('cloudKiboApp')
   .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
+    
+     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
+      $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
+      logger.log('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
+     // $location.path('/otherBrowser');
+      return;
+    }
     $('[data-toggle="tooltip"]').tooltip();
-    myclockStart();
+    myclockStart(); //callme to start clock animation
     if($location.search().role){
       logger.log('This is a Support Call');
       $scope.supportCall = true;
     }
 
-    if (!window.RTCPeerConnection || !navigator.getUserMedia) {
-      $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
-      logger.log('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
-      return;
-    }
+   
     var screenViewer = document.getElementById('screenViewer');
     var screenAndroidImage = document.getElementById('screenAndroidImage');
 
@@ -155,6 +158,7 @@ angular.module('cloudKiboApp')
     });
     Room.on('peer.disconnected', function (peer) {
       console.log('i am called');
+       aftermeetingstop(); /**** start clock animation in clock.js ***/
       logger.log('Client disconnected, removing stream from username : '+ $scope.user.username +' and peer name : '+ peer.username);
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;

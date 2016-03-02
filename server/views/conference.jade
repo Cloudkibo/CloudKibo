@@ -19,12 +19,23 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
           b You are disconnnected. We are trying to connect again. Please check your Internet connection.
       .pre-header(class = 'bckcolor-preheader')
         .container
-          .row
-            .col-md-6.col-sm-6.additional-shop-info
-              ul.list-unstyled.list-inline
-                li &nbsp;
-            .col-md-6.col-sm-6.additional-nav
-              ul.list-unstyled.list-inline.pull-right
+          .row(style="height:60px;")
+              ul(class = 'mybtn-header')
+                
+                li(ng-hide='hasUserDeniedMedia()')
+                  .myicon-btn(id="bck-audio")
+                      a(ng-click='audioToggle()' data-toggle="tooltip" data-placement="bottom" title="Mute Audio")
+                        div.my-microphone
+                li(ng-hide='hasUserDeniedMedia()')
+                  .myicon-btn(id="bck-camera" class = "not-working")
+                      a(ng-click='videoToggle()' data-toggle="tooltip" data-placement="bottom" title="Show Video")
+                          div.my-camera
+                    // div {{toggleVideoText}}
+                li()    
+                  .myicon-btn()
+                      a(ng-click='endMeeting()' data-toggle="tooltip" data-placement="bottom" title="End Call")
+                        div.endmeeting   
+              ul.list-unstyled.list-inline.pull-right(style="margin-top:10px;")
                 li
                   h4
                     a(href='#')
@@ -38,8 +49,8 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
             | CloudKibo Conference
           a(href='javascript:void(0);', class='mobi-toggler')
             i(class='fa fa-bars')
-          div(class='header-navigation  font-transform-inherit')
-            ul
+          //div(class='header-navigation  font-transform-inherit')
+           // ul
                
               li(ng-hide='hasUserDeniedMedia()')
                 .myicon-btn(id="bck-audio")
@@ -56,7 +67,19 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
               li()    
                 .myicon-btn()
                   a(ng-click='endMeeting()' data-toggle="tooltip" data-placement="bottom" title="End Call")
-                   div.endmeeting    
+                   div.endmeeting 
+        div(class = "subheader-icons")
+            .fileUpload2(class = "icon-btn" )
+              //label Send File
+              input(id='file', type='file')
+              label(for = "file") 
+                i.fa.fa-file-text-o
+                div Share File
+            
+            .screen-sharebtn
+                a.icon-btn(id='showScreenButton', ng-click='showScreen()')
+                  i.fa.fa-desktop
+                  div {{showScreenText}}
     .row(ng-show='isAskingForMediaAccess()' class = 'changebckcolor')
       br
       br
@@ -80,22 +103,10 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
             a.icon-btn(ng-click='videoToggle()' )
               i.fa.fa-desktop
               div {{toggleVideoText}}
-        
-        .fileUpload2(class = "icon-btn" )
-            //label Send File
-            input(id='file', type='file')
-            label(for = "file") 
-              i.fa.fa-file-text-o
-              div Share File
-            //input(type='file', data-filename-placement='inside')
-            //input.upload(type='file')
-         .col-sm-1(class = 'screen-sharebtn')
-              a.icon-btn(id='showScreenButton', ng-click='showScreen()')
-                i.fa.fa-desktop
-                div {{showScreenText}}
-        .row
+       
+        //.row
           .col-sm-1.fileTransferBox(id='0', ng-show='meetingStarted()' style='opacity:0;')
-        .row
+        //.row
           .col-sm-1(id='filelist_container', ng-show='meetingStarted()' style='opacity:0;')
         
         div(id="myModal" class="modal fade" role="dialog")

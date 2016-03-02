@@ -6,7 +6,7 @@
  var refreshIntervalId_seconds;
   var refreshIntervalId_minutes;
   var refreshIntervalId_hours; 
-myclockStart = function(){
+ myclockStart = function(){
    
   $('#calendar').datepicker({
         inline: true,
@@ -21,6 +21,7 @@ myclockStart = function(){
 } 
 function aftermeetingstop()
 {
+  console.log('i am called');
   initLocalClocks();
   moveSecondHands();
   setUpMinuteHands();
@@ -122,7 +123,7 @@ function moveSecondHands() {
   var containers = $('.seconds-container');
   console.log('Seconds container length : '+ containers.length);
   if (containers.length == 0) {
-    location.reload();
+ //   location.reload();
    }
   else
   {  

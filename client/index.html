@@ -19,8 +19,11 @@
     <!-- build:css({.tmp,client}) app/app.css -->
     <link rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css'>
     <link rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css'>
-
-      <link href= 'https://chrome.google.com/webstore/detail/mjifcjeiodmblbjeagolckinomlcjefi' rel='chrome-webstore-item'>
+    
+    
+    <link rel="stylesheet" href="frontend/layout/css/font-awesome.min.css">
+<link rel="stylesheet" href="bower_components/jquery-bar-rating/dist/themes/fontawesome-stars.css">
+    <link href= 'https://chrome.google.com/webstore/detail/mjifcjeiodmblbjeagolckinomlcjefi' rel='chrome-webstore-item'>
     <!--
     <link href= 'https://chrome.google.com/webstore/detail/cloudkibo-screen-sharing/mjifcjeiodmblbjeagolckinomlcjefi' rel='chrome-webstore-item'>
     -->
@@ -34,6 +37,7 @@
       <link rel="stylesheet" href="frontend/pages/css/style-revolution-slider.css">
       <link rel="stylesheet" href="frontend/layout/css/calendar.css">
       <link rel="stylesheet" href="frontend/layout/css/custom.css">
+      <link rel="stylesheet" href="frontend/layout/css/font-awesome.min.css">
       <link rel="stylesheet" href="frontend/layout/css/style-responsive.css">
       <link rel="stylesheet" href="frontend/layout/css/style.css">
       <link rel="stylesheet" href="frontend/layout/css/themes/red.css">
@@ -68,6 +72,7 @@
     <![endif]-->
     <!-- build:js({client,node_modules}) app/vendor.js -->
       <!-- bower:js -->
+      <script src="bower_components/jquery/dist/jquery.js"></script>
       <script src="bower_components/webrtc-adapter/adapter.js"></script>
       <script src="bower_components/angular/angular.js"></script>
       <script src="bower_components/angular-resource/angular-resource.js"></script>
@@ -83,6 +88,7 @@
       <script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
       <script src="bower_components/ng-file-upload-shim/ng-file-upload-shim.js"></script>
       <script src="bower_components/ngImgCrop/compile/minified/ng-img-crop.js"></script>
+      <script src="bower_components/jquery-bar-rating/jquery.barrating.js"></script>
       <!-- endbower -->
     <!-- endbuild -->
 
@@ -112,9 +118,11 @@
           <script src="components/kibortc/screenshare.service.js"></script>
           <script src="components/kibortc/signalling.service.js"></script>
           <script src="components/logger/logger.service.js"></script>
+          <script src="components/otherBrowers/otherBrowser.controller.js"></script>
           <script src="components/rest/rest.service.js"></script>
           <script src="components/sound/sound.service.js"></script>
           <script src="components/survey/survey.controller.js"></script>
+          <script src="components/webRTCTest/webRTCTest.controller.js"></script>
           <script src="components/webmeeting/room.audio,webmeeting.service.js"></script>
           <script src="components/webmeeting/room.data.webmeeting.service.js"></script>
           <script src="components/webmeeting/room.file.webmeeting.service.js"></script>
@@ -147,7 +155,6 @@
         <script src="frontend/layout/js/datepicker.js" type="text/javascript"></script>
       
         <script src="frontend/layout/js/clock.js" type="text/javascript"></script>
-      
         <script>
         
 			jQuery(document).ready(function() {
@@ -157,6 +164,7 @@
                 //Layout.initTwitter();
                 //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
                 //Layout.initNavScrolling();
+                
                 
             });
         </script>

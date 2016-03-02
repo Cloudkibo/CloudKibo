@@ -1,3 +1,41 @@
-div
-  h1 {{title}}
-  p {{message}}
+div(class = 'changebckcolor' style="height:100vh;")
+   .pre-header(class = 'bckcolor-preheader')
+      .row(style="height:40px;")
+              ul.list-unstyled.list-inline(style="margin-top:5px;text-align:center;")
+                li
+                  h4
+                    a(href='#')
+                      img(src='/images/logo_small_black.png')
+                      | CloudKibo
+    
+    div
+        label Audio Quality
+          select(id = "example")
+                                  option(value='1') 1 (Very Bad)
+                                  option(value='2') 2 (Bad)
+                                  option(value='3') 3 (Good)
+                                  option(value='4') 4 (Best)
+                                  option(value='5') 5 (Awesome)
+
+       label Video Quality
+              select(id = "example")
+                                        option(value='1') 1 (Very Bad)
+                                        option(value='2') 2 (Bad)
+                                        option(value='3') 3 (Good)
+                                        option(value='4') 4 (Best)
+                                        option(value='5') 5 (Awesome)
+       label File Transfer Quality
+              select(id = "example")
+                                        option(value='1') 1 (Very Bad)
+                                        option(value='2') 2 (Bad)
+                                        option(value='3') 3 (Good)
+                                        option(value='4') 4 (Best)
+                                        option(value='5') 5 (Awesome)
+       label Screen Share Quality
+              select(id = "example")
+                                        option(value='1') 1 (Very Bad)
+                                        option(value='2') 2 (Bad)
+                                        option(value='3') 3 (Good)
+                                        option(value='4') 4 (Best)
+                                        option(value='5') 5 (Awesome)
+                                  

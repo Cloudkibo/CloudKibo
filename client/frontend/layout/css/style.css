@@ -1405,14 +1405,15 @@ display:block;
 
 .fileUpload2 {
     position: relative;
-    overflow: hidden;
-    left: 10px;
-    top: -87px;
+    /* overflow: hidden; */
+    margin-left: 0px;
+    /* top: -87px; */
     z-index: 1000;
     height: 48px;
-    width:48px;
+    width: 48px;
     margin: 0 5px 5px 0;
     border: 1px solid #ddd;
+    /* display: inline; */
   }
 
 
@@ -2578,13 +2579,21 @@ body.page-header-fixed {
   text-transform: uppercase;
  
 }
-.header-navigation ul {
+.mybtn-header {
     text-align:center;
     padding:0;
     margin:0;
    list-style: none;
+   margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin-top: 20px;
+    
 }
-.header-navigation ul li{
+.mybtn-header  li{
     vertical-align: top;
     display: inline-block;
    
@@ -5407,6 +5416,7 @@ margin-bottom: 20px;
     outline-offset: -5px;
     -webkit-transition: background-color .1s linear;
     transition: background-color .1s linear;
+    
 }
 .myicon-btn:hover{
 background:rgba(51, 51, 51, 0.7);
@@ -5422,8 +5432,37 @@ background:rgba(51, 51, 51, 0.7);
     width: 32px;
 }
 .screen-sharebtn{
-    top: -155px;
-    /* padding: 10px; */
+    position: relative;
+    /* margin-top: 5px; */
+    padding: 10px;
     z-index: 1000;
-    left: 100px;
+    /* left: 100px; */
+    display: inline;
+}
+.subheader-icons{
+    padding-top: 5px;
+    padding-left: 35px;
+}
+
+.otherbrowser-warning
+{
+    text-align: center;
+    padding-top: 30px;
+}
+.otherbrowser-warning h3{
+  font-weight: 600;
+    color: #2096C3;
+    text-shadow: none;
+}
+.otherbrowser-warning p {
+    font-size: 22px;
+    font-family: "Century Gothic", sans-serif;
+    font-weight: 500;
+}
+
+/*** star rating **/
+.star-rating {
+  line-height:32px;
+  font-size:1.25em;
+  cursor: pointer;
 }

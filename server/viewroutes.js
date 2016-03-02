@@ -6,7 +6,7 @@ var crypto = require("crypto");
 var verificationtoken = require("./api/tokens/verificationtoken.model");
 var passwordresettoken = require("./api/tokens/passwordresettoken.model");
 var configuration = require('./api/configuration/configuration.model');
-
+var UAParser = require('ua-parser-js');
 var html_dir = './public/';
 
 exports.appRoute = function (req, res) {
@@ -58,58 +58,92 @@ exports.homeRoute = function (req, res) {
   };
 
 exports.conferenceRoute = function (req, res) {
-  
-  if (typeof req.user == 'undefined')
-    res.render('conference', { title: title, user: '', meetingroom : req.params[0]});
-  else{
 
-    var title = 'CloudKibo';
+      /*  var parser = new UAParser();
+        var ua = req.headers['user-agent'];
+        var browserName = parser.setUA(ua).getBrowser().name;
+        var fullBrowserVersion = parser.setUA(ua).getBrowser().version;
+        var browserVersion = fullBrowserVersion.split(".",1).toString();
+        var browserVersionNumber = Number(browserVersion);
+        if(browserName != 'Chrome')
+        {
+           res.redirect('/otherBrowser');
+          
+        }
+        else
+        {*/
+          if (typeof req.user == 'undefined')
+            res.render('conference', { title: title, user: '', meetingroom : req.params[0]});
+          else{
 
-    if(req.get('host') == 'www.cloudkibo.com')
-      title = 'CloudKibo';
-    else if(req.get('host') == 'www.synaps3webrtc.com')
-      title = 'Synaps3WebRTC';
+            var title = 'CloudKibo';
 
-    Account.findById(req.user._id, function (err, gotUser) {
-      if (err) return console.log(err);
+            if(req.get('host') == 'www.cloudkibo.com')
+              title = 'CloudKibo';
+            else if(req.get('host') == 'www.synaps3webrtc.com')
+              title = 'Synaps3WebRTC';
+
+            Account.findById(req.user._id, function (err, gotUser) {
+              if (err) return console.log(err);
 
 
-      res.render('conference', { title: title, user: gotUser, meetingroom : req.params[0]});
+              res.render('conference', { title: title, user: gotUser, meetingroom : req.params[0]});
 
 
-    })
+            })
 
-  }
+          }
+        //}
 };
 
+exports.webmeetingRoute = function (req, res) {
+        var parser = new UAParser();
+        var ua = req.headers['user-agent'];
+        var browserName = parser.setUA(ua).getBrowser().name;
+        var fullBrowserVersion = parser.setUA(ua).getBrowser().version;
+        var browserVersion = fullBrowserVersion.split(".",1).toString();
+        var browserVersionNumber = Number(browserVersion);
+    /*    if(browserName != 'Chrome')
+        {
+            res.redirect('/otherBrowser');//, {title: 'CloudKibo'});
+        //  return
+        }
+        else{*/
+          if (typeof req.user == 'undefined')
+            res.render('webmeeting', { title: title, user: '', meetingroom : req.params[0]});
+          else{
 
+            var title = 'CloudKibo';
+
+            if(req.get('host') == 'www.cloudkibo.com')
+              title = 'CloudKibo';
+            else if(req.get('host') == 'www.synaps3webrtc.com')
+              title = 'Synaps3WebRTC';
+
+            Account.findById(req.user._id, function (err, gotUser) {
+              if (err) return console.log(err);
+
+              res.render('webmeeting', { title: title, user: gotUser, meetingroom : req.params[0]});
+
+            })
+
+          }
+      //  }
+  
+  
+ 
+};
 exports.surveyRoute = function (req, res) {
       console.log('Req params ' + req.params[0]);
       res.render('survey', {title: 'CloudKibo'});
     
 };
-
-exports.webmeetingRoute = function (req, res) {
-  if (typeof req.user == 'undefined')
-    res.render('webmeeting', { title: title, user: '', meetingroom : req.params[0]});
-  else{
-
-    var title = 'CloudKibo';
-
-    if(req.get('host') == 'www.cloudkibo.com')
-      title = 'CloudKibo';
-    else if(req.get('host') == 'www.synaps3webrtc.com')
-      title = 'Synaps3WebRTC';
-
-    Account.findById(req.user._id, function (err, gotUser) {
-      if (err) return console.log(err);
-
-      res.render('webmeeting', { title: title, user: gotUser, meetingroom : req.params[0]});
-
-    })
-
-  }
+exports.otherBrowserRoute = function (req, res) {
+      res.render('otherBrowser', {title: 'CloudKibo'});
+    
 };
+
+
 
   // Make the following route good, see if the person demanding this data is friend or not.. should he be
   // given that data or not? and what if data is not available, and one should not chat with himself
