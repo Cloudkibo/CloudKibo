@@ -59,7 +59,7 @@ angular.module('cloudKiboApp')
       } else {
         var sampleName = "user " + Math.floor((Math.random() * 100) + 1);
         $scope.user.username =window.prompt("Please write your username", sampleName);
-       
+
 
        if ($scope.user.username == null)
             console.log('username :'+$scope.user.username);
@@ -121,7 +121,7 @@ angular.module('cloudKiboApp')
         username: (peer.stream !== null) ? peer.username : peer.username + ' (No Mic/Cam)',
         sharedVideo: false,
         divClass: 'hideVideoBox',
-       
+
         stream: (peer.stream !== null) ? URL.createObjectURL(peer.stream) : ''
       });
     });
@@ -191,13 +191,13 @@ angular.module('cloudKiboApp')
     $scope.chatBoxVisible = true;
     $scope.showChatBox = function () {
       if($scope.meetingStarted()) {
-     
+
         call_me_toclear(); //clear clock seconds interval in clock.js
         return $scope.chatBoxVisible;
       }
     };
-    
-       
+
+
     $scope.toggleChatBoxVisibility = function () {
       if($scope.chatBoxVisible)
       {
@@ -246,7 +246,7 @@ angular.module('cloudKiboApp')
 
     $scope.toggleAudioText = 'Mute Audio';
     $scope.audioToggle = function () {
-      
+
       if($scope.meetingStarted()) {
         if ($scope.toggleAudioText === 'Share Audio') {
           $scope.toggleAudioText = 'Mute Audio';
@@ -256,7 +256,7 @@ angular.module('cloudKiboApp')
           $('#bck-audio >a').attr('data-original-title', function(index, attr){
                   return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
           }).tooltip('show');
-        
+
         }
         else {
           logger.log("" + $scope.user.username + " has muted");
@@ -450,6 +450,37 @@ angular.module('cloudKiboApp')
     var imageData = '';
     FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
+
+      // https://io2014codelabs.appspot.com/static/codelabs/webrtc-file-sharing/#7
+      // http://richard.to/projects/datachannel-demo/main.js
+      /*
+       var buf, count;
+       // dc is an RTCDataChannel initialized somewhere else
+       dc.onmessage = function(event) {
+       if (typeof event.data === 'string') {
+       buf = new Uint8ClampedArray(parseInt(event.data));
+       count = 0;
+       console.log('Expecting a total of ' + buf.byteLength + ' bytes');
+       return;
+       }
+       var data = new Uint8ClampedArray(event.data);
+       buf.set(data, count);
+       count += data.byteLength;
+       if (count === buf.byteLength) {
+       // we're done: all data chunks have been received
+       renderPhoto(buf);
+       }
+       }
+       function renderPhoto(data) {
+       var photo = document.createElement('canvas');
+       trail.insertBefore(photo, trail.firstChild);
+       var canvas = photo.getContext('2d');
+       var img = canvas.createImageData(300, 150);
+       img.data.set(data);
+       canvas.putImageData(img, 0, 0);
+       }
+       */
+
       console.log(data.data);
       console.log(data)
       if($scope.hasAndroidPeerSharedScreen()){
@@ -530,8 +561,8 @@ angular.module('cloudKiboApp')
       location.reload();
     });
 
-    
-    
+
+
     /****** end meeting ***********/
      $scope.endMeeting = function () {
       $log.info("end meeting selected");
