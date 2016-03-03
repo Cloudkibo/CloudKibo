@@ -5,7 +5,7 @@
 
 
 angular.module('cloudKiboApp')
-<<<<<<< HEAD
+
   .controller('SurveyController', function ($scope, $routeParams, $http,RestApi,$log,logger,$location) {
     
     
@@ -64,13 +64,4 @@ angular.module('cloudKiboApp')
         $location.path('/home');
     };
   
-=======
-  .controller('SurveyController', function ($scope) {
-   // $scope.message = $routeParams.mname;
-    $scope.title = "This is a survey page again";
-
-    alert('im here');
-
-
->>>>>>> 2779ef499c7c295e2c4d3f147fa71b07a58d786e
   });

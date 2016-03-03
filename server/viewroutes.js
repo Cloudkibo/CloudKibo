@@ -134,13 +134,8 @@ exports.webmeetingRoute = function (req, res) {
 };
 exports.surveyRoute = function (req, res) {
       console.log('Req params ' + req.params[0]);
-<<<<<<< HEAD
       res.render('survey', {title: 'CloudKibo',mname :req.params[0]});
     
-=======
-      res.render('survey', {title: 'CloudKibo'});
-
->>>>>>> 2779ef499c7c295e2c4d3f147fa71b07a58d786e
 };
 exports.otherBrowserRoute = function (req, res) {
       res.render('otherBrowser', {title: 'CloudKibo'});
