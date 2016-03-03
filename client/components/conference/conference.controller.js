@@ -6,9 +6,13 @@
 
 angular.module('cloudKiboApp')
   .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
+<<<<<<< HEAD
     
     console.log('sdsd');
     
+=======
+
+>>>>>>> 2779ef499c7c295e2c4d3f147fa71b07a58d786e
      if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
       logger.log('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
@@ -22,7 +26,7 @@ angular.module('cloudKiboApp')
       $scope.supportCall = true;
     }
 
-   
+
     var screenViewer = document.getElementById('screenViewer');
     var screenAndroidImage = document.getElementById('screenAndroidImage');
 
@@ -457,6 +461,7 @@ angular.module('cloudKiboApp')
     FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
 
+      // NEVER UNCOMMENT THIS - Sojharo
       // https://io2014codelabs.appspot.com/static/codelabs/webrtc-file-sharing/#7
       // http://richard.to/projects/datachannel-demo/main.js
       /*

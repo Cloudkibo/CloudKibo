@@ -7,6 +7,7 @@ module.exports = {
   mongo: {
      uri: 'mongodb://cloudkibo:a345rq98efw@localhost/cloudkibo'
     // uri: 'mongodb://localhost/cloudkibo-test'
+
   },
 
   seedDB: false
