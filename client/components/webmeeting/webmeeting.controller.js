@@ -503,7 +503,7 @@ angular.module('cloudKiboApp')
       var canvas = photo.getContext('2d');
       var img = canvas.createImageData(320, 568);
       img.data.set(data);
-      screenViewer.src = data; // URL.createObjectURL(stream)
+      screenViewer.src = URL.createObjectURL(img)
       canvas.putImageData(img, 0, 0);
     }
     MeetingRoomFileHangout.accept_inbound_files();
