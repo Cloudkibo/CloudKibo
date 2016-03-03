@@ -499,6 +499,7 @@ angular.module('cloudKiboApp')
     var buf, count;
     function renderPhoto(data) {
       console.log('full image received')
+      console.log(data)
       var canvas = photo.getContext('2d');
       var img = canvas.createImageData(320, 568);
       img.data.set(data);
