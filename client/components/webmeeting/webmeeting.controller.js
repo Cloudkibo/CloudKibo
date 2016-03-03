@@ -492,11 +492,13 @@ angular.module('cloudKiboApp')
     canvas.classList.add('incomingPhoto');
     screenAndroidImage.insertBefore(canvas, screenAndroidImage.firstChild);
 
+    var photo = document.createElement('canvas');
+    screenAndroidImage.insertBefore(photo, screenAndroidImage.firstChild);
+
     var imageData = '';
     var buf, count;
     function renderPhoto(data) {
-      var photo = document.createElement('canvas');
-      screenAndroidImage.insertBefore(photo, screenAndroidImage.firstChild);
+      console.log('full image received')
       var canvas = photo.getContext('2d');
       var img = canvas.createImageData(300, 150);
       img.data.set(data);
@@ -505,7 +507,6 @@ angular.module('cloudKiboApp')
     MeetingRoomFileHangout.accept_inbound_files();
     MeetingRoomData.on('dataChannel.message.new', function(data){
       if($scope.hasAndroidPeerSharedScreen()){
-        console.log('Android shared screen is true')
 
         if (typeof event.data === 'string') {
           buf = new Uint8ClampedArray(parseInt(data.data));
@@ -514,6 +515,7 @@ angular.module('cloudKiboApp')
           return;
         }
         var imgdata = new Uint8ClampedArray(data.data);
+        console.log('image chunk')
         buf.set(imgdata, count);
         count += imgdata.byteLength;
         if (count === buf.byteLength) {
