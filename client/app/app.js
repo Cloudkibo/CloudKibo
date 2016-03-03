@@ -8,6 +8,8 @@ angular.module('cloudKiboApp', [
   'kiboRtc',
   'ngFileUpload',
   'ngImgCrop'
+  
+  
 ])
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
@@ -23,7 +25,8 @@ angular.module('cloudKiboApp', [
     })
     
     .when('/survey/:mname', {
-          templateUrl: function(params){return '/survey/' + params.mname},
+          
+          templateUrl: function(params){console.log(params.mname);return '/survey/' + params.mname},
           controller: 'SurveyController'
     })
     .when('/otherBrowser', {

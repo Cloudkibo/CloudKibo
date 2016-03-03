@@ -5,7 +5,7 @@
 'use strict';
 
 var FeedbackVisitor = require('./feedbackvisitor.model');
-
+var FeedbackCall = require('./feedbackcall.model');
 exports.saveVisitorFeedback = function(req, res) {
 
     var feedback = new FeedbackVisitor({
@@ -64,3 +64,21 @@ exports.index = function(req, res) {
     res.json(200, fb);
   });
 };
+
+
+exports.saveCallFeedback = function(req, res) {
+    console.log('call saveCall feedback');
+    console.log(req.body);
+    var feedback = new FeedbackCall({
+       username : req.body.username,
+       audio : req.body.audio,
+		   video : req.body.video,
+		   screen : req.body.screen,
+		   filetransfer : req.body.filetransfer,
+       datetime : {type: Date, default: Date.now }
+    });
+     feedback.save(function(err2){
+        if (err2) return console.log('Error 2'+ err);
+        res.send({status: 'success', msg: 'Thank you for your feedback.'});
+    });
+}

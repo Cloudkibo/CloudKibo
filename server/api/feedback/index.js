@@ -12,6 +12,7 @@ var router = express.Router();
 
 
 router.post("/visitor", controller.saveVisitorFeedback);
+router.post("/call", controller.saveCallFeedback);
 router.get('/', controller.index);
 
 module.exports = router;

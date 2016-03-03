@@ -1,4 +1,5 @@
-div(class = 'changebckcolor' style="height:100vh;")
+div(class = 'changebckcolor' style="height:100vh;overflow:hidden;")
+    
    .pre-header(class = 'bckcolor-preheader')
       .row(style="height:40px;")
               ul.list-unstyled.list-inline(style="margin-top:5px;text-align:center;")
@@ -8,34 +9,42 @@ div(class = 'changebckcolor' style="height:100vh;")
                       img(src='/images/logo_small_black.png')
                       | CloudKibo
     
-    div
-        label Audio Quality
-          select(id = "example")
-                                  option(value='1') 1 (Very Bad)
-                                  option(value='2') 2 (Bad)
-                                  option(value='3') 3 (Good)
-                                  option(value='4') 4 (Best)
-                                  option(value='5') 5 (Awesome)
-
-       label Video Quality
-              select(id = "example")
-                                        option(value='1') 1 (Very Bad)
-                                        option(value='2') 2 (Bad)
-                                        option(value='3') 3 (Good)
-                                        option(value='4') 4 (Best)
-                                        option(value='5') 5 (Awesome)
-       label File Transfer Quality
-              select(id = "example")
-                                        option(value='1') 1 (Very Bad)
-                                        option(value='2') 2 (Bad)
-                                        option(value='3') 3 (Good)
-                                        option(value='4') 4 (Best)
-                                        option(value='5') 5 (Awesome)
-       label Screen Share Quality
-              select(id = "example")
-                                        option(value='1') 1 (Very Bad)
-                                        option(value='2') 2 (Bad)
-                                        option(value='3') 3 (Good)
-                                        option(value='4') 4 (Best)
-                                        option(value='5') 5 (Awesome)
-                                  
+    div(class = "otherbrowser-warning")
+      div(class = "form-div")
+          h3(style ="text-align:center") Call Quality FeedBack
+          p(style = "font-size :20px")
+            b How would you rate quality of this call?
+          p(style = "font-size :18px")
+            | Your feedback will help us make CloudKibo better
+          b Rate from 1(Very Bad) to 5(Awesome)
+          br
+          br
+          form.css-form(role='form', novalidate='novalidate', name='form7', enctype='multipart/form-data', ng-submit='feedBackForm()')
+            input(type = "hidden" ,ng-model = "uname" ,name = 'username' )
+            div  
+              label Audio Quality
+              rating(value="audio" name = "audio"  max = "5" on-hover="hoveringOver(value)" on-leave="overStar = null")
+              p
+                | Rate: <b>{{audio}}</b>
+            br
+                      
+            
+            div  
+              label Video Quality
+              rating(value="video" name="video"  max = "5" on-hover="hoveringOver(value)" on-leave="overStar = null")
+              p
+                | Rate: <b>{{video}}</b>
+            br
+            div        
+              label Screen Share Quality
+              rating(value="screen" name = "screen"  max = "5" on-hover="hoveringOver(value)" on-leave="overStar = null")
+              p
+                | Rate: <b>{{screen}}</b>
+            br  
+            div  
+              label File Share Quality
+              rating(value="filetransfer" name = "filetransfer"  max = "5" on-hover="hoveringOver(value)" on-leave="overStar = null") 
+              p
+                | Rate: <b>{{filetransfer}}</b>
+            br
+            button.btn.btn-send(type='submit', ng-disabled='form7.$invalid') Send Feedback

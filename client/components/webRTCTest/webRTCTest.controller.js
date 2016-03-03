@@ -5,7 +5,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('SurveyController', function ($scope) {
+  .controller('WebRTCTestController', function ($scope) {
    // $scope.message = $routeParams.mname;
     $scope.title = "This is a survey page"
    // console.log('Your name is '+$routeParams.mname);

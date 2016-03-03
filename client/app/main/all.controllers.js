@@ -5,6 +5,7 @@
 angular.module('cloudKiboApp')
   .controller('TabsController', function ($scope, $location, Auth, $http, socket, RestApi, logger, $log, MainService) {
 
+    console.log('inside tabs controller')
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;

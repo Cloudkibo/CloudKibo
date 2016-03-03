@@ -266,7 +266,8 @@ angular.module('cloudKiboApp')
                  *
                  */
                 feedbackByUser: '/api/feedback/',
-
+                
+                feedbackByUserCall: '/api/feedback/call',
                 /**
                  * feedback from any visitor from contacts page
                  *

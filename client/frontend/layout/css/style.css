@@ -5461,8 +5461,19 @@ background:rgba(51, 51, 51, 0.7);
 }
 
 /*** star rating **/
-.star-rating {
-  line-height:32px;
-  font-size:1.25em;
-  cursor: pointer;
+.glyphicon-star, .glyphicon-star-empty {
+  color:red;
+  font-size:18px;
 }
+
+.form-div
+{   margin: 0 auto;
+    background: white;
+    width: 500px;
+    padding: 10px;
+    text-align: left;
+    border-radius: 20px !important;
+    }
+.form-div  div p{
+font-size : 15px;
+}    

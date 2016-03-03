@@ -556,7 +556,7 @@ angular.module('cloudKiboApp')
 
     $scope.connected = true;
     $scope.isConnected = function () {
-      return $scope.connected;
+      return $scope.connected;v
     };
     MeetingRoom.on('connection.status', function(data){
       $scope.connected = data.status;
@@ -571,5 +571,23 @@ angular.module('cloudKiboApp')
       location.reload();
     });
 
+    
+    
+    
+    /****** end meeting ***********/
+     $scope.endMeeting = function () {
+      $log.info("end meeting selected");
+      logger.log("end meeting selected");
+      logger.log("end meeting selected");
+      $scope.userMessages = [];
+      $scope.peers = [];
+      $routeParams.mname = '';
+      MeetingRoom.sendChat($scope.user.username + ' has left', $scope.supportCallData);
+      if($scope.screenSharedLocal)
+        screenStream.getTracks()[0].stop();
+      //MeetingStream.reset();
+      MeetingRoom.end();
+      $location.path('/survey/'+$scope.user.username);
+    };
 
   });
