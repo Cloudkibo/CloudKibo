@@ -6,7 +6,6 @@ var crypto = require("crypto");
 var verificationtoken = require("./api/tokens/verificationtoken.model");
 var passwordresettoken = require("./api/tokens/passwordresettoken.model");
 var configuration = require('./api/configuration/configuration.model');
-var UAParser = require('ua-parser-js');
 var html_dir = './public/';
 
 exports.appRoute = function (req, res) {
@@ -68,7 +67,7 @@ exports.conferenceRoute = function (req, res) {
         if(browserName != 'Chrome')
         {
            res.redirect('/otherBrowser');
-          
+
         }
         else
         {*/
@@ -97,12 +96,12 @@ exports.conferenceRoute = function (req, res) {
 };
 
 exports.webmeetingRoute = function (req, res) {
-        var parser = new UAParser();
-        var ua = req.headers['user-agent'];
-        var browserName = parser.setUA(ua).getBrowser().name;
-        var fullBrowserVersion = parser.setUA(ua).getBrowser().version;
-        var browserVersion = fullBrowserVersion.split(".",1).toString();
-        var browserVersionNumber = Number(browserVersion);
+        //var parser = new UAParser();
+        //var ua = req.headers['user-agent'];
+        //var browserName = parser.setUA(ua).getBrowser().name;
+        //var fullBrowserVersion = parser.setUA(ua).getBrowser().version;
+        //var browserVersion = fullBrowserVersion.split(".",1).toString();
+        //var browserVersionNumber = Number(browserVersion);
     /*    if(browserName != 'Chrome')
         {
             res.redirect('/otherBrowser');//, {title: 'CloudKibo'});
@@ -129,18 +128,18 @@ exports.webmeetingRoute = function (req, res) {
 
           }
       //  }
-  
-  
- 
+
+
+
 };
 exports.surveyRoute = function (req, res) {
       console.log('Req params ' + req.params[0]);
       res.render('survey', {title: 'CloudKibo'});
-    
+
 };
 exports.otherBrowserRoute = function (req, res) {
       res.render('otherBrowser', {title: 'CloudKibo'});
-    
+
 };
 
 

@@ -271,13 +271,13 @@ angular.module('cloudKiboApp')
         if ($scope.toggleAudioText === 'Share Audio') {
           $scope.toggleAudioText = 'Mute Audio';
           logger.log("" + $scope.user.username + " has unmuted");
-          
+
           MeetingRoom.toggleAudio();
           $('#bck-audio').toggleClass('not-working');
           $('#bck-audio >a').attr('data-original-title', function(index, attr){
                   return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
           }).tooltip('show');
-        
+
         }
         else {
           logger.log("" + $scope.user.username + " has muted");
@@ -287,7 +287,7 @@ angular.module('cloudKiboApp')
           $('#bck-audio >a').attr('data-original-title', function(index, attr){
                   return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
           }).tooltip('show');
-        
+
         }
       }
     };
@@ -314,12 +314,12 @@ angular.module('cloudKiboApp')
               logger.log("video stream access was denied: error "+err+", username : "+ $scope.user.username);
               $scope.error = 'No video permissions. Please allow the video capturing and refresh your browser.';
             });
-            
+
           $('#bck-camera').toggleClass('not-working');
           $('#bck-camera >a').attr('data-original-title', function(index, attr){
                   return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
           }).tooltip('show');
-        
+
         }
         else {
           $scope.toggleVideoText = 'Share Video';
@@ -330,7 +330,7 @@ angular.module('cloudKiboApp')
           $('#bck-camera >a').attr('data-original-title', function(index, attr){
                   return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
           }).tooltip('show');
-        
+
         }
       }
     };
@@ -487,17 +487,42 @@ angular.module('cloudKiboApp')
       }
     }
 
+    // todo see if they should be removed
     var canvas = document.createElement('canvas');
     canvas.classList.add('incomingPhoto');
     screenAndroidImage.insertBefore(canvas, screenAndroidImage.firstChild);
 
     var imageData = '';
+    var buf, count;
+    function renderPhoto(data) {
+      var photo = document.createElement('canvas');
+      screenAndroidImage.insertBefore(photo, screenAndroidImage.firstChild);
+      var canvas = photo.getContext('2d');
+      var img = canvas.createImageData(300, 150);
+      img.data.set(data);
+      canvas.putImageData(img, 0, 0);
+    }
     MeetingRoomFileHangout.accept_inbound_files();
     MeetingRoomData.on('dataChannel.message.new', function(data){
       if($scope.hasAndroidPeerSharedScreen()){
         console.log('Android shared screen is true')
-        if (data.data.byteLength  || typeof data.data !== 'string') {
-          imageData += data.data;
+
+        if (typeof event.data === 'string') {
+          buf = new Uint8ClampedArray(parseInt(data.data));
+          count = 0;
+          console.log('Expecting a total of ' + buf.byteLength + ' bytes');
+          return;
+        }
+        var imgdata = new Uint8ClampedArray(data.data);
+        buf.set(imgdata, count);
+        count += imgdata.byteLength;
+        if (count === buf.byteLength) {
+          // we're done: all data chunks have been received
+          renderPhoto(buf);
+        }
+
+        //if (data.data.byteLength  || typeof data.data !== 'string') {
+          /*imageData += data.data;
 
           var context = canvas.getContext('2d');
           var img = context.createImageData(300, 150);
@@ -508,14 +533,14 @@ angular.module('cloudKiboApp')
           //screenViewer.src = androidPeerScreenStream;
           trace("Image chunk received");
           var notificationMessage ='You have received a file';
+          */
 
-
-        } else {
-          androidPeerScreenStream = imageData;
+        //} else {
+          /*androidPeerScreenStream = imageData;
           screenViewer.src = androidPeerScreenStream;
           imageData = '';
-          trace("Received all data. Setting image.");
-        }
+          trace("Received all data. Setting image.");*/
+        //}
         return ;
       }
       //console.log(data);
