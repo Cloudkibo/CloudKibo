@@ -496,7 +496,7 @@ angular.module('cloudKiboApp')
     screenAndroidImage.insertBefore(photo, screenAndroidImage.firstChild);
 
     var imageData = '';
-    var buf, count;
+    /*var buf, count;
     function renderPhoto(data) {
       console.log('full image received')
       console.log(data)
@@ -504,7 +504,8 @@ angular.module('cloudKiboApp')
       var img = canvas.createImageData(320, 568);
       img.data.set(data);
       canvas.putImageData(img, 0, 0);
-    }
+    }*/
+    var chunks = []; var count;
     MeetingRoomFileHangout.accept_inbound_files();
     MeetingRoomData.on('dataChannel.message.new', function(data){
       if($scope.hasAndroidPeerSharedScreen()){
@@ -512,16 +513,21 @@ angular.module('cloudKiboApp')
         if (typeof event.data === 'string') {
           buf = new Uint8ClampedArray(parseInt(data.data));
           count = 0;
+          chunks = [];
           console.log('Expecting a total of ' + buf.byteLength + ' bytes');
           return;
         }
         var imgdata = new Uint8ClampedArray(data.data);
         console.log('image chunk')
         buf.set(imgdata, count);
+        chunks[count] = data.data;
         count += imgdata.byteLength;
         if (count === buf.byteLength) {
           // we're done: all data chunks have been received
-          renderPhoto(buf);
+          //renderPhoto(buf);
+          var builder = new Blob(chunks, buf.type);
+          console.log('full image received');
+          screenViewer.src = URL.createObjectURL(builder);
         }
 
         //if (data.data.byteLength  || typeof data.data !== 'string') {
@@ -599,9 +605,9 @@ angular.module('cloudKiboApp')
       location.reload();
     });
 
-    
-    
-    
+
+
+
     /****** end meeting ***********/
      $scope.endMeeting = function () {
       $log.info("end meeting selected");
