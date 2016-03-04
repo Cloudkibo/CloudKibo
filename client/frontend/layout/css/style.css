@@ -336,7 +336,7 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 }
 
 .chatButtonRow{
- 
+
 float: right;
 position: relative;
 margin-top: -93px;
@@ -910,7 +910,7 @@ display:block;
 {
   margin:0px;
   padding:0px;
-  
+
    width: 180px    !important;
   height: 200px   !important;
 }
@@ -945,7 +945,7 @@ display:block;
   padding-top:90px;
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.26);
   border : 2px solid #000000;
-  
+
 }
 
 
@@ -1460,7 +1460,7 @@ input#file {
 	overflow: hidden;
 	position: absolute;
 	z-index: -1;
-  
+
 }
 /*input#file+ label {
    max-width: 80%;
@@ -2531,7 +2531,7 @@ body.page-header-fixed {
 
   position: relative;
   height:auto;
-  
+
 }
 .ie8 .header {
   border-bottom: 1px solid #eee;
@@ -2577,7 +2577,7 @@ body.page-header-fixed {
   left:0px;
   right:0px;
   text-transform: uppercase;
- 
+
 }
 .mybtn-header {
     text-align:center;
@@ -2591,12 +2591,12 @@ body.page-header-fixed {
     bottom: 0;
     right: 0;
     margin-top: 20px;
-    
+
 }
 .mybtn-header  li{
     vertical-align: top;
     display: inline-block;
-   
+
 }
 
 .header-navigation > ul > li > a {
@@ -5137,11 +5137,11 @@ Styler Panel
 
 .no-meeting
 {
-text-align: center; 
+text-align: center;
 width: 100vw;
 position: relative;
-left: calc(-43vw + 50%);  
- 
+left: calc(-43vw + 50%);
+
 }
 div.cc{
 margin:0 auto;
@@ -5153,8 +5153,8 @@ text-align:center;
 width:100%;
 margin-left:10%;
 margin-right:10%;
-  
- 
+
+
 }
 .endmeetingButtonUI{
      right: 70px;
@@ -5187,12 +5187,12 @@ margin-right:10%;
   padding-bottom: 5px;
   position: relative;
   width: 200px;
-  margin: 0 auto; 
+  margin: 0 auto;
   margin-top:30px;
   float:right;
   border: 10px solid #4B5E20;
-  
- 
+
+
 }
 
 .clock::after {
@@ -5275,7 +5275,7 @@ margin-right:10%;
     padding: 10px;
 }
 
-.modal .modal-header  i 
+.modal .modal-header  i
 {
   font-size: 32px;
   color: rgb(60, 99, 118);
@@ -5311,7 +5311,7 @@ padding-top:10px;
     letter-spacing: 1px;
     text-transform: uppercase;
 }
- 
+
 .mybtn:focus, .mybtn:active:focus, .mybtn.active:focus {
     outline: 0 none;
 }
@@ -5333,12 +5333,12 @@ padding-top:10px;
     background: #0099cc;
     color: #ffffff;
 }
- 
+
 .mybtn-primary:hover, .mybtn-primary:focus, .mybtn-primary:active, .mybtn-primary.active, .open > .dropdown-toggle.mybtn-primary {
     background: #33a6cc;
     text-decoration:none;
 }
- 
+
 .mybtn-primary:active, .mybtn-primary.active {
     background: #007299;
     box-shadow: none;
@@ -5416,7 +5416,7 @@ margin-bottom: 20px;
     outline-offset: -5px;
     -webkit-transition: background-color .1s linear;
     transition: background-color .1s linear;
-    
+
 }
 .myicon-btn:hover{
 background:rgba(51, 51, 51, 0.7);
@@ -5476,4 +5476,12 @@ background:rgba(51, 51, 51, 0.7);
     }
 .form-div  div p{
 font-size : 15px;
-}    
+}
+
+.feedback-response{
+  margin: 0 auto;
+  width: 300px;
+  background: #fff;
+  border-radius: 20px !important;
+  padding: 10px;
+}

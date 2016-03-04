@@ -1,5 +1,5 @@
 div(class = 'changebckcolor' style="height:100vh;overflow:hidden;")
-    
+
    .pre-header(class = 'bckcolor-preheader')
       .row(style="height:40px;")
               ul.list-unstyled.list-inline(style="margin-top:5px;text-align:center;")
@@ -9,9 +9,9 @@ div(class = 'changebckcolor' style="height:100vh;overflow:hidden;")
                       img(src='/images/logo_small_black.png')
 
                       | CloudKibo
-    
+
     div(class = "otherbrowser-warning")
-      div(class = "form-div")
+      div(class = "form-div" ng-hide = 'form_submitted')
           h3(style ="text-align:center") Call Quality FeedBack
           p(style = "font-size :20px")
             b How would you rate quality of this call?
@@ -22,30 +22,33 @@ div(class = 'changebckcolor' style="height:100vh;overflow:hidden;")
           br
           form.css-form(role='form', novalidate='novalidate', name='form7', enctype='multipart/form-data', ng-submit='feedBackForm()')
             input(type = "hidden" ,ng-model = "uname" ,name = 'username' )
-            div  
+            div
               label Audio Quality
               rating(value="audio" name = "audio"  max = "5" on-hover="hoveringOver(value)" on-leave="overStar = null")
               p
                 | Rate: <b>{{audio}}</b>
             br
-                      
-            
-            div  
+
+
+            div
               label Video Quality
               rating(value="video" name="video"  max = "5" on-hover="hoveringOver(value)" on-leave="overStar = null")
               p
                 | Rate: <b>{{video}}</b>
             br
-            div        
+            div
               label Screen Share Quality
               rating(value="screen" name = "screen"  max = "5" on-hover="hoveringOver(value)" on-leave="overStar = null")
               p
                 | Rate: <b>{{screen}}</b>
-            br  
-            div  
+            br
+            div
               label File Share Quality
-              rating(value="filetransfer" name = "filetransfer"  max = "5" on-hover="hoveringOver(value)" on-leave="overStar = null") 
+              rating(value="filetransfer" name = "filetransfer"  max = "5" on-hover="hoveringOver(value)" on-leave="overStar = null")
               p
                 | Rate: <b>{{filetransfer}}</b>
             br
             button.btn.btn-send(type='submit', ng-disabled='form7.$invalid') Send Feedback
+      div(ng-show = 'form_submitted' class="feedback-response")
+          p(style = "color:red") Feedback submitted.
+          p Thank you for your feedback.

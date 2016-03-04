@@ -14,7 +14,7 @@ angular.module('cloudKiboApp')
     $scope.uname = $routeParams.mname;
     console.log('This is a survey page');
     
-  
+   $scope.form_submitted = false;
    $scope.audio = 3;
    $scope.video = 3;
    $scope.screen = 3;
@@ -59,9 +59,10 @@ angular.module('cloudKiboApp')
           $log.info('Error:', data)
         });
         
-        alert('Feedback submitted.Thank you for your feedback.');
+        $scope.form_submitted = true;
+    //    alert('Feedback submitted.Thank you for your feedback.');
         //setTimeout(function(){var ww = window.open(window.location, '_self'); ww.close(); }, 1000);
-        $location.path('/home');
+     //   $location.path('/home');
     };
   
   });
