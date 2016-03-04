@@ -62,7 +62,19 @@ angular.module('cloudKiboApp')
       /* remove data */
       chunks = {};
       meta = {};
+      console.log('i am clicked');
 
+      //to remove file from recepients container
+      /* send a kill message */
+      Room.sendDataChannelMessage(JSON.stringify({
+        "eventName": "kill_msg",
+        "data": {
+          "kill": true
+        }
+      }));
+
+     // $('#myModal').modal('hide');
+      $("[data-dismiss=modal]").trigger({ type: "click" });
       /* also clear the container */
       create_or_clear_container(0);
 
@@ -169,7 +181,7 @@ angular.module('cloudKiboApp')
       //console.log(meta);
 
       send_meta();
-     
+
       Room.sendChat("You have received a file. Download and Save it.");
 
       /* user 0 is this user! */
@@ -210,7 +222,7 @@ angular.module('cloudKiboApp')
     function process_data(data) {
       data = JSON.parse(data).data;
       console.log(data.username);
-      
+
       $log.debug('process_data function: ', data)
       if (data.file_meta) {
         /* we are recieving file meta data */
@@ -286,9 +298,10 @@ angular.module('cloudKiboApp')
           "browser": isChrome ? 'chrome' : 'firefox'
         }
       }));
+
     }
-    
-    
+
+
 
     /* request id's file by sending request for block 0 */
     function download_file(id) {
@@ -379,17 +392,18 @@ angular.module('cloudKiboApp')
       var username = ''; // temporary
       if (!filecontainer) {
         /* if filecontainer doesn't exist, create it */
-        var fs = '<div id="' + id + '">' + username + '</div>';
-        filelist.innerHTML = filelist.innerHTML + fs;
+     //   var fs = '<div id="' + id + '">' + username + '</div>';
+      //  filelist.innerHTML = filelist.innerHTML + fs;
       } else {
         /* if filecontainer does exist, clear it */
-        filecontainer.innerHTML = username;
+     //   filecontainer.innerHTML = username;
       }
     }
 
     /* creates an entry in our filelist for a user, if it doesn't exist already */
     function remove_container(id) {
       var filecontainer = document.getElementById(id);
+
       if (filecontainer) {
         filecontainer.remove();
       }
@@ -407,7 +421,7 @@ angular.module('cloudKiboApp')
       var mymodalbody = document.getElementById('modelbodyupload');
       var mymodalfooter = document.getElementById('modelfooterupload');
       //create the link
-      var span = document.getElementById('uploadspan'); 
+      var span = document.getElementById('uploadspan');
       span.innerHTML = '';
       span.innerHTML = 'File : ' + filename + ' ';
       var a = document.getElementById('upload_stop');
@@ -421,17 +435,17 @@ angular.module('cloudKiboApp')
       //append link!
  //     filecontainer.appendChild(span);
  //     filecontainer.appendChild(a);
-   
+
     }
-    
-    
+
+
     /* create a link that will let the user start the download */
     function create_pre_file_link(meta, id, username) {
 
       //create a place to store this if it does not already
       create_or_clear_container(id);
       var filecontainer = document.getElementById(id);
-      
+
       var modelbody = document.getElementById('modelbody');
       var savebtn = document.getElementById('savefile');
       savebtn.href = '';
@@ -454,10 +468,10 @@ angular.module('cloudKiboApp')
       a.textContent = 'Download';
       a.draggable = true;
       console.log(a.href);
-     
+
       modelbody.appendChild(p);
       modelbody.appendChild(p1);
-      
+
       modelbody.appendChild(a);
        $('#myModal').modal('show');
       //append link!
@@ -471,7 +485,7 @@ angular.module('cloudKiboApp')
     /* update a file container with a DL % */
     function update_container_percentage(id, chunk_num, chunk_total, total_size) {
       var modelbody = document.getElementById('modelbody');
-    
+
       create_or_clear_container(id);
       var span = document.getElementById(id + '-span');
 
@@ -519,7 +533,7 @@ angular.module('cloudKiboApp')
       var messages = document.getElementById('messages');
     //  filecontainer.appendChild(span);
     //  filecontainer.appendChild(a);
-      
+
       /* make delete button */
      // filecontainer.innerHTML = filecontainer.innerHTML + " ";
       /* add cancel button */

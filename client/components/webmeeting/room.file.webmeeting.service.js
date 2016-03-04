@@ -64,6 +64,14 @@ angular.module('cloudKiboApp')
       chunks = {};
       meta = {};
 
+    //to remove file from recepients container
+      /* send a kill message */
+      MeetingRoomData.sendDataChannelMessage(JSON.stringify({
+        "eventName": "kill_msg",
+        "data": {
+          "kill": true
+        }
+      }));
       /* also clear the container */
       create_or_clear_container(0);
 
