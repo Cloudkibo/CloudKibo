@@ -6,8 +6,8 @@
 
 angular.module('cloudKiboApp')
   .controller('WebMeetingController', function ($sce, MeetingStream, $location, $routeParams, $scope, MeetingRoom, MeetingRoomVideo, MeetingRoomScreen, MeetingRoomData, $timeout, logger, ScreenShare, MeetingRoomFileHangout, $log) {
-     $('[data-toggle="tooltip"]').tooltip();
-      myclockStart();
+    $('[data-toggle="tooltip"]').tooltip();
+    myclockStart();
     if($location.search().role){
       $scope.supportCall = true;
     }
@@ -275,7 +275,7 @@ angular.module('cloudKiboApp')
           MeetingRoom.toggleAudio();
           $('#bck-audio').toggleClass('not-working');
           $('#bck-audio >a').attr('data-original-title', function(index, attr){
-                  return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
+            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
           }).tooltip('show');
 
         }
@@ -283,9 +283,9 @@ angular.module('cloudKiboApp')
           logger.log("" + $scope.user.username + " has muted");
           $scope.toggleAudioText = 'Share Audio';
           MeetingRoom.toggleAudio();
-           $('#bck-audio').toggleClass('not-working');
+          $('#bck-audio').toggleClass('not-working');
           $('#bck-audio >a').attr('data-original-title', function(index, attr){
-                  return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
+            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
           }).tooltip('show');
 
         }
@@ -317,7 +317,7 @@ angular.module('cloudKiboApp')
 
           $('#bck-camera').toggleClass('not-working');
           $('#bck-camera >a').attr('data-original-title', function(index, attr){
-                  return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
+            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
           }).tooltip('show');
 
         }
@@ -328,7 +328,7 @@ angular.module('cloudKiboApp')
           logger.log("" + $scope.user.username + " has hidden the video");
           $('#bck-camera').toggleClass('not-working');
           $('#bck-camera >a').attr('data-original-title', function(index, attr){
-                  return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
+            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
           }).tooltip('show');
 
         }
@@ -496,15 +496,17 @@ angular.module('cloudKiboApp')
     screenAndroidImage.insertBefore(photo, screenAndroidImage.firstChild);
 
     var imageData = '';
-    var buf, count;
-    function renderPhoto(data) {
-      console.log('full image received')
-      console.log(data)
-      var canvas = photo.getContext('2d');
-      var img = canvas.createImageData(320, 568);
-      img.data.set(data);
-      canvas.putImageData(img, 0, 0);
-    }
+    /*var buf, count;
+     function renderPhoto(data) {
+     console.log('full image received')
+     console.log(data)
+     var canvas = photo.getContext('2d');
+     var img = canvas.createImageData(320, 568);
+     img.data.set(data);
+     canvas.putImageData(img, 0, 0);
+     }*/
+    var buf;
+    var chunks = []; var count;
     MeetingRoomFileHangout.accept_inbound_files();
     MeetingRoomData.on('dataChannel.message.new', function(data){
       if($scope.hasAndroidPeerSharedScreen()){
@@ -512,37 +514,42 @@ angular.module('cloudKiboApp')
         if (typeof event.data === 'string') {
           buf = new Uint8ClampedArray(parseInt(data.data));
           count = 0;
+          chunks = [];
           console.log('Expecting a total of ' + buf.byteLength + ' bytes');
           return;
         }
         var imgdata = new Uint8ClampedArray(data.data);
         console.log('image chunk')
         buf.set(imgdata, count);
+        chunks[count] = data.data;
         count += imgdata.byteLength;
         if (count === buf.byteLength) {
           // we're done: all data chunks have been received
-          renderPhoto(buf);
+          //renderPhoto(buf);
+          var builder = new Blob(chunks, buf.type);
+          console.log('full image received');
+          screenViewer.src = URL.createObjectURL(builder);
         }
 
         //if (data.data.byteLength  || typeof data.data !== 'string') {
-          /*imageData += data.data;
+        /*imageData += data.data;
 
-          var context = canvas.getContext('2d');
-          var img = context.createImageData(300, 150);
-          img.data.set(data.data);
-          context.putImageData(img, 0, 0);
-          screenViewer.src = img;
-          //androidPeerScreenStream = imageData; // testing
-          //screenViewer.src = androidPeerScreenStream;
-          trace("Image chunk received");
-          var notificationMessage ='You have received a file';
-          */
+         var context = canvas.getContext('2d');
+         var img = context.createImageData(300, 150);
+         img.data.set(data.data);
+         context.putImageData(img, 0, 0);
+         screenViewer.src = img;
+         //androidPeerScreenStream = imageData; // testing
+         //screenViewer.src = androidPeerScreenStream;
+         trace("Image chunk received");
+         var notificationMessage ='You have received a file';
+         */
 
         //} else {
-          /*androidPeerScreenStream = imageData;
-          screenViewer.src = androidPeerScreenStream;
-          imageData = '';
-          trace("Received all data. Setting image.");*/
+        /*androidPeerScreenStream = imageData;
+         screenViewer.src = androidPeerScreenStream;
+         imageData = '';
+         trace("Received all data. Setting image.");*/
         //}
         return ;
       }
@@ -599,11 +606,11 @@ angular.module('cloudKiboApp')
       location.reload();
     });
 
-    
-    
-    
+
+
+
     /****** end meeting ***********/
-     $scope.endMeeting = function () {
+    $scope.endMeeting = function () {
       $log.info("end meeting selected");
       logger.log("end meeting selected");
       logger.log("end meeting selected");
