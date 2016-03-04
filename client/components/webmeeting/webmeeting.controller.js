@@ -505,6 +505,7 @@ angular.module('cloudKiboApp')
       img.data.set(data);
       canvas.putImageData(img, 0, 0);
     }*/
+    var buf;
     var chunks = []; var count;
     MeetingRoomFileHangout.accept_inbound_files();
     MeetingRoomData.on('dataChannel.message.new', function(data){

@@ -178,10 +178,9 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
               center
                 span
                   video(ng-src='{{getPeerScreen()}}',autoplay='true', style='width: {{widthScreen}}; height: {{heightScreen}}', class='videoelementscreen', controls='true')
-            div(ng-show='true')
+            div(ng-show='hasAndroidPeerSharedScreen()')
               center
                 span
-                  | This is screen area
                   img(id='screenViewer', ng-src='{{getAndroidPeerScreen()}}')
                   div(id='screenAndroidImage')
             br
