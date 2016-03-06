@@ -12,12 +12,14 @@
 angular.module('cloudKiboApp')
   .factory('FileHangout', function FileHangout($rootScope, Room, FileUtility, $log) {
     var isChrome = !!navigator.webkitGetUserMedia;
-
+    var fs_container = document.getElementById('filelist_container');
     window.URL = window.URL || window.webkitURL;
     /* sending functionality, only allow 1 file to be sent out at a time */
     var chunks = {};
     var meta = {};
     var filesysteminuse = false;
+    var fileCount = 0;
+    var receivedFileCount = 0;
     var FSdebug = true;
     /* Used in Chrome to handle larger files (and firefox with idb.filesystem.js) */
     window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
@@ -39,7 +41,7 @@ angular.module('cloudKiboApp')
     /* true if the file has been created*/
     var requestedChunksWritePointer = [];
     /* stores the value of the next chunk to be requested */
-
+    var file_username ='';
     /* event delegation
      * -we need to do this to form a chrome app - see https://developer.chrome.com/extensions/contentSecurityPolicy#H2-3
      * -huge thanks to http://stackoverflow.com/questions/13142664/are-multiple-elements-each-with-an-addeventlistener-allowed
@@ -61,22 +63,29 @@ angular.module('cloudKiboApp')
     function upload_stop() {
       /* remove data */
       chunks = {};
-      meta = {};
+      // $('#myModal').modal('hide');
+      // $("[data-dismiss=modal]").trigger({ type: "click" });
+      /* also clear the container */
+     // create_or_clear_container(meta.fid);
+
+      /** removing file entry from the container **/
+      clear_container(meta.fid);
+
       console.log('i am clicked');
 
       //to remove file from recepients container
       /* send a kill message */
+      /* adding file id:which data is killed */
       Room.sendDataChannelMessage(JSON.stringify({
         "eventName": "kill_msg",
         "data": {
-          "kill": true
+          "kill": true,
+          "fileid" : meta.fid
         }
       }));
+      meta = {};
 
-     // $('#myModal').modal('hide');
-      $("[data-dismiss=modal]").trigger({ type: "click" });
-      /* also clear the container */
-      create_or_clear_container(0);
+
 
       /* firefox and chrome specific I think, but clear the file input */
       document.getElementById('file').value = '';
@@ -178,14 +187,16 @@ angular.module('cloudKiboApp')
       meta.size = file.size;
       meta.filetype = file.type;
       meta.browser = isChrome ? 'chrome' : 'firefox';
-      //console.log(meta);
+      meta.uname = Room.getusername();
+      meta.fid = fileCount; //to store file id;
+      console.log(meta);
 
       send_meta();
 
       Room.sendChat("You have received a file. Download and Save it.");
 
       /* user 0 is this user! */
-      create_upload_stop_link(file_to_upload.name, 0);//, username);
+      create_upload_stop_link(file_to_upload.name, meta.fid);//, username);
     }
 
     /* inbound - recieve binary data (from a file)
@@ -221,27 +232,27 @@ angular.module('cloudKiboApp')
      */
     function process_data(data) {
       data = JSON.parse(data).data;
-      console.log(data.username);
+      console.log('This is file data received ' + data);
 
       $log.debug('process_data function: ', data)
       if (data.file_meta) {
         /* we are recieving file meta data */
 
         /* if it contains file_meta, must be meta data! */
-        recieved_meta[0] = data.file_meta;
-        recieved_meta[0].numOfChunksInFile = Math.ceil(recieved_meta[0].size / FileUtility.getChunkSize());
-        recieved_meta[0].name = FileUtility.sanitize(recieved_meta[0].name);
+        recieved_meta[data.file_meta.fid] = data.file_meta;
+        recieved_meta[data.file_meta.fid].numOfChunksInFile = Math.ceil(recieved_meta[data.file_meta.fid].size / FileUtility.getChunkSize());
+        recieved_meta[data.file_meta.fid].name = FileUtility.sanitize(recieved_meta[data.file_meta.fid].name);
 
         /* we are not downloading anymore if we just got meta data from a user
          * call to create_pre_file_link is reliant on this to not display [c] button on new file information
          */
-        downloading[0] = false;
-        delete_file(0);
+        downloading[data.file_meta.fid] = false;
+        delete_file(data.file_meta.fid);
 
 
         /* create a download link */
-        create_pre_file_link(recieved_meta[0], 0, data.username);
-
+       // create_pre_file_link(recieved_meta[0], 0, data.username);
+        create_pre_file_link(recieved_meta[data.file_meta.fid], data.file_meta.fid, data.file_meta.uname);
         /* if auto-download, start the process */
         /* removed feature
          if ($("#auto_download").prop('checked')) {
@@ -253,33 +264,37 @@ angular.module('cloudKiboApp')
       } else if (data.kill) {
         /* if it is a kill msg, then the user on the other end has stopped uploading! */
 
-        downloading[0] = false;
-        delete_file(0);
-        if (recieved_meta[0]) {
-          recieved_meta[0].chunks_recieved = 0;
+        downloading[data.fileid] = false;
+        delete_file(data.fileid);
+        if (recieved_meta[data.fileid]) {
+          recieved_meta[data.fileid].chunks_recieved = 0;
         }
-        create_or_clear_container(0);
+       // create_or_clear_container(0);
+        clear_container(data.fileid);
 
       } else if (data.ok_to_download) {
+        console.log('data.ok_to_download');
+        console.log(data);
         /* if we recieve an ok to download message from other host, our last file hash checks out and we can now offer the file up to the user */
 
         if (isChrome) {
-          create_file_link(recieved_meta[0], 0, saved_fileEntry[0]);
+          create_file_link(recieved_meta[data.file_meta.fid],data.file_meta.fid, saved_fileEntry[data.file_meta.fid]);
         } else {
           /* one little idb.filesystem.js quirk */
-          saved_fileEntry[0].file(function (file) {
-            create_file_link(recieved_meta[0], 0, file);
+          saved_fileEntry[data.file_meta.fid].file(function (file) {
+            create_file_link(recieved_meta[data.file_meta.fid],data.file_meta.fid, file);
             /* <-- file, not fileEntry */
           });
         }
       } else {
 
         $log.debug('Chunk is requested');
-
+        console.log('Chunk is requested ');
+        console.log(data);
         /* Otherwise, we are going to assume that if we have reached here, this is a request to download our file */
         if (data.chunk % FileUtility.getChunksPerAck() == 0) {
           for (var i = 0; i < FileUtility.getChunksPerAck(); i++) {
-            send_chunk_if_queue_empty(0, data.chunk + i, data.browser, data.rand, data.hash);
+            send_chunk_if_queue_empty(data.fid, data.chunk + i, data.browser, data.rand, data.hash);
           }
         }
       }
@@ -295,7 +310,8 @@ angular.module('cloudKiboApp')
         "eventName": "request_chunk",
         "data": {
           "chunk": chunk_num,
-          "browser": isChrome ? 'chrome' : 'firefox'
+          "browser": isChrome ? 'chrome' : 'firefox',
+          "fid" : id
         }
       }));
 
@@ -359,45 +375,56 @@ angular.module('cloudKiboApp')
       create_pre_file_link(recieved_meta[id], id);
     }
 
+    function clear_container(id)
+    {
+      var filelist = document.getElementById('filelist_container');
+      var filecontainer = document.getElementById(id);
+      filelist.removeChild(filecontainer);
+    }
     /* creates an entry in our filelist for a user, if it doesn't exist already - TODO: move this to script.js? */
     function create_or_clear_container(id) {
-      var filelist = document.getElementById('filelist_cointainer');
+      var filelist = document.getElementById('filelist_container');
       var filecontainer = document.getElementById(id);
-      var mymodal = document.getElementById('modelbody')
       //username = FileUtility.sanitize(username);
-
+      if (!filecontainer)
+      {
+        var filecontainer = document.createElement('div');
+        filecontainer.setAttribute("id", id);
+        filecontainer.className = 'fileTransferBox';
+        fileCount = fileCount + 1;
+      }
       /* if the user is downloading something from this person, we should only clear the inside span to save the cancel button */
       if (downloading[id] == true) {
         var span = document.getElementById(id + "-span");
         if (!span) {
           filecontainer.innerHTML = '<span class= "fileName" id="' + id + '-span"></span>';
           /* add cancel button */
-          var a = document.getElementById(id + '-cancel');
-          if(!a)
-            a = document.createElement('a');
+          var a = document.createElement('a');
           a.download = meta.name;
           a.id = id + '-cancel';
-          a.className = 'mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round';
-          a.style.cssText = 'margin-right: 5px;';
+          a.class = 'row';
           a.href = 'javascript:void(0);';
-          a.textContent = 'Cancel Download';
+          a.style.cssText = 'color:#af4545;';
+          a.textContent = '[c]';
           a.draggable = true;
           //append link!
-          mymodal.appendChild(a);
+          filecontainer.appendChild(a);
         } else {
           span.innerHTML = "";
         }
         return;
       }
       var username = ''; // temporary
-      if (!filecontainer) {
+      filelist.appendChild(filecontainer);
+     // if (!filecontainer) {
         /* if filecontainer doesn't exist, create it */
      //   var fs = '<div id="' + id + '">' + username + '</div>';
-      //  filelist.innerHTML = filelist.innerHTML + fs;
-      } else {
+     //   filelist.innerHTML = filelist.innerHTML + fs;
+     // } else {
         /* if filecontainer does exist, clear it */
      //   filecontainer.innerHTML = username;
-      }
+     // }
+
     }
 
     /* creates an entry in our filelist for a user, if it doesn't exist already */
@@ -418,23 +445,26 @@ angular.module('cloudKiboApp')
       //create a place to store this if it does not already
       create_or_clear_container(id);//, username);
       var filecontainer = document.getElementById(id);
-      var mymodalbody = document.getElementById('modelbodyupload');
-      var mymodalfooter = document.getElementById('modelfooterupload');
+
       //create the link
-      var span = document.getElementById('uploadspan');
-      span.innerHTML = '';
-      span.innerHTML = 'File : ' + filename + ' ';
-      var a = document.getElementById('upload_stop');
+      var span = document.createElement('span');
+      console.log('username is : '+  meta.uname);
+      span.textContent = meta.uname + ' : ' + filename + ' ';
+
+      var a = document.createElement('a');
       a.download = meta.name;
-    //  a.id = 'upload_stop';
-      a.className = 'pull-left mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round';
+      a.id = 'upload_stop';
+      a.class = 'row';
       a.href = 'javascript:void(0);';
-      a.textContent = 'Stop Upload';
+      a.textContent = '[Stop Upload]';
+      a.style.cssText = 'color:#af4545;';
       a.draggable = true;
-      $('#myModalUpload').modal('show');
+
       //append link!
- //     filecontainer.appendChild(span);
- //     filecontainer.appendChild(a);
+      filecontainer.appendChild(span);
+      filecontainer.appendChild(a);
+  //    fs_container.appendChild(filecontainer);
+       $('#myModalUpload').modal('show');
 
     }
 
@@ -446,37 +476,23 @@ angular.module('cloudKiboApp')
       create_or_clear_container(id);
       var filecontainer = document.getElementById(id);
 
-      var modelbody = document.getElementById('modelbody');
-      var savebtn = document.getElementById('savefile');
-      savebtn.href = '';
-      savebtn.style.cssText = 'display :none';
-      modelbody.innerHTML = '';
       //create the link
-      var p = document.createElement('p');
-      var i = document.createElement('i');
-      i.className = 'fa fa-download';
-      p.textContent = 'File : ' + meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
-      var p1 = document.createElement('p');
-      p1.textContent = 'Click on download button to download file';
-      p1.className = 'makemargin';
+      var span = document.createElement('span');
+      span.textContent = meta.uname + ' : ';
+
       var a = document.createElement('a');
       a.download = meta.name;
       a.id = id + '-download';
-      a.className = 'mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round';
+      a.class = 'icon-btn';
       a.href = 'javascript:void(0);';
-       a.appendChild(i);
-      a.textContent = 'Download';
+      a.textContent = 'Download : ' + meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
       a.draggable = true;
-      console.log(a.href);
 
-      modelbody.appendChild(p);
-      modelbody.appendChild(p1);
-
-      modelbody.appendChild(a);
-       $('#myModal').modal('show');
       //append link!
-  //    filecontainer.appendChild(span);
-  //    filecontainer.appendChild(a);
+      filecontainer.appendChild(span);
+      filecontainer.appendChild(a);
+      fs_container.appendChild(filecontainer);
+       $('#myModal').modal('show');
 
       //append to chat
       //Room.sendChat($scope.user.username + " is now offering file " + meta.name);
@@ -484,7 +500,6 @@ angular.module('cloudKiboApp')
 
     /* update a file container with a DL % */
     function update_container_percentage(id, chunk_num, chunk_total, total_size) {
-      var modelbody = document.getElementById('modelbody');
 
       create_or_clear_container(id);
       var span = document.getElementById(id + '-span');
@@ -492,7 +507,7 @@ angular.module('cloudKiboApp')
       /* create file % based on chunk # downloaded */
       var percentage = (chunk_num / chunk_total) * 100;
       span.innerHTML = percentage.toFixed(1) + "% of " + FileUtility.getReadableFileSizeString(total_size) + ' ';
-      modelbody.appendChild(span);
+
     }
 
     /* create a link to this file */
@@ -509,9 +524,8 @@ angular.module('cloudKiboApp')
 
       //create the link
       var span = document.createElement('span');
-      span.textContent = meta.name;
-      var a = document.getElementById('savefile');
-       a.style.cssText = 'display:block';
+      span.textContent = '';
+      var a = document.createElement('a');
       a.download = meta.name;
       /* One difference with Chrome & FF :( */
       if (isChrome) {
@@ -521,32 +535,30 @@ angular.module('cloudKiboApp')
         /* fileEntry is actually not a FileEntry, but a blob in Chrome */
         a.href = window.URL.createObjectURL(fileEntry);
       }
-      console.log(meta);
-      console.log('id:' +id);
-      document.getElementById(id+'-download').disabled = true;
-      a.textContent = 'Save';
-      a.className = 'pull-left mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round';
+      a.textContent = 'Save : ' + meta.name;
+      a.class = 'icon-btn';
       a.dataset.downloadurl = [filetype, a.download, a.href].join(':');
       a.draggable = true;
 
       //append link!
       var messages = document.getElementById('messages');
-    //  filecontainer.appendChild(span);
-    //  filecontainer.appendChild(a);
+      filecontainer.appendChild(span);
+      filecontainer.appendChild(a);
 
       /* make delete button */
-     // filecontainer.innerHTML = filecontainer.innerHTML + " ";
+      filecontainer.innerHTML = filecontainer.innerHTML + " ";
       /* add cancel button */
       var can = document.createElement('a');
       can.download = meta.name;
       can.id = id + '-cancel';
-      a.class = 'btn btn-default';
+      a.class = 'icon-btn';
       can.href = 'javascript:void(0);';
-      can.style.cssText = 'color:purple;';
+      can.style.cssText = 'color:red;';
       can.textContent = '[d]';
       can.draggable = true;
       //append link!
-     // filecontainer.appendChild(can);
+      filecontainer.appendChild(can);
+
       //append to chat
       //Room.sendChat("File " + meta.name + " is ready to save locally");
     }
@@ -635,7 +647,7 @@ angular.module('cloudKiboApp')
       dataChannelMessage: function(id, data){
         //$log.debug('data channel message received in conference file transfer '+ data);
         if (data.byteLength  || typeof data !== 'string') {
-          process_binary(0, data, 0);
+          process_binary(id, data, 0);
         }
         else if (data.charAt(0) == '{' && data.charAt(data.length - 1) == '}') {
           $log.debug('Going to process data in file transfer conference '+ data);

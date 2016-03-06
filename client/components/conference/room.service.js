@@ -315,9 +315,13 @@ angular.module('cloudKiboApp')
       end: function () {
         peerConnections = {}; userNames = {}; dataChannels = {};
         connected = false;
-        
+
       // stream.getTracks()[0].stop();
-      
+
+      },
+
+      getusername:function(){
+        return username;
       }
     };
     EventEmitter.call(api);
