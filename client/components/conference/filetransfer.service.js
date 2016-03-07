@@ -40,12 +40,14 @@ angular.module('cloudKiboApp')
     var createdChunksWritePointer = [];
     /* true if the file has been created*/
     var requestedChunksWritePointer = [];
+    var fileID; /* to chk which file is requested*/
     /* stores the value of the next chunk to be requested */
     var file_username ='';
     /* event delegation
      * -we need to do this to form a chrome app - see https://developer.chrome.com/extensions/contentSecurityPolicy#H2-3
      * -huge thanks to http://stackoverflow.com/questions/13142664/are-multiple-elements-each-with-an-addeventlistener-allowed
      */
+
     function fileEventHandler(e) {
       e = e || window.event;
       var target = e.target || e.srcElement;
@@ -142,6 +144,7 @@ angular.module('cloudKiboApp')
             /* debug */
             if (FSdebug) {
               $log.debug("DEBUG: writing chunk2 " + recievedChunksWritePointer[user_id]);
+
               for (var i = 0; i < FileUtility.getChunksPerAck(); i++) {
                 if (recievedChunks[user_id][i]) {
                   $log.debug('recieved chunk: '+ recievedChunks[user_id][i]);
@@ -158,10 +161,11 @@ angular.module('cloudKiboApp')
 
             /* EOF condition */
             if (recieved_meta[user_id].numOfChunksInFile <= (recievedChunksWritePointer[user_id])) {
-              //console.log("creating file link!");
+              console.log("creating file link!");
 
               /* stop accepting file info */
               downloading[user_id] = false;
+              filesysteminuse = false;
 
               if (isChrome) {
                 create_file_link(recieved_meta[user_id], user_id, fileEntry);
@@ -203,26 +207,32 @@ angular.module('cloudKiboApp')
      * we are going to have an expectation that these packets arrive in order (requires reliable datachannel)
      */
     function process_binary(id, message, hash) {
-      if (!downloading[id]) {
+
+      console.log('processing_binary called : ');
+      console.log(message);
+      if (!downloading[fileID]) {
         return;
       }
 
       if (FSdebug) {
-        $log.debug("processing chunk # " + recieved_meta[id].chunks_recieved);
+        $log.debug("processing chunk # " + recieved_meta[fileID].chunks_recieved);
       }
 
       /* We can write to a file using FileSystem! Chrome has native support, FF uses idb.filesystem.js library */
       /* Note that decrypted file packets are passed here by file_decrypt, we don't have to do any decryption here */
 
-      write_to_file(id, message, recieved_meta[id].chunks_recieved, hash);//id, rtc.usernames[id], message, recieved_meta[id].chunks_recieved, hash
-      recieved_meta[id].chunks_recieved++;
+//      write_to_file(id, message, recieved_meta[message.fileid].chunks_recieved, hash);//id, rtc.usernames[id], message, recieved_meta[id].chunks_recieved, hash
+      write_to_file(fileID, message, recieved_meta[fileID].chunks_recieved, hash);//id, rtc.usernames[id], message, recieved_meta[id].chunks_recieved, hash
 
-      if (recieved_meta[id].numOfChunksInFile > recieved_meta[id].chunks_recieved) {
-        update_container_percentage(id, recieved_meta[id].chunks_recieved - 1, recieved_meta[id].numOfChunksInFile, recieved_meta[id].size);
+      recieved_meta[fileID].chunks_recieved++;
+
+      if (recieved_meta[fileID].numOfChunksInFile > recieved_meta[fileID].chunks_recieved) {
+        update_container_percentage(id, recieved_meta[fileID].chunks_recieved - 1, recieved_meta[fileID].numOfChunksInFile, recieved_meta[fileID].size);
       } else {
         //console.log("done downloading file!");
         /* stop accepting file info */
-        downloading[id] = false;
+        downloading[fileID] = false;
+        fileID = '';
         /* creating the download link is handled by write_to_file */
       }
     }
@@ -291,17 +301,18 @@ angular.module('cloudKiboApp')
         $log.debug('Chunk is requested');
         console.log('Chunk is requested ');
         console.log(data);
+
         /* Otherwise, we are going to assume that if we have reached here, this is a request to download our file */
         if (data.chunk % FileUtility.getChunksPerAck() == 0) {
           for (var i = 0; i < FileUtility.getChunksPerAck(); i++) {
-            send_chunk_if_queue_empty(data.fid, data.chunk + i, data.browser, data.rand, data.hash);
+            send_chunk_if_queue_empty(data.fid, data.chunk + i, data.browser, data.rand, data.hash,data.requesterid);
           }
         }
       }
     }
 
     /* request chunk # chunk_num from id, at this point just used to request the first chunk */
-    function request_chunk(id, chunk_num, hash) {
+    function request_chunk(id, chunk_num, hash,requesterid) {
       if (FSdebug) {
         $log.debug("DEBUG: requesting chunk " + chunk_num + " from " + id);
       }
@@ -311,7 +322,8 @@ angular.module('cloudKiboApp')
         "data": {
           "chunk": chunk_num,
           "browser": isChrome ? 'chrome' : 'firefox',
-          "fid" : id
+          "fid" : id,
+          "requesterid" : requesterid
         }
       }));
 
@@ -336,16 +348,21 @@ angular.module('cloudKiboApp')
         boot_alert("Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.");
         return;
       }
-
+      /* ask for requester id */
+      var requesterid = Room.getcurrentid();
+      console.log('File requester id is : ' + requesterid);
+      fileID = id;
       window.requestFileSystem(window.TEMPORARY, recieved_meta[id].size, function (filesystem) {
         fs[id] = filesystem;
         filesysteminuse = true;
         downloading[id] = true;
         /* accept file info from user */
         $log.debug('File System given to the program');
-        request_chunk(id, 0, 0);
+        console.log('File id : '+id);
+        request_chunk(id, 0, 0,requesterid);
       });
 
+      console.log('File download is complete');
       recieved_meta[id].chunks_recieved = 0;
       recievedChunksWritePointer[id] = 0;
       createdChunksWritePointer[id] = false;
@@ -582,7 +599,7 @@ angular.module('cloudKiboApp')
     }
 
     /* Please note that this works by sending one chunk per ack */
-    function sendchunk(id, chunk_num, other_browser, rand, hash) {
+    function sendchunk(id, chunk_num, other_browser, rand, hash,requesterid) {
       /* uncomment the following lines and set breakpoints on them to simulate an impaired connection */
       /* if (chunk_num == 30) { console.log("30 reached, breakpoint this line");}
        if (chunk_num == 50) { console.log("30 reached"); }*/
@@ -605,11 +622,16 @@ angular.module('cloudKiboApp')
           //	file_encrypt_and_send(id, event.target.result, rand, chunk_num);
           //} else {
           if (FSdebug) {
-            $log.debug("DEBUG: sending chunk " + chunk_num);
+            $log.debug("DEBUG: sending chunk " + chunk_num + "of file with id : " + id);
             //$log.debug('sending: ' + CryptoJS.SHA256(FileUtility._arrayBufferToBase64(event.target.result)).toString(CryptoJS.enc.Base64));
           }
+          console.log('sending chunk');
+          console.log(event.target.result);
+   //       Room.sendDataChannelMessage(event.target.result);
 
-          Room.sendDataChannelMessage(event.target.result);
+          Room.sendDataChannelMessageToUser(event.target.result,requesterid);
+
+
 
         }
 
@@ -619,7 +641,7 @@ angular.module('cloudKiboApp')
     }
 
     /* ideally we would check the SCTP queue here to see if we could send, doesn't seem to work right now though... */
-    function send_chunk_if_queue_empty(id, chunk_num, other_browser, rand, hash) {
+    function send_chunk_if_queue_empty(id, chunk_num, other_browser, rand, hash,requesterid) {
 
       if (typeof file_to_upload != 'undefined') {
         if (chunk_num >= Math.ceil(file_to_upload.size / FileUtility.getChunkSize())) {
@@ -627,7 +649,7 @@ angular.module('cloudKiboApp')
         }
       }
 
-      sendchunk(id, chunk_num, other_browser, rand, hash);
+      sendchunk(id, chunk_num, other_browser, rand, hash,requesterid);
     }
 
     return {
@@ -645,12 +667,15 @@ angular.module('cloudKiboApp')
       },
 
       dataChannelMessage: function(id, data){
-        //$log.debug('data channel message received in conference file transfer '+ data);
-        if (data.byteLength  || typeof data !== 'string') {
-          process_binary(id, data, 0);
-        }
+
+          if (data.byteLength || typeof data !== 'string') {
+            console.log(data)
+            console.log('Going to process binary data in file transfer conference ' + data);
+            process_binary(id, data, 0);
+          }
+
         else if (data.charAt(0) == '{' && data.charAt(data.length - 1) == '}') {
-          $log.debug('Going to process data in file transfer conference '+ data);
+          console.log('Going to process data in file transfer conference '+ data);
           process_data(data);
         }
       }
