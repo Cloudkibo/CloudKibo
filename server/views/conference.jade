@@ -21,7 +21,7 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
         .container
           .row(style="height:60px;")
               ul(class = 'mybtn-header')
-                
+
                 li(ng-hide='hasUserDeniedMedia()')
                   .myicon-btn(id="bck-audio")
                       a(ng-click='audioToggle()' data-toggle="tooltip" data-placement="bottom" title="Mute Audio")
@@ -31,10 +31,10 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                       a(ng-click='videoToggle()' data-toggle="tooltip" data-placement="bottom" title="Show Video")
                           div.my-camera
                     // div {{toggleVideoText}}
-                li()    
+                li()
                   .myicon-btn()
                       a(ng-click='endMeeting()' data-toggle="tooltip" data-placement="bottom" title="End Call")
-                        div.endmeeting   
+                        div.endmeeting
               ul.list-unstyled.list-inline.pull-right(style="margin-top:10px;")
                 li
                   h4
@@ -42,7 +42,7 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                       img(src='/images/logo_small_black.png')
                       | CloudKibo
       .header(ng-hide='isAskingForMediaAccess()')
-        
+
         .container
           //a(class='site-logo', href='#')
             img(src='/images/logo_small.png')
@@ -51,7 +51,7 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
             i(class='fa fa-bars')
           //div(class='header-navigation  font-transform-inherit')
            // ul
-               
+
               li(ng-hide='hasUserDeniedMedia()')
                 .myicon-btn(id="bck-audio")
                   a(ng-click='audioToggle()' data-toggle="tooltip" data-placement="bottom" title="Mute Audio")
@@ -64,18 +64,18 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                    // i.fa.fa-desktop
                    div.my-camera
                   // div {{toggleVideoText}}
-              li()    
+              li()
                 .myicon-btn()
                   a(ng-click='endMeeting()' data-toggle="tooltip" data-placement="bottom" title="End Call")
-                   div.endmeeting 
+                   div.endmeeting
         div(class = "subheader-icons")
             .fileUpload2(class = "icon-btn" )
               //label Send File
               input(id='file', type='file')
-              label(for = "file") 
+              label(for = "file")
                 i.fa.fa-file-text-o
                 div Share File
-            
+
             .screen-sharebtn
                 a.icon-btn(id='showScreenButton', ng-click='showScreen()')
                   i.fa.fa-desktop
@@ -103,12 +103,12 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
             a.icon-btn(ng-click='videoToggle()' )
               i.fa.fa-desktop
               div {{toggleVideoText}}
-       
-        //.row
-          .col-sm-1.fileTransferBox(id='0', ng-show='meetingStarted()' style='opacity:0;')
-        //.row
-          .col-sm-1(id='filelist_container', ng-show='meetingStarted()' style='opacity:0;')
-        
+
+        .row
+         // .col-sm-1.fileTransferBox(id='0', ng-show='meetingStarted()')
+        .row
+          .col-sm-1(id='filelist_container', ng-show='meetingStarted()' )
+
         div(id="myModal" class="modal fade" role="dialog")
           div(class="modal-dialog")
             div(class="modal-content")
@@ -116,16 +116,17 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                   button(type="button" class="close" data-dismiss="modal")
                     | Close
                   img(src = '/assets/images/file.png')
-                  h4(class="modal-title") You have received a file
-                    
-                    
+                  h4(class="modal-title") Notification
+
+
               div(class="modal-body")
                   img(src = '/assets/images/file_transfer.png')
                   div(id = "modelbody")
+                    h3 You have received a file.
               div(class="modal-footer" id="modelfooter")
                     button(type="button" class="pull-right mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round" data-dismiss="modal")
                       | Close
-                    a(id="savefile")  
+
         div(id="myModalUpload" class="modal fade" role="dialog")
           div(class="modal-dialog")
             div(class="modal-content")
@@ -133,18 +134,18 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                   button(type="button" class="close" data-dismiss="modal")
                     | Close
                   img(src = '/assets/images/file.png')
-                  h4(class="modal-title") You have uploaded a file
-                    
-                    
+                  h4(class="modal-title") Notification
+
+
               div(class="modal-body")
                   img(src = '/assets/images/file_transfer.png')
                   div(id = "modelbodyupload")
-                    span(style= "margin-top:20px;" id="uploadspan")
+                    h4 You have uploaded a file
               div(class="modal-footer" id="modelfooterupload")
                     button(type="button" class="pull-right mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round" data-dismiss="modal")
                       | Close
-                    a(id="upload_stop")  
-      
+
+
         //.row
           .col-sm-1.chatButtonUI(class ="myicon-btn")
                 a(ng-click='toggleChatBoxVisibility()')
@@ -178,8 +179,8 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
         br
         br
         br
-            
-          
+
+
         .row(ng-repeat='peer in peers', ng-show='hasPeerSharedScreen()' class = 'changebckcolor')
           .col-sm-1
             div
@@ -208,13 +209,13 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                             div(class="minutes")
                           div(class="seconds-container")
                             div(class="seconds")
-                  div.in-meeting        
+                  div.in-meeting
                     .videoBoxContainer(ng-show = 'meetingStarted()')
                       div(class='{{divBoxClass}}', ng-hide='isLocalVideoShared()'){{getUsername()[0]}}
                       video.videoelement(ng-src='{{getLocalVideo()}}', autoplay, width='180px',height='200px', ng-show='isLocalVideoShared()' muted)
                       span.uname{{getUsername()}}
                     video-player(ng-repeat='peer in peers', vid-src='{{peer.stream}}', user-name='{{peer.username}}', shared-vid='{{peer.sharedVideo}}', div-box-class='{{peer.divClass}}')
-                      
+
             div(ng-show='hasPeerSharedScreen()')
               center
                 span
@@ -233,7 +234,7 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                 a.icon-btn(ng-click='toggleChatBoxVisibility()')
                   i.fa.fa-envelope-o
                   div Chat
-                 
+
             .row(class='animate-show', ng-show='showChatBox()' class = 'changebckcolor')
               div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages', style="word-wrap: break-word")
                 .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)

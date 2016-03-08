@@ -295,6 +295,16 @@ angular.module('cloudKiboApp')
           }
         }
       },
+
+      /*** function to send data to particular user ***/
+
+      sendDataChannelMessageToUser: function (m,k) {
+
+          if(dataChannels[k].readyState === 'open') {
+            dataChannels[k].send(m);
+          }
+
+      },
       toggleAudio: function () {
         stream.getAudioTracks()[0].enabled = !(stream.getAudioTracks()[0].enabled);
       },
@@ -315,9 +325,16 @@ angular.module('cloudKiboApp')
       end: function () {
         peerConnections = {}; userNames = {}; dataChannels = {};
         connected = false;
-        
+
       // stream.getTracks()[0].stop();
-      
+
+      },
+
+      getusername:function(){
+        return username;
+      },
+      getcurrentid:function(){
+        return currentId;
       }
     };
     EventEmitter.call(api);

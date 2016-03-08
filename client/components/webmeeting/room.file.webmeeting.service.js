@@ -64,6 +64,14 @@ angular.module('cloudKiboApp')
       chunks = {};
       meta = {};
 
+    //to remove file from recepients container
+      /* send a kill message */
+      MeetingRoomData.sendDataChannelMessage(JSON.stringify({
+        "eventName": "kill_msg",
+        "data": {
+          "kill": true
+        }
+      }));
       /* also clear the container */
       create_or_clear_container(0);
 
@@ -421,7 +429,7 @@ angular.module('cloudKiboApp')
       //append link!
       filecontainer.appendChild(span);
       filecontainer.appendChild(a);
-
+     // $('#myModalUpload').modal('show');
     }
 
     /* create a link that will let the user start the download */
@@ -446,7 +454,7 @@ angular.module('cloudKiboApp')
       //append link!
       filecontainer.appendChild(span);
       filecontainer.appendChild(a);
-
+     // $('#myModal').modal('show');
       //append to chat
       //Room.sendChat($scope.user.username + " is now offering file " + meta.name);
     }

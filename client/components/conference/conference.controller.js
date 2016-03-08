@@ -6,9 +6,9 @@
 
 angular.module('cloudKiboApp')
   .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
-    
+
     console.log('sdsd');
-    
+
      if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
       logger.log('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
@@ -487,9 +487,7 @@ angular.module('cloudKiboApp')
        canvas.putImageData(img, 0, 0);
        }
        */
-
-      console.log(data.data);
-      console.log(data)
+      console.log('Printing data ')
       if($scope.hasAndroidPeerSharedScreen()){
         console.log('Android shared screen is true')
         if (data.data.byteLength  || typeof data.data !== 'string') {
