@@ -19,7 +19,7 @@
     <!-- build:css({.tmp,client}) app/app.css -->
     <link rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css'>
     <link rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css'>
-     
+
     <link href= 'https://chrome.google.com/webstore/detail/mjifcjeiodmblbjeagolckinomlcjefi' rel='chrome-webstore-item'>
     <!--
     <link href= 'https://chrome.google.com/webstore/detail/cloudkibo-screen-sharing/mjifcjeiodmblbjeagolckinomlcjefi' rel='chrome-webstore-item'>
@@ -88,10 +88,13 @@
       <!-- endbower -->
     <!-- endbuild -->
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/1.5.0/sha.js"></script>
     <script src="socket.io/socket.io.js"></script>
+    <script src="https://api.callstats.io/callstats.min.js" />
 
     <script src="theme.js"></script>
-    
+
     <script src="idb.filesystem.js"></script>
     <script src="https://cdn.temasys.com.sg/adapterjs/0.11.x/adapter.debug.js"></script>
 
@@ -149,10 +152,11 @@
 
         <script src="https://js.braintreegateway.com/v2/braintree.js"></script>
         <script src="frontend/layout/js/datepicker.js" type="text/javascript"></script>
-      
+
         <script src="frontend/layout/js/clock.js" type="text/javascript"></script>
         <script>
-        
+          var callStats = new callstats(null,io,jsSHA);
+
 			jQuery(document).ready(function() {
                 //Layout.init();
                 //Layout.initOWL();
@@ -160,10 +164,10 @@
                 //Layout.initTwitter();
                 //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
                 //Layout.initNavScrolling();
-                
-                
+
+
             });
         </script>
-        
+
 </body>
 </html>

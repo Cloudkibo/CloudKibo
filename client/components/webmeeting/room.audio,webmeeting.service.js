@@ -80,6 +80,16 @@ angular.module('cloudKiboApp')
           $rootScope.$apply();
         }
       };
+      var callStats = new callstats(null,io,jsSHA);
+      var AppID     = "199083144";
+      var AppSecret = "t/vySeaTw5q6323+ArF2c6nEFT4=";
+      callStats.initialize(AppID, AppSecret, username, function (err, msg) {
+        console.log("Initializing Status: err="+err+" msg="+msg);
+      });
+      var usage = callStats.fabricUsage.audio;
+      callStats.addNewFabric(pc, id, usage, roomId, function(err, msg){
+        console.log("Initializing Status: err="+err+" msg="+msg);
+      });
       return pc;
     }
 
@@ -92,7 +102,7 @@ angular.module('cloudKiboApp')
           $log.debug('Creating an offer for', id);
           socket.emit('msgAudio', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username, camaccess : stream });
         }, function (e) {
-          $log.error(e);
+          callStats.reportError(pc, roomId, callStats.webRTCFunctions.createOffer, e);
         },
         sdpConstraints);
     }
@@ -122,6 +132,7 @@ angular.module('cloudKiboApp')
               pc.setLocalDescription(sdp);
               socket.emit('msgAudio', { by: currentId, to: data.by, sdp: sdp, type: 'answer', camaccess : stream });
             }, function (e) {
+              callStats.reportError(pc, roomId, callStats.webRTCFunctions.createAnswer, e);
               console.log(e);
             }, sdpConstraints);
           }, function (e) {
