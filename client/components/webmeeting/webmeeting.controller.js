@@ -6,7 +6,7 @@
 
 angular.module('cloudKiboApp')
   .controller('WebMeetingController', function ($sce, MeetingStream, $location, $routeParams, $scope, MeetingRoom, MeetingRoomVideo, MeetingRoomScreen, MeetingRoomData, $timeout, logger, ScreenShare, MeetingRoomFileHangout, $log) {
-    $('[data-toggle="tooltip"]').tooltip();
+    //$('[data-toggle="tooltip"]').tooltip();
     myclockStart();
     if($location.search().role){
       $scope.supportCall = true;
