@@ -27,6 +27,10 @@ angular.module('cloudKiboApp')
           handleDataChannelMessage(id, evnt.data);
         };
       };
+      var usage = callStats.fabricUsage.data;
+      callStats.addNewFabric(pc, id, usage, roomId, function(err, msg){
+        console.log("Initializing Status: err="+err+" msg="+msg);
+      });
       return pc;
     }
 
@@ -40,6 +44,7 @@ angular.module('cloudKiboApp')
           $log.debug('Creating an offer for'+ id +' for data');
           socket.emit('msgData', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username });
         }, function (e) {
+          callStats.reportError(pc, roomId, callStats.webRTCFunctions.createOffer, e);
           $log.error(e);
         },
         sdpConstraints);
@@ -89,6 +94,7 @@ angular.module('cloudKiboApp')
               pc.setLocalDescription(sdp);
               socket.emit('msgData', { by: currentId, to: data.by, sdp: sdp, type: 'answer' });
             }, function (e) {
+              callStats.reportError(pc, roomId, callStats.webRTCFunctions.createAnswer, e);
               console.log(e);
             }, sdpConstraints);
           }, function (e) {
