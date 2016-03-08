@@ -43,6 +43,7 @@ angular.module('cloudKiboApp')
     var fileID; /* to chk which file is requested*/
     /* stores the value of the next chunk to be requested */
     var file_username ='';
+    var requesterid;
     /* event delegation
      * -we need to do this to form a chrome app - see https://developer.chrome.com/extensions/contentSecurityPolicy#H2-3
      * -huge thanks to http://stackoverflow.com/questions/13142664/are-multiple-elements-each-with-an-addeventlistener-allowed
@@ -132,7 +133,7 @@ angular.module('cloudKiboApp')
               requestedChunksWritePointer[user_id] += FileUtility.getChunksPerAck();
 
               if (recieved_meta[user_id].numOfChunksInFile > recievedChunksWritePointer[user_id]) {
-                request_chunk(user_id, recievedChunksWritePointer[user_id], hash);
+                request_chunk(user_id, recievedChunksWritePointer[user_id], hash,requesterid);
               }
             };
 
@@ -222,12 +223,21 @@ angular.module('cloudKiboApp')
       /* Note that decrypted file packets are passed here by file_decrypt, we don't have to do any decryption here */
 
 //      write_to_file(id, message, recieved_meta[message.fileid].chunks_recieved, hash);//id, rtc.usernames[id], message, recieved_meta[id].chunks_recieved, hash
+      console.log('I am requesting with id : ' + requesterid);
       write_to_file(fileID, message, recieved_meta[fileID].chunks_recieved, hash);//id, rtc.usernames[id], message, recieved_meta[id].chunks_recieved, hash
 
       recieved_meta[fileID].chunks_recieved++;
 
       if (recieved_meta[fileID].numOfChunksInFile > recieved_meta[fileID].chunks_recieved) {
-        update_container_percentage(id, recieved_meta[fileID].chunks_recieved - 1, recieved_meta[fileID].numOfChunksInFile, recieved_meta[fileID].size);
+        console.log('showing percentage of file downloaded');
+        console.log('file ID : '+ fileID);
+        console.log('recieved_meta[fileID].chunks_recieved : '+ recieved_meta[fileID].chunks_recieved);
+        console.log('recieved_meta[fileID].numOfChunksInFile : '+ recieved_meta[fileID].numOfChunksInFile);
+        console.log('recieved_meta[fileID].size : '+ recieved_meta[fileID].size);
+
+
+        update_container_percentage(fileID, recieved_meta[fileID].chunks_recieved - 1, recieved_meta[fileID].numOfChunksInFile, recieved_meta[fileID].size);
+
       } else {
         //console.log("done downloading file!");
         /* stop accepting file info */
@@ -299,7 +309,7 @@ angular.module('cloudKiboApp')
       } else {
 
         $log.debug('Chunk is requested');
-        console.log('Chunk is requested ');
+        console.log('Chunk is requested from requestor : ' + data.requestorid);
         console.log(data);
 
         /* Otherwise, we are going to assume that if we have reached here, this is a request to download our file */
@@ -349,7 +359,8 @@ angular.module('cloudKiboApp')
         return;
       }
       /* ask for requester id */
-      var requesterid = Room.getcurrentid();
+
+      requesterid = Room.getcurrentid();
       console.log('File requester id is : ' + requesterid);
       fileID = id;
       window.requestFileSystem(window.TEMPORARY, recieved_meta[id].size, function (filesystem) {
@@ -405,6 +416,7 @@ angular.module('cloudKiboApp')
       //username = FileUtility.sanitize(username);
       if (!filecontainer)
       {
+        console.log('filecontainer doesnt exist,i am creating');
         var filecontainer = document.createElement('div');
         filecontainer.setAttribute("id", id);
         filecontainer.className = 'fileTransferBox';
@@ -412,6 +424,7 @@ angular.module('cloudKiboApp')
       }
       /* if the user is downloading something from this person, we should only clear the inside span to save the cancel button */
       if (downloading[id] == true) {
+        console.log('I am downloading file');
         var span = document.getElementById(id + "-span");
         if (!span) {
           filecontainer.innerHTML = '<span class= "fileName" id="' + id + '-span"></span>';
@@ -427,6 +440,7 @@ angular.module('cloudKiboApp')
           //append link!
           filecontainer.appendChild(a);
         } else {
+          console.log('i am clearing span');
           span.innerHTML = "";
         }
         return;
@@ -540,8 +554,19 @@ angular.module('cloudKiboApp')
       var filecontainer = document.getElementById(id);
 
       //create the link
-      var span = document.createElement('span');
-      span.textContent = '';
+      /* Zarmeen : I am commenting next two lines as there is no use of them */
+      var span = document.getElementById(id + '-span');
+      if(span != null) {
+        span.innerHTML = '';
+      }
+    //  var span = document.createElement('span');
+    //  span.textContent = '';
+
+      var a = document.getElementById(id+'-download');
+      if(a != null)
+      {
+      filecontainer.removeChild(a);
+      }
       var a = document.createElement('a');
       a.download = meta.name;
       /* One difference with Chrome & FF :( */
@@ -558,8 +583,8 @@ angular.module('cloudKiboApp')
       a.draggable = true;
 
       //append link!
-      var messages = document.getElementById('messages');
-      filecontainer.appendChild(span);
+   //   var messages = document.getElementById('messages');
+ //     filecontainer.appendChild(span);
       filecontainer.appendChild(a);
 
       /* make delete button */
@@ -628,7 +653,7 @@ angular.module('cloudKiboApp')
           console.log('sending chunk');
           console.log(event.target.result);
    //       Room.sendDataChannelMessage(event.target.result);
-
+          console.log('Calling Room.sendDataChannelMessageToUser(event.target.result,requesterid) with requestor id :' +requesterid );
           Room.sendDataChannelMessageToUser(event.target.result,requesterid);
 
 
