@@ -355,7 +355,7 @@ angular.module('cloudKiboApp')
        */
       if (filesysteminuse) {
         //console.log('Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.')
-        boot_alert("Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.");
+        FileUtility.boot_alert("Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.");
         return;
       }
       /* ask for requester id */
@@ -544,6 +544,7 @@ angular.module('cloudKiboApp')
     /* create a link to this file */
     function create_file_link(meta, id, fileEntry) {
       //grab the file type, should probably use a pattern match...
+      filesysteminuse = false;
       var remove_base = meta.filetype.split(";");
       var remove_data = remove_base[0].split(":");
       var filetype = remove_data[1];
