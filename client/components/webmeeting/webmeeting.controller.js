@@ -79,12 +79,6 @@ angular.module('cloudKiboApp')
     $scope.connect = function(){
       $log.info($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
       logger.log($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
-      var callStats = new callstats(null,io,jsSHA);
-      var AppID     = "199083144";
-      var AppSecret = "t/vySeaTw5q6323+ArF2c6nEFT4=";
-      callStats.initialize(AppID, AppSecret, $scope.user.username, function (err, msg) {
-        console.log("Initializing Status: err="+err+" msg="+msg);
-      });
       $scope.askingMedia = true;
       MeetingStream.getAudio()
         .then(function (s) {
