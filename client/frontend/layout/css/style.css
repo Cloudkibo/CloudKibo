@@ -844,14 +844,25 @@ form .progress {
   position : fixed;
   background : #fff000;
 }*/
-
+.filecontainer{
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  z-index: 4;
+  border-top: 1px solid #c8c8c8;
+}
 .fileTransferBox{
-position : relative;
-background : #cdd9ed;
-border: 1px solid #84a2d4;
-left: 20px;
-width: 110px;
-z-index:9999;
+  position : relative;
+  background : #cdd9ed;
+  border: 1px solid #84a2d4;
+/*left: 20px;
+width: 110px;*/
+  z-index:9999;
+  width: 110px;
+  height: 60px;
+  margin: 10px 0;
+  display:inline-block;
+  margin-right:10px;
 }
 
 .course-sidepane
