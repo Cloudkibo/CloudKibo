@@ -15,7 +15,7 @@ angular.module('cloudKiboApp')
      // $location.path('/otherBrowser');
       return;
     }
-    $('[data-toggle="tooltip"]').tooltip();
+   // $('[data-toggle="tooltip"]').tooltip();
     myclockStart(); //callme to start clock animation
     if($location.search().role){
       logger.log('This is a Support Call');
@@ -259,19 +259,24 @@ angular.module('cloudKiboApp')
           logger.log("" + $scope.user.username + " has unmuted");
           Room.toggleAudio();
           $('#bck-audio').toggleClass('not-working');
-          $('#bck-audio >a').attr('data-original-title', function(index, attr){
+       /*   $('#bck-audio >a').attr('data-original-title', function(index, attr){
                   return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
-          }).tooltip('show');
-
+          }).tooltip('show');*/
+          $('#bck-audio >a').attr('title', function(index, attr){
+            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
+          });
         }
         else {
           logger.log("" + $scope.user.username + " has muted");
           $scope.toggleAudioText = 'Share Audio';
           Room.toggleAudio();
           $('#bck-audio').toggleClass('not-working');
-          $('#bck-audio >a').attr('data-original-title', function(index, attr){
+      /*    $('#bck-audio >a').attr('data-original-title', function(index, attr){
                   return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
-          }).tooltip('show');
+          }).tooltip('show');*/
+          $('#bck-audio >a').attr('title', function(index, attr){
+            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
+          });
         }
       }
     };
@@ -283,18 +288,24 @@ angular.module('cloudKiboApp')
           logger.log("" + $scope.user.username + " has shared the video");
           Room.toggleVideo(true);
           $('#bck-camera').toggleClass('not-working');
-          $('#bck-camera >a').attr('data-original-title', function(index, attr){
+        /*  $('#bck-camera >a').attr('data-original-title', function(index, attr){
                   return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
-          }).tooltip('show');
+          }).tooltip('show');*/
+          $('#bck-camera >a').attr('title', function(index, attr){
+            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
+          });
         }
         else {
           $scope.toggleVideoText = 'Share Video';
           Room.toggleVideo(false);
           logger.log("" + $scope.user.username + " has hidden the video");
           $('#bck-camera').toggleClass('not-working');
-           $('#bck-camera >a').attr('data-original-title', function(index, attr){
+          /* $('#bck-camera >a').attr('data-original-title', function(index, attr){
                   return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
-          }).tooltip('show');
+          }).tooltip('show');*/
+          $('#bck-camera >a').attr('data-original-title', function(index, attr){
+            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
+          })
         }
       }
     };

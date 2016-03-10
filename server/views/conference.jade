@@ -106,7 +106,7 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
 
         .row
          // .col-sm-1.fileTransferBox(id='0', ng-show='meetingStarted()')
-        .row
+        //.row
           .col-sm-1(id='filelist_container', ng-show='meetingStarted()' )
 
         div(id="myModal" class="modal fade" role="dialog")
@@ -242,3 +242,4 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
               form
                 input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message Here", autocomplete='off')
                 button(ng-click='sendData()') Send
+    .filecontainer(id='filelist_container', ng-show='meetingStarted()' )
