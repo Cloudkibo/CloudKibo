@@ -43,10 +43,10 @@ angular.module('cloudKiboApp')
       var AppSecret = "t/vySeaTw5q6323+ArF2c6nEFT4=";
       callStats.initialize(AppID, AppSecret, username, function (err, msg) {
         console.log("Initializing Status: err="+err+" msg="+msg);
-      });
-      var usage = callStats.fabricUsage.screen;
-      callStats.addNewFabric(pc, id, usage, roomId, function(err, msg){
-        console.log("Initializing Status: err="+err+" msg="+msg);
+        var usage = callStats.fabricUsage.screen;
+        callStats.addNewFabric(pc, id, usage, roomId, function(err, msg){
+          console.log("Add new Fabric Status for screen: err="+err+" msg="+msg);
+        });
       });
       return pc;
     }
