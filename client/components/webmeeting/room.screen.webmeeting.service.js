@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('MeetingRoomScreen', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints, logger) {
+  .factory('MeetingRoomScreen', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, sdpConstraints, logger) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -24,8 +24,7 @@ angular.module('cloudKiboApp')
         socket.emit('msgScreen', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
       pc.onaddstream = function (evnt) {
-        console.log('Received screen stream from '+ id);
-        console.log(evnt.stream);
+        logger.log(''+ username +' has received screen stream by  '+ userNames[id]);
         if(!otherStream) {
           api.trigger('peer.screenStream', [{
             id: id,
@@ -49,54 +48,63 @@ angular.module('cloudKiboApp')
         });
       });
       */
+      logger.log(''+ username +' has created screen peer connection for  '+ userNames[id]);
       return pc;
     }
 
     function makeOffer(id) {
       var pc = getPeerConnection(id);
+      logger.log(''+ username +' is going to create screen offer for '+ userNames[id]);
       pc.createOffer(function (sdp) {
           pc.setLocalDescription(sdp);
-          console.log('Creating an offer for '+ id +' for screen');
+          logger.log(''+ username +' is now sending screen offer to '+ userNames[id]);
           socket.emit('msgScreen', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username, camaccess : stream });
         }, function (e) {
+          logger.log(''+ username +' got this error when creating screen offer for '+ userNames[id]);
+          logger.log(JSON.stringify(e));
+          logger.log(''+ username +' got the above error when creating screen offer for '+ userNames[id]);
     //      callStats.reportError(pc, roomId, callStats.webRTCFunctions.createOffer, e);
-          $log.error(e);
         },
         sdpConstraints);
     }
 
     function handleMessage(data) {
       var pc = getPeerConnection(data.by);
-      console.log(JSON.stringify(data));
       switch (data.type) {
         case 'offer':
           pc.addStream(stream);
           userNames[data.by] = data.username;
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            console.log('Setting remote description by offer for screen');
+            logger.log(''+ username +' set screen offer remote description sent by  '+ userNames[data.by]);
             pc.createAnswer(function (sdp) {
               //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
+              logger.log(''+ username +' is now sending screen answer to '+ userNames[data.by]);
               socket.emit('msgScreen', { by: currentId, to: data.by, sdp: sdp, type: 'answer', camaccess : stream });
             }, function (e) {
+              logger.log(''+ username +' got this ERROR when creating screen answer for '+ userNames[data.by]);
+              logger.log(JSON.stringify(e));
+              logger.log(''+ username +' got the above ERROR when creating screen answer for '+ userNames[data.by]);
     //          callStats.reportError(pc, roomId, callStats.webRTCFunctions.createAnswer, e);
-              console.log(e);
             }, sdpConstraints);
           }, function (e) {
-            $log.error(e);
+            logger.log(''+ username +' got this ERROR when setting screen offer from '+ userNames[data.by]);
+            logger.log(JSON.stringify(e));
+            logger.log(''+ username +' got the above ERROR when setting screen offer from '+ userNames[data.by]);
           });
           break;
         case 'answer':
-          console.log('answer by '+ data.by +' for screen');
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            console.log('Setting remote description by answer for screen');
+            logger.log(''+ username +' set screen answer remote description sent by  '+ userNames[data.by]);
           }, function (e) {
-            $log.error(e);
+            logger.log(''+ username +' got this ERROR when setting screen answer from '+ userNames[data.by]);
+            logger.log(JSON.stringify(e));
+            logger.log(''+ username +' got the above ERROR when setting screen answer from '+ userNames[data.by]);
           });
           break;
         case 'ice':
           if (data.ice) {
-            console.log('Adding ice candidates for screen');
+            logger.log(''+ username +' adding ice candidate for audio sent by  '+ userNames[data.by]);
             pc.addIceCandidate(new RTCIceCandidate(data.ice));
           }
           break;
@@ -107,10 +115,12 @@ angular.module('cloudKiboApp')
 
     function addHandlers(socket) {
       socket.on('peer.connected.new', function (params) {
+        logger.log(''+ username +' was informed in screen channel that '+ params.username +' has joined the meeting.');
         userNames[params.id] = params.username;
         //makeOffer(params.id);
       });
       socket.on('peer.disconnected.new', function (data) {
+        logger.log(''+ username +' was informed in screen channel that '+ userNames[data.id] +' has left the meeting.');
         if (!$rootScope.$$digest) {
           $rootScope.$apply();
         }
@@ -121,7 +131,6 @@ angular.module('cloudKiboApp')
       });
       socket.on('conference.streamScreen', function(data){
         if(data.id !== currentId){
-          console.log(''+ data.username +' is about to hide or share screen')
           api.trigger('conference.streamScreen', [{
             username: data.username,
             type: data.type,
@@ -129,8 +138,10 @@ angular.module('cloudKiboApp')
             id: data.id
           }]);
           if(data.action) {
+            logger.log(''+ username +' was informed that '+ data.username +' wants to share the screen.');
             makeOffer(data.id);
           } else {
+            logger.log(''+ username +' was informed that '+ data.username +' wants to hide the screen.');
             otherStream = false;
             delete peerConnections[data.id];
           }
@@ -157,6 +168,7 @@ angular.module('cloudKiboApp')
         socket.emit('conference.streamScreen', { username: username, type: 'screen', action: p, id: currentId });
       },
       end: function () {
+        logger.log(''+ username +' has ended the screen peer connections for all');
         peerConnections = {}; userNames = {};
         connected = false;
         stream.getTracks()[0].stop();

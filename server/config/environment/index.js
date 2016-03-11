@@ -75,7 +75,7 @@ var all = {
   configuration.findOne({}, function(err, result){
     // console.log(result);
 
-    if(!process.env.NODE_ENV === 'development'){
+    if(process.env.NODE_ENV !== 'development'){
       all.facebook.clientID = result.facebookid;
       all.facebook.clientSecret = result.facebooksecret;
 

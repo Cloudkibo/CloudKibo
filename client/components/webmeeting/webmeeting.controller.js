@@ -5,7 +5,7 @@
 
 
 angular.module('cloudKiboApp')
-  .controller('WebMeetingController', function ($sce, MeetingStream, $location, $routeParams, $scope, MeetingRoom, MeetingRoomVideo, MeetingRoomScreen, MeetingRoomData, $timeout, logger, ScreenShare, MeetingRoomFileHangout, $log) {
+  .controller('WebMeetingController', function ($sce, MeetingStream, $location, $routeParams, $scope, MeetingRoom, MeetingRoomVideo, MeetingRoomScreen, MeetingRoomData, $timeout, logger, ScreenShare, MeetingRoomFileHangout) {
     //$('[data-toggle="tooltip"]').tooltip();
     myclockStart();
     if($location.search().role){
@@ -55,8 +55,6 @@ angular.module('cloudKiboApp')
       } else {
         var sampleName = "user " + Math.floor((Math.random() * 100) + 1);;
         $scope.user.username = window.prompt("Please write your username", sampleName);
-        logger.log("User gave the following username : ", sampleName);
-
         if ($scope.user.username == null)
           $scope.user.username = sampleName;
         $scope.connect();
@@ -88,12 +86,12 @@ angular.module('cloudKiboApp')
             MeetingRoom.init(stream, $scope.user.username, null);
           //stream = URL.createObjectURL(stream);
           MeetingRoom.joinRoom($routeParams.mname);
-          logger.log('Accesss to audio and video is given to the application, username : '+ $scope.user.username)
+          logger.log('Accesss to audio is given to the application, username : '+ $scope.user.username)
         }, function (err) {
           $scope.askingMedia = false;
           $scope.isMediaDenied = true;
-          logger.log("audio video stream access was denied: error "+err+", username : "+ $scope.user.username);
-          $scope.error = 'No audio/video permissions. Please allow the audio/video capturing and refresh your browser.';
+          logger.log("audio stream access was denied: error "+err+", username : "+ $scope.user.username);
+          $scope.error = 'No audio permissions. Please allow the audio device capturing and refresh your browser.';
           if($scope.supportCall)
             MeetingRoom.init(null, $scope.user.username, $scope.supportCallData);
           else
@@ -112,9 +110,6 @@ angular.module('cloudKiboApp')
     })
     MeetingRoom.on('peer.stream', function (peer) {
       logger.log('Client connected, adding new stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
-      logger.log('Audio Stream data of '+ peer.username +' starts.');
-      logger.log(peer.stream)
-      logger.log('Audio Stream data of '+ peer.username +' ends.');
       // Inform the new joiner that you are sharing video
       if($scope.isLocalVideoShared()) MeetingRoomVideo.toggleVideo($scope.isLocalVideoShared(), vidStream);
       if($scope.screenSharedLocal) MeetingRoomScreen.toggleScreen(screenStream, $scope.screenSharedLocal);
@@ -133,9 +128,6 @@ angular.module('cloudKiboApp')
     });
     MeetingRoomVideo.on('peer.streamVideo', function (peer) {
       logger.log('Client shared video, adding stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
-      logger.log('Screen Stream data of '+ peer.username +' starts.');
-      logger.log(peer.stream);
-      logger.log('Screen Stream data of '+ peer.username +' ends.');
       $scope.peers.forEach(function (p) {
         if(p.id === peer.id){
           $scope.$apply(function(){
@@ -175,7 +167,7 @@ angular.module('cloudKiboApp')
     });
     MeetingRoom.on('peer.disconnected', function (peer) {
       //aftermeetingstop(); // todo needs to be discussed with zarmeen /**** start clock animation in clock.js ***/
-      logger.log('Client disconnected, removing stream in controller code, username : '+ $scope.user.username +' and peer name : '+ peer.username);
+      logger.log('Client disconnected, removing stream in controller code, username : '+ $scope.user.username);
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
       });

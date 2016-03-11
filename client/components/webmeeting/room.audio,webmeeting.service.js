@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('MeetingRoom', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints) {
+  .factory('MeetingRoom', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, logger, sdpConstraints) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -68,8 +68,7 @@ angular.module('cloudKiboApp')
         socket.emit('msgAudio', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
       pc.onaddstream = function (evnt) {
-        $log.debug('Received audio stream from '+ id);
-        console.log(evnt.stream);
+        logger.log(''+ username +' has received audio stream by  '+ userNames[id]);
         if (nullStreams[id]) return ;
         api.trigger('peer.stream', [{
           id: id,
@@ -91,18 +90,22 @@ angular.module('cloudKiboApp')
         });
       });
       */
+      logger.log(''+ username +' has created audio peer connection for  '+ userNames[id]);
       return pc;
     }
 
     function makeOffer(id) {
       var pc = getPeerConnection(id);
+      logger.log(''+ username +' is going to create audio offer for '+ userNames[id]);
       pc.createOffer(function (sdp) {
-          console.log(sdp)
           //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000"); // todo added for testing by sojharo
           pc.setLocalDescription(sdp);
-          $log.debug('Creating an offer for', id);
+          logger.log(''+ username +' is now sending audio offer to '+ userNames[id]);
           socket.emit('msgAudio', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username, camaccess : stream });
         }, function (e) {
+          logger.log(''+ username +' got this error when creating audio offer for '+ userNames[id]);
+          logger.log(JSON.stringify(e));
+          logger.log(''+ username +' got the above error when creating audio offer for '+ userNames[id]);
    //       callStats.reportError(pc, roomId, callStats.webRTCFunctions.createOffer, e);
         },
         sdpConstraints);
@@ -119,7 +122,6 @@ angular.module('cloudKiboApp')
 
     function handleMessage(data) {
       var pc = getPeerConnection(data.by);
-      console.log(JSON.stringify(data));
       switch (data.type) {
         case 'offer':
           userNames[data.by] = data.username;
@@ -127,34 +129,39 @@ angular.module('cloudKiboApp')
             handlePeerWithoutAccessToMediaStream(data.by, data.username)
           }
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            $log.debug('Setting remote description by offer');
+            logger.log(''+ username +' set audio offer remote description sent by  '+ userNames[data.by]);
             pc.createAnswer(function (sdp) {
               //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
+              logger.log(''+ username +' is now sending audio answer to '+ userNames[data.by]);
               socket.emit('msgAudio', { by: currentId, to: data.by, sdp: sdp, type: 'answer', camaccess : stream });
             }, function (e) {
     //          callStats.reportError(pc, roomId, callStats.webRTCFunctions.createAnswer, e);
-              console.log(e);
+              logger.log(''+ username +' got this ERROR when creating audio answer for '+ userNames[data.by]);
+              logger.log(JSON.stringify(e));
+              logger.log(''+ username +' got the above ERROR when creating audio answer for '+ userNames[data.by]);
             }, sdpConstraints);
           }, function (e) {
-            $log.error(e);
+            logger.log(''+ username +' got this ERROR when setting audio offer from '+ userNames[data.by]);
+            logger.log(JSON.stringify(e));
+            logger.log(''+ username +' got the above ERROR when setting audio offer from '+ userNames[data.by]);
           });
           break;
         case 'answer':
-          console.log('answer by '+ data.by);
           if(data.camaccess === null && !nullStreams[data.by]) {
             handlePeerWithoutAccessToMediaStream(data.by, userNames[data.by])
           }
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            $log.debug('Setting remote description by answer');
+            logger.log(''+ username +' set audio answer remote description sent by  '+ userNames[data.by]);
           }, function (e) {
-            $log.error(e);
+            logger.log(''+ username +' got this ERROR when setting audio answer from '+ userNames[data.by]);
+            logger.log(JSON.stringify(e));
+            logger.log(''+ username +' got the above ERROR when setting audio answer from '+ userNames[data.by]);
           });
           break;
         case 'ice':
           if (data.ice) {
-            $log.debug('Adding ice candidates for audio');
-            $log.debug(data.ice)
+            logger.log(''+ username +' adding ice candidate for audio sent by  '+ userNames[data.by]);
             pc.addIceCandidate(new RTCIceCandidate(data.ice));
           }
           break;
@@ -165,10 +172,12 @@ angular.module('cloudKiboApp')
 
     function addHandlers(socket) {
       socket.on('peer.connected.new', function (params) {
+        logger.log(''+ username +' was informed in audio channel that '+ params.username +' has joined the meeting.');
         userNames[params.id] = params.username;
         makeOffer(params.id);
       });
       socket.on('peer.disconnected.new', function (data) {
+        logger.log(''+ username +' was informed in audio channel that '+ userNames[data.id] +' has left the meeting.');
         api.trigger('peer.disconnected', [data]);
         if (!$rootScope.$$digest) {
           $rootScope.$apply();
@@ -184,18 +193,8 @@ angular.module('cloudKiboApp')
           message: data.message
         }]);
       });
-      socket.on('conference.stream', function(data){
-        if(data.id !== currentId){
-          api.trigger('conference.stream', [{
-            username: data.username,
-            type: data.type,
-            action: data.action,
-            id: data.id
-          }]);
-        }
-      });
       socket.on('connect', function(){
-        console.log('connected')
+        logger.log(''+ username +' got some internet issue and has reconnected and joining room again');
         api.trigger('connection.status', [{
           status : true
         }]);
@@ -204,7 +203,7 @@ angular.module('cloudKiboApp')
       });
       socket.on('disconnect', function () {
         console.log('disconnected');
-        aftermeetingstop(); /**** start clock animation in clock.js ***/
+        aftermeetingstop(); // TODO Need to discuss this with Zarmeen /**** start clock animation in clock.js ***/
         api.trigger('connection.status', [{
           status: false
         }]);
@@ -220,10 +219,12 @@ angular.module('cloudKiboApp')
           if(id === null){
             alert('You cannot join conference. Room is full');
             connected = false;
+            logger.log(''+ username +' was denied to join the room '+ r);
             return;
           }
           currentId = id;
           roomId = roomid;
+          logger.log(''+ username +' joined the room '+ roomId +' and got the id '+ id)
           api.trigger('connection.joined', [{
             username : username,
             roomId : roomId,
@@ -256,6 +257,7 @@ angular.module('cloudKiboApp')
         stream.getAudioTracks()[0].enabled = !(stream.getAudioTracks()[0].enabled);
       },
       end: function () {
+        logger.log(''+ username +' has ended the audio peer connections for all');
         peerConnections = {}; userNames = {};
         connected = false;
         stream.getTracks()[0].stop();

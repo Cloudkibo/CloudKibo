@@ -14,7 +14,6 @@ angular.module('cloudKiboApp')
             video: false,
             audio: true
           }, function (s) {
-            logger.log('given audio stream');
             audioStream = s;
             d.resolve(audioStream);
           }, function (e) {
@@ -24,10 +23,8 @@ angular.module('cloudKiboApp')
         }
       },
       resetAudio: function () {
-        logger.log('going to stop audio local stream');
         if(audioStream || audioStream.getTracks()[0]) {
 
-          logger.log('stopping local audio stream now');
           audioStream.getTracks()[0].stop();
           audioStream = null;
 
@@ -51,10 +48,8 @@ angular.module('cloudKiboApp')
         }
       },
       resetVideo: function () {
-        logger.log('going to stop local video stream')
         if(videoStream || videoStream.getTracks()[0]) {
 
-          logger.log('stopping local video stream now')
           videoStream.getTracks()[0].stop();
           videoStream = null;
 
