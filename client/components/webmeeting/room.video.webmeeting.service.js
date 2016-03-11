@@ -167,8 +167,7 @@ angular.module('cloudKiboApp')
         if (!p) {
           peerConnections = {};
         }
-        if(p) localVideoShared = true;
-        else localVideoShared = false;
+        localVideoShared = p;
         stream = s;
         console.log('letting other peer know that video is being shared')
         socket.emit('conference.streamVideo', { username: username, type: 'video', action: p, id: currentId });
