@@ -80,6 +80,10 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                 a.icon-btn(id='showScreenButton', ng-click='showScreen()')
                   i.fa.fa-desktop
                   div {{showScreenText}}
+            .viewfiles(ng-show='meetingStarted()')
+              a.icon-btn(id='showFilesButton', ng-click='toggleFilesVisibility()')
+                i.fa.fa-desktop
+                div View Files
     .row(ng-show='isAskingForMediaAccess()' class = 'changebckcolor')
       br
       br
@@ -242,4 +246,4 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
               form
                 input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message Here", autocomplete='off')
                 button(ng-click='sendData()') Send
-    .filecontainer(id='filelist_container', ng-show='meetingStarted()' )
+    .filecontainer(id='filelist_container', ng-show='showfilesBox()' )

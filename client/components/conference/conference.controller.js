@@ -195,6 +195,7 @@ angular.module('cloudKiboApp')
     };
 
     $scope.chatBoxVisible = true;
+    $scope.filesVisible = true;
     $scope.showChatBox = function () {
       if($scope.meetingStarted()) {
 
@@ -202,7 +203,13 @@ angular.module('cloudKiboApp')
         return $scope.chatBoxVisible;
       }
     };
+    $scope.showfilesBox = function () {
+      if($scope.meetingStarted()) {
 
+        //call_me_toclear(); //clear clock seconds interval in clock.js
+        return $scope.filesVisible;
+      }
+    };
 
     $scope.toggleChatBoxVisibility = function () {
       if($scope.chatBoxVisible)
@@ -214,6 +221,11 @@ angular.module('cloudKiboApp')
         $scope.heightScreen = '100%';
       }
       $scope.chatBoxVisible = !$scope.chatBoxVisible;
+    };
+
+    $scope.toggleFilesVisibility = function () {
+
+      $scope.filesVisible = !$scope.filesVisible;
     };
     $scope.userMessages = [];
     $scope.sendData = function () {

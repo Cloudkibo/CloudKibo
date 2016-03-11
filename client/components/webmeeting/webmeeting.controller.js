@@ -591,7 +591,7 @@ angular.module('cloudKiboApp')
 
     $scope.connected = true;
     $scope.isConnected = function () {
-      return $scope.connected;v
+      return $scope.connected;
     };
     MeetingRoom.on('connection.status', function(data){
       $scope.connected = data.status;

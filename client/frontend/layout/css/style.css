@@ -846,25 +846,38 @@ form .progress {
 }*/
 .filecontainer{
   position: absolute;
-  background-color: white;
-  width: 100%;
+  width:100%;
   z-index: 4;
+  overflow:auto;
   border-top: 1px solid #c8c8c8;
+  bottom: 0px;
+  height: 100px;
+  background-color: rgba(255,255,255,0.85);
+
+
 }
 .fileTransferBox{
-  position : relative;
-  background : #cdd9ed;
-  border: 1px solid #84a2d4;
-/*left: 20px;
-width: 110px;*/
-  z-index:9999;
-  width: 110px;
-  height: 60px;
-  margin: 10px 0;
-  display:inline-block;
-  margin-right:10px;
+  position: relative;
+  background: #ddd;
+  border: 2px solid #999;
+  border-radius: 2px !important;
+  z-index: 9999;
+  width: 120px;
+  height: 70px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-top: 10px;
 }
+.fileTransferBox a {
+  display: block;
+  text-align: center;
 
+}
+.fileTransferBox span{
+  width: 88px;
+  overflow: hidden;
+  white-space: nowrap;
+}
 .course-sidepane
 {
   #display: inline-block;
@@ -5449,6 +5462,14 @@ background:rgba(51, 51, 51, 0.7);
     z-index: 1000;
     /* left: 100px; */
     display: inline;
+}
+.viewfiles{
+  position: relative;
+  /* margin-top: 5px; */
+  padding: 10px;
+  z-index: 1000;
+  /* left: 100px; */
+  display: inline;
 }
 .subheader-icons{
     padding-top: 5px;
