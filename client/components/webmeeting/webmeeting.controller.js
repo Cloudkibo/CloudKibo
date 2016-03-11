@@ -261,25 +261,34 @@ angular.module('cloudKiboApp')
     $scope.toggleAudioText = 'Mute Audio';
     $scope.audioToggle = function () {
       if($scope.meetingStarted()) {
+
         if ($scope.toggleAudioText === 'Share Audio') {
           $scope.toggleAudioText = 'Mute Audio';
           logger.log("" + $scope.user.username + " has unmuted");
 
           MeetingRoom.toggleAudio();
+          $('#bck-audio').toggleClass('not-working');
           /*$('#bck-audio').toggleClass('not-working');
           $('#bck-audio >a').attr('data-original-title', function(index, attr){
             return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
           }).tooltip('show');*/
+          $('#bck-audio >a').attr('title', function(index, attr){
+            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
+          });
 
         }
         else {
           logger.log("" + $scope.user.username + " has muted");
           $scope.toggleAudioText = 'Share Audio';
           MeetingRoom.toggleAudio();
+          $('#bck-audio').toggleClass('not-working');
           /*$('#bck-audio').toggleClass('not-working');
           $('#bck-audio >a').attr('data-original-title', function(index, attr){
             return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
           }).tooltip('show');*/
+          $('#bck-audio >a').attr('title', function(index, attr){
+            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
+          });
 
         }
       }
@@ -308,10 +317,13 @@ angular.module('cloudKiboApp')
               $scope.error = 'No video permissions. Please allow the video capturing and refresh your browser.';
             });
 
-          /*$('#bck-camera').toggleClass('not-working');
-          $('#bck-camera >a').attr('data-original-title', function(index, attr){
+          $('#bck-camera').toggleClass('not-working');
+          /*$('#bck-camera >a').attr('data-original-title', function(index, attr){
             return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
           }).tooltip('show');*/
+          $('#bck-camera >a').attr('title', function(index, attr){
+            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
+          });
 
         }
         else {
@@ -319,11 +331,14 @@ angular.module('cloudKiboApp')
           MeetingRoomVideo.toggleVideo(false, vidStream);
           MeetingStream.resetVideo();
           logger.log("" + $scope.user.username + " has hidden the video");
-          /*$('#bck-camera').toggleClass('not-working');
-          $('#bck-camera >a').attr('data-original-title', function(index, attr){
+          $('#bck-camera').toggleClass('not-working');
+          /*$('#bck-camera >a').attr('data-original-title', function(index, attr){
             return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
           }).tooltip('show');*/
 
+          $('#bck-camera >a').attr('title', function(index, attr){
+            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
+          });
         }
       }
     };

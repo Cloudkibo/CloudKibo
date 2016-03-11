@@ -117,6 +117,7 @@ angular.module('cloudKiboApp')
     $scope.peers = [];
     Room.on('peer.stream', function (peer) {
       console.info(peer.stream)
+      call_me_toclear(); //clear clock
       logger.log('Client connected, adding new stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
       // Inform the new joiner that you are sharing video
       if($scope.isLocalVideoShared()) Room.toggleVideo($scope.isLocalVideoShared());
@@ -160,7 +161,9 @@ angular.module('cloudKiboApp')
     });
     Room.on('peer.disconnected', function (peer) {
       console.log('i am called');
-       aftermeetingstop(); /**** start clock animation in clock.js ***/
+      if($scope.peers.length == 0)
+        aftermeetingstop(); //  start clock animation in clock.js ***/
+
       logger.log('Client disconnected, removing stream from username : '+ $scope.user.username +' and peer name : '+ peer.username);
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
@@ -195,17 +198,16 @@ angular.module('cloudKiboApp')
     };
 
     $scope.chatBoxVisible = true;
-    $scope.filesVisible = true;
+    $scope.filesVisible = FileHangout.showfilesContainer();
     $scope.showChatBox = function () {
       if($scope.meetingStarted()) {
 
-        call_me_toclear(); //clear clock seconds interval in clock.js
         return $scope.chatBoxVisible;
       }
     };
     $scope.showfilesBox = function () {
       if($scope.meetingStarted()) {
-
+        $scope.filesVisible = FileHangout.showfilesContainer();
         //call_me_toclear(); //clear clock seconds interval in clock.js
         return $scope.filesVisible;
       }
@@ -225,7 +227,8 @@ angular.module('cloudKiboApp')
 
     $scope.toggleFilesVisibility = function () {
 
-      $scope.filesVisible = !$scope.filesVisible;
+      $scope.filesVisible = FileHangout.togglefilesContainer();
+
     };
     $scope.userMessages = [];
     $scope.sendData = function () {

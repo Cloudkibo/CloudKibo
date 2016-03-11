@@ -16,6 +16,7 @@ angular.module('cloudKiboApp')
     window.URL = window.URL || window.webkitURL;
     /* sending functionality, only allow 1 file to be sent out at a time */
     var chunks = {};
+    var filesVisible = false;
     var meta = {};
     var filesysteminuse = false;
     var fileCount = 0;
@@ -66,8 +67,8 @@ angular.module('cloudKiboApp')
     function upload_stop(fileid) {
       /* remove data */
       chunks = {};
-      // $('#myModal').modal('hide');
-      // $("[data-dismiss=modal]").trigger({ type: "click" });
+       $('#myModal').modal('hide');
+       $("[data-dismiss=modal]").trigger({ type: "click" });
       /* also clear the container */
      // create_or_clear_container(meta.fid);
 
@@ -198,7 +199,7 @@ angular.module('cloudKiboApp')
 
       send_meta(meta);
       document.getElementById('file').value = '';
-      Room.sendChat("You have received a file. Download and Save it.");
+     // Room.sendChat("You have received a file. Download and Save it.");
 
       /* user 0 is this user! */
       create_upload_stop_link(meta.name, meta.fid);//, username);
@@ -467,6 +468,8 @@ angular.module('cloudKiboApp')
     /* create a link that will let the user start the download */
     function create_upload_stop_link(filename, id) {//, username) {
 
+      //make filecontainer visible
+      filesVisible = true;
       //create a place to store this if it does not already
       create_container(id);//, username);
       var filecontainer = document.getElementById(id);
@@ -499,7 +502,7 @@ angular.module('cloudKiboApp')
       filecontainer.appendChild(span);
       filecontainer.appendChild(a);
   //    fs_container.appendChild(filecontainer);
-     //  $('#myModalUpload').modal('show');
+       $('#myModalUpload').modal('show');
 
     }
 
@@ -507,11 +510,13 @@ angular.module('cloudKiboApp')
     /* create a link that will let the user start the download */
     function create_pre_file_link(meta, id, username) {
 
+      filesVisible = true;//make filecontainer list visible
+
       //create a place to store this if it does not already
       create_container(id);
       var filecontainer = document.getElementById(id);
       var span = document.getElementById(id+'-username');
-      var spanUpdate = document.getElementById(id+'-span');
+      var spanUpdate = document.getElementById(id+'-myspan');
       if(spanUpdate != null)
       {
         filecontainer.removeChild(spanUpdate);
@@ -561,7 +566,7 @@ angular.module('cloudKiboApp')
       filecontainer.appendChild(myspan);
       filecontainer.appendChild(a);
 
-      // $('#myModal').modal('show');
+       $('#myModal').modal('show');
 
       //append to chat
       //Room.sendChat($scope.user.username + " is now offering file " + meta.name);
@@ -626,6 +631,11 @@ angular.module('cloudKiboApp')
 
       //create the link
       var span = document.getElementById(id + '-span');
+      var updatespan = document.getElementById(id + '-myspan');
+      if(updatespan != null)
+      {
+        filecontainer.removeChild(updatespan);//remove update percentage span
+      }
       var c = document.getElementById(id + '-cancel');
       if(c !=null)
       {
@@ -792,10 +802,24 @@ angular.module('cloudKiboApp')
           console.log('Going to process data in file transfer conference '+ data);
           process_data(data);
         }
+      },
+
+
+      /*** function to return whether to show filelist container or not
+       *
+       */
+
+      showfilesContainer :function(){
+      //processing
+      return filesVisible;
+    },
+      togglefilesContainer :function(){
+        //processing
+         filesVisible = !filesVisible;
+        return filesVisible;
       }
 
     };
-
 
 
 

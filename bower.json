@@ -19,7 +19,7 @@
     "ng-file-upload-shim": "~9.0.15",
     "ng-file-upload": "~9.0.15",
     "ngImgCrop": "~0.3.2",
-    "jquery-bar-rating": "~1.1.4"
+    "jquery":"2.2.1"
   },
   "resolutions": {
     "angular": "1.2.6"
