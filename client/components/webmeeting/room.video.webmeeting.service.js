@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('MeetingRoomVideo', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints, logger) {
+  .factory('MeetingRoomVideo', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, sdpConstraints, logger) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -21,12 +21,10 @@ angular.module('cloudKiboApp')
       var pc = new RTCPeerConnection(iceConfig, pc_constraints2);
       peerConnections[id] = pc;
       pc.onicecandidate = function (evnt) {
-        console.log('ice got for video');
         socket.emit('msgVideo', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
       pc.onaddstream = function (evnt) {
-        console.log('Received video stream from '+ id);
-        console.log(evnt.stream);
+        logger.log(''+ username +' has received video stream by  '+ userNames[id]);
         if(!otherStream[id]) {
           api.trigger('peer.streamVideo', [{
             id: id,
@@ -39,7 +37,7 @@ angular.module('cloudKiboApp')
           otherStream[id] = evnt.stream;
         }
       };
-      var callStats = new callstats(null,io,jsSHA);
+  /*    var callStats = new callstats(null,io,jsSHA);
       var AppID     = "199083144";
       var AppSecret = "t/vySeaTw5q6323+ArF2c6nEFT4=";
       callStats.initialize(AppID, AppSecret, username, function (err, msg) {
@@ -49,28 +47,33 @@ angular.module('cloudKiboApp')
           console.log("Add new Fabric Status for video: err="+err+" msg="+msg);
         });
       });
+      */
+      logger.log(''+ username +' has created video peer connection for  '+ userNames[id]);
       return pc;
     }
 
     function makeOffer(id) {
       var pc = getPeerConnection(id);
+      logger.log(''+ username +' is going to create video offer for '+ userNames[id]);
       pc.createOffer(function (sdp) {
           pc.setLocalDescription(sdp);
-          $log.debug('Creating an offer for '+ id +' for video');
+          logger.log(''+ username +' is now sending video offer to '+ userNames[id]);
           socket.emit('msgVideo', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username, camaccess : stream });
         }, function (e) {
-          callStats.reportError(pc, roomId, callStats.webRTCFunctions.createOffer, e);
-          $log.error(e);
+          logger.log(''+ username +' got this error when creating video offer for '+ userNames[id]);
+          logger.log(JSON.stringify(e));
+          logger.log(''+ username +' got the above error when creating video offer for '+ userNames[id]);
+  //        callStats.reportError(pc, roomId, callStats.webRTCFunctions.createOffer, e);
         },
         sdpConstraints);
     }
 
     function handleMessage(data) {
       var pc = getPeerConnection(data.by);
-      //console.log(JSON.stringify(data));
       switch (data.type) {
         case 'offer':
           if(otherStream[data.by]){ // workaround for firefox as it doesn't support renegotiation (ice restart unsupported error in firefox)
+            logger.log(''+ username +' uses workaround for firefox creates peer connection again for  '+ data.username);
             otherStream[data.by] = false;
             delete peerConnections[data.by];
             pc = getPeerConnection(data.by);
@@ -78,32 +81,36 @@ angular.module('cloudKiboApp')
           pc.addStream(stream);
           userNames[data.by] = data.username;
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            console.log('Setting remote description by offer for video '+ data.by);
-            console.log(data.sdp.sdp)
+            logger.log(''+ username +' set video offer remote description sent by  '+ userNames[data.by]);
             pc.createAnswer(function (sdp) {
               //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
+              logger.log(''+ username +' is now sending video answer to '+ userNames[data.by]);
               socket.emit('msgVideo', { by: currentId, to: data.by, sdp: sdp, type: 'answer', camaccess : stream });
             }, function (e) {
-              callStats.reportError(pc, roomId, callStats.webRTCFunctions.createAnswer, e);
-              console.log(e);
+              logger.log(''+ username +' got this ERROR when creating video answer for '+ userNames[data.by]);
+              logger.log(JSON.stringify(e));
+              logger.log(''+ username +' got the above ERROR when creating video answer for '+ userNames[data.by]);
+      //        callStats.reportError(pc, roomId, callStats.webRTCFunctions.createAnswer, e);
             }, sdpConstraints);
           }, function (e) {
-            $log.error(e);
+            logger.log(''+ username +' got this ERROR when setting video offer from '+ userNames[data.by]);
+            logger.log(JSON.stringify(e));
+            logger.log(''+ username +' got the above ERROR when setting video offer from '+ userNames[data.by]);
           });
           break;
         case 'answer':
-          console.log('answer by '+ data.by +' for video');
-          console.log(data.sdp.sdp)
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            console.log('Setting remote description by answer');
+            logger.log(''+ username +' set video answer remote description sent by  '+ userNames[data.by]);
           }, function (e) {
-            $log.error(e);
+            logger.log(''+ username +' got this ERROR when setting video answer from '+ userNames[data.by]);
+            logger.log(JSON.stringify(e));
+            logger.log(''+ username +' got the above ERROR when setting video answer from '+ userNames[data.by]);
           });
           break;
         case 'ice':
           if (data.ice) {
-            console.log('Adding ice candidates for video from '+ data.by);
+            logger.log(''+ username +' adding ice candidate for video sent by  '+ userNames[data.by]);
             pc.addIceCandidate(new RTCIceCandidate(data.ice));
           }
           break;
@@ -114,10 +121,12 @@ angular.module('cloudKiboApp')
 
     function addHandlers(socket) {
       socket.on('peer.connected.new', function (params) {
+        logger.log(''+ username +' was informed in video channel that '+ params.username +' has joined the meeting.');
         userNames[params.id] = params.username;
         //makeOffer(params.id);
       });
       socket.on('peer.disconnected.new', function (data) {
+        logger.log(''+ username +' was informed in video channel that '+ userNames[data.id] +' has left the meeting.');
         if (!$rootScope.$$digest) {
           $rootScope.$apply();
         }
@@ -129,7 +138,6 @@ angular.module('cloudKiboApp')
       });
       socket.on('conference.streamVideo', function(data){
         if(data.id !== currentId){
-          console.log('some one is about to share video '+ JSON.stringify(data))
           api.trigger('conference.streamVideo', [{
             username: data.username,
             type: data.type,
@@ -137,12 +145,15 @@ angular.module('cloudKiboApp')
             id: data.id
           }]);
           if(data.action) {
+            logger.log(''+ username +' was informed that '+ data.username +' wants to share the video.');
             if(localVideoShared) { // workaround for firefox as it doesn't support renegotiation (ice restart unsupported error in firefox)
+              logger.log(''+ username +' was informed in firefox workaround that '+ data.username +' wants to share the video. Peer connection is removed for that person');
               otherStream[data.id] = false;
               delete peerConnections[data.id];
             }
             makeOffer(data.id);
           } else {
+            logger.log(''+ username +' was informed that '+ data.username +' wants to hide the video.');
             otherStream[data.id] = false;
             delete peerConnections[data.id];
           }
@@ -166,13 +177,12 @@ angular.module('cloudKiboApp')
         if (!p) {
           peerConnections = {};
         }
-        if(p) localVideoShared = true;
-        else localVideoShared = false;
+        localVideoShared = p;
         stream = s;
-        console.log('letting other peer know that video is being shared')
         socket.emit('conference.streamVideo', { username: username, type: 'video', action: p, id: currentId });
       },
       end: function () {
+        logger.log(''+ username +' has ended the video peer connections for all');
         peerConnections = {}; userNames = {};
         connected = false;
         stream.getTracks()[0].stop();

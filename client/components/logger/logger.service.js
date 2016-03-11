@@ -3,6 +3,7 @@ angular.module('cloudKiboApp')
     return {
       log: function (data) {
 
+        console.log(data);
         socket.emit('logClient', data);
 
       }

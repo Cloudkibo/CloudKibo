@@ -75,14 +75,16 @@ var all = {
   configuration.findOne({}, function(err, result){
     // console.log(result);
 
-    all.facebook.clientID = result.facebookid;
-    all.facebook.clientSecret = result.facebooksecret;
+    if(process.env.NODE_ENV !== 'development'){
+      all.facebook.clientID = result.facebookid;
+      all.facebook.clientSecret = result.facebooksecret;
 
-    all.google.clientID = result.googleid;
-    all.google.clientSecret = result.googlesecret;
+      all.google.clientID = result.googleid;
+      all.google.clientSecret = result.googlesecret;
 
-    all.windowslive.clientID = result.windowsid;
-    all.windowslive.clientSecret = result.windowssecret;
+      all.windowslive.clientID = result.windowsid;
+      all.windowslive.clientSecret = result.windowssecret;
+    }
 
     //console.log(all)
   })

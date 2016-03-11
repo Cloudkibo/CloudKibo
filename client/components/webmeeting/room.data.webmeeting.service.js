@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('MeetingRoomData', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, sdpConstraints, logger) {
+  .factory('MeetingRoomData', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, sdpConstraints, logger) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -21,13 +21,13 @@ angular.module('cloudKiboApp')
         socket.emit('msgData', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
       pc.ondatachannel = function (evnt) {
-        console.log('Received DataChannel from '+ id);
+        logger.log(''+ username +' has received datachannel by  '+ userNames[id]);
         dataChannels[id] = evnt.channel;
         dataChannels[id].onmessage = function (evnt) {
           handleDataChannelMessage(id, evnt.data);
         };
       };
-      var callStats = new callstats(null,io,jsSHA);
+   /*   var callStats = new callstats(null,io,jsSHA);
       var AppID     = "199083144";
       var AppSecret = "t/vySeaTw5q6323+ArF2c6nEFT4=";
       callStats.initialize(AppID, AppSecret, username, function (err, msg) {
@@ -37,21 +37,26 @@ angular.module('cloudKiboApp')
           console.log("Add new Fabric Status for data: err="+err+" msg="+msg);
         });
       });
+      */
+      logger.log(''+ username +' has created data peer connection for  '+ userNames[id]);
       return pc;
     }
 
     function makeOffer(id) {
       var pc = getPeerConnection(id);
       makeDataChannel(id);
+      logger.log(''+ username +' is going to create data offer for '+ userNames[id]);
       pc.createOffer(function (sdp) {
           //console.log(sdp)
           //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000"); // todo added for testing by sojharo
           pc.setLocalDescription(sdp);
-          $log.debug('Creating an offer for'+ id +' for data');
+          logger.log(''+ username +' is now sending data offer to '+ userNames[id]);
           socket.emit('msgData', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username });
         }, function (e) {
-          callStats.reportError(pc, roomId, callStats.webRTCFunctions.createOffer, e);
-          $log.error(e);
+          logger.log(''+ username +' got this error when creating data offer for '+ userNames[id]);
+          logger.log(JSON.stringify(e));
+          logger.log(''+ username +' got the above error when creating data offer for '+ userNames[id]);
+  //        callStats.reportError(pc, roomId, callStats.webRTCFunctions.createOffer, e);
         },
         sdpConstraints);
     }
@@ -64,22 +69,25 @@ angular.module('cloudKiboApp')
           dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: true});
         }
         catch (e) {
-          $log.warn('Unreliable DataChannel for '+ id +': '+ e);
+          logger.log(''+ username +' got this error when creating reliable data channel for '+ userNames[id] +'. creating unreliable datachannel now');
+          logger.log(JSON.stringify(e));
+          logger.log(''+ username +' got the above error when creating reliable data channel for '+ userNames[id] +'. creating unreliable datachannel now');
           dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: false});
         }
         dataChannels[id].onmessage = function (evnt) {
           handleDataChannelMessage(id, evnt.data);
         };
-        $log.debug('Created DataChannel for '+ id);
+        logger.log(''+ username +' has created datachannel for '+ userNames[id]);
       } catch (e) {
         alert('Failed to create data channel. ' +
         'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
-        $log.error('createDataChannel() failed with exception: ' + e.message);
+        logger.log(''+ username +' got this error when creating data channel for '+ userNames[id]);
+        logger.log(JSON.stringify(e));
+        logger.log(''+ username +' got the above error when creating data channel for '+ userNames[id]);
       }
     }
 
     function handleDataChannelMessage(id, data) {
-      //console.log('datachannel message '+ data);
       api.trigger('dataChannel.message.new', [{
         id: id,
         username: userNames[id],
@@ -89,36 +97,41 @@ angular.module('cloudKiboApp')
 
     function handleMessage(data) {
       var pc = getPeerConnection(data.by);
-      console.log(JSON.stringify(data));
       switch (data.type) {
         case 'offer':
           userNames[data.by] = data.username;
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            $log.debug('Setting remote description by offer for data');
+            logger.log(''+ username +' set data offer remote description sent by  '+ userNames[data.by]);
             pc.createAnswer(function (sdp) {
               //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
+              logger.log(''+ username +' is now sending data answer to '+ userNames[data.by]);
               socket.emit('msgData', { by: currentId, to: data.by, sdp: sdp, type: 'answer' });
             }, function (e) {
-              callStats.reportError(pc, roomId, callStats.webRTCFunctions.createAnswer, e);
-              console.log(e);
+  //            callStats.reportError(pc, roomId, callStats.webRTCFunctions.createAnswer, e);
+              logger.log(''+ username +' got this ERROR when creating data answer for '+ userNames[data.by]);
+              logger.log(JSON.stringify(e));
+              logger.log(''+ username +' got the above ERROR when creating data answer for '+ userNames[data.by]);
             }, sdpConstraints);
           }, function (e) {
-            $log.error(e);
+            logger.log(''+ username +' got this ERROR when setting data offer from '+ userNames[data.by]);
+            logger.log(JSON.stringify(e));
+            logger.log(''+ username +' got the above ERROR when setting data offer from '+ userNames[data.by]);
           });
           break;
         case 'answer':
           console.log('answer by '+ data.by +' for data');
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            $log.debug('Setting remote description by answer for data');
+            logger.log(''+ username +' set data answer remote description sent by  '+ userNames[data.by]);
           }, function (e) {
-            $log.error(e);
+            logger.log(''+ username +' got this ERROR when setting data answer from '+ userNames[data.by]);
+            logger.log(JSON.stringify(e));
+            logger.log(''+ username +' got the above ERROR when setting data answer from '+ userNames[data.by]);
           });
           break;
         case 'ice':
           if (data.ice) {
-            $log.debug('Adding ice candidates for data');
-            $log.debug(data.ice)
+            logger.log(''+ username +' adding ice candidate for audio sent by  '+ userNames[data.by]);
             pc.addIceCandidate(new RTCIceCandidate(data.ice));
           }
           break;
@@ -129,10 +142,12 @@ angular.module('cloudKiboApp')
 
     function addHandlers(socket) {
       socket.on('peer.connected.new', function (params) {
+        logger.log(''+ username +' was informed in data channel that '+ params.username +' has joined the meeting.');
         userNames[params.id] = params.username;
         makeOffer(params.id);
       });
       socket.on('peer.disconnected.new', function (data) {
+        logger.log(''+ username +' was informed in data channel that '+ userNames[data.id] +' has left the meeting.');
         //api.trigger('peer.disconnected', [data]); // todo test this later
         if (!$rootScope.$$digest) {
           $rootScope.$apply();
@@ -164,6 +179,7 @@ angular.module('cloudKiboApp')
         }
       },
       end: function () {
+        logger.log(''+ username +' has ended the data peer connections for all');
         peerConnections = {}; userNames = {}; dataChannels = {};
         connected = false;
       }
