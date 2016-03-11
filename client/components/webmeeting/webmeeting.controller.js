@@ -110,6 +110,7 @@ angular.module('cloudKiboApp')
     })
     MeetingRoom.on('peer.stream', function (peer) {
       logger.log('Client connected, adding new stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
+      call_me_toclear(); //clear clock
       // Inform the new joiner that you are sharing video
       if($scope.isLocalVideoShared()) MeetingRoomVideo.toggleVideo($scope.isLocalVideoShared(), vidStream);
       if($scope.screenSharedLocal) MeetingRoomScreen.toggleScreen(screenStream, $scope.screenSharedLocal);
@@ -166,7 +167,9 @@ angular.module('cloudKiboApp')
       }
     });
     MeetingRoom.on('peer.disconnected', function (peer) {
-      //aftermeetingstop(); // todo needs to be discussed with zarmeen /**** start clock animation in clock.js ***/
+
+      if($scope.peers.length == 0)
+          aftermeetingstop(); //  start clock animation in clock.js ***/
       logger.log('Client disconnected, removing stream in controller code, username : '+ $scope.user.username);
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
