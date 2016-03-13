@@ -16,6 +16,7 @@ angular.module('cloudKiboApp')
     window.URL = window.URL || window.webkitURL;
     /* sending functionality, only allow 1 file to be sent out at a time */
     var chunks = {};
+    var filesVisible = false;
     var meta = {};
     var filesysteminuse = false;
     var fileCount = 0;
@@ -66,8 +67,8 @@ angular.module('cloudKiboApp')
     function upload_stop(fileid) {
       /* remove data */
       chunks = {};
-      // $('#myModal').modal('hide');
-      // $("[data-dismiss=modal]").trigger({ type: "click" });
+       $('#myModal').modal('hide');
+       $("[data-dismiss=modal]").trigger({ type: "click" });
       /* also clear the container */
      // create_or_clear_container(meta.fid);
 
@@ -198,7 +199,7 @@ angular.module('cloudKiboApp')
 
       send_meta(meta);
       document.getElementById('file').value = '';
-      Room.sendChat("You have received a file. Download and Save it.");
+     // Room.sendChat("You have received a file. Download and Save it.");
 
       /* user 0 is this user! */
       create_upload_stop_link(meta.name, meta.fid);//, username);
@@ -257,7 +258,7 @@ angular.module('cloudKiboApp')
       $log.debug('process_data function: ', data)
       if (data.file_meta) {
         /* we are recieving file meta data */
-
+        $('#myModal').modal('show');
         /* if it contains file_meta, must be meta data! */
         recieved_meta[data.file_meta.fid] = data.file_meta;
         recieved_meta[data.file_meta.fid].numOfChunksInFile = Math.ceil(recieved_meta[data.file_meta.fid].size / FileUtility.getChunkSize());
@@ -467,14 +468,25 @@ angular.module('cloudKiboApp')
     /* create a link that will let the user start the download */
     function create_upload_stop_link(filename, id) {//, username) {
 
+      //make filecontainer visible
+      filesVisible = true;
       //create a place to store this if it does not already
       create_container(id);//, username);
       var filecontainer = document.getElementById(id);
 
       //create the link
       var span = document.createElement('span');
+      var myspan = document.createElement('span');
+      myspan.textContent = meta.uname + ' : ' ;
+      myspan.style.display = "block";
       console.log('username is : '+  meta.uname);
-      span.textContent = meta.uname + ' : ' + filename.substring(0,10) + ' ';
+      if(filename.length > 7) {
+        span.textContent =  filename.substring(0,7) + '... ' + FileUtility.getReadableFileSizeString(meta.size);
+      }
+      else
+      {
+        span.textContent = filename +' '+ FileUtility.getReadableFileSizeString(meta.size);;
+      }
 
       var a = document.createElement('a');
       a.download = meta.name;
@@ -486,10 +498,12 @@ angular.module('cloudKiboApp')
       a.draggable = true;
 
       //append link!
+      filecontainer.appendChild(myspan);
       filecontainer.appendChild(span);
       filecontainer.appendChild(a);
   //    fs_container.appendChild(filecontainer);
-     //  $('#myModalUpload').modal('show');
+
+       $('#myModalUpload').modal('show');
 
     }
 
@@ -497,11 +511,13 @@ angular.module('cloudKiboApp')
     /* create a link that will let the user start the download */
     function create_pre_file_link(meta, id, username) {
 
+      filesVisible = true;//make filecontainer list visible
+
       //create a place to store this if it does not already
       create_container(id);
       var filecontainer = document.getElementById(id);
       var span = document.getElementById(id+'-username');
-      var spanUpdate = document.getElementById(id+'-span');
+      var spanUpdate = document.getElementById(id+'-myspan');
       if(spanUpdate != null)
       {
         filecontainer.removeChild(spanUpdate);
@@ -517,6 +533,7 @@ angular.module('cloudKiboApp')
         var span = document.createElement('span');
         span.textContent = meta.uname + ' : ';
         span.id = id+'-username';
+        span.style.display = "block";
         filecontainer.appendChild(span);
       }
 
@@ -531,19 +548,26 @@ angular.module('cloudKiboApp')
           filecontainer.removeChild(c);
         }
       }
+
       var a = document.createElement('a');
+      var myspan = document.createElement('span');
+      myspan.setAttribute('id',id+'-span');
       a.download = meta.name;
       a.id = id + '-download';
       a.class = 'icon-btn';
       a.href = 'javascript:void(0);';
-      a.textContent = 'Download : ' + meta.name.substring(0,10) + ' ' + FileUtility.getReadableFileSizeString(meta.size);
+      if(meta.name.length >7)
+        myspan.textContent =  meta.name.substring(0,7) + '...  ' + FileUtility.getReadableFileSizeString(meta.size);
+      else
+        myspan.textContent = meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
+      a.textContent = 'Download';
       a.draggable = true;
 
       //append link!
-
+      filecontainer.appendChild(myspan);
       filecontainer.appendChild(a);
 
-      // $('#myModal').modal('show');
+
 
       //append to chat
       //Room.sendChat($scope.user.username + " is now offering file " + meta.name);
@@ -554,6 +578,8 @@ angular.module('cloudKiboApp')
 
       /** remove download link **/
        var a = document.getElementById(id+'-download');
+      var sp = document.getElementById(id+'-span');
+
       var filecontainer = document.getElementById(id);
       if(a!=null)
       {
@@ -561,23 +587,28 @@ angular.module('cloudKiboApp')
         filecontainer.removeChild(a);
 
       }
-
+      if(sp!=null)
+      {
+        filecontainer.removeChild(sp);//to clear filename
+      }
       /* create file % based on chunk # downloaded */
-      var span = document.getElementById(id+'-span');
+      var span = document.getElementById(id+'-myspan');
       if(span == null)
       {
         span = document.createElement('span');
-        span.setAttribute('id',id+'-span');
+        span.setAttribute('id',id+'-myspan');
+        filecontainer.appendChild(span);
+
         var a = document.createElement('a');
         a.download = meta.name;
         a.id = id + '-cancel';
         a.class = 'row';
         a.href = 'javascript:void(0);';
         a.style.cssText = 'color:#af4545;';
-        a.textContent = '[c]';
+        a.textContent = '[Cancel]';
         a.draggable = true;
         //append link!
-        filecontainer.appendChild(span);
+
         filecontainer.appendChild(a);
 
       }
@@ -600,18 +631,32 @@ angular.module('cloudKiboApp')
       var filecontainer = document.getElementById(id);
 
       //create the link
-      /* Zarmeen : I am commenting next two lines as there is no use of them */
       var span = document.getElementById(id + '-span');
+      var updatespan = document.getElementById(id + '-myspan');
+      if(updatespan != null)
+      {
+        filecontainer.removeChild(updatespan);//remove update percentage span
+      }
       var c = document.getElementById(id + '-cancel');
       if(c !=null)
       {
         filecontainer.removeChild(c);
       }
       if(span != null) {
-        span.innerHTML = '';
+        if(meta.name.length >7)
+          span.textContent =  meta.name.substring(0,7) + '...  ' + FileUtility.getReadableFileSizeString(meta.size);
+        else
+          span.textContent = meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
+
       }
-    //  var span = document.createElement('span');
-    //  span.textContent = '';
+      else{
+        var myspan = document.createElement('span');
+        if(meta.name.length >7)
+          myspan.textContent =  meta.name.substring(0,7) + '...  ' + FileUtility.getReadableFileSizeString(meta.size);
+        else
+          myspan.textContent = meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
+        filecontainer.appendChild(myspan);
+      }
 
       var a = document.getElementById(id+'-download');
       if(a != null)
@@ -628,7 +673,7 @@ angular.module('cloudKiboApp')
         /* fileEntry is actually not a FileEntry, but a blob in Chrome */
         a.href = window.URL.createObjectURL(fileEntry);
       }
-      a.textContent = 'Save : ' + meta.name.substring(0,10);
+      a.textContent = 'Save';
       a.class = 'icon-btn';
       a.dataset.downloadurl = [filetype, a.download, a.href].join(':');
       a.draggable = true;
@@ -637,11 +682,14 @@ angular.module('cloudKiboApp')
    //   var messages = document.getElementById('messages');
  //     filecontainer.appendChild(span);
       filecontainer.appendChild(a);
+      a.click(); //to auto save after file is downloaded
 
+
+      /****************** No purpose of this link button *******/
       /* make delete button */
-      filecontainer.innerHTML = filecontainer.innerHTML + " ";
+    //  filecontainer.innerHTML = filecontainer.innerHTML + " ";
       /* add cancel button */
-      var can = document.createElement('a');
+   /*   var can = document.createElement('a');
       can.download = meta.name;
       can.id = id + '-cancel';
       a.class = 'icon-btn';
@@ -650,7 +698,7 @@ angular.module('cloudKiboApp')
       can.textContent = '[d]';
       can.draggable = true;
       //append link!
-      filecontainer.appendChild(can);
+      filecontainer.appendChild(can);*/
 
       //append to chat
       //Room.sendChat("File " + meta.name + " is ready to save locally");
@@ -756,10 +804,24 @@ angular.module('cloudKiboApp')
           console.log('Going to process data in file transfer conference '+ data);
           process_data(data);
         }
+      },
+
+
+      /*** function to return whether to show filelist container or not
+       *
+       */
+
+      showfilesContainer :function(){
+      //processing
+      return filesVisible;
+    },
+      togglefilesContainer :function(){
+        //processing
+         filesVisible = !filesVisible;
+        return filesVisible;
       }
 
     };
-
 
 
 

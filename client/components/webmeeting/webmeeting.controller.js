@@ -110,6 +110,7 @@ angular.module('cloudKiboApp')
     })
     MeetingRoom.on('peer.stream', function (peer) {
       logger.log('Client connected, adding new stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
+      call_me_toclear(); //clear clock
       // Inform the new joiner that you are sharing video
       if($scope.isLocalVideoShared()) MeetingRoomVideo.toggleVideo($scope.isLocalVideoShared(), vidStream);
       if($scope.screenSharedLocal) MeetingRoomScreen.toggleScreen(screenStream, $scope.screenSharedLocal);
@@ -166,7 +167,12 @@ angular.module('cloudKiboApp')
       }
     });
     MeetingRoom.on('peer.disconnected', function (peer) {
-      //aftermeetingstop(); // todo needs to be discussed with zarmeen /**** start clock animation in clock.js ***/
+
+
+     if($scope.peers.length == 0) {
+       console.log('starting clock ');
+       aftermeetingstop(); //  start clock animation in clock.js ***/
+     }
       logger.log('Client disconnected, removing stream in controller code, username : '+ $scope.user.username);
       $scope.peers = $scope.peers.filter(function (p) {
         return p.id !== peer.id;
@@ -257,35 +263,30 @@ angular.module('cloudKiboApp')
 
     $scope.toggleAudioText = 'Mute Audio';
     $scope.audioToggle = function () {
-      if($scope.meetingStarted()) {
+    //  if($scope.meetingStarted()) {
+
         if ($scope.toggleAudioText === 'Share Audio') {
           $scope.toggleAudioText = 'Mute Audio';
           logger.log("" + $scope.user.username + " has unmuted");
 
           MeetingRoom.toggleAudio();
-          /*$('#bck-audio').toggleClass('not-working');
-          $('#bck-audio >a').attr('data-original-title', function(index, attr){
-            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
-          }).tooltip('show');*/
+          $('#bck-audio').toggleClass('not-working');
 
         }
         else {
           logger.log("" + $scope.user.username + " has muted");
           $scope.toggleAudioText = 'Share Audio';
           MeetingRoom.toggleAudio();
-          /*$('#bck-audio').toggleClass('not-working');
-          $('#bck-audio >a').attr('data-original-title', function(index, attr){
-            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
-          }).tooltip('show');*/
+          $('#bck-audio').toggleClass('not-working');
 
         }
-      }
+     // }
     };
     var videostream;
     var vidStream;
     $scope.toggleVideoText = 'Share Video';
     $scope.videoToggle = function () {
-      if($scope.meetingStarted()) { // todo try commenting this out.. as user might test cam while waiting for conference to start
+     // if($scope.meetingStarted()) { // todo try commenting this out.. as user might test cam while waiting for conference to start
         if ($scope.toggleVideoText === 'Share Video') {
           $scope.toggleVideoText = 'Hide Video';
           logger.log("" + $scope.user.username + " has tried to share the video");
@@ -305,10 +306,7 @@ angular.module('cloudKiboApp')
               $scope.error = 'No video permissions. Please allow the video capturing and refresh your browser.';
             });
 
-          /*$('#bck-camera').toggleClass('not-working');
-          $('#bck-camera >a').attr('data-original-title', function(index, attr){
-            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
-          }).tooltip('show');*/
+          $('#bck-camera').toggleClass('not-working');
 
         }
         else {
@@ -316,13 +314,9 @@ angular.module('cloudKiboApp')
           MeetingRoomVideo.toggleVideo(false, vidStream);
           MeetingStream.resetVideo();
           logger.log("" + $scope.user.username + " has hidden the video");
-          /*$('#bck-camera').toggleClass('not-working');
-          $('#bck-camera >a').attr('data-original-title', function(index, attr){
-            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
-          }).tooltip('show');*/
-
-        }
-      }
+          $('#bck-camera').toggleClass('not-working');
+             }
+     // }
     };
 
     ScreenShare.initialize();
@@ -580,7 +574,7 @@ angular.module('cloudKiboApp')
 
     $scope.connected = true;
     $scope.isConnected = function () {
-      return $scope.connected;v
+      return $scope.connected;
     };
     MeetingRoom.on('connection.status', function(data){
       $scope.connected = data.status;
