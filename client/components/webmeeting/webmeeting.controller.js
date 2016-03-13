@@ -260,7 +260,7 @@ angular.module('cloudKiboApp')
 
     $scope.toggleAudioText = 'Mute Audio';
     $scope.audioToggle = function () {
-      if($scope.meetingStarted()) {
+    //  if($scope.meetingStarted()) {
 
         if ($scope.toggleAudioText === 'Share Audio') {
           $scope.toggleAudioText = 'Mute Audio';
@@ -277,13 +277,13 @@ angular.module('cloudKiboApp')
           $('#bck-audio').toggleClass('not-working');
 
         }
-      }
+     // }
     };
     var videostream;
     var vidStream;
     $scope.toggleVideoText = 'Share Video';
     $scope.videoToggle = function () {
-      if($scope.meetingStarted()) { // todo try commenting this out.. as user might test cam while waiting for conference to start
+     // if($scope.meetingStarted()) { // todo try commenting this out.. as user might test cam while waiting for conference to start
         if ($scope.toggleVideoText === 'Share Video') {
           $scope.toggleVideoText = 'Hide Video';
           logger.log("" + $scope.user.username + " has tried to share the video");
@@ -313,7 +313,7 @@ angular.module('cloudKiboApp')
           logger.log("" + $scope.user.username + " has hidden the video");
           $('#bck-camera').toggleClass('not-working');
              }
-      }
+     // }
     };
 
     ScreenShare.initialize();
