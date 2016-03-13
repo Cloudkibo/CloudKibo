@@ -268,13 +268,6 @@ angular.module('cloudKiboApp')
 
           MeetingRoom.toggleAudio();
           $('#bck-audio').toggleClass('not-working');
-          /*$('#bck-audio').toggleClass('not-working');
-          $('#bck-audio >a').attr('data-original-title', function(index, attr){
-            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
-          }).tooltip('show');*/
-          $('#bck-audio >a').attr('title', function(index, attr){
-            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
-          });
 
         }
         else {
@@ -282,13 +275,6 @@ angular.module('cloudKiboApp')
           $scope.toggleAudioText = 'Share Audio';
           MeetingRoom.toggleAudio();
           $('#bck-audio').toggleClass('not-working');
-          /*$('#bck-audio').toggleClass('not-working');
-          $('#bck-audio >a').attr('data-original-title', function(index, attr){
-            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
-          }).tooltip('show');*/
-          $('#bck-audio >a').attr('title', function(index, attr){
-            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
-          });
 
         }
       }
@@ -318,12 +304,6 @@ angular.module('cloudKiboApp')
             });
 
           $('#bck-camera').toggleClass('not-working');
-          /*$('#bck-camera >a').attr('data-original-title', function(index, attr){
-            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
-          }).tooltip('show');*/
-          $('#bck-camera >a').attr('title', function(index, attr){
-            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
-          });
 
         }
         else {
@@ -332,14 +312,7 @@ angular.module('cloudKiboApp')
           MeetingStream.resetVideo();
           logger.log("" + $scope.user.username + " has hidden the video");
           $('#bck-camera').toggleClass('not-working');
-          /*$('#bck-camera >a').attr('data-original-title', function(index, attr){
-            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
-          }).tooltip('show');*/
-
-          $('#bck-camera >a').attr('title', function(index, attr){
-            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
-          });
-        }
+             }
       }
     };
 

@@ -502,6 +502,7 @@ angular.module('cloudKiboApp')
       filecontainer.appendChild(span);
       filecontainer.appendChild(a);
   //    fs_container.appendChild(filecontainer);
+
        $('#myModalUpload').modal('show');
 
     }

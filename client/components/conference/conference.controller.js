@@ -7,8 +7,6 @@
 angular.module('cloudKiboApp')
   .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
 
-    console.log('sdsd');
-
      if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
       logger.log('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
@@ -274,24 +272,12 @@ angular.module('cloudKiboApp')
           logger.log("" + $scope.user.username + " has unmuted");
           Room.toggleAudio();
           $('#bck-audio').toggleClass('not-working');
-       /*   $('#bck-audio >a').attr('data-original-title', function(index, attr){
-                  return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
-          }).tooltip('show');*/
-          $('#bck-audio >a').attr('title', function(index, attr){
-            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
-          });
         }
         else {
           logger.log("" + $scope.user.username + " has muted");
           $scope.toggleAudioText = 'Share Audio';
           Room.toggleAudio();
           $('#bck-audio').toggleClass('not-working');
-      /*    $('#bck-audio >a').attr('data-original-title', function(index, attr){
-                  return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
-          }).tooltip('show');*/
-          $('#bck-audio >a').attr('title', function(index, attr){
-            return attr == 'Mute Audio' ? 'UnMute Audio' : 'Mute Audio';
-          });
         }
       }
     };
@@ -303,24 +289,12 @@ angular.module('cloudKiboApp')
           logger.log("" + $scope.user.username + " has shared the video");
           Room.toggleVideo(true);
           $('#bck-camera').toggleClass('not-working');
-        /*  $('#bck-camera >a').attr('data-original-title', function(index, attr){
-                  return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
-          }).tooltip('show');*/
-          $('#bck-camera >a').attr('title', function(index, attr){
-            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
-          });
         }
         else {
           $scope.toggleVideoText = 'Share Video';
           Room.toggleVideo(false);
           logger.log("" + $scope.user.username + " has hidden the video");
           $('#bck-camera').toggleClass('not-working');
-          /* $('#bck-camera >a').attr('data-original-title', function(index, attr){
-                  return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
-          }).tooltip('show');*/
-          $('#bck-camera >a').attr('data-original-title', function(index, attr){
-            return attr == 'Show Video' ? 'Hide Video' : 'Show Video';
-          })
         }
       }
     };
@@ -592,11 +566,11 @@ angular.module('cloudKiboApp')
       location.reload();
     });
 
-
+    $scope.showModal = false;
 
     /****** end meeting ***********/
      $scope.endMeeting = function () {
-      $log.info("end meeting selected");
+       $log.info("end meeting selected");
       logger.log("end meeting selected");
       logger.log("end meeting selected");
       $scope.userMessages = [];
@@ -608,5 +582,14 @@ angular.module('cloudKiboApp')
       Stream.reset();
       Room.end();
       $location.path('/survey/'+$scope.user.username);
-    };
+
+
+
+
+
+     };
+
+
+
   });
+

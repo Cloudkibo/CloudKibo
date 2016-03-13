@@ -21,20 +21,19 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
         .container
           .row(style="height:60px;")
               ul(class = 'mybtn-header')
-
                 li(ng-hide='hasUserDeniedMedia()')
                   .myicon-btn(id="bck-audio")
-                      a(ng-click='audioToggle()' data-toggle="tooltip" data-placement="bottom" title="Mute Audio")
-                        div.my-microphone
+                    a(ng-click='audioToggle()' tooltip-placement="bottom" tooltip = '{{toggleAudioText}}')
+                      div.my-microphone
                 li(ng-hide='hasUserDeniedMedia()')
                   .myicon-btn(id="bck-camera" class = "not-working")
-                      a(ng-click='videoToggle()' data-toggle="tooltip" data-placement="bottom" title="Show Video")
-                          div.my-camera
-                    // div {{toggleVideoText}}
+                    a(ng-click='videoToggle()' tooltip-placement="bottom" tooltip= '{{toggleVideoText}}')
+                      div.my-camera
+                  // div {{toggleVideoText}}
                 li()
                   .myicon-btn()
-                      a(ng-click='endMeeting()' data-toggle="tooltip" data-placement="bottom" title="End Call")
-                        div.endmeeting
+                    a(ng-click='endMeeting()' tooltip-placement="bottom" tooltip = "End Call" )
+                      div.endmeeting
               ul.list-unstyled.list-inline.pull-right(style="margin-top:10px;")
                 li
                   h4

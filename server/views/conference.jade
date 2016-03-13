@@ -24,16 +24,16 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
 
                 li(ng-hide='hasUserDeniedMedia()')
                   .myicon-btn(id="bck-audio")
-                      a(ng-click='audioToggle()' data-toggle="tooltip" data-placement="bottom" title="Mute Audio")
+                      a(ng-click='audioToggle()' tooltip-placement="bottom" tooltip = '{{toggleAudioText}}' )
                         div.my-microphone
                 li(ng-hide='hasUserDeniedMedia()')
                   .myicon-btn(id="bck-camera" class = "not-working")
-                      a(ng-click='videoToggle()' data-toggle="tooltip" data-placement="bottom" title="Show Video")
+                      a(ng-click='videoToggle()' tooltip-placement="bottom" tooltip = '{{toggleVideoText}}' )
                           div.my-camera
                     // div {{toggleVideoText}}
                 li()
                   .myicon-btn()
-                      a(ng-click='endMeeting()' data-toggle="tooltip" data-placement="bottom" title="End Call")
+                      a(ng-click='endMeeting()' tooltip-placement="bottom" tooltip="End Call")
                         div.endmeeting
               ul.list-unstyled.list-inline.pull-right(style="margin-top:10px;")
                 li
@@ -114,22 +114,22 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
           .col-sm-1(id='filelist_container', ng-show='meetingStarted()' )
 
         div(id="myModal" class="modal fade" role="dialog")
-          div(class="modal-dialog")
-            div(class="modal-content")
-              div(class="modal-header")
-                  button(type="button" class="close" data-dismiss="modal")
-                    | Close
-                  img(src = '/assets/images/file.png')
-                  h4(class="modal-title") Notification
-
-
-              div(class="modal-body")
-                  img(src = '/assets/images/file_transfer.png')
-                  div(id = "modelbody")
-                    h3 You have received a file.
-              div(class="modal-footer" id="modelfooter")
-                    button(type="button" class="pull-right mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round" data-dismiss="modal")
+            div(class="modal-dialog")
+              div(class="modal-content")
+                div(class="modal-header")
+                    button(type="button" class="close" data-dismiss="modal")
                       | Close
+                    img(src = '/assets/images/file.png')
+                    h4(class="modal-title") Notification
+
+
+                div(class="modal-body")
+                    img(src = '/assets/images/file_transfer.png')
+                    div(id = "modelbody")
+                      h3 You have received a file.
+                div(class="modal-footer" id="modelfooter")
+                      button(type="button" class="pull-right mybtn mybtn-primary mybtn-primary.gradient mybtn-lg.round" data-dismiss="modal")
+                        | Close
 
         div(id="myModalUpload" class="modal fade" role="dialog")
           div(class="modal-dialog")
