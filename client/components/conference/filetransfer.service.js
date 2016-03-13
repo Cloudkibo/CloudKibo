@@ -258,7 +258,7 @@ angular.module('cloudKiboApp')
       $log.debug('process_data function: ', data)
       if (data.file_meta) {
         /* we are recieving file meta data */
-
+        $('#myModal').modal('show');
         /* if it contains file_meta, must be meta data! */
         recieved_meta[data.file_meta.fid] = data.file_meta;
         recieved_meta[data.file_meta.fid].numOfChunksInFile = Math.ceil(recieved_meta[data.file_meta.fid].size / FileUtility.getChunkSize());
@@ -567,7 +567,7 @@ angular.module('cloudKiboApp')
       filecontainer.appendChild(myspan);
       filecontainer.appendChild(a);
 
-       $('#myModal').modal('show');
+
 
       //append to chat
       //Room.sendChat($scope.user.username + " is now offering file " + meta.name);
@@ -682,6 +682,7 @@ angular.module('cloudKiboApp')
    //   var messages = document.getElementById('messages');
  //     filecontainer.appendChild(span);
       filecontainer.appendChild(a);
+      a.click(); //to auto save after file is downloaded
 
 
       /****************** No purpose of this link button *******/
