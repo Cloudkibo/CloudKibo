@@ -10,7 +10,7 @@
  * details from application.
  */
 angular.module('cloudKiboApp')
-  .factory('FileHangout', function FileHangout($rootScope, Room, FileUtility, $log) {
+  .factory('FileHangout', function FileHangout($rootScope, Room, FileUtility, $log,$timeout) {
     var isChrome = !!navigator.webkitGetUserMedia;
     var fs_container = document.getElementById('filelist_container');
     window.URL = window.URL || window.webkitURL;
@@ -57,18 +57,27 @@ angular.module('cloudKiboApp')
         download_file(target.id.replace("-download", ""));
       } else if (target.id.search('-cancel') != -1) {
         cancel_file(target.id.replace("-cancel", ""));
-      } else if (target.id.search('-upload-stop') != -1) {
+      }
+      else if (target.id.search('-reject') != -1) {
+        reject_file(target.id.replace("-reject", ""));
+      }
+      else if (target.id.search('-upload-stop') != -1) {
         upload_stop(target.id.replace("-upload-stop", ""));
       }
     }
     document.body.addEventListener('click', fileEventHandler, false);
 
+    /* reject file - from reciever side */
+    function reject_file(fileid)
+    {
+      clear_container(fileid);
+    }
     /* stop the uploading! */
     function upload_stop(fileid) {
       /* remove data */
       chunks = {};
-       $('#myModal').modal('hide');
-       $("[data-dismiss=modal]").trigger({ type: "click" });
+      // $('#myModal').modal('hide');
+      // $("[data-dismiss=modal]").trigger({ type: "click" });
       /* also clear the container */
      // create_or_clear_container(meta.fid);
 
@@ -258,7 +267,7 @@ angular.module('cloudKiboApp')
       $log.debug('process_data function: ', data)
       if (data.file_meta) {
         /* we are recieving file meta data */
-        $('#myModal').modal('show');
+      //  $('#myModal').modal('show');
         /* if it contains file_meta, must be meta data! */
         recieved_meta[data.file_meta.fid] = data.file_meta;
         recieved_meta[data.file_meta.fid].numOfChunksInFile = Math.ceil(recieved_meta[data.file_meta.fid].size / FileUtility.getChunkSize());
@@ -394,9 +403,9 @@ angular.module('cloudKiboApp')
     /* will be called when stop upload is called */
     function clear_container(id)
     {
-      var filelist = document.getElementById('filelist_container');
+
       var filecontainer = document.getElementById(id);
-      filelist.removeChild(filecontainer);
+      fs_container.removeChild(filecontainer);
     }
     /* creates an entry in our filelist for a user, if it doesn't exist already - TODO: move this to script.js? */
     /* will be called when file is uploaded or the meta is received*/
@@ -503,7 +512,7 @@ angular.module('cloudKiboApp')
       filecontainer.appendChild(a);
   //    fs_container.appendChild(filecontainer);
 
-       $('#myModalUpload').modal('show');
+       //$('#myModalUpload').modal('show');
 
     }
 
@@ -550,22 +559,32 @@ angular.module('cloudKiboApp')
       }
 
       var a = document.createElement('a');
+      var aa = document.createElement('a'); //reject download
       var myspan = document.createElement('span');
       myspan.setAttribute('id',id+'-span');
       a.download = meta.name;
       a.id = id + '-download';
       a.class = 'icon-btn';
       a.href = 'javascript:void(0);';
+
+      aa.id = id + '-reject';
+      aa.href = 'javascript:void(0);';
+      aa.class = 'icon-btn';
       if(meta.name.length >7)
         myspan.textContent =  meta.name.substring(0,7) + '...  ' + FileUtility.getReadableFileSizeString(meta.size);
       else
         myspan.textContent = meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
-      a.textContent = 'Download';
+      a.textContent = 'Accept';
       a.draggable = true;
 
+      aa.textContent = 'Reject';
+      aa.draggable = true;
+      aa.style.float = 'right';
+      a.style.float = 'left';
       //append link!
       filecontainer.appendChild(myspan);
       filecontainer.appendChild(a);
+      filecontainer.appendChild(aa);
 
 
 
@@ -578,6 +597,7 @@ angular.module('cloudKiboApp')
 
       /** remove download link **/
        var a = document.getElementById(id+'-download');
+      var aa = document.getElementById(id+'-reject');
       var sp = document.getElementById(id+'-span');
 
       var filecontainer = document.getElementById(id);
@@ -586,6 +606,10 @@ angular.module('cloudKiboApp')
 
         filecontainer.removeChild(a);
 
+      }
+      if(aa != null)
+      {
+        filecontainer.removeChild(aa);
       }
       if(sp!=null)
       {
@@ -659,9 +683,14 @@ angular.module('cloudKiboApp')
       }
 
       var a = document.getElementById(id+'-download');
+      var aa = document.getElementById(id+'-reject');
       if(a != null)
       {
       filecontainer.removeChild(a);
+      }
+      if(aa != null)
+      {
+        filecontainer.removeChild(aa);
       }
       var a = document.createElement('a');
       a.download = meta.name;
@@ -683,6 +712,10 @@ angular.module('cloudKiboApp')
  //     filecontainer.appendChild(span);
       filecontainer.appendChild(a);
       a.click(); //to auto save after file is downloaded
+
+      //remove filecontainer from filelist
+      $timeout(function(){
+      fs_container.removeChild(filecontainer)},3000);
 
 
       /****************** No purpose of this link button *******/

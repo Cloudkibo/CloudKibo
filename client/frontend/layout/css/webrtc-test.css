@@ -18,19 +18,39 @@
     border: 1px solid #ccc;
     border-radius: 10px !important;
 }
-.system-test  span {
+ .panel-default>.panel-heading span,.system-test  span,.panel-default .panel-body  div  span  {
     float: right;
     padding-right: 10px;
 }
-.system-test span i.good {
+
+
+ .panel-default>.panel-heading {
+   color: #333;
+   font-size: 16px;
+   font-weight: 600;
+   background-color: rgba(153, 153, 153, 0.25);
+   border-color: #ddd;
+ }
+
+ .panel-default>.panel-heading span i.good ,.system-test span i.good {
     font-size: 18px;
     font-weight: bold;
     color : green;
-     
+
 }
-.system-test span i.bad {
+ .panel-default>.panel-body span i.good{
+   font-size: 14px;
+   font-weight: bold;
+   color : green;
+ }
+ .panel-default>.panel-body span i.bad{
+   font-size: 14px;
+   font-weight: bold;
+   color : red;
+ }
+ .panel-default>.panel-heading span i.bad,.system-test span i.bad {
     font-size: 18px;
     font-weight: bold;
     color : red;
-    
+
 }

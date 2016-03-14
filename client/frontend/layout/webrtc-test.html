@@ -17,8 +17,6 @@
       <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,client}) app/app.css -->
-    <link rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css'>
-    <link rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css'>
 
       <link href= 'https://chrome.google.com/webstore/detail/mjifcjeiodmblbjeagolckinomlcjefi' rel='chrome-webstore-item'>
     <!--
@@ -37,19 +35,22 @@
       <link rel="stylesheet" href="frontend/layout/css/style.css">
       <link rel="stylesheet" href="frontend/layout/css/themes/red.css">
       <link rel="stylesheet" href="frontend/layout/css/calendar.css">
-       <link rel="stylesheet" href="frontend/layout/css/webrtc-test.css">
+
       <!-- endinjector -->
-        
-      
-        <!-- 
+
+
+        <!--
             Script used to detect WebRTC features!
             https://github.com/muaz-khan/DetectRTC#how-to-link
         -->
         <script src="https://cdn.webrtc-experiment.com/DetectRTC.js"> </script>
         <script src="https://cdn.webrtc-experiment.com/screenshot.js"></script>
         <script src="https://cdn.webrtc-experiment.com/gumadapter.js"></script>
-
-    </head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="frontend/layout/css/webrtc-test.css">
+  </head>
 
     <body>
         <div class = "pre-header bckcolor-preheader">
@@ -70,20 +71,49 @@
              </div>
              </div>
              </div>
-             
+
         <div>
-        
-                <h1 class ="webrtc-header"> Test Results </h1>            
+
+                <h1 class ="webrtc-header"> Test Results </h1>
                 <button id="save" class = "mybtn mybtn-primary pull-right">Print & Save As Image</button>
-           
+          <div class = "testRTC" id="rep_summary">
+                <div class="panel-group">
+                  <div class="panel panel-default" id = "webrtcSupport">
+                    <div class="panel-heading">WebRTC Support</div>
+                    <div class="panel-body"></div>
+                  </div>
+                  <div class="panel panel-default" id = "audio">
+                    <div class="panel-heading">Audio Share</div>
+                    <div class="panel-body"></div>
+                  </div>
+                  <div class="panel panel-default" id = "video">
+                    <div class="panel-heading">Video Share</div>
+                    <div class="panel-body"></div>
+                  </div>
+                  <div class="panel panel-default" id = "filetransfer">
+                    <div class="panel-heading">File Transfer</div>
+                    <div class="panel-body"></div>
+                  </div>
+                  <div class="panel panel-default" id = "screenshare">
+                    <div class="panel-heading">Screen Share</div>
+                    <div class="panel-body"></div>
+                  </div>
+                  <div class="panel panel-default" id = "others">
+                    <div class="panel-heading">Others</div>
+                    <div class="panel-body"></div>
+                  </div>
+                </div>
+              </div>
+
+          </div>
                 <div class = "testRTC" id="browser-features"></div>
-            
+
                 <!-- dirty trick to bypass webrtc blockers -->
                 <iframe id="iframe" sandbox="allow-same-origin" style="display: none"></iframe>
-        </div>   
+        </div>
             <script>
                 var browserFeaturesTable = document.querySelector('#browser-features');
-
+                var summaryTable = document.querySelector('#rep_summary');
                 function appendTR(firstValue, secondValue) {
                     var div = document.createElement('div');
                     var span = document.createElement('span');
@@ -98,6 +128,45 @@
                     div.appendChild(span);
                     browserFeaturesTable.appendChild(div);
                     return div;
+
+
+                }
+                function appendCheck(id,secondValue) {
+                  var div = $('#'+id+'>.panel-heading');
+                  var span = document.createElement('span');
+                  var i = document.createElement('i');
+                  if(secondValue == 'Yes')
+                    i.className = "good glyphicon glyphicon-ok";
+                  else if(secondValue == 'No')
+                    i.className = "bad glyphicon glyphicon-remove";
+
+                  span.appendChild(i);
+                  div.append(span);
+
+                }
+                function appendContent(id,firstValue, secondValue) {
+                  var div = $('#'+id+'>.panel-body');
+                  var content = $(document.createElement('div'));
+                  var spann = $(document.createElement('div'));
+                  var span = $(document.createElement('span'));
+                  var i = document.createElement('i');
+                  if(secondValue == 'Yes')
+                    i.className = "good glyphicon glyphicon-ok";
+                  else if(secondValue == 'No')
+                    i.className = "bad glyphicon glyphicon-remove";
+                  content.css('clear','both');
+                  span.css('float','right');
+                  spann.css('float','left');
+
+                  spann.html(firstValue);
+                  span.append(i);
+                  content.append(spann);
+                  content.append(span);
+                  div.append(content);
+
+
+
+
                 }
 
                 function printVal(value) {
@@ -112,116 +181,71 @@
 
                 function onDetectRTCLoaded() {
                     browserFeaturesTable.innerHTML = '';
-
-                  //  appendTR('Operating System', printVal(DetectRTC.osName) + ' version: ' + printVal(DetectRTC.osVersion));
-                  //  appendTR('Browser', printVal(DetectRTC.browser.name) + ' version: ' + printVal(DetectRTC.browser.fullVersion) + '<br>Private browsing? ' + printVal(DetectRTC.browser.isPrivateBrowsing));
-
-                  //  appendTR('Display resolutions', printVal(DetectRTC.displayResolution));
-
+                    //Audio/Video Chat
                     output = printVal(DetectRTC.hasSpeakers);
-                 /*   if(DetectRTC.audioOutputDevices.length) {
-                        output += '<br>Found speaker devices: ' + DetectRTC.audioOutputDevices.length;
-
-                        var labels = [];
-                        DetectRTC.audioOutputDevices.forEach(function(device) {
-                           labels.push(device.label);
-                        });
-
-                        output += '<br><div style="margin-left:15px;">' + labels.join('<br>') + '</div>';
-                    }
-                    */
-                    appendTR('System has Speakers?', output);
-
+                    //appendTR('System has Speakers?', output);
+                    appendContent('audio','System has Speakers?', output);
                     output = printVal(DetectRTC.hasMicrophone);
-                  /*  if(DetectRTC.audioInputDevices.length) {
-                        output += '<br>Found microphone devices: ' + DetectRTC.audioInputDevices.length;
+                    //appendTR('System has Microphone?', output);
+                    //appendTR('CloudKibo has microphone permissions?', printVal(DetectRTC.isWebsiteHasMicrophonePermissions));
+                    appendContent('audio','System has Microphone?', output);
+                    appendContent('audio','CloudKibo has microphone permissions?', printVal(DetectRTC.isWebsiteHasMicrophonePermissions));
+                    if( printVal(DetectRTC.isWebsiteHasMicrophonePermissions) == 'Yes' &&printVal(DetectRTC.hasMicrophone) == 'Yes' && printVal(DetectRTC.hasSpeakers) == 'Yes' )
+                      appendCheck('audio','Yes');
+                    else
+                      appendCheck('audio','No');
 
-                        var labels = [];
-                        DetectRTC.audioInputDevices.forEach(function(device) {
-                           labels.push(device.label);
-                        });
-
-                        output += '<br><div style="margin-left:15px;">' + labels.join('<br>') + '</div>';
-                    }
-                    */
-                    appendTR('System has Microphone?', output);
-                    
+                  /************ Video Share *******************/
                     output = printVal(DetectRTC.hasWebcam);
-                   /* if(DetectRTC.videoInputDevices.length) {
-                        output += '<br>Found webcam devices: ' + DetectRTC.videoInputDevices.length;
+                    appendContent('video','System has Webcam?', output);
+                    appendContent('video','CloudKibo has webcam permissions?', printVal(DetectRTC.isWebsiteHasWebcamPermissions));
+                    if( printVal(DetectRTC.hasWebcam) == 'Yes' && printVal(DetectRTC.isWebsiteHasWebcamPermissions) == 'Yes' )
+                    appendCheck('video','Yes');
+                    else
+                    appendCheck('video','No');
 
-                        var labels = [];
-                        DetectRTC.videoInputDevices.forEach(function(device) {
-                           labels.push(device.label);
-                        });
+                  //Browser Support
+                   // appendTR('Browser allows getUserMedia on this page?', printVal(DetectRTC.isGetUserMediaSupported));
+                   // appendTR('Browser Supports WebRTC (Either 1.0 or 1.1)?', printVal(DetectRTC.isWebRTCSupported));
+                   // appendTR('Browser Supports WebAudio API?', printVal(DetectRTC.isAudioContextSupported));
+                   appendContent('webrtcSupport','Browser allows getUserMedia on this page?', printVal(DetectRTC.isGetUserMediaSupported));
+                   appendContent('webrtcSupport','Browser Supports WebRTC (Either 1.0 or 1.1)?', printVal(DetectRTC.isWebRTCSupported));
+                   appendContent('webrtcSupport','Browser Supports WebAudio API?', printVal(DetectRTC.isAudioContextSupported));
 
-                        output += '<br><div style="margin-left:15px;">' + labels.join('<br>') + '</div>';
-                    }*/
-                    appendTR('System has Webcam?', output);
-
-                    appendTR('CloudKibo has webcam permissions?', printVal(DetectRTC.isWebsiteHasWebcamPermissions));
-                    appendTR('CloudKibo has microphone permissions?', printVal(DetectRTC.isWebsiteHasMicrophonePermissions));
-                    
-                    appendTR('Browser allows getUserMedia on this page?', printVal(DetectRTC.isGetUserMediaSupported));
-
-          
-          
-                    appendTR('Browser Supports WebRTC (Either 1.0 or 1.1)?', printVal(DetectRTC.isWebRTCSupported));
-                  //  appendTR('Browser Supports ORTC (WebRTC 1.1)?', printVal(DetectRTC.isORTCSupported));
-
-          
-                 //   appendTR('Browser Supports WebSockets API?', printVal(DetectRTC.isWebSocketsSupported));
-                    
-               /*     var tr = appendTR('Your system blocked WebSockets protocol or WebSockets server is not accessible?', printVal(DetectRTC.isWebSocketsBlocked));
-                    DetectRTC.checkWebSocketsSupport(function() {
-                        tr.querySelectorAll('td')[1].innerHTML = printVal(DetectRTC.isWebSocketsBlocked);
-                    });
-                */
-                    appendTR('Browser Supports WebAudio API?', printVal(DetectRTC.isAudioContextSupported));
-                    appendTR('Browser Supports SCTP Data Channels?', printVal(DetectRTC.isSctpDataChannelsSupported));
-                    appendTR('Browser Supports RTP Data Channels?', printVal(DetectRTC.isRtpDataChannelsSupported));
-                    appendTR('Is Screen Capturing Supported ?', printVal(DetectRTC.isScreenCapturingSupported));
-
-                //    appendTR('Is this browser supports multi-monitor selection & capturing screen of any monitor?', printVal(DetectRTC.isMultiMonitorScreenCapturingSupported));
+                  if( printVal(DetectRTC.isGetUserMediaSupported) == 'Yes' && printVal(DetectRTC.isWebRTCSupported) == 'Yes'&& printVal(DetectRTC.isAudioContextSupported) )
+                    appendCheck('webrtcSupport','Yes');
+                  else
+                    appendCheck('webrtcSupport','No');
 
 
-                    appendTR('Is it a mobile device?', printVal(DetectRTC.isMobileDevice));
-                    appendTR('Browser Supports WebSockets?', printVal(DetectRTC.isWebSocketsSupported));
-                    
-                    var rightSide = '';
 
-                    // you can even use "DetectRTC.audioInputDevices", "audioOutputDevices" and "videoInputDevices"
-                    var audioDevices = [];
-                    var videoDevices = [];
-                    DetectRTC.MediaDevices.forEach(function(device) {
-                        if (device.kind.indexOf('audio') !== -1 && audioDevices.indexOf(device.label) == -1) {
-                            audioDevices.push(device.label || 'unable to detect');
-                        }
-                        if (device.kind.indexOf('video') !== -1 && videoDevices.indexOf(device.label) == -1) {
-                            videoDevices.push(device.label || 'unable to detect');
-                        }
-                    });
+                  //File TRansfer
+                   // appendTR('Browser Supports SCTP Data Channels?', printVal(DetectRTC.isSctpDataChannelsSupported));
+                   // appendTR('Browser Supports RTP Data Channels?', printVal(DetectRTC.isRtpDataChannelsSupported));
 
-                    rightSide += '<h2>Audio Devices</h2><br>' + audioDevices.join('<br>');
-                    rightSide += '<br><br><h2>Video Devices</h2><br>' + videoDevices.join('<br>');
 
-               //     appendTR(audioDevices.length + ' audio and ' + videoDevices.length + ' video devices', rightSide);
+                   appendContent('filetransfer','Browser Supports SCTP Data Channels?', printVal(DetectRTC.isSctpDataChannelsSupported));
+                   appendContent('filetransfer','Browser Supports RTP Data Channels?', printVal(DetectRTC.isRtpDataChannelsSupported));
+                  if(printVal(DetectRTC.isSctpDataChannelsSupported) == 'Yes' ||printVal(DetectRTC.isRtpDataChannelsSupported) == 'Yes')
+                    appendCheck('filetransfer','Yes');
+                  else
+                    appendCheck('filetransfer','No');
 
-               //     appendTR('Is Browser Supports Stream Capturing from Canvas?', printVal(DetectRTC.isVideoSupportsStreamCapturing));
-               //     appendTR('Is Browser Supports Stream Capturing from Video?', printVal(DetectRTC.isVideoSupportsStreamCapturing));
+                   //Screen Share Feature
+                  //  appendTR('Is Screen Capturing Supported ?', printVal(DetectRTC.isScreenCapturingSupported));
 
-                    /*
-                    DetectRTC.DetectLocalIPAddress(function(ipAddress) {
-                        if (ipAddress.indexOf('Local') !== -1) {
-                            appendTR('Your <strong>Local</strong> IP Address', ipAddress);
-                        } else {
-                            appendTR('Your <strong>Public</strong> IP Address', ipAddress);
-                        }
-                    });
-                    */
+                  appendContent('screenshare','Is Screen Capturing Supported ?', printVal(DetectRTC.isScreenCapturingSupported));
+                  if(printVal(DetectRTC.isScreenCapturingSupported) == 'Yes')
+                    appendCheck('screenshare','Yes');
+                  else
+                    appendCheck('screenshare','No');
+                  //appendContent('screenshare','CloudKibo Screen Capturing Extension installed ?', printVal(DetectRTC.screen.chromeMediaSource));
+                  // Others
+                  //  appendTR('Is it a mobile device?', printVal(DetectRTC.isMobileDevice));
+                  //  appendTR('Browser Supports WebSockets?', printVal(DetectRTC.isWebSocketsSupported));
+                    appendContent('others','Is it a mobile device?', printVal(DetectRTC.isMobileDevice));
+                    appendContent('others','Browser Supports WebSockets?', printVal(DetectRTC.isWebSocketsSupported));
 
-    
-   
                 }
 
                 function reloadDetectRTC() {
