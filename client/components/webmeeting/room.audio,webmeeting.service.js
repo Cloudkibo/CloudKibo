@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('MeetingRoom', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, logger, sdpConstraints) {
+  .factory('MeetingRoom', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, CallStats, audio_threshold, logger, sdpConstraints) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -90,6 +90,7 @@ angular.module('cloudKiboApp')
         });
       });
       */
+      CallStats.addAudioFabric(pc, id, roomId);
       logger.log(''+ username +' has created audio peer connection for  '+ userNames[id]);
       return pc;
     }
@@ -107,6 +108,7 @@ angular.module('cloudKiboApp')
           logger.log(JSON.stringify(e));
           logger.log(''+ username +' got the above error when creating audio offer for '+ userNames[id]);
    //       callStats.reportError(pc, roomId, callStats.webRTCFunctions.createOffer, e);
+          CallStats.reportOfferError(pc, roomId, e);
         },
         sdpConstraints);
     }
@@ -137,6 +139,7 @@ angular.module('cloudKiboApp')
               socket.emit('msgAudio', { by: currentId, to: data.by, sdp: sdp, type: 'answer', camaccess : stream });
             }, function (e) {
     //          callStats.reportError(pc, roomId, callStats.webRTCFunctions.createAnswer, e);
+              CallStats.reportAnswerError(pc, roomId, e);
               logger.log(''+ username +' got this ERROR when creating audio answer for '+ userNames[data.by]);
               logger.log(JSON.stringify(e));
               logger.log(''+ username +' got the above ERROR when creating audio answer for '+ userNames[data.by]);
@@ -230,6 +233,7 @@ angular.module('cloudKiboApp')
             roomId : roomId,
             currentId : currentId
           }]);
+          CallStats.initialize(username);
         });
         connected = true;
       }

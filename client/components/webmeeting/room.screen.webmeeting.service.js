@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('MeetingRoomScreen', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, sdpConstraints, logger) {
+  .factory('MeetingRoomScreen', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, CallStats, audio_threshold, sdpConstraints, logger) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -48,6 +48,7 @@ angular.module('cloudKiboApp')
         });
       });
       */
+      CallStats.addScreenFabric(pc, id, roomId);
       logger.log(''+ username +' has created screen peer connection for  '+ userNames[id]);
       return pc;
     }
@@ -64,6 +65,7 @@ angular.module('cloudKiboApp')
           logger.log(JSON.stringify(e));
           logger.log(''+ username +' got the above error when creating screen offer for '+ userNames[id]);
     //      callStats.reportError(pc, roomId, callStats.webRTCFunctions.createOffer, e);
+          CallStats.reportOfferError(pc, roomId, e);
         },
         sdpConstraints);
     }
@@ -86,6 +88,7 @@ angular.module('cloudKiboApp')
               logger.log(JSON.stringify(e));
               logger.log(''+ username +' got the above ERROR when creating screen answer for '+ userNames[data.by]);
     //          callStats.reportError(pc, roomId, callStats.webRTCFunctions.createAnswer, e);
+              CallStats.reportAnswerError(pc, roomId, e);
             }, sdpConstraints);
           }, function (e) {
             logger.log(''+ username +' got this ERROR when setting screen offer from '+ userNames[data.by]);

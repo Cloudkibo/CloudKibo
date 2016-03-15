@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('MeetingRoomData', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, sdpConstraints, logger) {
+  .factory('MeetingRoomData', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, CallStats, audio_threshold, sdpConstraints, logger) {
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
@@ -38,6 +38,7 @@ angular.module('cloudKiboApp')
         });
       });
       */
+      CallStats.addDataFabric(pc, id, roomId);
       logger.log(''+ username +' has created data peer connection for  '+ userNames[id]);
       return pc;
     }
@@ -57,6 +58,7 @@ angular.module('cloudKiboApp')
           logger.log(JSON.stringify(e));
           logger.log(''+ username +' got the above error when creating data offer for '+ userNames[id]);
   //        callStats.reportError(pc, roomId, callStats.webRTCFunctions.createOffer, e);
+          CallStats.reportOfferError(pc, roomId, e);
         },
         sdpConstraints);
     }
@@ -109,6 +111,7 @@ angular.module('cloudKiboApp')
               socket.emit('msgData', { by: currentId, to: data.by, sdp: sdp, type: 'answer' });
             }, function (e) {
   //            callStats.reportError(pc, roomId, callStats.webRTCFunctions.createAnswer, e);
+              CallStats.reportAnswerError(pc, roomId, e);
               logger.log(''+ username +' got this ERROR when creating data answer for '+ userNames[data.by]);
               logger.log(JSON.stringify(e));
               logger.log(''+ username +' got the above ERROR when creating data answer for '+ userNames[data.by]);
