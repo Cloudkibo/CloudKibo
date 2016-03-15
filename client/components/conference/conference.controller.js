@@ -13,7 +13,6 @@ angular.module('cloudKiboApp')
      // $location.path('/otherBrowser');
       return;
     }
-   // $('[data-toggle="tooltip"]').tooltip();
     myclockStart(); //callme to start clock animation
     if($location.search().role){
       logger.log('This is a Support Call');

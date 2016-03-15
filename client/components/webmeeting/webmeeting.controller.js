@@ -207,12 +207,22 @@ angular.module('cloudKiboApp')
     };
 
     $scope.chatBoxVisible = true;
+    $scope.filesVisible = MeetingRoomFileHangout.showfilesContainer();
+
     $scope.showChatBox = function () {
       if($scope.meetingStarted()) {
         //call_me_toclear(); // TODO needs to be discussed with zarmeen // clear clock seconds interval in clock.js
         return $scope.chatBoxVisible;
       }
     };
+    $scope.showfilesBox = function () {
+      if($scope.meetingStarted()) {
+        $scope.filesVisible = MeetingRoomFileHangout.showfilesContainer();
+        //call_me_toclear(); //clear clock seconds interval in clock.js
+        return $scope.filesVisible;
+      }
+    };
+
     $scope.toggleChatBoxVisibility = function () {
       if($scope.chatBoxVisible)
       {

@@ -505,7 +505,7 @@ angular.module('cloudKiboApp')
       a.textContent = '[Stop Upload]';
       a.style.cssText = 'color:#af4545;';
       a.draggable = true;
-
+      a.style.float = 'left';
       //append link!
       filecontainer.appendChild(myspan);
       filecontainer.appendChild(span);
@@ -631,6 +631,7 @@ angular.module('cloudKiboApp')
         a.style.cssText = 'color:#af4545;';
         a.textContent = '[Cancel]';
         a.draggable = true;
+        a.style.float = 'left';
         //append link!
 
         filecontainer.appendChild(a);
@@ -707,6 +708,7 @@ angular.module('cloudKiboApp')
       a.dataset.downloadurl = [filetype, a.download, a.href].join(':');
       a.draggable = true;
       a.id = id+'-save';
+      a.style.float = 'left';
       //append link!
    //   var messages = document.getElementById('messages');
  //     filecontainer.appendChild(span);

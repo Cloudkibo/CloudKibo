@@ -181,10 +181,25 @@ angular.module('cloudKiboApp')
           }
         }
       },
+      /*** function to send data to particular user ***/
+
+      sendDataChannelMessageToUser: function (m,k) {
+
+        if(dataChannels[k].readyState === 'open') {
+          dataChannels[k].send(m);
+        }
+
+      },
       end: function () {
         logger.log(''+ username +' has ended the data peer connections for all');
         peerConnections = {}; userNames = {}; dataChannels = {};
         connected = false;
+      },
+      getusername:function(){
+        return username;
+      },
+      getcurrentid:function(){
+        return currentId;
       }
     };
     EventEmitter.call(api);
