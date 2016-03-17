@@ -7,7 +7,7 @@ angular.module('cloudKiboApp')
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
-      dataChannels = {}, currentId, roomId,
+      dataChannels = {}, currentId, roomId,fileReceivers =[],
       stream, username, screenSwitch = {},
       supportCallData, nullStreams = {};
 
@@ -214,6 +214,10 @@ angular.module('cloudKiboApp')
           message: data.message
         }]);
       });
+      socket.on('conference.removeStopUpload', function(id){
+        console.log('I am socket calling removeStopUpload');
+        api.trigger('conference.removeStopUpload',id);
+      });
       socket.on('conference.stream', function(data){
         if(data.id !== currentId){
           if(data.type === 'screen' && data.action) screenSwitch[data.id] = true;
@@ -305,6 +309,84 @@ angular.module('cloudKiboApp')
           }
 
       },
+
+      initFileStatus :function(data)
+      {
+        console.log('Init file status function called');
+        data = JSON.parse(data).data;
+        console.log(data);
+        var singleObj = {};
+        singleObj.fileid = data.file_id;
+        singleObj.receiverid = data.receiverid;
+        singleObj.filestatus = false;
+        fileReceivers.push(singleObj);
+
+        console.log(JSON.stringify(fileReceivers));
+      },
+      acceptFileStatus : function(data)
+      {
+        console.log('Accept file status function called');
+        data = JSON.parse(data).data;
+        for(var i = 0;i<fileReceivers.length;i++)
+        {
+          if(fileReceivers[i].fileid == data.file_id &&  fileReceivers[i].receiverid == data.receiverid)
+          {
+            fileReceivers[i].filestatus =   true;
+            break;
+          }
+        }
+
+
+        /******* check if every one has either accepted or rejected a file send a msg *******/
+        var flag = 0;
+        for(var i = 0;i<fileReceivers.length;i++)
+        {
+          if(fileReceivers[i].fileid == data.file_id &&  fileReceivers[i].filestatus == false)
+          {
+            flag = 1;
+            break;
+          }
+        }
+
+        if(flag == 0)
+        {
+          /*** every one has either accepted or rejected ***/
+          socket.emit('conference.removeStopUpload',data.file_id);
+        }
+      },
+      rejectFileStatus : function(data)
+      {
+        console.log('Reject file status function called');
+        data = JSON.parse(data).data;
+        for(var i = 0;i<fileReceivers.length;i++)
+        {
+          if(fileReceivers[i].fileid == data.file_id &&  fileReceivers[i].receiverid == data.receiverid)
+          {
+            fileReceivers[i].filestatus =   true;
+            break;
+          }
+        }
+
+
+        var flag = 0;
+        for(var i = 0;i<fileReceivers.length;i++)
+        {
+          if(fileReceivers[i].fileid == data.file_id &&  fileReceivers[i].filestatus == false)
+          {
+            flag = 1;
+            break;
+          }
+        }
+
+        if(flag == 0)
+        {
+          console.log('calling removeStopupload')
+          /*** every one has either accepted or rejected ***/
+          socket.emit('conference.removeStopUpload',data.file_id);
+        }
+
+      }
+      ,
       toggleAudio: function () {
         stream.getAudioTracks()[0].enabled = !(stream.getAudioTracks()[0].enabled);
       },

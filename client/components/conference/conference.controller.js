@@ -132,6 +132,10 @@ angular.module('cloudKiboApp')
       logger.log('Client shared screen, adding stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
       peerScreenStream = URL.createObjectURL(peer.stream);
     });
+    Room.on('conference.removeStopUpload',function(fileid){
+      console.log('I am removeStopUpload');
+      FileHangout.removeStopUpload(fileid);
+    });
     Room.on('conference.stream', function (peer) {
       logger.log('got message of hiding / showing video or screen to username : '+ $scope.user.username +' and peer name : '+ peer.username);
       $scope.peers.forEach(function (p) {
@@ -204,6 +208,10 @@ angular.module('cloudKiboApp')
     };
     $scope.showfilesBox = function () {
       if($scope.meetingStarted()) {
+        var c = document.getElementById('filelist_container').childNodes.length;
+        if(c < 1)
+          $scope.filesVisible = false;
+        else
         $scope.filesVisible = FileHangout.showfilesContainer();
         //call_me_toclear(); //clear clock seconds interval in clock.js
         return $scope.filesVisible;
@@ -227,6 +235,16 @@ angular.module('cloudKiboApp')
       $scope.filesVisible = FileHangout.togglefilesContainer();
 
     };
+    $scope.showfilesButton = function(){
+      if($scope.meetingStarted()) {
+        var c = document.getElementById('filelist_container').childNodes.length;
+      //  console.log('Child nodes are : ' + c);
+        if(c < 1)
+          return false;
+        else
+          return true;
+      }
+    }
     $scope.userMessages = [];
     $scope.sendData = function () {
       if ($scope.dataChannelSend != null) {
@@ -486,7 +504,6 @@ angular.module('cloudKiboApp')
        canvas.putImageData(img, 0, 0);
        }
        */
-      console.log('Printing data ')
       if($scope.hasAndroidPeerSharedScreen()){
         console.log('Android shared screen is true')
         if (data.data.byteLength  || typeof data.data !== 'string') {

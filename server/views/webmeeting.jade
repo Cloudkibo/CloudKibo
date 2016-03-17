@@ -77,10 +77,11 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                 a.icon-btn(id='showScreenButton', ng-click='showScreen()')
                   i.fa.fa-desktop
                   div {{showScreenText}}
-            .viewfiles(ng-show='meetingStarted()')
+            .viewfiles(ng-show='showfilesButton()')
                 a.icon-btn(id='showFilesButton', ng-click='toggleFilesVisibility()')
                    i.fa.fa-file
                    div Files
+
 
     .row(ng-show='isAskingForMediaAccess()', class = 'changebckcolor')
       br

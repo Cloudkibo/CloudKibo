@@ -217,11 +217,26 @@ angular.module('cloudKiboApp')
     };
     $scope.showfilesBox = function () {
       if($scope.meetingStarted()) {
-        $scope.filesVisible = MeetingRoomFileHangout.showfilesContainer();
+        var c = document.getElementById('filelist_container').childNodes.length;
+        console.log('Child nodes are : ' + c);
+        if(c < 1)
+          $scope.filesVisible = false;
+        else
+          $scope.filesVisible = MeetingRoomFileHangout.showfilesContainer();
         //call_me_toclear(); //clear clock seconds interval in clock.js
         return $scope.filesVisible;
       }
     };
+    $scope.showfilesButton = function(){
+      if($scope.meetingStarted()) {
+        var c = document.getElementById('filelist_container').childNodes.length;
+        console.log('Child nodes are : ' + c);
+        if(c < 1)
+          return false;
+        else
+          return true;
+      }
+    }
 
     $scope.toggleChatBoxVisibility = function () {
       if($scope.chatBoxVisible)

@@ -70,6 +70,14 @@ angular.module('cloudKiboApp')
     /* reject file - from reciever side */
     function reject_file(fileid)
     {
+      Room.rejectFileStatus(JSON.stringify({
+        data: {
+          file_status: true,
+          file_id : parseInt(fileid),
+          receiverid : Room.getcurrentid()
+        }
+      }));
+      Room.sendChat( " has rejected file " + recieved_meta[fileid].name);
       clear_container(fileid);
     }
     /* stop the uploading! */
@@ -267,7 +275,6 @@ angular.module('cloudKiboApp')
       $log.debug('process_data function: ', data)
       if (data.file_meta) {
         /* we are recieving file meta data */
-      //  $('#myModal').modal('show');
         /* if it contains file_meta, must be meta data! */
         recieved_meta[data.file_meta.fid] = data.file_meta;
         recieved_meta[data.file_meta.fid].numOfChunksInFile = Math.ceil(recieved_meta[data.file_meta.fid].size / FileUtility.getChunkSize());
@@ -279,6 +286,16 @@ angular.module('cloudKiboApp')
         downloading[data.file_meta.fid] = false;
         delete_file(data.file_meta.fid);
 
+
+        /*** once file data is received mark download status as false***/
+
+        Room.initFileStatus(JSON.stringify({
+          data: {
+            file_status: false,
+            file_id : data.file_meta.fid,
+            receiverid : Room.getcurrentid()
+          }
+        }));
 
         /* create a download link */
        // create_pre_file_link(recieved_meta[0], 0, data.username);
@@ -709,6 +726,16 @@ angular.module('cloudKiboApp')
       a.draggable = true;
       a.id = id+'-save';
       a.style.float = 'left';
+
+
+      Room.acceptFileStatus(JSON.stringify({
+        data: {
+          file_status: true,
+          file_id : parseInt(id),
+          receiverid : Room.getcurrentid()
+        }
+      }));
+      Room.sendChat( " has accepted file " + meta.name);
       //append link!
    //   var messages = document.getElementById('messages');
  //     filecontainer.appendChild(span);
@@ -747,6 +774,7 @@ angular.module('cloudKiboApp')
 
       //console.log("sending meta data");
       //console.log(meta);
+
 
       Room.sendDataChannelMessage(JSON.stringify({
         eventName: "data_msg",
@@ -841,6 +869,10 @@ angular.module('cloudKiboApp')
         }
       },
 
+
+      removeStopUpload:function(id){
+        clear_container(id);
+      },
 
       /*** function to return whether to show filelist container or not
        *
