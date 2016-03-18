@@ -54,6 +54,7 @@ angular.module('cloudKiboApp')
     }
 
     function makeOffer(id) {
+      userNames[data.by] = data.username;
       var pc = getPeerConnection(id);
       logger.log(''+ username +' is going to create video offer for '+ userNames[id]);
       pc.createOffer(function (sdp) {

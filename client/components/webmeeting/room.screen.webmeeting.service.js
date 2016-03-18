@@ -97,6 +97,7 @@ angular.module('cloudKiboApp')
           });
           break;
         case 'answer':
+          userNames[data.by] = data.username;
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             logger.log(''+ username +' set screen answer remote description sent by  '+ userNames[data.by]);
           }, function (e) {
@@ -107,7 +108,7 @@ angular.module('cloudKiboApp')
           break;
         case 'ice':
           if (data.ice) {
-            logger.log(''+ username +' adding ice candidate for audio sent by  '+ userNames[data.by]);
+            logger.log(''+ username +' adding ice candidate for screen sent by  '+ userNames[data.by]);
             pc.addIceCandidate(new RTCIceCandidate(data.ice));
           }
           break;
