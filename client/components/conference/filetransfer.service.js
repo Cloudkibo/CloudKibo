@@ -59,7 +59,8 @@ angular.module('cloudKiboApp')
         cancel_file(target.id.replace("-cancel", ""));
       }
       else if (target.id.search('-reject') != -1) {
-        reject_file(target.id.replace("-reject", ""));
+
+        reject_file(target.id.replace("-reject", ""),target.getAttribute("dataval"));
       }
       else if (target.id.search('-upload-stop') != -1) {
         upload_stop(target.id.replace("-upload-stop", ""));
@@ -68,28 +69,27 @@ angular.module('cloudKiboApp')
     document.body.addEventListener('click', fileEventHandler, false);
 
     /* reject file - from reciever side */
-    function reject_file(fileid)
+    function reject_file(fileid,sender)
     {
-      Room.rejectFileStatus(JSON.stringify({
+
+      console.log("sender id : " + sender)
+      Room.sendChat( " has rejected file " + recieved_meta[fileid].name);
+
+      Room.sendDataChannelMessageToUser(JSON.stringify({
+        eventName: "setfile",
         data: {
           file_status: true,
           file_id : parseInt(fileid),
           receiverid : Room.getcurrentid()
-        }
-      }));
-      Room.sendChat( " has rejected file " + recieved_meta[fileid].name);
+          }
+      }),sender);
+
       clear_container(fileid);
     }
     /* stop the uploading! */
     function upload_stop(fileid) {
       /* remove data */
       chunks = {};
-      // $('#myModal').modal('hide');
-      // $("[data-dismiss=modal]").trigger({ type: "click" });
-      /* also clear the container */
-     // create_or_clear_container(meta.fid);
-
-      /** removing file entry from the container **/
       clear_container(fileid);
 
       console.log('i am clicked and removing file with id : ' + fileid);
@@ -212,6 +212,7 @@ angular.module('cloudKiboApp')
       meta.browser = isChrome ? 'chrome' : 'firefox';
       meta.uname = Room.getusername();
       meta.fid = fileCount; //to store file id;
+      meta.senderid = Room.getcurrentid();
       console.log(meta);
 
       send_meta(meta);
@@ -285,18 +286,6 @@ angular.module('cloudKiboApp')
          */
         downloading[data.file_meta.fid] = false;
         delete_file(data.file_meta.fid);
-
-
-        /*** once file data is received mark download status as false***/
-
-        Room.initFileStatus(JSON.stringify({
-          data: {
-            file_status: false,
-            file_id : data.file_meta.fid,
-            receiverid : Room.getcurrentid()
-          }
-        }));
-
         /* create a download link */
        // create_pre_file_link(recieved_meta[0], 0, data.username);
         create_pre_file_link(recieved_meta[data.file_meta.fid], data.file_meta.fid, data.file_meta.uname);
@@ -320,6 +309,13 @@ angular.module('cloudKiboApp')
         clear_container(data.fileid);
 
       }
+      else if(data.file_status)
+      {
+        var chk = Room.setFileStatus(data);
+        if(chk == true)
+        clear_container(data.file_id);
+      }
+
       else {
 
         $log.debug('Chunk is requested');
@@ -579,6 +575,11 @@ angular.module('cloudKiboApp')
       var aa = document.createElement('a'); //reject download
       var myspan = document.createElement('span');
       myspan.setAttribute('id',id+'-span');
+      var att = document.createAttribute("dataval");
+      var attt = document.createAttribute("dataval");
+      att.value = meta.senderid;
+      attt.value = meta.senderid;
+
       a.download = meta.name;
       a.id = id + '-download';
       a.class = 'icon-btn';
@@ -593,7 +594,8 @@ angular.module('cloudKiboApp')
         myspan.textContent = meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
       a.textContent = 'Accept';
       a.draggable = true;
-
+      a.setAttributeNode(att);
+      aa.setAttributeNode(attt);
       aa.textContent = 'Reject';
       aa.draggable = true;
       aa.style.float = 'right';
@@ -728,13 +730,15 @@ angular.module('cloudKiboApp')
       a.style.float = 'left';
 
 
-      Room.acceptFileStatus(JSON.stringify({
+
+      Room.sendDataChannelMessageToUser(JSON.stringify({
+        eventName: "setfile",
         data: {
           file_status: true,
           file_id : parseInt(id),
           receiverid : Room.getcurrentid()
         }
-      }));
+      }),meta.senderid);
       Room.sendChat( " has accepted file " + meta.name);
       //append link!
    //   var messages = document.getElementById('messages');
@@ -768,20 +772,23 @@ angular.module('cloudKiboApp')
 
     /* send out meta data, allow for id to be empty = broadcast */
     function send_meta(meta) {
-      /*if (jQuery.isEmptyObject(meta)) {
-       return;
-       }*/
-
-      //console.log("sending meta data");
-      //console.log(meta);
-
-
       Room.sendDataChannelMessage(JSON.stringify({
         eventName: "data_msg",
         data: {
           file_meta: meta
         }
       }));
+
+      /*** once file data is send mark download status as false***/
+
+      Room.initFileStatus(JSON.stringify({
+        data: {
+          file_status: false,
+          file_id : meta.fid
+
+        }
+      }));
+
 
     }
 
@@ -870,9 +877,6 @@ angular.module('cloudKiboApp')
       },
 
 
-      removeStopUpload:function(id){
-        clear_container(id);
-      },
 
       /*** function to return whether to show filelist container or not
        *

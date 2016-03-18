@@ -132,10 +132,7 @@ angular.module('cloudKiboApp')
       logger.log('Client shared screen, adding stream, username : '+ $scope.user.username +' and peer name : '+ peer.username);
       peerScreenStream = URL.createObjectURL(peer.stream);
     });
-    Room.on('conference.removeStopUpload',function(fileid){
-      console.log('I am removeStopUpload');
-      FileHangout.removeStopUpload(fileid);
-    });
+
     Room.on('conference.stream', function (peer) {
       logger.log('got message of hiding / showing video or screen to username : '+ $scope.user.username +' and peer name : '+ peer.username);
       $scope.peers.forEach(function (p) {

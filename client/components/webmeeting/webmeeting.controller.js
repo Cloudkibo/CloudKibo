@@ -218,7 +218,6 @@ angular.module('cloudKiboApp')
     $scope.showfilesBox = function () {
       if($scope.meetingStarted()) {
         var c = document.getElementById('filelist_container').childNodes.length;
-        console.log('Child nodes are : ' + c);
         if(c < 1)
           $scope.filesVisible = false;
         else
@@ -230,7 +229,6 @@ angular.module('cloudKiboApp')
     $scope.showfilesButton = function(){
       if($scope.meetingStarted()) {
         var c = document.getElementById('filelist_container').childNodes.length;
-        console.log('Child nodes are : ' + c);
         if(c < 1)
           return false;
         else

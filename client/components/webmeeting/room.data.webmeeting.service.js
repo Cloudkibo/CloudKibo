@@ -7,7 +7,7 @@ angular.module('cloudKiboApp')
 
     var iceConfig = pc_config,
       peerConnections = {}, userNames = {},
-      dataChannels = {}, currentId, roomId,
+      dataChannels = {},fileReceivers =[], currentId, roomId,
       username;
 
 
@@ -190,6 +190,56 @@ angular.module('cloudKiboApp')
         }
 
       },
+      initFileStatus :function(data)
+      {
+        console.log('Init file status function called');
+        data = JSON.parse(data).data;
+        console.log(data);
+        for (var key in dataChannels) {
+          if(dataChannels[key].readyState === 'open') {
+            var singleObj = {};
+            singleObj.fileid = data.file_id;
+            singleObj.receiverid = key;
+            singleObj.filestatus = false;
+            fileReceivers.push(singleObj);
+
+          }
+        }
+
+        console.log(JSON.stringify(fileReceivers));
+      },
+      setFileStatus : function(data)
+      {
+        console.log('Set file status function called');
+        console.log(data);
+        for(var i = 0;i<fileReceivers.length;i++)
+        {
+          if(fileReceivers[i].fileid == data.file_id &&  fileReceivers[i].receiverid == data.receiverid)
+          {
+            fileReceivers[i].filestatus =   true;
+            break;
+          }
+        }
+        var flag = 0;
+        for(var i = 0;i<fileReceivers.length;i++)
+        {
+          if(fileReceivers[i].fileid == data.file_id &&  fileReceivers[i].filestatus == false)
+          {
+            flag = 1;
+            return false;
+
+          }
+        }
+
+        if(flag == 0)
+        {
+          console.log('calling removeStopupload : ' + data.file_id );
+          return true;
+        }
+
+      }
+      ,
+
       end: function () {
         logger.log(''+ username +' has ended the data peer connections for all');
         peerConnections = {}; userNames = {}; dataChannels = {};

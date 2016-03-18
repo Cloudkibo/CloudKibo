@@ -60,7 +60,7 @@ angular.module('cloudKiboApp')
         cancel_file(target.id.replace("-cancel", ""));
       }
       else if (target.id.search('-reject') != -1) {
-        reject_file(target.id.replace("-reject", ""));
+        reject_file(target.id.replace("-reject", ""),target.getAttribute("dataval"));
       }
       else if (target.id.search('-upload-stop') != -1) {
         upload_stop(target.id.replace("-upload-stop", ""));
@@ -69,19 +69,26 @@ angular.module('cloudKiboApp')
     document.body.addEventListener('click', fileEventHandler, false);
 
     /* reject file - from reciever side */
-    function reject_file(fileid)
+    function reject_file(fileid,sender)
     {
+
+      console.log("sender id : " + sender)
+      MeetingRoom.sendChat( " has rejected file " + recieved_meta[fileid].name);
+
+      MeetingRoomData.sendDataChannelMessageToUser(JSON.stringify({
+        eventName: "setfile",
+        data: {
+          file_status: true,
+          file_id : parseInt(fileid),
+          receiverid : MeetingRoomData.getcurrentid()
+        }
+      }),sender);
       clear_container(fileid);
     }
     /* stop the uploading! */
     function upload_stop(fileid) {
       /* remove data */
       chunks = {};
-      // $('#myModal').modal('hide');
-      // $("[data-dismiss=modal]").trigger({ type: "click" });
-      /* also clear the container */
-      // create_or_clear_container(meta.fid);
-
       /** removing file entry from the container **/
       clear_container(fileid);
 
@@ -204,6 +211,7 @@ angular.module('cloudKiboApp')
       meta.browser = isChrome ? 'chrome' : 'firefox';
       meta.uname = MeetingRoomData.getusername();
       meta.fid = fileCount; //to store file id;
+      meta.senderid = MeetingRoomData.getcurrentid();
       console.log(meta);
 
       send_meta(meta);
@@ -303,6 +311,12 @@ angular.module('cloudKiboApp')
         // create_or_clear_container(0);
         clear_container(data.fileid);
 
+      }
+      else if(data.file_status)
+      {
+        var chk = MeetingRoomData.setFileStatus(data);
+        if(chk == true)
+          clear_container(data.file_id);
       }
       else {
 
@@ -562,6 +576,11 @@ angular.module('cloudKiboApp')
       var aa = document.createElement('a'); //reject download
       var myspan = document.createElement('span');
       myspan.setAttribute('id',id+'-span');
+      var att = document.createAttribute("dataval");
+      var attt = document.createAttribute("dataval");
+      att.value = meta.senderid;
+      attt.value = meta.senderid;
+
       a.download = meta.name;
       a.id = id + '-download';
       a.class = 'icon-btn';
@@ -576,7 +595,8 @@ angular.module('cloudKiboApp')
         myspan.textContent = meta.name + ' ' + FileUtility.getReadableFileSizeString(meta.size);
       a.textContent = 'Accept';
       a.draggable = true;
-
+      a.setAttributeNode(att);
+      aa.setAttributeNode(attt);
       aa.textContent = 'Reject';
       aa.draggable = true;
       aa.style.float = 'right';
@@ -709,9 +729,16 @@ angular.module('cloudKiboApp')
       a.draggable = true;
       a.id = id+'-save';
       a.style.float = 'left';
-      //append link!
-      //   var messages = document.getElementById('messages');
-      //     filecontainer.appendChild(span);
+      MeetingRoomData.sendDataChannelMessageToUser(JSON.stringify({
+        eventName: "setfile",
+        data: {
+          file_status: true,
+          file_id : parseInt(id),
+          receiverid : MeetingRoomData.getcurrentid()
+        }
+      }),meta.senderid);
+      MeetingRoom.sendChat( " has accepted file " + meta.name);
+
       filecontainer.appendChild(a);
       a.click(); //to auto save after file is downloaded
 
@@ -719,38 +746,23 @@ angular.module('cloudKiboApp')
       $timeout(function(){
         fs_container.removeChild(filecontainer)},3000);
 
-
-      /****************** No purpose of this link button *******/
-      /* make delete button */
-      //  filecontainer.innerHTML = filecontainer.innerHTML + " ";
-      /* add cancel button */
-      /*   var can = document.createElement('a');
-       can.download = meta.name;
-       can.id = id + '-cancel';
-       a.class = 'icon-btn';
-       can.href = 'javascript:void(0);';
-       can.style.cssText = 'color:red;';
-       can.textContent = '[d]';
-       can.draggable = true;
-       //append link!
-       filecontainer.appendChild(can);*/
-
-      //append to chat
-      //Room.sendChat("File " + meta.name + " is ready to save locally");
     }
     /* send out meta data, allow for id to be empty = broadcast */
     function send_meta(id) {
-      /*if (jQuery.isEmptyObject(meta)) {
-       return;
-       }*/
-
-      //console.log("sending meta data");
-      //console.log(meta);
 
       MeetingRoomData.sendDataChannelMessage(JSON.stringify({
         eventName: "data_msg",
         data: {
           file_meta: meta
+        }
+      }));
+      /*** once file data is send mark download status as false***/
+
+      MeetingRoomData.initFileStatus(JSON.stringify({
+        data: {
+          file_status: false,
+          file_id : meta.fid
+
         }
       }));
 
