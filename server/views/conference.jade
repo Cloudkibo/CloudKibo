@@ -207,7 +207,7 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
               div(class='meetingChatBox', scroll-if, schroll-bottom='userMessages', style="word-wrap: break-word")
                 .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
                   | {{userMessage}}
-              form
-                input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Message Here", autocomplete='off')
-                button(ng-click='sendData()') Send
+                form
+                  input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Your Message Here...", autocomplete='off',class = "chatinput",ng-enter='sendData()')
+                  //button(ng-click='sendData()') Send
     .filecontainer(id='filelist_container', ng-show='showfilesBox()' )

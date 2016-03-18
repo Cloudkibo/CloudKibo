@@ -330,9 +330,9 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
   overflow : auto;
   width : 93%;#240px;
   height : 430px;
-  background: #f8fafe;
-  border: 1px solid #badfef;
   padding: 10px;
+  background-color: white;
+  border: 1px solid #c8c8c8;
 }
 
 .chatButtonRow{
@@ -869,6 +869,25 @@ form .progress {
   display: inline-block;
   margin-left: 10px;
   /* margin-top: 10px; */
+}
+.chatinput{
+  font-size: 14px;
+  color: #393939;
+  border: 1px solid #e5e5de;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -khtml-border-radius: 10px;
+  border-radius: 10px !important;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  width: 270px;
+  position: absolute;
+  bottom: 10px;
+  margin: 0 auto;
+  left: 0px;
+  right: 20px;
 }
 .fileTransferBox a {
   display: block;

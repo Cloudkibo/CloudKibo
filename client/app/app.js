@@ -8,8 +8,8 @@ angular.module('cloudKiboApp', [
   'kiboRtc',
   'ngFileUpload',
   'ngImgCrop'
-  
-  
+
+
 ])
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
@@ -23,9 +23,9 @@ angular.module('cloudKiboApp', [
         templateUrl: function(params){ return '/conference/'+ params.mname},
         controller: 'ConferenceController'
     })
-    
+
     .when('/survey/:mname', {
-          
+
           templateUrl: function(params){console.log(params.mname);return '/survey/' + params.mname},
           controller: 'SurveyController'
     })
@@ -37,7 +37,7 @@ angular.module('cloudKiboApp', [
         templateUrl: function(params){ return '/webmeeting/'+ params.mname},
         controller: 'WebMeetingController'
     })
-    
+
     .when('/livehelp/:mname', {
       templateUrl: function(params){ console.log(params); return '/livehelp/'+ params.mname +'?role='+ params.role},
       controller: 'LiveHelpController'
@@ -51,7 +51,7 @@ angular.module('cloudKiboApp', [
 	  enabled: true,
 	  requireBase: false
 	});*/
-    
+
 
     $httpProvider.interceptors.push('authInterceptor');
   })
@@ -109,9 +109,9 @@ angular.module('cloudKiboApp', [
           $location.path('/login');
           return;
         }
-        
-    
-        
+
+
+
       });
       if (!window.RTCPeerConnection || !navigator.getUserMedia) {
     //  $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
@@ -120,12 +120,12 @@ angular.module('cloudKiboApp', [
     //  return;
     $location.path('/otherBrowser');
     }
-      
-      
-      
-    
+
+
+
+
     });
-    
+
 
   })
 
@@ -198,7 +198,20 @@ angular.module('cloudKiboApp', [
 			  });
 			}
 		  }
-		}]);
+		}])
+  .directive('ngEnter', function() {
+  return function(scope, element, attrs) {
+    element.bind("keydown keypress", function(event) {
+      if(event.which === 13) {
+        scope.$apply(function(){
+          scope.$eval(attrs.ngEnter, {'event': event});
+        });
 
-    
-    
+        event.preventDefault();
+      }
+    });
+  };
+});
+
+
+
