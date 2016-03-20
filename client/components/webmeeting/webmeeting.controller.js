@@ -258,7 +258,7 @@ angular.module('cloudKiboApp')
           else
             $scope.supportCallData = {};
           MeetingRoom.sendChat(data, $scope.supportCallData);
-          $scope.userMessages.push('Me: ' + data);
+          $scope.userMessages.push({uname :'Me',msg:data,msgtime:new Date(),chatcolor:'#427FCA'});
           $scope.dataChannelSend = '';
           logger.log("chat message sent by "+ $scope.user.username)
         }
@@ -278,7 +278,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.$apply(function () {
-          $scope.userMessages.push(data.username +': '+ data.message);
+          $scope.userMessages.push({uname : data.username,msg:data.message,msgtime:new Date(),chatcolor :'#E02222'});
           logger.log("chat messsage received by "+ $scope.user.username +" sent from "+data.username);
         });
       }

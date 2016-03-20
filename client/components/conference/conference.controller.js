@@ -22,7 +22,7 @@ angular.module('cloudKiboApp')
 
     var screenViewer = document.getElementById('screenViewer');
     var screenAndroidImage = document.getElementById('screenAndroidImage');
-
+    $scope.unreadmsg =0;
     $scope.user = $scope.getCurrentUser();
     $scope.isUserNameDefined = function () {
       return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
@@ -252,7 +252,7 @@ angular.module('cloudKiboApp')
           else
             $scope.supportCallData = {};
           Room.sendChat(data, $scope.supportCallData);
-          $scope.userMessages.push('Me: ' + data);
+          $scope.userMessages.push({uname :'Me',msg:data,msgtime:new Date(),chatcolor:'#427FCA'});
           $scope.dataChannelSend = '';
           logger.log("chat message sent by "+ $scope.user.username)
         }
@@ -271,7 +271,7 @@ angular.module('cloudKiboApp')
         }
 
         $scope.$apply(function () {
-          $scope.userMessages.push(data.username +': '+ data.message);
+          $scope.userMessages.push({uname : data.username,msg:data.message,msgtime:new Date(),chatcolor :'#E02222'});
           logger.log("chat messsage received by "+data.username);
         });
       }
@@ -602,6 +602,13 @@ angular.module('cloudKiboApp')
 
      };
 
+    $scope.showMsgCount = function(){
+      if($scope.unreadmsg == 0) {
+        return false
+      }
+      else
+        return true
+    }
 
 
   });
