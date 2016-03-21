@@ -210,16 +210,18 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                       .chat-messages-holder(scroll-if, schroll-bottom='userMessages')
                           .chat-messages-container
                                   .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
-                                    div(class = "chat-timestamp")
+                                    div(class = "chatSeparator",ng-hide ="(userMessages[$index -1].uname ==  userMessages[$index].uname) || $index ==0")
+                                    div(class = "chat-timestamp",ng-hide ="(userMessages[$index -1].uname ==  userMessages[$index].uname) && $index !=0")
                                      | {{userMessage.msgtime | date:'hh:mm a'}}
 
-                                    div(class = "chat-picture",style = "background-color :{{userMessage.chatcolor}} ")
+                                    div(class = "chat-picture",style = "background-color :{{userMessage.chatcolor}} ",ng-hide ="(userMessages[$index -1].uname ==  userMessages[$index].uname) && $index !=0")
                                       div(class = "initials")
                                          | {{userMessage.uname | limitTo : 1}}
-                                    div(class = "chat-uname",style = "color :{{userMessage.chatcolor}} ")
+                                    div(class = "chat-uname",style = "color :{{userMessage.chatcolor}} ",ng-hide ="(userMessages[$index -1].uname ==  userMessages[$index].uname) && $index !=0")
                                       | {{userMessage.uname}}
                                     div(class = "body-copy-3")
-                                     | {{userMessage.msg}}
+                                        pre {{userMessage.msg}}
+
 
                       form(id = "chat-form")
                           div(class = "chat-input")

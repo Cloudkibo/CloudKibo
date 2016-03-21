@@ -201,19 +201,19 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                 .chat-messages-holder(scroll-if, schroll-bottom='userMessages')
                   .chat-messages-container
                     .meetingChatMessage(ng-repeat='userMessage in userMessages track by $index', scroll-item)
-                      div(class = "chat-timestamp")
-                        | {{userMessage.msgtime | date:'hh:mm a'}}
-
-                      div(class = "chat-picture",style = "background-color :{{userMessage.chatcolor}} ")
-                        div(class = "initials")
-                          | {{userMessage.uname | limitTo : 1}}
-                      div(class = "chat-uname",style = "color :{{userMessage.chatcolor}} ")
-                        | {{userMessage.uname}}
-                      div(class = "body-copy-3")
-                        | {{userMessage.msg}}
+                            div(class = "chatSeparator",ng-hide ="(userMessages[$index -1].uname ==  userMessages[$index].uname) || $index ==0")
+                            div(class = "chat-timestamp",ng-hide ="(userMessages[$index -1].uname ==  userMessages[$index].uname) && $index !=0")
+                              | {{userMessage.msgtime | date:'hh:mm a'}}
+                            div(class = "chat-picture",style = "background-color :{{userMessage.chatcolor}} ",ng-hide ="(userMessages[$index -1].uname ==  userMessages[$index].uname) && $index !=0")
+                              div(class = "initials")
+                                | {{userMessage.uname | limitTo : 1}}
+                            div(class = "chat-uname",style = "color :{{userMessage.chatcolor}} ",ng-hide ="(userMessages[$index -1].uname ==  userMessages[$index].uname) && $index !=0")
+                              | {{userMessage.uname}}
+                            div(class = "body-copy-3")
+                              pre {{userMessage.msg}}
 
                 form(id = "chat-form")
-                  div(class = "chat-input")
-                    input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Your Message Here...", autocomplete='off',class = "chatinput",ng-enter='sendData()')
-                //button(ng-click='sendData()') Send
+                            div(class = "chat-input")
+                              input(type='text', id="dataChannelSend", ng-model='dataChannelSend', placeholder="Type Your Message Here...", autocomplete='off',class = "chatinput",ng-enter='sendData()')
+                          //button(ng-click='sendData()') Send
     .filecontainer(id='filelist_container', ng-show='showfilesBox()' )
