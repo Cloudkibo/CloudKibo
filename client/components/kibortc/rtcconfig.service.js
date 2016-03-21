@@ -15,22 +15,22 @@ angular.module('kiboRtc.services')
  * todo: Add the function addICEServer which should take JSON array or JSON object as input
  */
   .factory('pc_config', function ($log) {
-/*
+
     $(document).ready(function() {
       $.get("https://service.xirsys.com/ice",
         {
           ident: "testcloudkibo",
-          secret: "SecretKey",
-          domain: "my.domain.com",
-          application: "AppName",
-          room: "RoomName",
+          secret: "9846fdca-ec48-11e5-9e57-6d5d0b63fdb1",
+          domain: "api.cloudkibo.com",
+          application: "CloudKibo",
+          room: "CloudKibo_Conference",
           secure: 1
         },
         function(data, status) {
           console.log("Data: " + data + "nnStatus: " + status);
         });
     });
-*/
+
     var isChrome = !!navigator.webkitGetUserMedia;
 
     return {'iceServers': [
