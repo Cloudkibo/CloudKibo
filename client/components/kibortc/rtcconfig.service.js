@@ -40,7 +40,7 @@ angular.module('kiboRtc.services')
       {url: (isChrome
             ? 'turn:turn.cloudkibo.com:3478?transport=tcp'
             : 'turn:45.55.232.65:3478?transport=tcp'), username: 'cloudkibo', credential: 'cloudkibo'},
-      {url: 'numb.viagenie.ca', username: 'support@cloudkibo.com', credential: 'cloudkibo'}
+      {url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'}
 
       /*{url: 'turn:45.55.232.65:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'},
       {url: 'turn:45.55.232.65:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'},
