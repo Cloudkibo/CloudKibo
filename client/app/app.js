@@ -158,6 +158,7 @@ angular.module('cloudKiboApp', [
 			if (newValue)
 			{
 			  $(element).scrollTop($(element)[0].scrollHeight);
+        console.log($(element)[0])
 			}
 		  });
 		}

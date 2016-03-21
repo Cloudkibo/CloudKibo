@@ -258,7 +258,7 @@ angular.module('cloudKiboApp')
           else
             $scope.supportCallData = {};
           MeetingRoom.sendChat(data, $scope.supportCallData);
-          $scope.userMessages.push({uname :'Me',msg:data,msgtime:new Date(),chatcolor:'#427FCA'});
+          $scope.userMessages.push({uname :$scope.user.username,msg:data,msgtime:new Date(),chatcolor:'#427FCA'});
           $scope.dataChannelSend = '';
           logger.log("chat message sent by "+ $scope.user.username)
         }

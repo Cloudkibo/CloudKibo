@@ -327,7 +327,7 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
 
 .meetingChatBox
 {
-  overflow : auto;
+/*  overflow : auto;
   width : 93%;#240px;
   height : 430px;
   padding: 10px;
@@ -343,6 +343,15 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
   bottom: 30px;
   background-color: white;
   border: 1px solid #c8c8c8;*/
+  overflow: auto;
+  width: 93%;
+  height: 500px;
+  position: absolute;
+  top: -25px;
+  bottom: 0px;
+  right: 10px;
+  background-color: white;
+  border: 1px solid #c8c8c8;
 }
 .chat-pane{
   position: relative;
@@ -393,10 +402,17 @@ z-index: 1000;
   text-align: left;
   margin-bottom: 8px;*/
   padding: 15px 10px 0px 10px;
-  padding-bottom: 15px;
+ /* padding-bottom: 15px;*/
+  padding-bottom: 0px;
   background: #ffffff;
   text-align: left;
-  border-bottom: 1px solid #c8c8c8
+
+}
+.chatSeparator{
+  border-bottom: 1px solid #c8c8c8;
+  line-height: 5px;
+  margin-bottom: 15px;
+
 }
 .chat-timestamp {
   font-size: 11px;
@@ -460,6 +476,14 @@ z-index: 1000;
 .body-copy-3 {
   font-size: 14px;
   color: #393939;
+  margin-bottom : -20px;
+}
+.body-copy-3 pre{
+  background-color: transparent;
+  border: 0px;
+  font-size: 14px;
+  color: #393939;
+  font-family:sans-serif
 }
 /*
 todo need more work
