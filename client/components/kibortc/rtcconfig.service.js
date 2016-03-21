@@ -16,15 +16,31 @@ angular.module('kiboRtc.services')
  */
   .factory('pc_config', function ($log) {
 
+    $(document).ready(function() {
+      $.get("https://service.xirsys.com/ice",
+        {
+          ident: "testcloudkibo",
+          secret: "SecretKey",
+          domain: "my.domain.com",
+          application: "AppName",
+          room: "RoomName",
+          secure: 1
+        },
+        function(data, status) {
+          console.log("Data: " + data + "nnStatus: " + status);
+        });
+    });
+
     var isChrome = !!navigator.webkitGetUserMedia;
 
     return {'iceServers': [
-	{url: (isChrome
-        ? 'turn:turn.cloudkibo.com:3478?transport=udp'
-        : 'turn:45.55.232.65:3478?transport=udp'), username: 'cloudkibo', credential: 'cloudkibo'},
-	{url: (isChrome
-        ? 'turn:turn.cloudkibo.com:3478?transport=tcp'
-        : 'turn:45.55.232.65:3478?transport=tcp'), username: 'cloudkibo', credential: 'cloudkibo'},
+      {url: (isChrome
+            ? 'turn:turn.cloudkibo.com:3478?transport=udp'
+            : 'turn:45.55.232.65:3478?transport=udp'), username: 'cloudkibo', credential: 'cloudkibo'},
+      {url: (isChrome
+            ? 'turn:turn.cloudkibo.com:3478?transport=tcp'
+            : 'turn:45.55.232.65:3478?transport=tcp'), username: 'cloudkibo', credential: 'cloudkibo'},
+      {url: 'numb.viagenie.ca', username: 'support@cloudkibo.com', credential: 'cloudkibo'}
 
       /*{url: 'turn:45.55.232.65:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'},
       {url: 'turn:45.55.232.65:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'},

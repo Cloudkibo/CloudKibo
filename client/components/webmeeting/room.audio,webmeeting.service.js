@@ -60,6 +60,7 @@ angular.module('cloudKiboApp')
       if (peerConnections[id]) {
         return peerConnections[id];
       }
+      logger.log(''+ username +' has received TURN configuration  '+ JSON.stringify(pc_config));
       var pc = new RTCPeerConnection(iceConfig, pc_constraints2);
       peerConnections[id] = pc;
       if(stream !== null)
