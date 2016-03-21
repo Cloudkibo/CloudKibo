@@ -80,9 +80,9 @@ angular.module('cloudKiboApp')
             delete peerConnections[data.by];
             pc = getPeerConnection(data.by);
           }
-          var streams = pc.getLocalStreams();
-          logger.log(''+ username +' has got this number of local video streams: '+ streams.length);
-          if(streams.length > 0) {
+          var localStreams = pc.getLocalStreams();
+          logger.log(''+ username +' has got this number of local video streams: '+ localStreams.length);
+          if(localStreams.length < 1) {
             pc.addStream(stream);
           }
           userNames[data.by] = data.username;
