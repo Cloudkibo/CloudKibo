@@ -80,7 +80,11 @@ angular.module('cloudKiboApp')
             delete peerConnections[data.by];
             pc = getPeerConnection(data.by);
           }
-          pc.addStream(stream);
+          var streams = pc.getLocalStreams();
+          logger.log(''+ username +' has got this number of local video streams: '+ streams.length);
+          if(streams.length > 0) {
+            pc.addStream(stream);
+          }
           userNames[data.by] = data.username;
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             logger.log(''+ username +' set video offer remote description sent by  '+ userNames[data.by]);
