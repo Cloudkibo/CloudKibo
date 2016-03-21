@@ -15,7 +15,7 @@ angular.module('kiboRtc.services')
  * todo: Add the function addICEServer which should take JSON array or JSON object as input
  */
   .factory('pc_config', function ($log) {
-
+/*
     $(document).ready(function() {
       $.get("https://service.xirsys.com/ice",
         {
@@ -30,7 +30,7 @@ angular.module('kiboRtc.services')
           console.log("Data: " + data + "nnStatus: " + status);
         });
     });
-
+*/
     var isChrome = !!navigator.webkitGetUserMedia;
 
     return {'iceServers': [
