@@ -34,20 +34,20 @@ angular.module('kiboRtc.services')
     var isChrome = !!navigator.webkitGetUserMedia;
 
     return {'iceServers': [
-      /*{url: (isChrome
+      {url: (isChrome
             ? 'turn:turn.cloudkibo.com:3478?transport=udp'
             : 'turn:45.55.232.65:3478?transport=udp'), username: 'cloudkibo', credential: 'cloudkibo'},
       {url: (isChrome
             ? 'turn:turn.cloudkibo.com:3478?transport=tcp'
             : 'turn:45.55.232.65:3478?transport=tcp'), username: 'cloudkibo', credential: 'cloudkibo'}
-      {url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'}
-      {url: (isChrome
+      //{url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'}
+      /*{url: (isChrome
         ? 'stun:stun.l.google.com:19302'
-        : 'stun:23.21.150.121'), username: null, credential: null},*/
+        : 'stun:23.21.150.121'), username: null, credential: null},
       {url: 'stun:stun.anyfirewall.com:3478', username: null, credential: null},
       {url: 'turn:turn.bistri.com:80?transport=udp', username: 'homeo', credential: 'homeo'},
       {url: 'turn:turn.bistri.com:80?transport=tcp', username: 'homeo', credential: 'homeo'},
-      {url: 'turn:turn.anyfirewall.com:443?transport=tcp', username: 'webrtc', credential: 'webrtc'}
+      {url: 'turn:turn.anyfirewall.com:443?transport=tcp', username: 'webrtc', credential: 'webrtc'}*/
     ]};
 
     // Commented only to test our own turn server with above address and credentials
