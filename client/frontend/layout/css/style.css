@@ -344,12 +344,12 @@ Template Name: Metronic - Responsive Website Template build with Twitter Bootstr
   background-color: white;
   border: 1px solid #c8c8c8;*/
   overflow: auto;
-  width: 93%;
-  height: 500px;
-  position: absolute;
-  top: -25px;
-  bottom: 0px;
-  right: 10px;
+  width: 250px;
+  /* height: 500px; */
+  position: fixed;
+  top: 140px;
+  bottom: 15px;
+  right: 0px;
   background-color: white;
   border: 1px solid #c8c8c8;
 }
@@ -456,7 +456,7 @@ z-index: 1000;
 #chat-form {
   position: absolute;
   left: 1px;
-  right: 30px;
+  right: 0px;
   bottom: 0px;
   background-color: white;
   padding: 15px 0 20px 0;
@@ -977,10 +977,9 @@ form .progress {
   /* margin-top: 10px; */
 }
 .chat-input{
-  width: 250px;
+  width: 230px;
   height: 40px;
   margin: 10px;
-  margin-left: 25px;
 
 }
 .msg-count{
@@ -2747,7 +2746,7 @@ body.page-header-fixed {
 
 }
 .mybtn-header {
-    text-align:center;
+  /*  text-align:center;
     padding:0;
     margin:0;
    list-style: none;
@@ -2757,7 +2756,21 @@ body.page-header-fixed {
     left: 0;
     bottom: 0;
     right: 0;
-    margin-top: 20px;
+    margin-top: 20px;*/
+    text-align: center;
+    padding: 0;
+    /* margin: 0; */
+    list-style: none;
+    /* margin: 0 auto; */
+    position: relative;
+    /* top: 0; */
+    /* left: 0; */
+    /* bottom: 0; */
+    /* right: 0; */
+    /* margin-top: 20px; */
+    display: inline;
+    left: 40%;
+    /* right: -50%; */
 
 }
 .mybtn-header  li{
@@ -5659,4 +5672,10 @@ font-size : 15px;
   background: #fff;
   border-radius: 20px !important;
   padding: 10px;
+}
+.chat-input .chatinput
+{
+    outline:0px !important;
+
+    -webkit-appearance:none;
 }
