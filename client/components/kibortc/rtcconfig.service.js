@@ -15,29 +15,45 @@ angular.module('kiboRtc.services')
  * todo: Add the function addICEServer which should take JSON array or JSON object as input
  */
   .factory('pc_config', function ($log) {
-/*
+
     $(document).ready(function() {
+      console.log('DOCUMENT IS READY')
       $.get("https://service.xirsys.com/ice",
         {
           ident: "testcloudkibo",
           secret: "9846fdca-ec48-11e5-9e57-6d5d0b63fdb1",
           domain: "api.cloudkibo.com",
-          application: "CloudKibo",
-          room: "CloudKibo_Conference",
+          application: "default",
+          room: "default",
           secure: 1
         },
         function(data, status) {
-          console.log("Data: " + data + "nnStatus: " + status);
+          console.log("nnStatus: " + status);
+          console.log(data);
+        });
+
+      $.get("https://service.xirsys.com/ice",
+        {
+          ident: "testcloudkibo",
+          secret: "9846fdca-ec48-11e5-9e57-6d5d0b63fdb1",
+          domain: "api.cloudkibo.com",
+          application: "default",
+          room: "default",
+          secure: 0
+        },
+        function(data, status) {
+          console.log("nnStatus: " + status);
+          console.log(data);
         });
     });
-*/
+
     var isChrome = !!navigator.webkitGetUserMedia;
 
-    return {'iceServers': [
-      {url: 'turn:45.55.232.65:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'},
-      {url: 'turn:45.55.232.65:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'},
-      {url: 'turn:turn.cloudkibo.com:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'},
-      {url: 'turn:turn.cloudkibo.com:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'}
+  //  return {'iceServers': [
+  //    {url: 'turn:45.55.232.65:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'},
+  //    {url: 'turn:45.55.232.65:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'},
+  //    {url: 'turn:turn.cloudkibo.com:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'},
+  //    {url: 'turn:turn.cloudkibo.com:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'}
       //{url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'}
       /*{url: (isChrome
         ? 'stun:stun.l.google.com:19302'
@@ -46,7 +62,7 @@ angular.module('kiboRtc.services')
       {url: 'turn:turn.bistri.com:80?transport=udp', username: 'homeo', credential: 'homeo'},
       {url: 'turn:turn.bistri.com:80?transport=tcp', username: 'homeo', credential: 'homeo'},
       {url: 'turn:turn.anyfirewall.com:443?transport=tcp', username: 'webrtc', credential: 'webrtc'}*/
-    ]};
+  //  ]};
 
     // Commented only to test our own turn server with above address and credentials
 /*
