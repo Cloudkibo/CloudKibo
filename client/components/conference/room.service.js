@@ -5,7 +5,7 @@
 angular.module('cloudKiboApp')
   .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, logger, sdpConstraints) {
 
-    var iceConfig = pc_config,
+    var iceConfig = pc_config.pc_config(),
       peerConnections = {}, userNames = {},
       dataChannels = {}, currentId, roomId,fileReceivers =[],
       stream, username, screenSwitch = {},
@@ -52,6 +52,7 @@ angular.module('cloudKiboApp')
       if (peerConnections[id]) {
         return peerConnections[id];
       }
+      logger.log(iceConfig);
       var pc = new RTCPeerConnection(iceConfig, pc_constraints2);
       peerConnections[id] = pc;
       if(stream !== null)

@@ -16,6 +16,8 @@ angular.module('kiboRtc.services')
  */
   .factory('pc_config', function ($log) {
 
+    var configurations;
+
     $(document).ready(function() {
       console.log('DOCUMENT IS READY')
       $.get("https://service.xirsys.com/ice",
@@ -27,13 +29,20 @@ angular.module('kiboRtc.services')
           room: "default",
           secure: 1
         },
-        function(data, status) {
+        function (data, status) {
           console.log("nnStatus: " + status);
           console.log(data);
-          return data;
+          configurations = data;
         });
+    });
 
     var isChrome = !!navigator.webkitGetUserMedia;
+
+    return {
+      pc_config : function(){
+        return configurations;
+      }
+    }
 
   //  return {'iceServers': [
   //    {url: 'turn:45.55.232.65:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'},
