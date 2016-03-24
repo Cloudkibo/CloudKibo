@@ -5,8 +5,7 @@
 angular.module('cloudKiboApp')
   .factory('MeetingRoomVideo', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, CallStats, audio_threshold, sdpConstraints, logger) {
 
-    var iceConfig = pc_config,
-      peerConnections = {}, userNames = {},
+    var peerConnections = {}, userNames = {},
       currentId, roomId,
       stream, username, localVideoShared=false;
 
@@ -18,7 +17,7 @@ angular.module('cloudKiboApp')
       if (peerConnections[id]) {
         return peerConnections[id];
       }
-      var pc = new RTCPeerConnection(iceConfig, pc_constraints2);
+      var pc = new RTCPeerConnection(pc_config.pc_config(), pc_constraints2);
       peerConnections[id] = pc;
       pc.onicecandidate = function (evnt) {
         socket.emit('msgVideo', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
