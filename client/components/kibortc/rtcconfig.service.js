@@ -30,22 +30,8 @@ angular.module('kiboRtc.services')
         function(data, status) {
           console.log("nnStatus: " + status);
           console.log(data);
+          return data;
         });
-
-      $.get("https://service.xirsys.com/ice",
-        {
-          ident: "testcloudkibo",
-          secret: "9846fdca-ec48-11e5-9e57-6d5d0b63fdb1",
-          domain: "api.cloudkibo.com",
-          application: "default",
-          room: "default",
-          secure: 0
-        },
-        function(data, status) {
-          console.log("nnStatus: " + status);
-          console.log(data);
-        });
-    });
 
     var isChrome = !!navigator.webkitGetUserMedia;
 
