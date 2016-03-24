@@ -5,8 +5,7 @@
 angular.module('cloudKiboApp')
   .factory('MeetingRoom', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, CallStats, audio_threshold, logger, sdpConstraints) {
 
-    var iceConfig = pc_config,
-      peerConnections = {}, userNames = {},
+    var peerConnections = {}, userNames = {},
       currentId, roomId,
       stream, username, supportCallData,
       nullStreams = {};
@@ -60,8 +59,8 @@ angular.module('cloudKiboApp')
       if (peerConnections[id]) {
         return peerConnections[id];
       }
-      logger.log(''+ username +' has received TURN configuration  '+ JSON.stringify(pc_config));
-      var pc = new RTCPeerConnection(iceConfig, pc_constraints2);
+      logger.log(''+ username +' has received TURN configuration  '+ JSON.stringify(pc_config.pc_config()));
+      var pc = new RTCPeerConnection(pc_config.pc_config(), pc_constraints2);
       peerConnections[id] = pc;
       if(stream !== null)
         pc.addStream(stream);
