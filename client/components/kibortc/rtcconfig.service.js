@@ -32,7 +32,7 @@ angular.module('kiboRtc.services')
         function (data, status) {
           console.log("nnStatus: " + status);
           console.log(data);
-          configurations = data;
+          configurations = data.d;
         });
     });
 
