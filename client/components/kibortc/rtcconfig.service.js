@@ -19,7 +19,6 @@ angular.module('kiboRtc.services')
     var configurations;
 
     $(document).ready(function() {
-      console.log('DOCUMENT IS READY')
       $.get("https://service.xirsys.com/ice",
         {
           ident: "testcloudkibo",

@@ -25,6 +25,12 @@ angular.module('cloudKiboApp')
       pc.onaddstream = function (evnt) {
         logger.log(''+ username +' has received video stream by  '+ userNames[id]);
         if(!otherStream[id]) {
+          api.trigger('conference.streamVideo', [{
+            username: userNames[id],
+            type: 'video',
+            action: true,
+            id: id
+          }]);
           api.trigger('peer.streamVideo', [{
             id: id,
             username: userNames[id],
@@ -36,17 +42,6 @@ angular.module('cloudKiboApp')
           otherStream[id] = evnt.stream;
         }
       };
-  /*    var callStats = new callstats(null,io,jsSHA);
-      var AppID     = "199083144";
-      var AppSecret = "t/vySeaTw5q6323+ArF2c6nEFT4=";
-      callStats.initialize(AppID, AppSecret, username, function (err, msg) {
-        console.log("Initializing Status: err="+err+" msg="+msg);
-        var usage = callStats.fabricUsage.video;
-        callStats.addNewFabric(pc, id, usage, roomId, function(err, msg){
-          console.log("Add new Fabric Status for video: err="+err+" msg="+msg);
-        });
-      });
-      */
       CallStats.addVideoFabric(pc, id, roomId);
       logger.log(''+ username +' has created video peer connection for  '+ userNames[id]);
       return pc;
@@ -144,12 +139,6 @@ angular.module('cloudKiboApp')
       });
       socket.on('conference.streamVideo', function(data){
         if(data.id !== currentId){
-          api.trigger('conference.streamVideo', [{
-            username: data.username,
-            type: data.type,
-            action: data.action,
-            id: data.id
-          }]);
           if(data.action) {
             logger.log(''+ username +' was informed that '+ data.username +' wants to share the video.');
             if(localVideoShared) { // workaround for firefox as it doesn't support renegotiation (ice restart unsupported error in firefox)
