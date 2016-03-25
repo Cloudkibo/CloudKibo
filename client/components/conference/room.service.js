@@ -9,6 +9,7 @@ angular.module('cloudKiboApp')
       dataChannels = {}, currentId, roomId,fileReceivers =[],
       stream, username, screenSwitch = {},
       supportCallData, nullStreams = {};
+    var roomStatus;
 
     /** Audio Analyser variables **/
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -214,6 +215,10 @@ angular.module('cloudKiboApp')
           message: data.message
         }]);
       });
+      socket.on('room.lock',function(data){
+        api.trigger('room.lock',[{status:data.status}]);
+      });
+
       socket.on('conference.stream', function(data){
         if(data.id !== currentId){
           if(data.type === 'screen' && data.action) screenSwitch[data.id] = true;
@@ -249,6 +254,7 @@ angular.module('cloudKiboApp')
 
     function connectRoom (r){
       if (!connected) {
+
         socket.emit('init', { room: r, username: username, supportcall : supportCallData }, function (roomid, id) {
           if(id === null){
             alert('You cannot join conference. Room is full');
@@ -288,6 +294,11 @@ angular.module('cloudKiboApp')
       sendChat: function (m, s) {
         console.log('Calling sendchat socket');
         socket.emit('conference.chat', { message: m, username: username, support_call: s });
+      },
+      lockRoom:function(data)
+      {
+        console.log('calling lockRoom socket' + 'room id : '+ roomId + ' status : '+data);
+        socket.emit('room.lock', { currentRoom : roomId,status : data});
       },
       sendDataChannelMessage: function (m) {
         for (var key in dataChannels) {
@@ -386,6 +397,13 @@ angular.module('cloudKiboApp')
       },
       getcurrentid:function(){
         return currentId;
+      },
+      getroomStatus:function(roomname) {
+        socket.emit('getRoomStatus', {id: roomname});
+
+      },
+      returnRoomStatus:function(){
+        return roomStatus;
       }
     };
     EventEmitter.call(api);

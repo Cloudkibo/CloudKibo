@@ -782,7 +782,7 @@ function onConnect(socketio, socket) {
 
 var rooms = {};
 var userIds = {};
-
+var roomlockStatus = {};
 
 module.exports = function (socketio) {
   // socket.io (v1.x.x) is powered by debug.
@@ -834,6 +834,8 @@ module.exports = function (socketio) {
         if(data.supportcall)
           socket.supportcall = data.supportcall;
         rooms[currentRoom] = [socket];
+        roomlockStatus[currentRoom] = false; // setting roomlock status to false on init
+        console.log('Setting lock status of room :' + currentRoom + ' to false');
         id = userIds[currentRoom] = 0;
         fn(currentRoom, id);
         logger.serverLog('info', 'Room created, with #', currentRoom);
@@ -863,10 +865,16 @@ module.exports = function (socketio) {
       }
     });
 
-    socket.on('conference.chat', function(data){
+    socket.on('room.lock', function(data){
+      roomlockStatus[data.currentRoom] = data.status;
       rooms[currentRoom].forEach(function (s) {
-        s.emit('conference.chat', { username: data.username, message: data.message });
+        s.emit('room.lock', { status: data.status });
       });
+    socket.on('conference.chat', function(data) {
+      rooms[currentRoom].forEach(function (s) {
+        s.emit('conference.chat', {username: data.username, message: data.message});
+      });
+    });
       if(data.support_call) {
         if (data.support_call.companyid) {
           var meetingchat = require('./../api/meetingchat/meetingchat.model.js');
@@ -921,6 +929,11 @@ module.exports = function (socketio) {
       }
     });
 
+    //code to return roomstatus
+    socket.on('getRoomStatus',function(room,fn){
+      console.log('Socket returning status of room : ' + room.id + ' status is : '+roomlockStatus[room.id]);
+      fn(roomlockStatus[room.id]);
+    });
     socket.on('msgAudio', function (data) {
       var to = parseInt(data.to, 10);
       if (rooms[currentRoom] && rooms[currentRoom][to]) {
