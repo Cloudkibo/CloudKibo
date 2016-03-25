@@ -30,23 +30,18 @@ angular.module('cloudKiboApp')
             username: userNames[id],
             stream: evnt.stream
           }]);
+          api.trigger('conference.streamVideo', [{
+            username: userNames[id],
+            type: 'video',
+            action: true,
+            id: id
+          }]);
           if (!$rootScope.$$digest) {
             $rootScope.$apply();
           }
           otherStream[id] = evnt.stream;
         }
       };
-  /*    var callStats = new callstats(null,io,jsSHA);
-      var AppID     = "199083144";
-      var AppSecret = "t/vySeaTw5q6323+ArF2c6nEFT4=";
-      callStats.initialize(AppID, AppSecret, username, function (err, msg) {
-        console.log("Initializing Status: err="+err+" msg="+msg);
-        var usage = callStats.fabricUsage.video;
-        callStats.addNewFabric(pc, id, usage, roomId, function(err, msg){
-          console.log("Add new Fabric Status for video: err="+err+" msg="+msg);
-        });
-      });
-      */
       CallStats.addVideoFabric(pc, id, roomId);
       logger.log(''+ username +' has created video peer connection for  '+ userNames[id]);
       return pc;
@@ -144,12 +139,17 @@ angular.module('cloudKiboApp')
       });
       socket.on('conference.streamVideo', function(data){
         if(data.id !== currentId){
-          api.trigger('conference.streamVideo', [{
-            username: data.username,
-            type: data.type,
-            action: data.action,
-            id: data.id
-          }]);
+          if(!data.action) {
+            api.trigger('conference.streamVideo', [{
+              username: data.username,
+              type: data.type,
+              action: data.action,
+              id: data.id
+            }]);
+          }
+          if(otherStream[data.id] && data.action){ // in case i already know that he has shared the video, and now is just informing new comer
+            return ;
+          }
           if(data.action) {
             logger.log(''+ username +' was informed that '+ data.username +' wants to share the video.');
             if(localVideoShared) { // workaround for firefox as it doesn't support renegotiation (ice restart unsupported error in firefox)

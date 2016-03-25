@@ -19,7 +19,6 @@ angular.module('kiboRtc.services')
     var configurations;
 
     $(document).ready(function() {
-      console.log('DOCUMENT IS READY')
       $.get("https://service.xirsys.com/ice",
         {
           ident: "testcloudkibo",
@@ -33,6 +32,9 @@ angular.module('kiboRtc.services')
           console.log("nnStatus: " + status);
           console.log(data);
           configurations = data.d;
+          configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'});
+          configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'});
+          configurations.iceServers.push({url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'});
         });
     });
 
@@ -40,9 +42,6 @@ angular.module('kiboRtc.services')
 
     return {
       pc_config : function(){
-        configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'});
-        configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'});
-        configurations.iceServers.push({url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'});
         return configurations;
       }
     }

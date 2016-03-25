@@ -25,6 +25,12 @@ angular.module('cloudKiboApp')
       pc.onaddstream = function (evnt) {
         logger.log(''+ username +' has received screen stream by  '+ userNames[id]);
         if(!otherStream) {
+          api.trigger('conference.streamScreen', [{
+            username: userNames[id],
+            type: 'screen',
+            action: true,
+            id: id
+          }]);
           api.trigger('peer.screenStream', [{
             id: id,
             username: userNames[id],
@@ -134,12 +140,17 @@ angular.module('cloudKiboApp')
       });
       socket.on('conference.streamScreen', function(data){
         if(data.id !== currentId){
-          api.trigger('conference.streamScreen', [{
-            username: data.username,
-            type: data.type,
-            action: data.action,
-            id: data.id
-          }]);
+          if(!data.action){
+            api.trigger('conference.streamScreen', [{
+              username: data.username,
+              type: data.type,
+              action: data.action,
+              id: data.id
+            }]);
+          }
+          if(otherStream && data.action){ // in case i already know that he has shared the screen", and now is just informing new comer
+            return ;
+          }
           if(data.action) {
             logger.log(''+ username +' was informed that '+ data.username +' wants to share the screen.');
             makeOffer(data.id);
