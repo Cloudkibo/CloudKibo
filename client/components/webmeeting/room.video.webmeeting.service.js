@@ -25,16 +25,16 @@ angular.module('cloudKiboApp')
       pc.onaddstream = function (evnt) {
         logger.log(''+ username +' has received video stream by  '+ userNames[id]);
         if(!otherStream[id]) {
+          api.trigger('peer.streamVideo', [{
+            id: id,
+            username: userNames[id],
+            stream: evnt.stream
+          }]);
           api.trigger('conference.streamVideo', [{
             username: userNames[id],
             type: 'video',
             action: true,
             id: id
-          }]);
-          api.trigger('peer.streamVideo', [{
-            id: id,
-            username: userNames[id],
-            stream: evnt.stream
           }]);
           if (!$rootScope.$$digest) {
             $rootScope.$apply();
@@ -139,6 +139,14 @@ angular.module('cloudKiboApp')
       });
       socket.on('conference.streamVideo', function(data){
         if(data.id !== currentId){
+          if(!data.action) {
+            api.trigger('conference.streamVideo', [{
+              username: data.username,
+              type: data.type,
+              action: data.action,
+              id: data.id
+            }]);
+          }
           if(data.action) {
             logger.log(''+ username +' was informed that '+ data.username +' wants to share the video.');
             if(localVideoShared) { // workaround for firefox as it doesn't support renegotiation (ice restart unsupported error in firefox)
