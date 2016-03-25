@@ -147,6 +147,9 @@ angular.module('cloudKiboApp')
               id: data.id
             }]);
           }
+          if(otherStream[data.id] && data.action){ // in case i already know that he has shared the video, and now is just informing new comer
+            return ;
+          }
           if(data.action) {
             logger.log(''+ username +' was informed that '+ data.username +' wants to share the video.');
             if(localVideoShared) { // workaround for firefox as it doesn't support renegotiation (ice restart unsupported error in firefox)

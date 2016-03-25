@@ -311,13 +311,13 @@ angular.module('cloudKiboApp')
     $scope.videoToggle = function () {
      // if($scope.meetingStarted()) { // todo try commenting this out.. as user might test cam while waiting for conference to start
         if ($scope.toggleVideoText === 'Share Video') {
-          $scope.toggleVideoText = 'Hide Video';
           logger.log("" + $scope.user.username + " has tried to share the video");
           MeetingStream.getVideo()
             .then(function (s) {
               videostream = s;
               vidStream = s;
               videostream = URL.createObjectURL(s);
+              $scope.toggleVideoText = 'Hide Video';
               MeetingRoomVideo.toggleVideo(true, vidStream);
               logger.log('Accesss to video is given to the application, username : '+ $scope.user.username)
             }, function (err) {
