@@ -23,7 +23,7 @@ angular.module('cloudKiboApp')
     var screenViewer = document.getElementById('screenViewer');
     var screenAndroidImage = document.getElementById('screenAndroidImage');
     $scope.unreadmsg =0;
-    $scope.isRoomLocked;
+    $scope.isRoomLocked = false;
     $scope.user = $scope.getCurrentUser();
     $scope.isUserNameDefined = function () {
       return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
@@ -33,13 +33,6 @@ angular.module('cloudKiboApp')
     };
 
     //check room lock status
-    $timeout(function(){
-    $scope.isRoomLocked  =  Room.getroomStatus($routeParams.mname)},
-      1000);
-    //  $scope.isRoomLocked = Room.returnRoomStatus();
-    $timeout(function(){
-      console.log('$scope.isRoomLocked : ' + $scope.isRoomLocked)},
-      1000);
 
     $timeout(function(){
       if($scope.supportCall){
@@ -95,14 +88,6 @@ angular.module('cloudKiboApp')
 
     $scope.connect = function(){
 
-      console.log('Room is locked?:' + $scope.isRoomLocked);
-      if($scope.isRoomLocked)
-      {
-        alert('This room is locked.You cannot join.To join,send request to Room Participants');
-      }
-      else {
-        console.log('This room is unlocked');
-
         logger.log($scope.user.username + ' joins the meeting with room name ' + $routeParams.mname);
         $scope.askingMedia = true;
         Stream.get()
@@ -128,7 +113,7 @@ angular.module('cloudKiboApp')
               Room.init(null, $scope.user.username, null);
             Room.joinRoom($routeParams.mname);
           });
-      }
+
     };
 
     $scope.screenSharerId;
@@ -607,13 +592,27 @@ angular.module('cloudKiboApp')
     Room.on('room.lock', function(data){
       console.log('locking/unlocking room');
       $scope.isRoomLocked = data.status;
+      console.log('$scope.isRoomLocked = ' + $scope.isRoomLocked);
       if(data.status == true)
         alert('Room is now locked');
       else
-        alert('Room is unlocked locked');
+        alert('Room is unlocked');
 
     });
 
+    Room.on('knock.request', function(data){
+
+     // data = JSON.parse(data);
+      var conf = confirm( data.requestor + ' wants to join conference.Do you want to let him in?');
+      //if person grants permission to requestor
+      if (conf == true) {
+        Room.allowperson(data);
+      }
+    });
+
+    $scope.getRoomStatus = function(){
+      return $scope.isRoomLocked;
+    }
     $scope.$on('$routeChangeStart', function () {
       location.reload();
     });
@@ -644,12 +643,12 @@ angular.module('cloudKiboApp')
     $scope.lockMeeting = function(){
       if(!$scope.isRoomLocked) {
         console.log('locking meeting');
-        Room.lockRoom(true);
+        Room.lockRoom({status : true});
       }
       else
       {
         console.log('unlocking meeting');
-        Room.lockRoom(false);
+        Room.lockRoom({status :false});
 
       }
     }

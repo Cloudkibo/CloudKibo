@@ -32,11 +32,11 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                           div.my-camera
                     // div {{toggleVideoText}}
                 li(ng-show ='meetingStarted()')
-                  .myicon-btn(ng-show = '!isRoomLocked')
+                  .myicon-btn(ng-hide = 'getRoomStatus()')
                     a(ng-click='lockMeeting()' tooltip-placement="bottom" tooltip="Lock Room")
                         div(style ='width:30px;height:30px')
                           i.fa.fa-lock(style = 'font-size:26px;color:white')
-                  .myicon-btn(ng-show = 'isRoomLocked',class = "not-working")
+                  .myicon-btn(ng-show = 'getRoomStatus()',class = "not-working")
                     a(ng-click='lockMeeting()' tooltip-placement="bottom" tooltip="UnLock Room")
                       div(style ='width:30px;height:30px')
                         i.fa.fa-unlock-alt(style = 'font-size:26px;color:white')

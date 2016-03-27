@@ -216,9 +216,21 @@ angular.module('cloudKiboApp')
         }]);
       });
       socket.on('room.lock',function(data){
+        console.log('status:data.status ' + data.status);
         api.trigger('room.lock',[{status:data.status}]);
       });
 
+      socket.on('initRequestor',function(data){
+        console.log('You are allowed to join room');
+        currentId = data.id;
+        roomId = data.currentRoom;
+        connected = true;
+      });
+
+      socket.on('knock.request',function(data){
+        console.log(data);
+        api.trigger('knock.request',[{room: data.room,requestor: data.requestor, supportcall : data.supportCallData}]);
+      });
       socket.on('conference.stream', function(data){
         if(data.id !== currentId){
           if(data.type === 'screen' && data.action) screenSwitch[data.id] = true;
@@ -255,21 +267,34 @@ angular.module('cloudKiboApp')
     function connectRoom (r){
       if (!connected) {
 
-        socket.emit('init', { room: r, username: username, supportcall : supportCallData }, function (roomid, id) {
-          if(id === null){
-            alert('You cannot join conference. Room is full');
+        socket.emit('init', { room: r, username: username, supportcall : supportCallData }, function (roomid, id,status) {
+          if(id === null || status === true){
+            var r = confirm("You cannot join conference. Room is locked.Do you want to send Knock Request?");
+            if (r == true) {
+              //send a knock request to room partipants.
+              socket.emit('knock.request',{room:roomid,username: username,supportcall : supportCallData})
+            }
+            //var('You cannot join conference. Room is locked');
+            //console.log('You cannot join conference. Room is locked');
             connected = false;
             return;
           }
+
           currentId = id;
           roomId = roomid;
         });
         connected = true;
       }
     }
+
+
     var api = {
       joinRoom: function (r) {
         connectRoom(r);
+      },
+      allowperson : function(data){
+
+        socket.emit('initRequestor', { room: data.room, username: data.requestor, supportcall : data.supportCallData });
       },
       createRoom: function () { // DEPRECATED, not using anymore.
         var d = $q.defer();
@@ -291,14 +316,16 @@ angular.module('cloudKiboApp')
           analyseAudio()
         }
       },
+
       sendChat: function (m, s) {
         console.log('Calling sendchat socket');
         socket.emit('conference.chat', { message: m, username: username, support_call: s });
       },
+
       lockRoom:function(data)
       {
-        console.log('calling lockRoom socket' + 'room id : '+ roomId + ' status : '+data);
-        socket.emit('room.lock', { currentRoom : roomId,status : data});
+        console.log('calling lockRoom socket' + 'room id : '+ roomId + ' status : '+data.status);
+        socket.emit('room.lock', { currentRoom : roomId,status : data.status});
       },
       sendDataChannelMessage: function (m) {
         for (var key in dataChannels) {
@@ -397,14 +424,8 @@ angular.module('cloudKiboApp')
       },
       getcurrentid:function(){
         return currentId;
-      },
-      getroomStatus:function(roomname) {
-        socket.emit('getRoomStatus', {id: roomname});
-
-      },
-      returnRoomStatus:function(){
-        return roomStatus;
       }
+
     };
     EventEmitter.call(api);
     Object.setPrototypeOf(api, EventEmitter.prototype);
