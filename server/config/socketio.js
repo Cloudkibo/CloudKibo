@@ -1112,6 +1112,7 @@ module.exports = function (socketio) {
 
     function conferenceDisconnect(socketio, socket){
 
+
       if (!currentRoom || !rooms[currentRoom]) {
         return;
 
@@ -1153,7 +1154,14 @@ module.exports = function (socketio) {
         }
       }
 
+
+      console.log(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].username+' is disconnected from room '+rooms[currentRoom][rooms[currentRoom].indexOf(socket)]);
+
       logger.serverLog('info', rooms[currentRoom][rooms[currentRoom].indexOf(socket)].username+' is disconnected from room '+rooms[currentRoom][rooms[currentRoom].indexOf(socket)]);
+
+      while((index = socketlist.indexOf(socket)) > -1) {
+        socketlist.splice(index, 1);
+      }
       delete rooms[currentRoom][rooms[currentRoom].indexOf(socket)];
       rooms[currentRoom].forEach(function (socket) {
         if (socket) {
