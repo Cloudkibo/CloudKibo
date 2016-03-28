@@ -190,6 +190,35 @@ angular.module('cloudKiboApp')
       socket.on('msgAudio', function (data) {
         handleMessage(data);
       });
+
+
+      socket.on('room.lock',function(data){
+        console.log('status:data.status ' + data.status);
+        api.trigger('room.lock',[{status:data.status}]);
+      });
+
+      socket.on('initRequestor_webmeeting',function(data){
+        console.log('You are allowed to join room');
+        currentId = data.id;
+        roomId = data.currentRoom;
+        console.log(''+ username +' joined the room '+ roomId +' and got the id '+ currentId)
+        logger.log(''+ username +' joined the room '+ roomId +' and got the id '+ currentId)
+        api.trigger('connection.joined', [{
+          username : username,
+          roomId : roomId,
+          currentId : currentId,
+          roomStatus : data.roomStatus /* to initialize roomstatus at requestor side*/
+        }]);
+        CallStats.initialize(username);
+        connected = true;
+      });
+
+
+      socket.on('knock.request',function(data){
+        console.log(data);
+        api.trigger('knock.request',[{room: data.room,requestor: data.requestor, supportcall : data.supportCallData}]);
+      });
+
       socket.on('conference.chat', function(data){
         api.trigger('conference.chat', [{
           username: data.username,
@@ -218,11 +247,14 @@ angular.module('cloudKiboApp')
 
     function connectRoom (r){
       if (!connected) {
-        socket.emit('init.new', { room: r, username: username, supportcall : supportCallData }, function (roomid, id) {
-          if(id === null){
-            alert('You cannot join conference. Room is full');
+        socket.emit('init.new', { room: r, username: username, supportcall : supportCallData },function (roomid, id,status) {
+          if(id === null || status === true){
+            var r = confirm("You cannot join conference. Room is locked.Do you want to send Knock Request?");
+            if (r == true) {
+              //send a knock request to room partipants.
+              socket.emit('knock.request',{room:roomid,username: username,supportcall : supportCallData})
+            }
             connected = false;
-            logger.log(''+ username +' was denied to join the room '+ r);
             return;
           }
           currentId = id;
@@ -231,7 +263,8 @@ angular.module('cloudKiboApp')
           api.trigger('connection.joined', [{
             username : username,
             roomId : roomId,
-            currentId : currentId
+            currentId : currentId,
+            roomStatus : status
           }]);
           CallStats.initialize(username);
         });
@@ -241,6 +274,10 @@ angular.module('cloudKiboApp')
     var api = {
       joinRoom: function (r) {
         connectRoom(r);
+      },
+      allowperson : function(data){
+
+        socket.emit('initRequestor_webmeeting', { room: data.room, username: data.requestor, supportcall : data.supportCallData });
       },
       init: function (s, n, c) {
         username = n;
@@ -256,6 +293,13 @@ angular.module('cloudKiboApp')
       },
       sendChat: function (m, s) {
         socket.emit('conference.chat', { message: m, username: username, support_call: s });
+      },
+
+
+      lockRoom:function(data)
+      {
+        console.log('calling lockRoom socket' + 'room id : '+ roomId + ' status : '+data.status);
+        socket.emit('room.lock', { currentRoom : roomId,status : data.status});
       },
       toggleAudio: function () {
         stream.getAudioTracks()[0].enabled = !(stream.getAudioTracks()[0].enabled);

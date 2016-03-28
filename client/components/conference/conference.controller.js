@@ -23,7 +23,7 @@ angular.module('cloudKiboApp')
     var screenViewer = document.getElementById('screenViewer');
     var screenAndroidImage = document.getElementById('screenAndroidImage');
     $scope.unreadmsg =0;
-    $scope.isRoomLocked = false;
+    $scope.isRoomLocked = false;//Room.getroomStatus({r : $routeParams.mname});//false;
     $scope.user = $scope.getCurrentUser();
     $scope.isUserNameDefined = function () {
       return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
@@ -588,6 +588,9 @@ angular.module('cloudKiboApp')
     });
 
 
+    Room.on('setRoomStatus',function(data){
+      $scope.isRoomLocked = data.status;
+    });
 
     Room.on('room.lock', function(data){
       console.log('locking/unlocking room');
@@ -603,6 +606,7 @@ angular.module('cloudKiboApp')
     Room.on('knock.request', function(data){
 
      // data = JSON.parse(data);
+      //$("#myModal").show();
       var conf = confirm( data.requestor + ' wants to join conference.Do you want to let him in?');
       //if person grants permission to requestor
       if (conf == true) {

@@ -8,6 +8,8 @@ angular.module('cloudKiboApp')
   .controller('WebMeetingController', function ($sce, MeetingStream, $location, $routeParams, $scope, MeetingRoom, MeetingRoomVideo, MeetingRoomScreen, MeetingRoomData, $timeout, logger, ScreenShare, MeetingRoomFileHangout) {
     //$('[data-toggle="tooltip"]').tooltip();
     myclockStart();
+    $scope.isRoomLocked = false;//Room.getroomStatus({r : $routeParams.mname});//false;
+
     if($location.search().role){
       $scope.supportCall = true;
     }
@@ -103,6 +105,7 @@ angular.module('cloudKiboApp')
     $scope.screenSharerId;
     $scope.peers = [];
     MeetingRoom.on('connection.joined', function(d){
+      $scope.isRoomLocked = d.roomStatus;
       MeetingRoomVideo.init(d);
       MeetingRoomData.init(d);
       MeetingRoomScreen.init(d);
@@ -608,11 +611,47 @@ angular.module('cloudKiboApp')
       }
     });
 
+
+
+    MeetingRoom.on('room.lock', function(data){
+      console.log('locking/unlocking room');
+      $scope.isRoomLocked = data.status;
+      console.log('$scope.isRoomLocked = ' + $scope.isRoomLocked);
+      if(data.status == true)
+        alert('Room is now locked');
+      else
+        alert('Room is unlocked');
+
+    });
+    MeetingRoom.on('knock.request', function(data){
+
+      // data = JSON.parse(data);
+      //$("#myModal").show();
+      var conf = confirm( data.requestor + ' wants to join conference.Do you want to let him in?');
+      //if person grants permission to requestor
+      if (conf == true) {
+        MeetingRoom.allowperson(data);
+      }
+    });
+    $scope.getRoomStatus = function(){
+      return $scope.isRoomLocked;
+    }
     $scope.$on('$routeChangeStart', function () {
       location.reload();
     });
 
+    $scope.lockMeeting = function(){
+      if(!$scope.isRoomLocked) {
+        console.log('locking meeting');
+        MeetingRoom.lockRoom({status : true});
+      }
+      else
+      {
+        console.log('unlocking meeting');
+        MeetingRoom.lockRoom({status :false});
 
+      }
+    }
 
 
     /****** end meeting ***********/
