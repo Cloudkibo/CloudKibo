@@ -782,9 +782,11 @@ function onConnect(socketio, socket) {
 
 var rooms = {};
 var userIds = {};
-
-
+var roomlockStatus = {};
+var socketlist = [];
 module.exports = function (socketio) {
+
+
   // socket.io (v1.x.x) is powered by debug.
   // In order to see all the debug output, set DEBUG (in server/config/local.env.js) to including the desired scope.
   //
@@ -801,6 +803,7 @@ module.exports = function (socketio) {
   // }));
 
   socketio.on('connection', function (socket) {
+    console.log("connected :"+socket.id);
     socket.address = socket.handshake.address !== null ?
             socket.handshake.address.address + ':' + socket.handshake.address.port :
             process.env.DOMAIN;
@@ -828,31 +831,92 @@ module.exports = function (socketio) {
 
     socket.on('init', function (data, fn) {
       currentRoom = (data || {}).room || uuid.v4();
+      socketlist.push(socket);
       var room = rooms[currentRoom];
       if (!room) {
         socket.username = data.username;
         if(data.supportcall)
-          socket.supportcall = data.supportcall;
-        rooms[currentRoom] = [socket];
-        id = userIds[currentRoom] = 0;
-        fn(currentRoom, id);
-        logger.serverLog('info', 'Room created, with #', currentRoom);
-      } else {
-        if (!room) {
-          return;
-        }
-        userIds[currentRoom] += 1;
-        id = userIds[currentRoom];
-        fn(currentRoom, id);
-        room.forEach(function (s) {
-          s.emit('peer.connected', { id: id, username: data.username });
-        });
-        socket.username = data.username;
-        room[id] = socket;
-        logger.serverLog('info', 'Peer connected to room', currentRoom, 'with #', id);
-      }
+            socket.supportcall = data.supportcall;
+            rooms[currentRoom] = [socket];
+             roomlockStatus[currentRoom] = false; // setting roomlock status to false on init
+              console.log('Setting lock status of room :' + currentRoom + ' to false');
+              id = userIds[currentRoom] = 0;
+              fn(currentRoom, id,roomlockStatus[currentRoom]);
+              //fn(currentRoom, id);
+
+              logger.serverLog('info', 'Room created, with #', currentRoom);
+            }
+        else {
+              if (!room) {
+                return;
+              }
+                socket.username = data.username;
+
+              if(roomlockStatus[currentRoom] === false)
+                 {
+                        userIds[currentRoom] += 1;
+                        id = userIds[currentRoom];
+
+                        // fn(currentRoom, id);
+
+                        room.forEach(function (s) {
+                          console.log('peeer connedted ' + id);
+                          s.emit('peer.connected', { id: id, username: data.username });
+                        });
+
+                        room[id] = socket;
+                        logger.serverLog('info', 'Peer connected to room', currentRoom, 'with #', id);
+
+                 };
+              fn(currentRoom, id, roomlockStatus[currentRoom]);
+     }
     });
 
+    socket.on('initRequestor',function(data){
+
+      var chk_if_already_added = false;
+      var requestor_socket;
+      socketlist.forEach(function (client) {
+        if (client.username === data.username) {
+          requestor_socket = client;
+          console.log(requestor_socket.username);
+        }
+      });
+
+        //adding requestor to room
+      var room = rooms[data.room];
+      room.forEach(function (s) {
+        if (s.id == requestor_socket.id) {
+          console.log('this person is already added in room');
+          chk_if_already_added = true;
+         }
+      });
+      if(chk_if_already_added == false) {
+        userIds[data.room] += 1;
+        id = userIds[data.room];
+        room.forEach(function (s) {
+          console.log('peeer connedted ' + id);
+
+          s.emit('peer.connected', {id: id, username: data.username});
+        });
+        console.log('Adding Requestor : ' + data.username);
+        room[id] = requestor_socket;
+
+        room[id].emit('initRequestor', {currentRoom: data.room, id: id});
+        logger.serverLog('info', 'Peer connected to room', data.room, 'with #', id);
+        console.log('Peer connected to room : '+ data.room + 'with #' + id);
+
+      }
+
+
+
+    });
+    socket.on('knock.request',function(data){
+
+      rooms[data.room].forEach(function (s) {
+        s.emit('knock.request',{room:data.room,requestor: data.username,supportcall : data.supportCallData});
+      });
+    });
     socket.on('msg', function (data) {
       var to = parseInt(data.to, 10);
       if (rooms[currentRoom] && rooms[currentRoom][to]) {
@@ -863,10 +927,21 @@ module.exports = function (socketio) {
       }
     });
 
-    socket.on('conference.chat', function(data){
+    socket.on('room.lock', function(data) {
+      console.log('data.status : ' + data.status);
+      roomlockStatus[data.currentRoom] = data.status;
       rooms[currentRoom].forEach(function (s) {
-        s.emit('conference.chat', { username: data.username, message: data.message });
+        s.emit('room.lock', {status: data.status});
       });
+    });
+
+    socket.on('conference.chat', function(data) {
+      console.log('conference.chat is called.');
+      rooms[currentRoom].forEach(function (s) {
+        console.log('sending message !!!!');
+        s.emit('conference.chat', {username: data.username, message: data.message});
+      });
+
       if(data.support_call) {
         if (data.support_call.companyid) {
           var meetingchat = require('./../api/meetingchat/meetingchat.model.js');
@@ -920,6 +995,7 @@ module.exports = function (socketio) {
         logger.serverLog('info', 'Peer connected to room', currentRoom, 'with #', id);
       }
     });
+
 
     socket.on('msgAudio', function (data) {
       var to = parseInt(data.to, 10);

@@ -23,6 +23,7 @@ angular.module('cloudKiboApp')
     var screenViewer = document.getElementById('screenViewer');
     var screenAndroidImage = document.getElementById('screenAndroidImage');
     $scope.unreadmsg =0;
+    $scope.isRoomLocked = false;
     $scope.user = $scope.getCurrentUser();
     $scope.isUserNameDefined = function () {
       return (typeof $scope.user.username != 'undefined') && (typeof $scope.user.email != 'undefined');
@@ -30,6 +31,8 @@ angular.module('cloudKiboApp')
     $scope.getUsername = function(){
       return $scope.user.username;
     };
+
+    //check room lock status
 
     $timeout(function(){
       if($scope.supportCall){
@@ -66,9 +69,10 @@ angular.module('cloudKiboApp')
        if ($scope.user.username == null)
             console.log('username :'+$scope.user.username);
         logger.log('Username got resolved to '+ $scope.user.username)
+
         $scope.connect();
       }
-    }, 1000);
+    }, 3000);
 
     $scope.isMediaDenied = false;
     $scope.hasUserDeniedMedia = function(){
@@ -83,31 +87,33 @@ angular.module('cloudKiboApp')
     var stream;
 
     $scope.connect = function(){
-      logger.log($scope.user.username +' joins the meeting with room name '+ $routeParams.mname);
-      $scope.askingMedia = true;
-      Stream.get()
-        .then(function (s) {
-          $scope.askingMedia = false;
-          stream = s;
-          if($scope.supportCall)
-            Room.init(stream, $scope.user.username, $scope.supportCallData);
-          else
-            Room.init(stream, $scope.user.username, null);
-          stream = URL.createObjectURL(stream);
-          Room.joinRoom($routeParams.mname);
-          logger.log('Accesss to audio and video is given to the application, username : '+ $scope.user.username)
-        }, function (err) {
-          console.error(err);
-          $scope.askingMedia = false;
-          $scope.isMediaDenied = true;
-          logger.log("audio video stream access was denied: error "+err+", username : "+ $scope.user.username);
-          $scope.error = 'No audio/video permissions. Please allow the audio/video capturing and refresh your browser.';
-          if($scope.supportCall)
-            Room.init(null, $scope.user.username, $scope.supportCallData);
-          else
-            Room.init(null, $scope.user.username, null);
-          Room.joinRoom($routeParams.mname);
-        });
+
+        logger.log($scope.user.username + ' joins the meeting with room name ' + $routeParams.mname);
+        $scope.askingMedia = true;
+        Stream.get()
+          .then(function (s) {
+            $scope.askingMedia = false;
+            stream = s;
+            if ($scope.supportCall)
+              Room.init(stream, $scope.user.username, $scope.supportCallData);
+            else
+              Room.init(stream, $scope.user.username, null);
+            stream = URL.createObjectURL(stream);
+            Room.joinRoom($routeParams.mname);
+            logger.log('Accesss to audio and video is given to the application, username : ' + $scope.user.username)
+          }, function (err) {
+            console.error(err);
+            $scope.askingMedia = false;
+            $scope.isMediaDenied = true;
+            logger.log("audio video stream access was denied: error " + err + ", username : " + $scope.user.username);
+            $scope.error = 'No audio/video permissions. Please allow the audio/video capturing and refresh your browser.';
+            if ($scope.supportCall)
+              Room.init(null, $scope.user.username, $scope.supportCallData);
+            else
+              Room.init(null, $scope.user.username, null);
+            Room.joinRoom($routeParams.mname);
+          });
+
     };
 
     $scope.screenSharerId;
@@ -581,6 +587,32 @@ angular.module('cloudKiboApp')
       }
     });
 
+
+
+    Room.on('room.lock', function(data){
+      console.log('locking/unlocking room');
+      $scope.isRoomLocked = data.status;
+      console.log('$scope.isRoomLocked = ' + $scope.isRoomLocked);
+      if(data.status == true)
+        alert('Room is now locked');
+      else
+        alert('Room is unlocked');
+
+    });
+
+    Room.on('knock.request', function(data){
+
+     // data = JSON.parse(data);
+      var conf = confirm( data.requestor + ' wants to join conference.Do you want to let him in?');
+      //if person grants permission to requestor
+      if (conf == true) {
+        Room.allowperson(data);
+      }
+    });
+
+    $scope.getRoomStatus = function(){
+      return $scope.isRoomLocked;
+    }
     $scope.$on('$routeChangeStart', function () {
       location.reload();
     });
@@ -607,6 +639,19 @@ angular.module('cloudKiboApp')
 
 
      };
+
+    $scope.lockMeeting = function(){
+      if(!$scope.isRoomLocked) {
+        console.log('locking meeting');
+        Room.lockRoom({status : true});
+      }
+      else
+      {
+        console.log('unlocking meeting');
+        Room.lockRoom({status :false});
+
+      }
+    }
 
     $scope.showMsgCount = function(){
       if($scope.unreadmsg == 0) {
