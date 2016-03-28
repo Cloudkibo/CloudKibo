@@ -10,6 +10,7 @@ angular.module('cloudKiboApp')
       stream, username, localVideoShared=false;
 
     var otherStream = {}; // note this is workaround for firefox as firefoxs doesn't support renegotiation
+    var alreadyMakingOffer = {}; // note this is for the case when both try to share the video at same time which created conflict in signaling
 
     var isChrome = !!navigator.webkitGetUserMedia;
 
@@ -68,6 +69,10 @@ angular.module('cloudKiboApp')
       var pc = getPeerConnection(data.by);
       switch (data.type) {
         case 'offer':
+          if(alreadyMakingOffer[data.by]){ // note this is for the case when both try to share the video at same time which created conflict in signaling
+            delete alreadyMakingOffer[data.by];
+            return ;
+          }
           if(otherStream[data.by]){ // workaround for firefox as it doesn't support renegotiation (ice restart unsupported error in firefox)
             logger.log(''+ username +' uses workaround for firefox creates peer connection again for  '+ data.username);
             otherStream[data.by] = false;
@@ -101,6 +106,9 @@ angular.module('cloudKiboApp')
           });
           break;
         case 'answer':
+          if(alreadyMakingOffer[data.by]){ // note this is for the case when both try to share the video at same time which created conflict in signaling
+            delete alreadyMakingOffer[data.by];
+          }
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
             logger.log(''+ username +' set video answer remote description sent by  '+ userNames[data.by]);
           }, function (e) {
@@ -158,6 +166,7 @@ angular.module('cloudKiboApp')
               delete peerConnections[data.id];
             }
             userNames[data.by] = data.username;
+            alreadyMakingOffer[data.by] = true; // note this is for the case when both try to share the video at same time which created conflict in signaling
             makeOffer(data.id);
           } else {
             logger.log(''+ username +' was informed that '+ data.username +' wants to hide the video.');
