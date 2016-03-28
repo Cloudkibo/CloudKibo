@@ -1178,10 +1178,10 @@ module.exports = function (socketio) {
       
       
       /** to add ***/
-      console.log('length of userIds is :' + userIds.length);
-      delete userIds[id];
-      console.log('length of userIds is :' + userIds.length);
-      if(userIds.length < 1){
+      console.log('length of userIds is :' + userIds[currentRoom]);
+      userIds[currentRoom] = userIds[currentRoom] - 1;
+      console.log('length of userIds is :' + userIds[currentRoom]);
+      if(userIds[currentRoom] < 1){
         roomlockStatus[currentRoom] = false;
       }
      
