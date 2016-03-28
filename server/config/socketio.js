@@ -1175,6 +1175,16 @@ module.exports = function (socketio) {
         delete userIds[currentRoom];
         delete rooms[currentRoom];
       }*/
+      
+      
+      /** to add ***/
+      console.log('length of userIds is :' + userIds.length);
+      delete userIds[id];
+      console.log('length of userIds is :' + userIds.length);
+      if(userIds.length < 1){
+        roomlockStatus[currentRoom] = false;
+      }
+     
     }
 
     /**
