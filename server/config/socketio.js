@@ -1159,9 +1159,11 @@ module.exports = function (socketio) {
 
       logger.serverLog('info', rooms[currentRoom][rooms[currentRoom].indexOf(socket)].username+' is disconnected from room '+rooms[currentRoom][rooms[currentRoom].indexOf(socket)]);
 
-     
+
       delete socketlist[socketlist.indexOf(socket)];
       delete rooms[currentRoom][rooms[currentRoom].indexOf(socket)];
+      id = rooms[currentRoom].indexOf(socket);
+      console.log('id is :');
       rooms[currentRoom].forEach(function (socket) {
         if (socket) {
           socket.emit('peer.disconnected', { id: id });
