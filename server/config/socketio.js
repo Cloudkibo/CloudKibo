@@ -1159,9 +1159,8 @@ module.exports = function (socketio) {
 
       logger.serverLog('info', rooms[currentRoom][rooms[currentRoom].indexOf(socket)].username+' is disconnected from room '+rooms[currentRoom][rooms[currentRoom].indexOf(socket)]);
 
-      while((index = socketlist.indexOf(socket)) > -1) {
-        socketlist.splice(index, 1);
-      }
+     
+      delete socketlist[socketlist.indexOf(socket)];
       delete rooms[currentRoom][rooms[currentRoom].indexOf(socket)];
       rooms[currentRoom].forEach(function (socket) {
         if (socket) {
