@@ -30,6 +30,16 @@ div(class = 'changebckcolor' style="height:100vh;overflow:auto;")
                     a(ng-click='videoToggle()' tooltip-placement="bottom" tooltip= '{{toggleVideoText}}')
                       div.my-camera
                   // div {{toggleVideoText}}
+                li(ng-show ='meetingStarted()')
+                  .myicon-btn(ng-hide = 'getRoomStatus()')
+                    a(ng-click='lockMeeting()' tooltip-placement="bottom" tooltip="Lock Room")
+                      div(style ='width:30px;height:30px')
+                        i.fa.fa-lock(style = 'font-size:26px;color:white')
+                  .myicon-btn(ng-show = 'getRoomStatus()',class = "not-working")
+                    a(ng-click='lockMeeting()' tooltip-placement="bottom" tooltip="UnLock Room")
+                      div(style ='width:30px;height:30px')
+                        i.fa.fa-unlock-alt(style = 'font-size:26px;color:white')
+
                 li()
                   .myicon-btn()
                     a(ng-click='endMeeting()' tooltip-placement="bottom" tooltip = "End Call" )

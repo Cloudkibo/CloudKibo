@@ -225,6 +225,8 @@ angular.module('cloudKiboApp')
         currentId = data.id;
         roomId = data.currentRoom;
         connected = true;
+        roomStatus = data.roomStatus;
+        api.trigger('setRoomStatus',[{status:data.roomStatus}]);
       });
 
       socket.on('knock.request',function(data){
@@ -426,7 +428,7 @@ angular.module('cloudKiboApp')
         return currentId;
       }
 
-    };
+    }
     EventEmitter.call(api);
     Object.setPrototypeOf(api, EventEmitter.prototype);
 
