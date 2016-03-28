@@ -1183,6 +1183,9 @@ module.exports = function (socketio) {
       console.log('length of userIds is :' + userIds[currentRoom]);
       if(userIds[currentRoom] < 1){
         roomlockStatus[currentRoom] = false;
+        rooms[currentRoom].forEach(function (s) {
+          s.emit('room.lock', {status: false});
+      });
       }
      
     }
