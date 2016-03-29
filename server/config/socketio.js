@@ -53,9 +53,13 @@ function onDisconnect(socketio,socket) {
     if (ns) {
       for (var id in ns.connected) {
         if(roomId) {
-          var index = ns.connected[id].rooms.indexOf(roomId) ;
-          if(index !== -1) {
-            res.push(ns.connected[id]);
+          try {
+            var index = ns.connected[id].rooms.indexOf(roomId);
+            if (index !== -1) {
+              res.push(ns.connected[id]);
+            }
+          }catch(e){
+            console.log(e);
           }
         } else {
           res.push(ns.connected[id]);
@@ -1175,8 +1179,8 @@ module.exports = function (socketio) {
         delete userIds[currentRoom];
         delete rooms[currentRoom];
       }*/
-      
-      
+
+
       /** to add ***/
       console.log('length of userIds is :' + userIds[currentRoom]);
       userIds[currentRoom] = userIds[currentRoom] - 1;
@@ -1187,7 +1191,7 @@ module.exports = function (socketio) {
           s.emit('room.lock', {status: false});
       });
       }
-     
+
     }
 
     /**
