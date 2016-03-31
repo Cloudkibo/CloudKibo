@@ -1023,6 +1023,26 @@ module.exports = function (socketio) {
       });
     });
 
+    // Asking the XirSys the addresses of TURN servers from server side
+    var needle = require('needle');
+
+    var options = {
+      headers: { 'X-Custom-Header': 'CloudKibo Web Application' }
+    }
+
+    needle.post('https://service.xirsys.com/ice', {
+      ident: "testcloudkibo",
+      secret: "9846fdca-ec48-11e5-9e57-6d5d0b63fdb1",
+      domain: "api.cloudkibo.com",
+      application: "default",
+      room: "default",
+      secure: 0
+    }, options, function(err, resp) {
+      //console.log(err);
+      console.log(resp.body);
+    });
+    // Might remove upper code
+
     socket.on('init.new', function (data, fn) {
       currentRoom = (data || {}).room || uuid.v4();
       socketlist.push(socket);
