@@ -26,15 +26,15 @@ angular.module('kiboRtc.services')
           domain: "api.cloudkibo.com",
           application: "default",
           room: "default",
-          secure: 1
+          secure: 0
         },
         function (data, status) {
           console.log("nnStatus: " + status);
           console.log(data);
           configurations = data.d;
-          configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'});
-          configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'});
-          configurations.iceServers.push({url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'});
+          //configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'});
+          //configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'});
+          //configurations.iceServers.push({url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'});
         });
     });
 
