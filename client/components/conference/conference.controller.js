@@ -602,6 +602,13 @@ angular.module('cloudKiboApp')
         alert('Room is unlocked');
 
     });
+    
+    Room.on('room.unlock.meetingend', function(data){
+      console.log('unlocking room after meeting ends');
+      $scope.isRoomLocked = data.status;
+      console.log('$scope.isRoomLocked = ' + $scope.isRoomLocked);
+      
+    });
 
     Room.on('knock.request', function(data){
 
