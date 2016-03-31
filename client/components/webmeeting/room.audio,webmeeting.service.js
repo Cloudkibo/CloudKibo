@@ -196,6 +196,12 @@ angular.module('cloudKiboApp')
         console.log('status:data.status ' + data.status);
         api.trigger('room.lock',[{status:data.status}]);
       });
+      
+      /*** called after meeting ends **/
+      socket.on('room.unlock.meetingend',function(data){
+        console.log('status:data.status ' + data.status);
+        api.trigger('room.unlock.meetingend',[{status:data.status}]);
+      });
 
       socket.on('initRequestor_webmeeting',function(data){
         console.log('You are allowed to join room');
