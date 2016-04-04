@@ -31,10 +31,11 @@ angular.module('kiboRtc.services')
         function (data, status) {
           console.log("nnStatus: " + status);
           console.log(data);
-          configurations = data.d;
+          //configurations = data.d;
+          configurations = {iceServers : []};
           configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'});
           configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'});
-          configurations.iceServers.push({url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'});
+          //configurations.iceServers.push({url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'});
         });
     });
 
