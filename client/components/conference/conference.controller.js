@@ -478,8 +478,22 @@ angular.module('cloudKiboApp')
     var canvas = document.createElement('canvas');
     canvas.classList.add('incomingPhoto');
     screenAndroidImage.insertBefore(canvas, screenAndroidImage.firstChild);
+    var photo = document.createElement('canvas');
+    screenAndroidImage.insertBefore(photo, screenAndroidImage.firstChild);
 
     var imageData = '';
+    /*var buf, count;
+     function renderPhoto(data) {
+     console.log('full image received')
+     console.log(data)
+     var canvas = photo.getContext('2d');
+     var img = canvas.createImageData(320, 568);
+     img.data.set(data);
+     canvas.putImageData(img, 0, 0);
+     }*/
+    var buf;
+    var chunks = []; var count;
+    
     FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
 
@@ -622,12 +636,12 @@ angular.module('cloudKiboApp')
         alert('Room is unlocked');
 
     });
-    
+
     Room.on('room.unlock.meetingend', function(data){
       console.log('unlocking room after meeting ends');
       $scope.isRoomLocked = data.status;
       console.log('$scope.isRoomLocked = ' + $scope.isRoomLocked);
-      
+
     });
 
     Room.on('knock.request', function(data){
