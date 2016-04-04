@@ -493,7 +493,7 @@ angular.module('cloudKiboApp')
      }*/
     var buf;
     var chunks = []; var count;
-    
+
     FileHangout.accept_inbound_files();
     Room.on('dataChannel.message', function(data){
 
