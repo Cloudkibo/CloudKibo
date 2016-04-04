@@ -48,7 +48,7 @@ var all = {
   facebook: {
     clientID:     process.env.FACEBOOK_ID || '456637644436523',
     clientSecret: process.env.FACEBOOK_SECRET || 'f46495b908b408bc8e4f5b259b18e952',
-    callbackURL:  (process.env.DOMAIN || '') + 'http://api.cloudkibo.com/auth/facebook/callback'
+    callbackURL:  (process.env.DOMAIN || '') + 'https://api.cloudkibo.com/auth/facebook/callback'
   },
 
   twitter: {
@@ -60,14 +60,14 @@ var all = {
   google: {
     clientID:     process.env.GOOGLE_ID || '23885365928-lhtk02c2ljokrfl0d53cba9aid4o26rj.apps.googleusercontent.com',
     clientSecret: process.env.GOOGLE_SECRET || 'O1mECTnazsVvysBxRNmZ2hvG',
-    callbackURL:  (process.env.DOMAIN || '') + 'http://api.cloudkibo.com/auth/google/callback',
+    callbackURL:  (process.env.DOMAIN || '') + 'https://api.cloudkibo.com/auth/google/callback',
     scope: 'https://www.google.com/m8/feeds https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
   },
 
   windowslive: {
     clientID:     process.env.GOOGLE_ID || '000000004C10C835',
     clientSecret: process.env.GOOGLE_SECRET || 'Nyyk7O4vZtn6ExbSJLamrtL5BtRadd96',
-    callbackURL:  (process.env.DOMAIN || '') + 'http://api.cloudkibo.com/auth/windowslive/callback'
+    callbackURL:  (process.env.DOMAIN || '') + 'https://api.cloudkibo.com/auth/windowslive/callback'
   }
 };
 
