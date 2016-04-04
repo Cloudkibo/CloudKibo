@@ -1208,7 +1208,7 @@ module.exports = function (socketio) {
       if(userIds[currentRoom] < 1){
         roomlockStatus[currentRoom] = false;
         rooms[currentRoom].forEach(function (s) {
-          s.emit('room.lock', {status: false});
+          s.emit('room.unlock.meetingend', {status: false});
       });
       }
 
