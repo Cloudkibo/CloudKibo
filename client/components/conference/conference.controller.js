@@ -438,6 +438,12 @@ angular.module('cloudKiboApp')
       $scope.screenSharedLocal = false;
       logger.log('Going to remove local screen shared from '+ $scope.user.username);
     }
+    Room.on('screen.shared.failed', function(data){
+      ScreenShare.setSourceIdValue(null);
+      screenStream.getTracks()[0].stop();
+      $scope.showScreenText = 'Share Screen';
+      $scope.screenSharedLocal = false;
+    })
     function shareScreenUsingChromeExtension(cb) {
 
       if($scope.hasChromeExtension()) {
