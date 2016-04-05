@@ -411,7 +411,10 @@ angular.module('cloudKiboApp')
       toggleScreen: function (s, p) {
         var canIShare = true;
         for (var key in screenSwitch) {
+          console.log('in loop of other person is trying to share the screen.');
+          console.log(screenSwitch[key]);
           if(screenSwitch[key]) {
+            console.log('other person is trying to share the screen');
             canIShare = false;
           }
         }
