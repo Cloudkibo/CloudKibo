@@ -508,7 +508,7 @@ todo need more work
   position: absolute;
   width: 18%;
   #background: #f1fff1 ;
-  left: 1110px;
+  right:10px;
   top: 121px;
   height: 450px;
   border-style: solid;
@@ -2735,7 +2735,7 @@ body.page-header-fixed {
 }
 
 /* Navigation */
-.header-navigation {
+/*.header-navigation {
   font: 15px "Open Sans", sans-serif;
   padding: 10px 0;
   position:fixed;
@@ -2744,7 +2744,30 @@ body.page-header-fixed {
   right:0px;
   text-transform: uppercase;
 
+}*/
+
+/* Navigation */
+.header-navigation {
+  font: 15px "Open Sans", sans-serif;
+  margin: 0 10px 0 0;
+  padding: 0;
+  float: left;
+  text-transform: uppercase;
 }
+.header-navigation ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.header-navigation > ul > li {
+  float: left;
+}
+.header-navigation > ul > li > a {
+  color: #333;
+  display: block;
+  padding: 29px 12px 30px;
+}
+
 .mybtn-header {
   /*  text-align:center;
     padding:0;
@@ -2779,11 +2802,7 @@ body.page-header-fixed {
 
 }
 
-.header-navigation > ul > li > a {
-  color: #333;
-  display: block;
-  padding: 29px 12px 30px;
-}
+
 .header-navigation ul > li.active > a,
 .header-navigation ul > li > a:hover,
 .header-navigation ul > li > a:focus,
