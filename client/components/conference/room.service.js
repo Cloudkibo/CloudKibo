@@ -411,6 +411,9 @@ angular.module('cloudKiboApp')
       },
       toggleScreen: function (s, p) {
         if(otherScreenShared){
+          api.trigger('screen.shared.failed', [{
+            status: false
+          }]);
           alert('Other person is trying to share the screen.');
           return;
         }
