@@ -219,7 +219,7 @@ angular.module('cloudKiboApp')
         console.log('status:data.status ' + data.status);
         api.trigger('room.lock',[{status:data.status}]);
       });
-      
+
       /*** called after meeting ends **/
       socket.on('room.unlock.meetingend',function(data){
         console.log('status:data.status ' + data.status);
@@ -409,6 +409,16 @@ angular.module('cloudKiboApp')
         socket.emit('conference.stream', { username: username, type: 'video', action: p, id: currentId });
       },
       toggleScreen: function (s, p) {
+        var canIShare = true;
+        for (var key in screenSwitch) {
+          if(screenSwitch[key]) {
+            canIShare = false;
+          }
+        }
+        if(!canIShare){
+          alert('Other person is trying to share the screen.');
+          return;
+        }
         for (var key in peerConnections) {
           if (p) {
             peerConnections[key].addStream(s);
