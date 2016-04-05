@@ -7,7 +7,7 @@ angular.module('cloudKiboApp')
 
     var  peerConnections = {}, userNames = {},
       dataChannels = {}, currentId, roomId,fileReceivers =[],
-      stream, username, screenSwitch = {},
+      stream, username, screenSwitch = {}, otherScreenShared = false,
       supportCallData, nullStreams = {};
     var roomStatus;
 
@@ -242,6 +242,7 @@ angular.module('cloudKiboApp')
       socket.on('conference.stream', function(data){
         if(data.id !== currentId){
           if(data.type === 'screen' && data.action) screenSwitch[data.id] = true;
+          if(data.type === 'screen') otherScreenShared = data.action;
           api.trigger('conference.stream', [{
             username: data.username,
             type: data.type,
@@ -409,16 +410,7 @@ angular.module('cloudKiboApp')
         socket.emit('conference.stream', { username: username, type: 'video', action: p, id: currentId });
       },
       toggleScreen: function (s, p) {
-        var canIShare = true;
-        for (var key in screenSwitch) {
-          console.log('in loop of other person is trying to share the screen.');
-          console.log(screenSwitch[key]);
-          if(screenSwitch[key]) {
-            console.log('other person is trying to share the screen');
-            canIShare = false;
-          }
-        }
-        if(!canIShare){
+        if(otherScreenShared){
           alert('Other person is trying to share the screen.');
           return;
         }
