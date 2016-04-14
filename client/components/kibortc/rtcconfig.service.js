@@ -14,7 +14,7 @@ angular.module('kiboRtc.services')
  *
  * todo: Add the function addICEServer which should take JSON array or JSON object as input
  */
-  .factory('pc_config', function ($log) {
+  .factory('pc_config', function ($log, socket) {
 
     var configurations;
 
@@ -38,6 +38,10 @@ angular.module('kiboRtc.services')
           //configurations.iceServers.push({url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'});
         });
     });
+
+	socket.emit('init', {}, function (d) {
+		configurations = d;
+        });
 
     var isChrome = !!navigator.webkitGetUserMedia;
 
