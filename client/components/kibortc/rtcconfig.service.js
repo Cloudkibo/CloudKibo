@@ -18,32 +18,16 @@ angular.module('kiboRtc.services')
 
     var configurations;
 
-    $(document).ready(function() {
-      $.get("https://service.xirsys.com/ice",
-        {
-          ident: "testcloudkibo",
-          secret: "9846fdca-ec48-11e5-9e57-6d5d0b63fdb1",
-          domain: "api.cloudkibo.com",
-          application: "default",
-          room: "default",
-          secure: 0
-        },
-        function (data, status) {
-          console.log("nnStatus: " + status);
-          console.log(data);
-          configurations = data.d;
-          //configurations = {iceServers : []};
-          configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'});
-          configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'});
-          configurations.iceServers.push({url: 'turn:137.135.124.187:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'});
-          configurations.iceServers.push({url: 'turn:137.135.124.187:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'});
-          //configurations.iceServers.push({url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'});
-        });
-    });
-
-	socket.emit('init', {}, function (d) {
+	socket.emit('turnServers', {}, function (d) {
 		configurations = d;
-        });
+		configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'});
+	  	configurations.iceServers.push({url: 'turn:turn.cloudkibo.com:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'});
+	  	configurations.iceServers.push({url: 'turn:137.135.124.187:3478?transport=tcp', username: 'cloudkibo', credential: 'cloudkibo'});
+		configurations.iceServers.push({url: 'turn:137.135.124.187:3478?transport=udp', username: 'cloudkibo', credential: 'cloudkibo'});
+	  	configurations.iceServers.push({url: 'turn:numb.viagenie.ca:3478', username: 'support@cloudkibo.com', credential: 'cloudkibo'});
+		console.log(configurations)
+
+	});
 
     var isChrome = !!navigator.webkitGetUserMedia;
 

@@ -1024,46 +1024,49 @@ module.exports = function (socketio) {
     });
 
 	var ice;
-    // Asking the XirSys the addresses of TURN servers from server side
-    var needle = require('needle');
-
-    var options = {
-      headers: { 'X-Custom-Header': 'CloudKibo Web Application' }
-    }
-
-    needle.post('https://service.xirsys.com/ice', {
-      ident: "testcloudkibo",
-      secret: "9846fdca-ec48-11e5-9e57-6d5d0b63fdb1",
-      domain: "api.cloudkibo.com",
-      application: "default",
-      room: "default",
-      secure: 0
-    }, options, function(err, resp) {
-      //console.log(err);
-      console.log(resp.body);
-
-      ice = resp.body.d;
-
-      var accountSid = 'ACdeb74ff803b2e44e127d0570e6248b3b';
-      var authToken = "5c13521c7655811076a9c04d88fac395";
-      var client = require('twilio')(accountSid, authToken);
-
-      client.tokens.create({}, function(err, token) {
-        console.log("");
-        console.log(token.iceServers);
-
-        ice.iceServers = ice.iceServers.concat(token.iceServers);
-
-        console.log("")
-
-        console.log(ice);
-
-      });
-
-    });
+    
 
 	socket.on('turnServers', function (data, fn) {
+
+		// Asking the XirSys the addresses of TURN servers from server side
+	    var needle = require('needle');
+
+	    var options = {
+	      headers: { 'X-Custom-Header': 'CloudKibo Web Application' }
+	    }
+
+	    needle.post('https://service.xirsys.com/ice', {
+	      ident: "testcloudkibo",
+	      secret: "9846fdca-ec48-11e5-9e57-6d5d0b63fdb1",
+	      domain: "api.cloudkibo.com",
+	      application: "default",
+	      room: "default",
+	      secure: 0
+	    }, options, function(err, resp) {
+	      //console.log(err);
+	      console.log(resp.body);
+
+	      ice = resp.body.d;
+
+	      var accountSid = 'ACdeb74ff803b2e44e127d0570e6248b3b';
+	      var authToken = "5c13521c7655811076a9c04d88fac395";
+	      var client = require('twilio')(accountSid, authToken);
+
+	      client.tokens.create({}, function(err, token) {
+		console.log("");
+		console.log(token.iceServers);
+
+		ice.iceServers = ice.iceServers.concat(token.iceServers);
+
+		console.log("")
+
+		console.log(ice);
 		fn(ice);
+
+	      });
+
+	    });
+
 	});
 
     socket.on('init.new', function (data, fn) {
