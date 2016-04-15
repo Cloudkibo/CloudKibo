@@ -1168,7 +1168,8 @@ module.exports = function (socketio) {
 
       }
 
-      if(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].supportcall) {
+      if(rooms[currentRoom][rooms[currentRoom].indexOf(socket)]){
+        if(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].supportcall) {
         if(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].supportcall.role === 'agent') {
           console.log('do the support call webhook logic here');
           console.log(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].supportcall)
@@ -1202,7 +1203,7 @@ module.exports = function (socketio) {
            request(options, callback);
            */
         }
-      }
+      
 
 
       console.log(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].username+' is disconnected from room '+rooms[currentRoom][rooms[currentRoom].indexOf(socket)]);
