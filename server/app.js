@@ -22,7 +22,7 @@ var fs = require('fs');
 
 var logger = require('./components/logger/logger');
 
-logger.serverLog('info', 'Server started');
+logger.serverLog('info', '===============SERVER STARTED===============');
 
 
 
