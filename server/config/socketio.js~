@@ -76,19 +76,19 @@ function onDisconnect(socketio,socket) {
 // When the user connects.. perform this
 function onConnect(socketio, socket) {
 
-		//console.log(socket);
+    //console.log(socket);
   logger.serverLog('debug', 'socketio.js connected:');
 
-	  // convenience function to log server messages on the client
-	function log(){
-			var array = [">>> Message from server: "];
-		  for (var i = 0; i < arguments.length; i++) {
-			array.push(arguments[i]);
-		  }
-			socket.emit('log', array);
-		}
+    // convenience function to log server messages on the client
+  function log(){
+      var array = [">>> Message from server: "];
+      for (var i = 0; i < arguments.length; i++) {
+      array.push(arguments[i]);
+      }
+      socket.emit('log', array);
+    }
 
-		socket.on('message', function (message) {
+    socket.on('message', function (message) {
       console.log('Got message:', message.msg);
 
       try {
@@ -99,7 +99,7 @@ function onConnect(socketio, socket) {
 
       var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-			var socketid = '';
+      var socketid = '';
 
       for(var i in clients){
         if(clients[i].username == message.to){
@@ -107,14 +107,14 @@ function onConnect(socketio, socket) {
         }
       }
 
-			if(socketid == ''){
-				//socket.emit('disconnected', message.mycaller);
-			}
-			else{
+      if(socketid == ''){
+        //socket.emit('disconnected', message.mycaller);
+      }
+      else{
         socketio.to(socketid).emit('message', message.msg);
-				//socketio.sockets.socket(socketid).emit('message', message.msg);
-			}
-		});
+        //socketio.sockets.socket(socketid).emit('message', message.msg);
+      }
+    });
 
   socket.on('group_call_message', function (message) {
     console.log('Got message:', message.msg);
@@ -144,10 +144,10 @@ function onConnect(socketio, socket) {
     }
   });
 
-		socket.on('messageformeeting', function (message) {
-			console.log('Got message:', message.msg);
+    socket.on('messageformeeting', function (message) {
+      console.log('Got message:', message.msg);
 
-			//socket.broadcast.emit('message', message);
+      //socket.broadcast.emit('message', message);
 
       try {
         message.msg.from = socket.id;
@@ -155,14 +155,14 @@ function onConnect(socketio, socket) {
         if(e) logger.serverLog('warn', 'socketio.js on(messageformeeting) : '+ e);
       }
 
-			//io2.sockets.in(message.room).emit('message', message.msg);
-			socket.broadcast.to(message.room).emit('message', message.msg);
-			//console.log('Got message:', message.msg);
-			//console.log(io2.sockets.manager.rooms)
+      //io2.sockets.in(message.room).emit('message', message.msg);
+      socket.broadcast.to(message.room).emit('message', message.msg);
+      //console.log('Got message:', message.msg);
+      //console.log(io2.sockets.manager.rooms)
 
-		});
+    });
 
-		socket.on('messagefordatachannel', function (message) {
+    socket.on('messagefordatachannel', function (message) {
       //console.log('Got message:', message);
 
       //socket.broadcast.emit('message', message);
@@ -197,11 +197,11 @@ function onConnect(socketio, socket) {
       }catch(e) {if(e) logger.serverLog('warn', 'socketio.js on(messagefordatachannel) : '+ e);}
 
       socketio.to(socketid).emit('messagefordatachannel', msgToSend);
-			//socketio.sockets.socket(socketid).emit('messagefordatachannel', msgToSend);
+      //socketio.sockets.socket(socketid).emit('messagefordatachannel', msgToSend);
 
-		});
+    });
 
-		socket.on('create or join', function (room) {
+    socket.on('create or join', function (room) {
 
       var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
@@ -209,7 +209,7 @@ function onConnect(socketio, socket) {
 
       var socketid = '';
 
-			var canJoin = true;
+      var canJoin = true;
 
       for(var i in clients){
         if(clients[i].username == room.username){
@@ -219,39 +219,39 @@ function onConnect(socketio, socket) {
         }
       }
 
-			if (numClients === 0){
-				socket.join(room.room);
+      if (numClients === 0){
+        socket.join(room.room);
         socket.username= room.username;
         logger.serverLog('info', 'socketio.js on(create or join) : '+room.username +' created the room.');
         //console.log(room.username +' joined the room.')
-				socket.emit('created', room);
-			} else if (numClients === 1) {
-				if(canJoin){
+        socket.emit('created', room);
+      } else if (numClients === 1) {
+        if(canJoin){
           socketio.in(room.room).emit('join', room);
-					socket.join(room.room);
+          socket.join(room.room);
           socket.username= room.sername;
-					socket.emit('joined', room);
+          socket.emit('joined', room);
           logger.serverLog('info', 'socketio.js on(create or join) : '+room.username +' joined the room.');
-				}
-				else{
-					//socket.join(room.room);
-					//socket.emit('created', room);
-					socket.emit('joining twice', room);
-				}
-			} else { // max two clients
-				socket.emit('full', room.room);
-			}
+        }
+        else{
+          //socket.join(room.room);
+          //socket.emit('created', room);
+          socket.emit('joining twice', room);
+        }
+      } else { // max two clients
+        socket.emit('full', room.room);
+      }
 
-			socket.emit('emit(): client ' + socket.id + ' joined room ' + room.room);
-			//socket.broadcast.emit('broadcast(): client ' + socket.id + ' joined room ' + room.room);
+      socket.emit('emit(): client ' + socket.id + ' joined room ' + room.room);
+      //socket.broadcast.emit('broadcast(): client ' + socket.id + ' joined room ' + room.room);
 
-			//console.log(socketio.sockets.manager.rooms)
+      //console.log(socketio.sockets.manager.rooms)
 
-		});
+    });
 
-		socket.on('join global chatroom', function (room) {
+    socket.on('join global chatroom', function (room) {
 
-			socket.join(room.room);
+      socket.join(room.room);
 
       socket.username= room.user.username;
 
@@ -260,19 +260,19 @@ function onConnect(socketio, socket) {
       logger.serverLog('info', 'Data Sent to global chat room handler: '+ room);
 
       logger.serverLog('info', 'you are trying to join global chat room now.');
-			//console.log(room.user.username +' has joined the room.')
-			var myOnlineContacts = [];
+      //console.log(room.user.username +' has joined the room.')
+      var myOnlineContacts = [];
 
       var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-			var socketid = '';
+      var socketid = '';
 
-			var contactslist = require('./../api/contactslist/contactslist.model.js');
+      var contactslist = require('./../api/contactslist/contactslist.model.js');
 
-			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
+      contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
         if(err3) logger.serverLog('error', 'socketio.js on(join global chatroom) : '+ err3);
 
-				if(gotContactList != null){
+        if(gotContactList != null){
 
           for(var i in clients){
             for(var j in gotContactList){
@@ -287,34 +287,34 @@ function onConnect(socketio, socket) {
             }
           }
 
-					socket.emit('youareonline', myOnlineContacts);
+          socket.emit('youareonline', myOnlineContacts);
 
           logger.serverLog('info', 'socketio.js on : '+room.user.username +' logged in. Global chat room was joined.');
 
-				}
+        }
 
-			});
+      });
 
-			//console.log(socketio.sockets.manager.rooms);
-			//console.log(room.user.username)
+      //console.log(socketio.sockets.manager.rooms);
+      //console.log(room.user.username)
 
-		});
+    });
 
-		socket.on('whozonline', function(room){
-			var myOnlineContacts = [];
+    socket.on('whozonline', function(room){
+      var myOnlineContacts = [];
 
       var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
-			var socketid = '';
+      var socketid = '';
 
       logger.serverLog('info', 'socketio.js on(whozonline) : client asks about online peers');
 
-			var contactslist = require('./../api/contactslist/contactslist.model.js');
+      var contactslist = require('./../api/contactslist/contactslist.model.js');
 
-			contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
+      contactslist.find({userid : room.user._id}).populate('contactid').exec(function(err3, gotContactList){
         if(err3) logger.serverLog('error', 'socketio.js on(whozonline) : '+ err3);
 
-				if(gotContactList != null){
+        if(gotContactList != null){
 
           for(var i in clients){
             for(var j in gotContactList){
@@ -329,14 +329,14 @@ function onConnect(socketio, socket) {
             }
           }
 
-					socket.emit('theseareonline', myOnlineContacts);
+          socket.emit('theseareonline', myOnlineContacts);
 
-				}
+        }
 
-			})
-		});
+      })
+    });
 
-		socket.on('callthisperson', function(message){
+    socket.on('callthisperson', function(message){
     try {
 
       console.log(message);
@@ -405,7 +405,7 @@ function onConnect(socketio, socket) {
 
   });
 
-		socket.on('noiambusy', function(message){
+    socket.on('noiambusy', function(message){
 
       try {
         var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
@@ -430,7 +430,7 @@ function onConnect(socketio, socket) {
         logger.serverLog('error', 'socketio.js on(noiambusy) : '+ e);
       }
 
-		});
+    });
 
   socket.on('noiambusyforgroupcall', function(message){
 
@@ -459,7 +459,7 @@ function onConnect(socketio, socket) {
 
   });
 
-		socket.on('yesiamfreeforcall', function(message){
+    socket.on('yesiamfreeforcall', function(message){
 
       try {
         var clients = findClientsSocket(message.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
@@ -483,7 +483,7 @@ function onConnect(socketio, socket) {
         logger.serverLog('error', 'socketio.js on(yesiamfreeforcall) : '+ e);
       }
 
-		});
+    });
 
   socket.on('yesiamfreeforgroupcall', function(message){
 
@@ -511,7 +511,7 @@ function onConnect(socketio, socket) {
 
   });
 
-		socket.on('im', function(im){
+    socket.on('im', function(im){
 
       try {
 
@@ -575,9 +575,9 @@ function onConnect(socketio, socket) {
         logger.serverLog('error', 'socketio.js on(im) : '+ e);
       }
 
-		});
+    });
 
-		socket.on('friendrequest', function(im){
+    socket.on('friendrequest', function(im){
       try {
 
         logger.serverLog('info', 'freind request sent using socket: '+ JSON.stringify(im));
@@ -598,19 +598,19 @@ function onConnect(socketio, socket) {
         logger.serverLog('error', 'socketio.js on(friendrequest) : '+ e);
       }
 
-		});
+    });
 
-		socket.on('leaveChat', function (room) {
+    socket.on('leaveChat', function (room) {
 
       socketio.in(room.room).emit('left', room);
-			socket.leave(room.room);
-			socket.emit('offline', room);
+      socket.leave(room.room);
+      socket.emit('offline', room);
 
-			//console.log(socketio.sockets.manager.rooms)
+      //console.log(socketio.sockets.manager.rooms)
 
-		});
+    });
 
-		socket.on('status', function (room) {
+    socket.on('status', function (room) {
       try {
 
         var clients = findClientsSocket(room.room);//socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
@@ -638,16 +638,16 @@ function onConnect(socketio, socket) {
 
         });
 
-        //		 socket.broadcast.to(room.room).emit('statusUpdate', room.user);
+        //     socket.broadcast.to(room.room).emit('statusUpdate', room.user);
         //console.log(socketio.sockets.manager.rooms)
       }catch(e){
         logger.serverLog('error', 'socketio.js on(status) : '+ e);
       }
 
-		});
+    });
 
   /* TODO Remove this code, this is deprecated now */
-		socket.on('create or join meeting', function (room) {
+    socket.on('create or join meeting', function (room) {
 
       //console.log(room);
 
@@ -669,39 +669,39 @@ function onConnect(socketio, socket) {
 
       console.log('people in room: ', clientsIDs);
 
-			if (numClients === 0){
-				socket.join(room.room);
+      if (numClients === 0){
+        socket.join(room.room);
         socket.username= room.username;
 
         console.log('room created');
         logger.serverLog('info', 'Room created  ')
 
-				socket.emit('created', room);
-			} else if (numClients < 5) {//(numClients === 2 || numClients === 1 || numClients === 3 || numClients === 4) {
-				socket.join(room.room);
+        socket.emit('created', room);
+      } else if (numClients < 5) {//(numClients === 2 || numClients === 1 || numClients === 3 || numClients === 4) {
+        socket.join(room.room);
         socket.username= room.username;
 
-				room.otherClients = clientsIDs;
-				socket.emit('joined', room);
+        room.otherClients = clientsIDs;
+        socket.emit('joined', room);
 
         console.log('room joined');
         logger.serverLog('info', 'Room joined  ')
 
         clientsIDs.push(room.username);
 
-				room.otherClients = clientsIDs;
+        room.otherClients = clientsIDs;
         socketio.in(room.room).emit('join', room);
 
-			} else { // max five clients
-				socket.emit('full', room.room);
+      } else { // max five clients
+        socket.emit('full', room.room);
         logger.serverLog('info', 'Room is full  ')
-			}
+      }
 
-			//console.log(socketio.sockets.manager.rooms)
+      //console.log(socketio.sockets.manager.rooms)
 
-		});
+    });
 
-		socket.on('create or join livehelp', function (room) {
+    socket.on('create or join livehelp', function (room) {
       try {
         var clients = findClientsSocket(room.room);
         var numClients = clients.length;
@@ -727,7 +727,7 @@ function onConnect(socketio, socket) {
         logger.serverLog('error', 'socketio.js on(create or join livehelp) : '+ e);
       }
 
-		});
+    });
 
   socket.on('logClient', function(data){
     logger.serverLog("info", "Client side log: "+ data);
@@ -755,25 +755,25 @@ function onConnect(socketio, socket) {
   }
 
 
-	/* Socket.io 0.9.x (don't use them, they are compatible with old version)
-	 // send to current request socket client
-	 socket.emit('message', "this is a test");
+  /* Socket.io 0.9.x (don't use them, they are compatible with old version)
+   // send to current request socket client
+   socket.emit('message', "this is a test");
 
-	 // sending to all clients, include sender
-	 io.sockets.emit('message', "this is a test");
+   // sending to all clients, include sender
+   io.sockets.emit('message', "this is a test");
 
-	 // sending to all clients except sender
-	 socket.broadcast.emit('message', "this is a test");
+   // sending to all clients except sender
+   socket.broadcast.emit('message', "this is a test");
 
-	 // sending to all clients in 'game' room(channel) except sender
-	 socket.broadcast.to('game').emit('message', 'nice game');
+   // sending to all clients in 'game' room(channel) except sender
+   socket.broadcast.to('game').emit('message', 'nice game');
 
-	  // sending to all clients in 'game' room(channel), include sender
-	 io.sockets.in('game').emit('message', 'cool game');
+    // sending to all clients in 'game' room(channel), include sender
+   io.sockets.in('game').emit('message', 'cool game');
 
-	 // sending to individual socketid
-	 io.sockets.socket(socketid).emit('message', 'for your eyes only');
-	 */
+   // sending to individual socketid
+   io.sockets.socket(socketid).emit('message', 'for your eyes only');
+   */
 
 
 
@@ -1023,51 +1023,51 @@ module.exports = function (socketio) {
       });
     });
 
-	var ice;
+  var ice;
     
 
-	socket.on('turnServers', function (data, fn) {
+  socket.on('turnServers', function (data, fn) {
 
-		// Asking the XirSys the addresses of TURN servers from server side
-	    var needle = require('needle');
+    // Asking the XirSys the addresses of TURN servers from server side
+      var needle = require('needle');
 
-	    var options = {
-	      headers: { 'X-Custom-Header': 'CloudKibo Web Application' }
-	    }
+      var options = {
+        headers: { 'X-Custom-Header': 'CloudKibo Web Application' }
+      }
 
-	    needle.post('https://service.xirsys.com/ice', {
-	      ident: "testcloudkibo",
-	      secret: "9846fdca-ec48-11e5-9e57-6d5d0b63fdb1",
-	      domain: "api.cloudkibo.com",
-	      application: "default",
-	      room: "default",
-	      secure: 0
-	    }, options, function(err, resp) {
-	      //console.log(err);
-	      console.log(resp.body);
+      needle.post('https://service.xirsys.com/ice', {
+        ident: "testcloudkibo",
+        secret: "9846fdca-ec48-11e5-9e57-6d5d0b63fdb1",
+        domain: "api.cloudkibo.com",
+        application: "default",
+        room: "default",
+        secure: 0
+      }, options, function(err, resp) {
+        //console.log(err);
+        console.log(resp.body);
 
-	      ice = resp.body.d;
+        ice = resp.body.d;
 
-	      var accountSid = 'ACdeb74ff803b2e44e127d0570e6248b3b';
-	      var authToken = "5c13521c7655811076a9c04d88fac395";
-	      var client = require('twilio')(accountSid, authToken);
+        var accountSid = 'ACdeb74ff803b2e44e127d0570e6248b3b';
+        var authToken = "5c13521c7655811076a9c04d88fac395";
+        var client = require('twilio')(accountSid, authToken);
 
-	      client.tokens.create({}, function(err, token) {
-		console.log("");
-		console.log(token.iceServers);
+        client.tokens.create({}, function(err, token) {
+    console.log("");
+    console.log(token.iceServers);
 
-		ice.iceServers = ice.iceServers.concat(token.iceServers);
+    ice.iceServers = ice.iceServers.concat(token.iceServers);
 
-		console.log("")
+    console.log("")
 
-		console.log(ice);
-		fn(ice);
+    console.log(ice);
+    fn(ice);
 
-	      });
+        });
 
-	    });
+      });
 
-	});
+  });
 
     socket.on('init.new', function (data, fn) {
       currentRoom = (data || {}).room || uuid.v4();
@@ -1168,43 +1168,6 @@ module.exports = function (socketio) {
 
       }
 
-      if(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].supportcall) {
-        if(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].supportcall.role === 'agent') {
-          console.log('do the support call webhook logic here');
-          console.log(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].supportcall)
-
-          /*
-           var options = {
-           url: 'https://api.kibosupport.com/api/users/allagents', // replace this with client webhook url
-           rejectUnauthorized : false,
-           };
-
-           function callback(error, response, body) {
-           if (!error && response.statusCode == 200) {
-           var info = JSON.parse(body);
-           var data =[];
-           var i =0;
-           console.log(info.agents.length)
-           console.log(info.agents);
-           res.render('agents',{mydata:info.agents});
-
-           }
-           else
-           {
-           data = null;
-           console.log(error);
-
-           //  res.render('agents',data);
-
-           }
-           }
-
-           request(options, callback);
-           */
-        }
-      }
-
-
       console.log(rooms[currentRoom][rooms[currentRoom].indexOf(socket)].username+' is disconnected from room '+rooms[currentRoom][rooms[currentRoom].indexOf(socket)]);
 
       logger.serverLog('info', rooms[currentRoom][rooms[currentRoom].indexOf(socket)].username+' is disconnected from room '+rooms[currentRoom][rooms[currentRoom].indexOf(socket)]);
@@ -1247,6 +1210,7 @@ module.exports = function (socketio) {
      */
 
   });
+
 };
 
 function sendToCloudKibo(myJSONObject) {
@@ -1270,7 +1234,7 @@ function sendToCloudKibo(myJSONObject) {
 
   request(options,
     function (error, response, body){
-	  console.log(error)
+    console.log(error)
     console.log(response);
     console.log(body);
   });*/
