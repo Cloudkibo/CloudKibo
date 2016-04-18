@@ -872,7 +872,7 @@ module.exports = function(socketio) {
 
         if (roomlockStatus[currentRoom] === false) {
           userIds[currentRoom] += 1;
-          id = userIds[currentRoom];
+          id = userIds[currentRoom] + 10 + parseInt(Math.random().toString(8).substring(2,7));
 
           // fn(currentRoom, id);
 
@@ -914,7 +914,7 @@ module.exports = function(socketio) {
       });
       if (chk_if_already_added == false) {
         userIds[data.room] += 1;
-        id = userIds[data.room];
+        id = userIds[data.room] + 10 + parseInt(Math.random().toString(8).substring(2,7));
         room.forEach(function(s) {
           console.log('peeer connedted ' + id);
 
@@ -962,7 +962,7 @@ module.exports = function(socketio) {
       });
       if (chk_if_already_added == false) {
         userIds[data.room] += 1;
-        id = userIds[data.room];
+        id = userIds[data.room] +10 + parseInt(Math.random().toString(8).substring(2,7));
         room.forEach(function(s) {
           console.log('peeer connedted ' + id);
 
@@ -1139,7 +1139,7 @@ module.exports = function(socketio) {
 
         if (roomlockStatus[currentRoom] === false) {
           userIds[currentRoom] += 1;
-          id = userIds[currentRoom];
+          id = userIds[currentRoom] + 10 + parseInt(Math.random().toString(8).substring(2,7));
           //  fn(currentRoom, id);
           room.forEach(function(s) {
             s.emit('peer.connected.new', {
