@@ -534,6 +534,9 @@ angular.module('cloudKiboApp')
        }
        */
       if($scope.hasAndroidPeerSharedScreen()){
+        
+        console.log('testing for iOS');
+        console.log(event.data);
 
         if (typeof event.data === 'string') {
           buf = new Uint8ClampedArray(parseInt(data.data));
