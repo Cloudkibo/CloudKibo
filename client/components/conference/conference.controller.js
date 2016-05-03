@@ -9,16 +9,16 @@ angular.module('cloudKiboApp')
 
      if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
-      logger.log('WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.');
+      logger.log($scope.error);
      // $location.path('/otherBrowser');
       return;
     }
+
     myclockStart(); //callme to start clock animation
     if($location.search().role){
       logger.log('This is a Support Call');
       $scope.supportCall = true;
     }
-
 
     var screenViewer = document.getElementById('screenViewer');
     var screenAndroidImage = document.getElementById('screenAndroidImage');
@@ -87,7 +87,6 @@ angular.module('cloudKiboApp')
     var stream;
 
     $scope.connect = function(){
-
         logger.log($scope.user.username + ' joins the meeting with room name ' + $routeParams.mname);
         $scope.askingMedia = true;
         Stream.get()
@@ -130,7 +129,6 @@ angular.module('cloudKiboApp')
         username: (peer.stream !== null) ? peer.username : peer.username + ' (No Mic/Cam)',
         sharedVideo: false,
         divClass: 'hideVideoBox',
-
         stream: (peer.stream !== null) ? URL.createObjectURL(peer.stream) : ''
       });
     });
@@ -354,15 +352,13 @@ angular.module('cloudKiboApp')
     };
 
     ScreenShare.on('extensioninstalled',function(data){
-
-
+      logger.log('chrome screen sharing extension installed successfully for '+ $scope.user.username)
       $timeout(function(){
         ScreenShare.setScreenConstraintsForFirstTimeInstall();
         $scope.extensionAvailable = true;
         $scope.showScreen();
         //location.reload();
       }, 2000);
-
     })
 
 
@@ -391,7 +387,7 @@ angular.module('cloudKiboApp')
                   screenStream = stream;
                   console.log(screenStream);
                   screenStream.getVideoTracks()[0].onended = function () {
-                    logger.log('function called on event of stop screen sharing, username: '+ $scope.user.username +' : chrome extension');
+                    logger.log('Screen stream stopped in chrome, function called on event of stop screen sharing, username '+ $scope.user.username);
                     removeLocalScreen();
                   };
                   $scope.$apply(function () {
@@ -411,6 +407,10 @@ angular.module('cloudKiboApp')
                 }
               }, function (stream) {
                 screenStream = stream;
+                screenStream.getVideoTracks()[0].onended = function () {
+                  logger.log('Screen stream stopped in firefox, function called on event of stop screen sharing, username '+ $scope.user.username);
+                  removeLocalScreen();
+                };
                 $scope.$apply(function () {
                   $scope.showScreenText = 'Hide Screen';
                   $scope.screenSharedLocal = true;
@@ -672,9 +672,7 @@ angular.module('cloudKiboApp')
 
     /****** end meeting ***********/
      $scope.endMeeting = function () {
-       $log.info("end meeting selected");
-      logger.log("end meeting selected");
-      logger.log("end meeting selected");
+      logger.log("end meeting selected by "+ $scope.user.username);
       $scope.userMessages = [];
       $scope.peers = [];
       $routeParams.mname = '';
@@ -693,12 +691,12 @@ angular.module('cloudKiboApp')
 
     $scope.lockMeeting = function(){
       if(!$scope.isRoomLocked) {
-        console.log('locking meeting');
+        console.log('meting locked by '+ $scope.user.username);
         Room.lockRoom({status : true});
       }
       else
       {
-        console.log('unlocking meeting');
+        console.log('meting unlocked by '+ $scope.user.username);
         Room.lockRoom({status :false});
 
       }

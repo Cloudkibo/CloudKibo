@@ -52,7 +52,7 @@ angular.module('cloudKiboApp')
       if (peerConnections[id]) {
         return peerConnections[id];
       }
-      logger.log(pc_config.pc_config());
+      logger.log(''+ username +' has received TURN configuration  '+ JSON.stringify(pc_config.pc_config()));
       var pc = new RTCPeerConnection(pc_config.pc_config(), pc_constraints2);
       peerConnections[id] = pc;
       if(stream !== null)
@@ -61,7 +61,7 @@ angular.module('cloudKiboApp')
         socket.emit('msg', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
       };
       pc.onaddstream = function (evnt) {
-        $log.debug('Received stream from '+ id);
+        logger.log(''+ username +' has received stream by  '+ userNames[id]);
         console.log(evnt.stream);
         if(screenSwitch[id]){
           api.trigger('peer.screenStream', [{
@@ -70,7 +70,7 @@ angular.module('cloudKiboApp')
             stream: evnt.stream
           }]);
           screenSwitch[id] = false;
-          logger.log('Received screen sharing stream by '+ username);
+          logger.log(''+ username +' has received screen sharing stream by  '+ userNames[id]);
         } else {
           if (nullStreams[id]) return ;
           api.trigger('peer.stream', [{
@@ -84,26 +84,29 @@ angular.module('cloudKiboApp')
         }
       };
       pc.ondatachannel = function (evnt) {
-        logger.log('Received DataChannel from '+ userNames[id] +' by '+ username);
+        logger.log(''+ username +' has received data channel from  '+ userNames[id]);
         dataChannels[id] = evnt.channel;
         dataChannels[id].onmessage = function (evnt) {
           handleDataChannelMessage(id, evnt.data);
         };
       };
+      logger.log(''+ username +' has created peer connection for  '+ userNames[id]);
       return pc;
     }
 
     function makeOffer(id) {
       var pc = getPeerConnection(id);
       makeDataChannel(id);
+      logger.log(''+ username +' is going to create offer for '+ userNames[id]);
       pc.createOffer(function (sdp) {
-          console.log(sdp)
           //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000"); // todo added for testing by sojharo
           pc.setLocalDescription(sdp);
-          $log.debug('Creating an offer for', id);
+          logger.log(''+ username +' is now sending offer to '+ userNames[id]);
           socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username, camaccess : stream });
         }, function (e) {
-          $log.error(e);
+          logger.log(''+ username +' got this error when creating offer for '+ userNames[id]);
+          logger.log(JSON.stringify(e));
+          logger.log(''+ username +' got the above error when creating offer for '+ userNames[id]);
         },
         sdpConstraints);
     }
@@ -116,17 +119,21 @@ angular.module('cloudKiboApp')
           dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: true});
         }
         catch (e) {
-          logger.log('Reliable createDataChannel() failed with exception: ' + JSON.stringify(e.message) +' for username: '+ username +' (Not supported in chrome)');
+          logger.log(''+ username +' got this error when creating reliable data channel for '+ userNames[id] +'. creating unreliable datachannel now');
+          logger.log(JSON.stringify(e));
+          logger.log(''+ username +' got the above error when creating reliable data channel for '+ userNames[id] +'. creating unreliable datachannel now');
           dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: false});
         }
         dataChannels[id].onmessage = function (evnt) {
           handleDataChannelMessage(id, evnt.data);
         };
-        $log.debug('Created DataChannel for '+ id);
+        logger.log(''+ username +' has created datachannel for '+ userNames[id]);
       } catch (e) {
         alert('Failed to create data channel. ' +
         'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
-        logger.log('createDataChannel() failed with exception: ' + JSON.stringify(e.message) +' for username: '+ username);
+        logger.log(''+ username +' got this error when creating data channel for '+ userNames[id]);
+        logger.log(JSON.stringify(e));
+        logger.log(''+ username +' got the above error when creating data channel for '+ userNames[id]);
       }
     }
 
@@ -157,16 +164,21 @@ angular.module('cloudKiboApp')
             handlePeerWithoutAccessToMediaStream(data.by, data.username)
           }
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            $log.debug('Setting remote description by offer');
+            logger.log(''+ username +' set offer remote description sent by  '+ userNames[data.by]);
             pc.createAnswer(function (sdp) {
               //sdp.sdp = sdp.sdp.replace("minptime=10", "minptime=10; maxaveragebitrate=128000");
               pc.setLocalDescription(sdp);
+              logger.log(''+ username +' is now sending answer to '+ userNames[data.by]);
               socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'answer', camaccess : stream });
             }, function (e) {
-              logger.log('Error in creating answer : '+ JSON.stringify(e) +' shown to '+ username +' sent by '+ data.username);
+              logger.log(''+ username +' got this ERROR when creating answer for '+ userNames[data.by]);
+              logger.log(JSON.stringify(e));
+              logger.log(''+ username +' got the above ERROR when creating answer for '+ userNames[data.by]);
             }, sdpConstraints);
           }, function (e) {
-            logger.log('Error in setting remote offer : '+ JSON.stringify(e) +' shown to '+ username +' sent by '+ data.username);
+            logger.log(''+ username +' got this ERROR when setting offer from '+ userNames[data.by]);
+            logger.log(JSON.stringify(e));
+            logger.log(''+ username +' got the above ERROR when setting offer from '+ userNames[data.by]);
           });
           break;
         case 'answer':
@@ -175,15 +187,16 @@ angular.module('cloudKiboApp')
             handlePeerWithoutAccessToMediaStream(data.by, userNames[data.by])
           }
           pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
-            $log.debug('Setting remote description by answer');
+             logger.log(''+ username +' set answer remote description sent by  '+ userNames[data.by]);
           }, function (e) {
-            logger.log('Error in setting remote answer : '+ JSON.stringify(e) +' shown to '+ username +' sent by '+ data.username);
+            logger.log(''+ username +' got this ERROR when setting answer from '+ userNames[data.by]);
+            logger.log(JSON.stringify(e));
+            logger.log(''+ username +' got the above ERROR when setting answer from '+ userNames[data.by]);
           });
           break;
         case 'ice':
           if (data.ice) {
-            $log.debug('Adding ice candidates');
-            $log.debug(data.ice)
+            logger.log(''+ username +' adding ice candidate for sent by  '+ userNames[data.by]);
             pc.addIceCandidate(new RTCIceCandidate(data.ice));
           }
           break;
@@ -194,11 +207,13 @@ angular.module('cloudKiboApp')
 
     function addHandlers(socket) {
       socket.on('peer.connected', function (params) {
+        logger.log(''+ username +' was informed that '+ params.username +' has joined the meeting.');
         userNames[params.id] = params.username;
         screenSwitch[params.id] = false;
         makeOffer(params.id);
       });
       socket.on('peer.disconnected', function (data) {
+        logger.log(''+ username +' was informed that '+ userNames[data.id] +' has left the meeting.');
         api.trigger('peer.disconnected', [data]);
         if (!$rootScope.$$digest) {
           $rootScope.$apply();
@@ -232,6 +247,7 @@ angular.module('cloudKiboApp')
         roomId = data.currentRoom;
         connected = true;
         roomStatus = data.roomStatus;
+        logger.log(''+ username +' joined the room '+ roomId +' as requestor and got the id '+ currentId)
         api.trigger('setRoomStatus',[{status:data.roomStatus}]);
       });
 
@@ -253,7 +269,7 @@ angular.module('cloudKiboApp')
         }
       });
       socket.on('connect', function(){
-        console.log('connected')
+        logger.log(''+ username +' got some internet issue and has reconnected and joining room again');
         api.trigger('connection.status', [{
           status : true
         }]);
@@ -291,6 +307,7 @@ angular.module('cloudKiboApp')
 
           currentId = id;
           roomId = roomid;
+          logger.log(''+ username +' joined the room '+ roomId +' and got the id '+ id)
         });
         connected = true;
       }
@@ -428,6 +445,7 @@ angular.module('cloudKiboApp')
         socket.emit('conference.stream', { username: username, type: 'screen', action: p, id: currentId });
       },
       end: function () {
+        logger.log(''+ username +' has ended the peer connections for all');
         peerConnections = {}; userNames = {}; dataChannels = {};
         connected = false;
 
