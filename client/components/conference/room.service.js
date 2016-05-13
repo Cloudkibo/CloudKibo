@@ -105,7 +105,7 @@ angular.module('cloudKiboApp')
           socket.emit('msg', { by: currentId, to: id, sdp: sdp, type: 'offer', username: username, camaccess : stream });
         }, function (e) {
           logger.log(''+ username +' got this error when creating offer for '+ userNames[id]);
-          logger.log(JSON.stringify(e));
+          logger.log(e);
           logger.log(''+ username +' got the above error when creating offer for '+ userNames[id]);
         },
         sdpConstraints);
@@ -132,7 +132,7 @@ angular.module('cloudKiboApp')
         alert('Failed to create data channel. ' +
         'You need Chrome M25 or later with RtpDataChannel enabled : ' + e.message);
         logger.log(''+ username +' got this error when creating data channel for '+ userNames[id]);
-        logger.log(JSON.stringify(e));
+        logger.log(e);
         logger.log(''+ username +' got the above error when creating data channel for '+ userNames[id]);
       }
     }
@@ -172,12 +172,12 @@ angular.module('cloudKiboApp')
               socket.emit('msg', { by: currentId, to: data.by, sdp: sdp, type: 'answer', camaccess : stream });
             }, function (e) {
               logger.log(''+ username +' got this ERROR when creating answer for '+ userNames[data.by]);
-              logger.log(JSON.stringify(e));
+              logger.log(e);
               logger.log(''+ username +' got the above ERROR when creating answer for '+ userNames[data.by]);
             }, sdpConstraints);
           }, function (e) {
             logger.log(''+ username +' got this ERROR when setting offer from '+ userNames[data.by]);
-            logger.log(JSON.stringify(e));
+            logger.log(e);
             logger.log(''+ username +' got the above ERROR when setting offer from '+ userNames[data.by]);
           });
           break;
@@ -190,7 +190,7 @@ angular.module('cloudKiboApp')
              logger.log(''+ username +' set answer remote description sent by  '+ userNames[data.by]);
           }, function (e) {
             logger.log(''+ username +' got this ERROR when setting answer from '+ userNames[data.by]);
-            logger.log(JSON.stringify(e));
+            logger.log(e);
             logger.log(''+ username +' got the above ERROR when setting answer from '+ userNames[data.by]);
           });
           break;
