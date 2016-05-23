@@ -310,14 +310,39 @@ exports.searchAccountByEmail = function(req, res, next){
 
     var notAvailable = req.body.emails;
     var available = [];
+    var availableUserList = [];
     for(var i in gotUsers){
       if(notAvailable.indexOf(gotUsers[i].email) > -1){
         notAvailable.splice(notAvailable.indexOf(gotUsers[i].email), 1);
         available.push(gotUsers[i].email);
+        availableUserList.push(gotUsers[i]);
       }
     }
 
     logger.serverLog('info', "Sending response to client : "+ JSON.stringify({available : available, notAvailable : notAvailable}));
+
+    User.findById(req.user._id, function (err, gotUser) {
+      contactslist.find({userid : gotUser._id}, function(err5, gotContacts){
+        availableUserList.forEach(function(availablePerson) {
+            console.log(availablePerson);
+            var foundInContacts = false;
+            for(var i in gotContacts){
+              if(availablePerson.email === gotContacts[i].email){
+                foundInContacts = true;
+              }
+            }
+            if(!foundInContacts){
+              var contact = new contactslist({
+                userid : gotUser._id,
+                contactid : availablePerson._id
+              });
+
+              contact.save(function(err2){
+              })
+            }
+        });
+      })
+    });
 
     res.json({available : available, notAvailable : notAvailable});
   })
@@ -683,4 +708,3 @@ exports.changePasswordRoute = function(req, res){
 
 	}
 };
-
