@@ -12,4 +12,3 @@ module.exports = {
 
   seedDB: false
 };
-
