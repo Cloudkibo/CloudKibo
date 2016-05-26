@@ -330,7 +330,7 @@ exports.searchAccountByEmail = function(req, res, next){
               if(availablePerson.email === gotContacts[i].email){
                 foundInContacts = true;
               }
-              if(availablePerson.email === gotUser.email)
+              if(availablePerson.email === gotUser.email || availablePerson.username === gotUser.username)
                 foundInContacts = true;
             }
             if(!foundInContacts){
