@@ -330,6 +330,8 @@ exports.searchAccountByEmail = function(req, res, next){
               if(availablePerson.email === gotContacts[i].email){
                 foundInContacts = true;
               }
+              if(availablePerson.email === gotUser.email)
+                foundInContacts = true;
             }
             if(!foundInContacts){
               var contact = new contactslist({
