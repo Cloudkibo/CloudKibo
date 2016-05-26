@@ -340,13 +340,22 @@ exports.searchAccountByEmail = function(req, res, next){
 
               contact.save(function(err2){
 
-                var contact2 = new contactslist({
-                  userid : availablePerson._id,
-                  contactid : gotUser._id,
-                  detailsshared : 'Yes'
-                });
+                contactslist.findOne({userid : availablePerson._id, contactid : gotUser._id}, function(err6, gotOtherPerson){
 
-                contact2.save(function(err2){
+                  if(gotOtherPerson){
+                    gotOtherPerson.detailsshared = 'Yes';
+                    gotOtherPerson.save(function(err){});
+                  } else {
+                    var contact2 = new contactslist({
+                      userid : availablePerson._id,
+                      contactid : gotUser._id,
+                      detailsshared : 'Yes'
+                    });
+
+                    contact2.save(function(err2){
+                    })
+                  }
+
                 })
 
               })
