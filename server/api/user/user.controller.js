@@ -324,7 +324,7 @@ exports.searchAccountByEmail = function(req, res, next){
     User.findById(req.user._id, function (err, gotUser) {
       contactslist.find({userid : gotUser._id}, function(err5, gotContacts){
         availableUserList.forEach(function(availablePerson) {
-            console.log(availablePerson);
+            logger.serverLog('info', 'This is going to be checked in contact list for android client: '+ JSON.stringify(availablePerson));
             var foundInContacts = false;
             for(var i in gotContacts){
               if(availablePerson.email === gotContacts[i].email){
@@ -334,10 +334,30 @@ exports.searchAccountByEmail = function(req, res, next){
             if(!foundInContacts){
               var contact = new contactslist({
                 userid : gotUser._id,
-                contactid : availablePerson._id
+                contactid : availablePerson._id,
+                detailsshared : 'Yes'
               });
 
               contact.save(function(err2){
+
+                contactslist.findOne({userid : availablePerson._id, contactid : gotUser._id}, function(err6, gotOtherPerson){
+
+                  if(gotOtherPerson){
+                    gotOtherPerson.detailsshared = 'Yes';
+                    gotOtherPerson.save(function(err){});
+                  } else {
+                    var contact2 = new contactslist({
+                      userid : availablePerson._id,
+                      contactid : gotUser._id,
+                      detailsshared : 'Yes'
+                    });
+
+                    contact2.save(function(err2){
+                    })
+                  }
+
+                })
+
               })
             }
         });
