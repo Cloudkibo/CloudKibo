@@ -107,6 +107,12 @@ angular.module('cloudKiboApp')
           logger.log(''+ username +' got this error when creating offer for '+ userNames[id]);
           logger.log(e);
           logger.log(''+ username +' got the above error when creating offer for '+ userNames[id]);
+          logger.recordError({
+            type : 'conference_create_offer',
+            description : e,
+            username : username,
+            room_name : $routeParams.mname
+          });
         },
         sdpConstraints);
     }
@@ -123,6 +129,12 @@ angular.module('cloudKiboApp')
           logger.log(JSON.stringify(e));
           logger.log(''+ username +' got the above error when creating reliable data channel for '+ userNames[id] +'. creating unreliable datachannel now');
           dataChannels[id] = pc.createDataChannel("sendDataChannel", {reliable: false});
+          logger.recordError({
+            type : 'conference_datachannel',
+            description : e,
+            username : username,
+            room_name : $routeParams.mname
+          });
         }
         dataChannels[id].onmessage = function (evnt) {
           handleDataChannelMessage(id, evnt.data);
@@ -134,6 +146,12 @@ angular.module('cloudKiboApp')
         logger.log(''+ username +' got this error when creating data channel for '+ userNames[id]);
         logger.log(e);
         logger.log(''+ username +' got the above error when creating data channel for '+ userNames[id]);
+        logger.recordError({
+          type : 'conference_datachannel',
+          description : e,
+          username : username,
+          room_name : $routeParams.mname
+        });
       }
     }
 
@@ -174,11 +192,23 @@ angular.module('cloudKiboApp')
               logger.log(''+ username +' got this ERROR when creating answer for '+ userNames[data.by]);
               logger.log(e);
               logger.log(''+ username +' got the above ERROR when creating answer for '+ userNames[data.by]);
+              logger.recordError({
+                type : 'conference_create_answer',
+                description : e,
+                username : username,
+                room_name : $routeParams.mname
+              });
             }, sdpConstraints);
           }, function (e) {
             logger.log(''+ username +' got this ERROR when setting offer from '+ userNames[data.by]);
             logger.log(e);
             logger.log(''+ username +' got the above ERROR when setting offer from '+ userNames[data.by]);
+            logger.recordError({
+              type : 'conference_set_offer',
+              description : e,
+              username : username,
+              room_name : $routeParams.mname
+            });
           });
           break;
         case 'answer':
@@ -192,6 +222,12 @@ angular.module('cloudKiboApp')
             logger.log(''+ username +' got this ERROR when setting answer from '+ userNames[data.by]);
             logger.log(e);
             logger.log(''+ username +' got the above ERROR when setting answer from '+ userNames[data.by]);
+            logger.recordError({
+              type : 'conference_set_answer',
+              description : e,
+              username : username,
+              room_name : $routeParams.mname
+            });
           });
           break;
         case 'ice':
