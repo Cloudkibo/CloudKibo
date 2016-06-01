@@ -6,6 +6,7 @@
 
 var config = require('./environment');
 var logger = require('../components/logger/logger');
+var debuggers = require('../components/debugger/debugger');
 
 
 // When the user disconnects.. perform this
@@ -745,6 +746,10 @@ function onConnect(socketio, socket) {
 
   socket.on('logClient', function(data) {
     logger.serverLog("info", "Client side log: " + data);
+  });
+
+  socket.on('recordError', function(data) {
+    debuggers.recordError(data);
   });
 
 

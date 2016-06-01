@@ -50,6 +50,10 @@ function isAuthenticated() {
 
           }
         }
+      } else if(req.headers.hasOwnProperty('kibo-token')){
+
+        console.log(req.headers['kibo-token']);
+
       } else {
         // allow access_token to be passed through query parameter as well
         if(req.query && req.query.hasOwnProperty('access_token')) {

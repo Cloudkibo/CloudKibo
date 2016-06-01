@@ -7,9 +7,22 @@
 angular.module('cloudKiboApp')
   .controller('ConferenceController', function ($sce, Stream, $location, $routeParams, $scope, Room, $timeout, logger, ScreenShare, FileHangout, $log) {
 
+    logger.recordError({
+      type : 'conference_test',
+      description : 'Test of bug report (not an error)',
+      username : 'sojharo',
+      room_name : $routeParams.mname
+    });
+
      if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       $scope.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
       logger.log($scope.error);
+      logger.recordError({
+        type : 'conference_connectivity',
+        description : $scope.error,
+        username : 'N/A',
+        room_name : $routeParams.mname
+      });
      // $location.path('/otherBrowser');
       return;
     }
@@ -106,6 +119,12 @@ angular.module('cloudKiboApp')
             $scope.isMediaDenied = true;
             logger.log("audio video stream access was denied: error " + err + ", username : " + $scope.user.username);
             $scope.error = 'No audio/video permissions. Please allow the audio/video capturing and refresh your browser.';
+            logger.recordError({
+              type : 'conference_connectivity',
+              description : 'Audio/Video permissions were denied or device does not have mic or camera',
+              username : $scope.user.username,
+              room_name : $routeParams.mname
+            });
             if ($scope.supportCall)
               Room.init(null, $scope.user.username, $scope.supportCallData);
             else
@@ -382,6 +401,12 @@ angular.module('cloudKiboApp')
                   logger.log(err);
                   alert('Permission denied or could not capture the screen.');
                   logger.log('Chrome ERROR: Permission denied or could not capture the screen. Shown to: ' + $scope.user.username);
+                  logger.recordError({
+                    type : 'conference_screen',
+                    description : err,
+                    username : $scope.user.username,
+                    room_name : $routeParams.mname
+                  });
                 }
                 else {
                   screenStream = stream;
@@ -421,6 +446,12 @@ angular.module('cloudKiboApp')
                 $scope.fireFoxScreenDenied = true;
                 //alert('Permission denied or could not capture the screen.');
                 logger.log('Firefox ERROR: Permission denied or could not capture the screen. Shown to: ' + $scope.user.username);
+                logger.recordError({
+                  type : 'conference_screen',
+                  description : err,
+                  username : $scope.user.username,
+                  room_name : $routeParams.mname
+                });
               });
             }
           }
@@ -461,6 +492,12 @@ angular.module('cloudKiboApp')
               ScreenShare.setChromeMediaSource();
               //alert('PermissionDeniedError: User denied to share content of his/her screen.');
               logger.log('PermissionDeniedError: User denied to share content of his/her screen. Shown to: ' + $scope.user.username);
+              logger.recordError({
+                type : 'conference_screen',
+                description : error,
+                username : $scope.user.username,
+                room_name : $routeParams.mname
+              });
             }
             console.log(error);
             // this statement sets gets 'sourceId" and sets "chromeMediaSourceId"
@@ -472,6 +509,12 @@ angular.module('cloudKiboApp')
               function (newStream) {
                 cb(null, newStream);
               }, function (err) {
+                logger.recordError({
+                  type : 'conference_screen',
+                  description : err,
+                  username : $scope.user.username,
+                  room_name : $routeParams.mname
+                });
                 cb(err);
               });
           });
@@ -534,7 +577,7 @@ angular.module('cloudKiboApp')
        }
        */
       if($scope.hasAndroidPeerSharedScreen()){
-        
+
         console.log('testing for iOS');
         console.log(event.data);
 
@@ -715,4 +758,3 @@ angular.module('cloudKiboApp')
 
 
   });
-
