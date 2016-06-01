@@ -8,6 +8,7 @@ var configuration = require('../configuration/configuration.model');
 var logger = require('../../components/logger/logger');
 
 exports.index = function(req, res) {
+	console.log(req.body)
 	contactslist.find({userid : req.user._id}).populate('contactid').exec(function(err2, gotContactList){
 		if (err2) return next(err2);
 		if (!gotContactList) return res.json(401);
