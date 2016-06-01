@@ -827,7 +827,7 @@ module.exports = function(socketio) {
   // }));
 
   socketio.on('connection', function(socket) {
-    console.log("connected :" + socket.id);
+    console.log("socket id connected :" + socket.id);
     socket.address = socket.handshake.address !== null ?
       socket.handshake.address.address + ':' + socket.handshake.address.port :
       process.env.DOMAIN;
@@ -843,7 +843,7 @@ module.exports = function(socketio) {
 
     // Call onConnect.
     onConnect(socketio, socket);
-    console.info('[%s] CONNECTED', socket.address);
+    //console.info('[%s] CONNECTED', socket.address);
 
     /**
      *
