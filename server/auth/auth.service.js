@@ -18,7 +18,7 @@ function isAuthenticated() {
   return compose()
     // Validate jwt
     .use(function(req, res, next) {
-      console.log(req.headers);
+      //console.log(req.headers);
       if(req.headers.hasOwnProperty('kibo-app-id')){
         if(req.headers['kibo-app-id'] === '5wdqvvi8jyvfhxrxmu73dxun9za8x5u6n59'){
           console.log('app id is known');
@@ -64,7 +64,7 @@ function isAuthenticated() {
 
         needle.get('https://graph.accountkit.com/v1.0/me/?access_token='+req.headers['kibo-token'], options, function(err, resp) {
           console.log(err);
-          console.log(resp);
+          console.log(resp.body);
         });
 
       } else {
