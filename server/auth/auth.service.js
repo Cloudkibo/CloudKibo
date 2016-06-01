@@ -25,7 +25,6 @@ function isAuthenticated() {
           console.log('app id is known');
           if(req.headers['kibo-app-secret'] === 'jcmhec567tllydwhhy2z692l79j8bkxmaa98do1bjer16cdu5h79xvx'){
             console.log('client secret is correct')
-
             User.findOne({username: req.headers['kibo-client-id']}, function(err, user){
               console.log(err)
               console.log(user)
@@ -53,8 +52,21 @@ function isAuthenticated() {
           }
         }
       } else if(req.headers.hasOwnProperty('kibo-token')){
-
+        // https://graph.accountkit.com/v1.0/me/?access_token=<access_token>
         console.log(req.headers['kibo-token']);
+
+        var needle = require('needle');
+
+        var options = {
+          headers: {
+            'X-Custom-Header': 'CloudKibo Web Application'
+          }
+        }
+
+        needle.post('https://graph.accountkit.com/v1.0/me/?access_token='+req.headers['kibo-token'], myJSONObject, options, function(err, resp) {
+          console.log(err);
+          console.log(resp);
+        });
 
       } else {
         // allow access_token to be passed through query parameter as well
