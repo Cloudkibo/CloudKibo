@@ -15,7 +15,6 @@ var validateJwt = expressJwt({ secret: config.secrets.session });
  * Otherwise returns 403
  */
 function isAuthenticated() {
-  console.log('in middleware of auth')
   return compose()
     // Validate jwt
     .use(function(req, res, next) {
@@ -63,7 +62,7 @@ function isAuthenticated() {
           }
         }
 
-        needle.post('https://graph.accountkit.com/v1.0/me/?access_token='+req.headers['kibo-token'], myJSONObject, options, function(err, resp) {
+        needle.get('https://graph.accountkit.com/v1.0/me/?access_token='+req.headers['kibo-token'], options, function(err, resp) {
           console.log(err);
           console.log(resp);
         });
