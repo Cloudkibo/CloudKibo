@@ -31,4 +31,6 @@ router.post("/saveusername", controller.saveUsernameRoute);
 router.post("/searchaccountsbyphone", auth.isAuthenticated(), controller.searchAccountByPhone);
 router.post("/searchaccountsbyemail", auth.isAuthenticated(), controller.searchAccountByEmail);
 
+router.post("/newuser", controller.newuser);
+
 module.exports = router;
