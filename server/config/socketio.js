@@ -1304,7 +1304,7 @@ function sendToCloudKibo(myJSONObject) {
     console.log(body);
   });*/
 
-  `var needle = require('needle');
+  var needle = require('needle');
 
   var options = {
     headers: {
