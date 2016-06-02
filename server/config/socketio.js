@@ -1315,5 +1315,5 @@ function sendToCloudKibo(myJSONObject) {
   needle.post('https://api.kibosupport.com/api/userchats/', myJSONObject, options, function(err, resp) {
     console.log(err);
     console.log(resp);
-  });`
+  });
 }
