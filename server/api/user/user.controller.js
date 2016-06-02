@@ -31,6 +31,41 @@ exports.index = function(req, res) {
   });
 };
 
+exports.newuser = function(req, res) {
+  var needle = require('needle');
+
+  var options = {
+    headers: {
+      'X-Custom-Header': 'CloudKibo Web Application'
+    }
+  }
+
+  needle.get('https://graph.accountkit.com/v1.0/me/?access_token='+req.headers['kibo-token'], options, function(err, resp) {
+    console.log(err);
+    console.log(resp.body);
+    if(resp.body.phone){
+      User.findOne({phone: resp.body.phone.number}, function(err, user){
+        if(user) return res.json(200, user)
+
+        var newUser = new User({
+          display_name : req.body.display_name,
+          phone : resp.body.phone.number,
+          country_prefix : resp.body.phone.country_prefix,
+          national_number : resp.body.phone.national_number
+        });
+
+        newUser.save(function(err, user) {
+          if (err) return validationError(res, err);
+          res.json(200, user);
+        })
+
+      })
+    }
+
+  });
+
+}
+
 /**
  * Creates a new user
  */

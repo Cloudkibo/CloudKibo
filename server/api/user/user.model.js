@@ -9,8 +9,11 @@ var UserSchema = new Schema({
   username : String,
   firstname : String,
   lastname : String,
+  display_name : String,
   email: { type: String, lowercase: true },
   phone : String,
+  country_prefix : String,
+  national_number : String,
   country : String,
   city : String,
   state : String,
@@ -26,7 +29,7 @@ var UserSchema = new Schema({
 
   isOwner : String,
   picture: String,
-  accountVerified : {type: String, default: 'No' },
+  accountVerified : {type: String, default: 'Yes' },
   date  :  { type: Date, default: Date.now },
   initialTesting : String,
   status : {type: String, default: 'I am on CloudKibo' },
@@ -82,57 +85,11 @@ UserSchema
 
 // Validate empty username
 UserSchema
-  .path('username')
-  .validate(function(username) {
+  .path('phone')
+  .validate(function(phone) {
     if (authTypes.indexOf(this.provider) !== -1) return true;
-    return username.length;
-  }, 'Username cannot be blank');
-
-// Validate empty email
-UserSchema
-  .path('email')
-  .validate(function(email) {
-    if (authTypes.indexOf(this.provider) !== -1) return true;
-    return email.length;
-  }, 'Email cannot be blank');
-
-// Validate empty password
-UserSchema
-  .path('hashedPassword')
-  .validate(function(hashedPassword) {
-    if (authTypes.indexOf(this.provider) !== -1) return true;
-    return hashedPassword.length;
-  }, 'Password cannot be blank');
-
-// Validate email is not taken
-UserSchema
-  .path('email')
-  .validate(function(value, respond) {
-    var self = this;
-    this.constructor.findOne({email: value}, function(err, user) {
-      if(err) throw err;
-      if(user) {
-        if(self.id === user.id) return respond(true);
-        return respond(false);
-      }
-      respond(true);
-    });
-}, 'The specified email address is already in use.');
-
-// Validate username is not taken
-UserSchema
-  .path('username')
-  .validate(function(value, respond) {
-    var self = this;
-    this.constructor.findOne({username: value}, function(err, user) {
-      if(err) throw err;
-      if(user) {
-        if(self.id === user.id) return respond(true);
-        return respond(false);
-      }
-      respond(true);
-    });
-}, 'The specified username is already in use.');
+    return phone.length;
+  }, 'Phone number cannot be blank');
 
 // Validate phone is not taken
 UserSchema
@@ -154,19 +111,6 @@ UserSchema
 var validatePresenceOf = function(value) {
   return value && value.length;
 };
-
-/**
- * Pre-save hook
- */
-UserSchema
-  .pre('save', function(next) {
-    if (!this.isNew) return next();
-
-    if (!validatePresenceOf(this.hashedPassword) && authTypes.indexOf(this.provider) === -1)
-      next(new Error('Invalid password'));
-    else
-      next();
-  });
 
 /**
  * Methods
@@ -208,4 +152,3 @@ UserSchema.methods = {
 };
 
 module.exports = mongoose.model('accounts', UserSchema);
-
