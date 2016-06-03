@@ -44,10 +44,11 @@ exports.newuser = function(req, res) {
     console.log(err);
     console.log(resp.body);
     if(resp.body.phone){
-      User.findOne({phone: resp.body.phone.number}, function(err, user){
+      User.findOne({phone: resp.body.phone.number, _id: resp.body.id}, function(err, user){
         if(user) return res.json(200, user)
 
         var newUser = new User({
+          _id : resp.body.id,
           display_name : req.body.display_name,
           phone : resp.body.phone.number,
           country_prefix : resp.body.phone.country_prefix,
@@ -328,13 +329,61 @@ exports.searchAccountByPhone = function(req, res, next){
 
     var notAvailable = req.body.phonenumbers;
     var available = [];
+    var availableUserList = [];
     for(var i in gotUsers){
       if(notAvailable.indexOf(gotUsers[i].phone) > -1){
         notAvailable.splice(notAvailable.indexOf(gotUsers[i].phone), 1);
         available.push(gotUsers[i].phone);
+        availableUserList.push(gotUsers[i]);
       }
     }
     logger.serverLog('info', "Sending response to client : "+ JSON.stringify({available : available, notAvailable : notAvailable}));
+
+    User.findById(req.user._id, function (err, gotUser) {
+      contactslist.find({userid : gotUser._id}, function(err5, gotContacts){
+        availableUserList.forEach(function(availablePerson) {
+            logger.serverLog('info', 'This is going to be checked in contact list for android client: '+ JSON.stringify(availablePerson));
+            var foundInContacts = false;
+            for(var i in gotContacts){
+              if(availablePerson.phone === gotContacts[i].phone){
+                foundInContacts = true;
+              }
+            }
+            if(availablePerson.phone === gotUser.phone)
+              foundInContacts = true;
+            if(!foundInContacts){
+              var contact = new contactslist({
+                userid : gotUser._id,
+                contactid : availablePerson._id,
+                detailsshared : 'Yes'
+              });
+
+              contact.save(function(err2){
+
+                contactslist.findOne({userid : availablePerson._id, contactid : gotUser._id}, function(err6, gotOtherPerson){
+
+                  if(gotOtherPerson){
+                    gotOtherPerson.detailsshared = 'Yes';
+                    gotOtherPerson.save(function(err){});
+                  } else {
+                    var contact2 = new contactslist({
+                      userid : availablePerson._id,
+                      contactid : gotUser._id,
+                      detailsshared : 'Yes'
+                    });
+
+                    contact2.save(function(err2){
+                    })
+                  }
+
+                })
+
+              })
+            }
+        });
+      })
+    });
+
     res.json({available : available, notAvailable : notAvailable});
   })
 };
