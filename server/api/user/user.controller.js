@@ -44,11 +44,11 @@ exports.newuser = function(req, res) {
     console.log(err);
     console.log(resp.body);
     if(resp.body.phone){
-      User.findOne({phone: resp.body.phone.number, _id: resp.body.id}, function(err, user){
+      User.findOne({phone: resp.body.phone.number, id: resp.body.id}, function(err, user){
         if(user) return res.json(200, user)
 
         var newUser = new User({
-          _id : resp.body.id,
+          id : resp.body.id,
           display_name : req.body.display_name,
           phone : resp.body.phone.number,
           country_prefix : resp.body.phone.country_prefix,
