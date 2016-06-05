@@ -42,10 +42,16 @@ exports.newuser = function(req, res) {
 
   needle.get('https://graph.accountkit.com/v1.0/me/?access_token='+req.headers['kibo-token'], options, function(err, resp) {
     console.log(err);
-    console.log(resp.body);
+    logger.serverLog('info', 'response from facebook server');
+    logger.serverLog('info', resp.body);
     if(resp.body.phone){
+      logger.serverLog('info', 'there was no error in fb response');
       User.findOne({phone: resp.body.phone.number, id: resp.body.id}, function(err, user){
-        if(user) return res.json(200, user)
+        if(user){
+          logger.serverLog('info', 'this is old user. returning the user data and not creating new one');
+          logger.serverLog('info', JSON.stringify(user));
+          return res.json(200, user)
+        }
 
         var newUser = new User({
           id : resp.body.id,
@@ -57,6 +63,8 @@ exports.newuser = function(req, res) {
 
         newUser.save(function(err, user) {
           if (err) return validationError(res, err);
+          logger.serverLog('info', 'created new user and sending data back');
+          logger.serverLog('info', JSON.stringify(user));
           res.json(200, user);
         })
 
