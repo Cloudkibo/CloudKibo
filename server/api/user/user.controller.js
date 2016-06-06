@@ -32,7 +32,7 @@ exports.index = function(req, res) {
 };
 
 exports.newuser = function(req, res) {
-  logger.serverLog('info', req.body);
+  logger.severLog('info', req.body);
   var needle = require('needle');
 
   var options = {
@@ -47,7 +47,7 @@ exports.newuser = function(req, res) {
     logger.serverLog('info', resp.body);
     if(resp.body.phone){
       logger.serverLog('info', 'there was no error in fb response');
-      User.findOne({phone: resp.body.phone.number, id: resp.body.id}, function(err, user){
+      User.findOne({phone: resp.body.phone.number}, function(err, user){
         if(user){
           logger.serverLog('info', 'this is old user. returning the user data and not creating new one');
           logger.serverLog('info', JSON.stringify(user));
