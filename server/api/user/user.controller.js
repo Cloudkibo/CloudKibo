@@ -32,7 +32,7 @@ exports.index = function(req, res) {
 };
 
 exports.newuser = function(req, res) {
-  logger.log('info', req.body);
+  logger.severLog('info', req.body);
   var needle = require('needle');
 
   var options = {
