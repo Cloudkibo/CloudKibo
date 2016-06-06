@@ -65,8 +65,8 @@ function isAuthenticated() {
         needle.get('https://graph.accountkit.com/v1.0/me/?access_token='+req.headers['kibo-token'], options, function(err, resp) {
           console.log(err);
           console.log(resp.body);
-          if (!user) return res.send(401);
           User.findOne({phone: resp.body.phone.number}, function(err, user){
+            if (!user) return res.send(401);
             req.user = user;
             next();
           })
