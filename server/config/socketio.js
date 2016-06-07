@@ -17,7 +17,7 @@ function onDisconnect(socketio, socket) {
   var user = require('./../api/user/user.model.js');
 
   user.findOne({
-    username: socket.username
+    phone: socket.phone
   }, function(err, gotuser) {
     if (err) logger.serverLog('error', 'socketio.js onDisconnect : ' + err);
 
@@ -34,7 +34,7 @@ function onDisconnect(socketio, socket) {
           for (var i in clients) {
             for (var j in gotContactList) {
               if (gotContactList[j].contactid != null) {
-                if (clients[i].username == gotContactList[j].contactid.username) {
+                if (clients[i].phone == gotContactList[j].contactid.phone) {
                   socketid = clients[i].id;
                   socketio.to(socketid).emit('offline', gotuser);
                 }
@@ -107,7 +107,7 @@ function onConnect(socketio, socket) {
     var socketid = '';
 
     for (var i in clients) {
-      if (clients[i].username == message.to) {
+      if (clients[i].phone == message.to) {
         socketid = clients[i].id;
       }
     }
@@ -134,7 +134,7 @@ function onConnect(socketio, socket) {
     var socketid = '';
 
     for (var i in clients) {
-      if (clients[i].username == message.to) {
+      if (clients[i].phone == message.to) {
         socketid = clients[i].id;
       }
     }
@@ -181,7 +181,7 @@ function onConnect(socketio, socket) {
     var socketid = '';
 
     for (var i in clients) {
-      if (clients[i].username == message.to) {
+      if (clients[i].phone == message.to) {
         socketid = clients[i].id;
       }
     }
@@ -217,7 +217,7 @@ function onConnect(socketio, socket) {
     var canJoin = true;
 
     for (var i in clients) {
-      if (clients[i].username == room.username) {
+      if (clients[i].phone == room.phone) {
         socketid = clients[i].id;
         canJoin = false;
         logger.serverLog('info', 'socketio.js on(create or join) Joining twice');
@@ -226,17 +226,17 @@ function onConnect(socketio, socket) {
 
     if (numClients === 0) {
       socket.join(room.room);
-      socket.username = room.username;
-      logger.serverLog('info', 'socketio.js on(create or join) : ' + room.username + ' created the room.');
+      socket.phone = room.phone;
+      logger.serverLog('info', 'socketio.js on(create or join) : ' + room.phone + ' created the room.');
       //console.log(room.username +' joined the room.')
       socket.emit('created', room);
     } else if (numClients === 1) {
       if (canJoin) {
         socketio.in(room.room).emit('join', room);
         socket.join(room.room);
-        socket.username = room.sername;
+        socket.phone = room.phone;
         socket.emit('joined', room);
-        logger.serverLog('info', 'socketio.js on(create or join) : ' + room.username + ' joined the room.');
+        logger.serverLog('info', 'socketio.js on(create or join) : ' + room.phone + ' joined the room.');
       } else {
         //socket.join(room.room);
         //socket.emit('created', room);
@@ -257,7 +257,7 @@ function onConnect(socketio, socket) {
 
     socket.join(room.room);
 
-    socket.username = room.user.username;
+    socket.phone = room.user.phone;
 
     console.log(room)
 
@@ -283,7 +283,7 @@ function onConnect(socketio, socket) {
         for (var i in clients) {
           for (var j in gotContactList) {
             if (gotContactList[j].contactid != null) {
-              if (clients[i].username == gotContactList[j].contactid.username) {
+              if (clients[i].phone == gotContactList[j].contactid.phone) {
                 socketid = clients[i].id;
                 socketio.to(socketid).emit('online', room.user);
                 //socketio.sockets.socket(socketid).emit('online', room.user);
@@ -295,7 +295,7 @@ function onConnect(socketio, socket) {
 
         socket.emit('youareonline', myOnlineContacts);
 
-        logger.serverLog('info', 'socketio.js on : ' + room.user.username + ' logged in. Global chat room was joined.');
+        logger.serverLog('info', 'socketio.js on : ' + room.user.phone + ' logged in. Global chat room was joined.');
 
       }
 
@@ -327,7 +327,7 @@ function onConnect(socketio, socket) {
         for (var i in clients) {
           for (var j in gotContactList) {
             if (gotContactList[j].contactid != null) {
-              if (clients[i].username == gotContactList[j].contactid.username) {
+              if (clients[i].phone == gotContactList[j].contactid.phone) {
                 socketid = clients[i].id;
                 socketio.to(socketid).emit('online', room.user);
                 //socketio.sockets.socket(socketid).emit('online', room.user);
@@ -356,7 +356,7 @@ function onConnect(socketio, socket) {
       var socketid = '';
 
       for (var i in clients) {
-        if (clients[i].username == message.callee) {
+        if (clients[i].phone == message.callee) {
           socketid = clients[i].id;
         }
       }
@@ -391,12 +391,12 @@ function onConnect(socketio, socket) {
 
       for (var i in clients) {
         for (var j in message.callees) {
-          if (clients[i].username == message.callees[j].user_id.username) {
+          if (clients[i].phone == message.callees[j].user_id.phone) {
             socketid = clients[i].id;
             if (socketid == '') {
               socket.emit('groupmemberisoffline', message.callee);
             } else {
-              if (clients[i].username != message.caller) {
+              if (clients[i].phone != message.caller) {
                 socketio.to(socketid).emit('areyoufreeforgroupcall', {
                   caller: message.caller,
                   sendersocket: socketidSender
@@ -422,7 +422,7 @@ function onConnect(socketio, socket) {
       var socketid = '';
 
       for (var i in clients) {
-        if (clients[i].username == message.mycaller) {
+        if (clients[i].phone == message.mycaller) {
           socketid = clients[i].id;
         }
       }
@@ -450,7 +450,7 @@ function onConnect(socketio, socket) {
       var socketid = '';
 
       for (var i in clients) {
-        if (clients[i].username == message.mycaller) {
+        if (clients[i].phone == message.mycaller) {
           socketid = clients[i].id;
         }
       }
@@ -478,7 +478,7 @@ function onConnect(socketio, socket) {
       var socketid = '';
 
       for (var i in clients) {
-        if (clients[i].username == message.mycaller) {
+        if (clients[i].phone == message.mycaller) {
           socketid = clients[i].id;
         }
       }
@@ -505,7 +505,7 @@ function onConnect(socketio, socket) {
       var socketid = '';
 
       for (var i in clients) {
-        if (clients[i].username == message.mycaller) {
+        if (clients[i].phone == message.mycaller) {
           socketid = clients[i].id;
         }
       }
@@ -533,7 +533,7 @@ function onConnect(socketio, socket) {
       var socketid = '';
 
       for (var i in clients) {
-        if (clients[i].username == im.stanza.to) {
+        if (clients[i].phone == im.stanza.to) {
           socketid = clients[i].id;
         }
       }
@@ -600,7 +600,7 @@ function onConnect(socketio, socket) {
       var socketid = '';
 
       for (var i in clients) {
-        if (clients[i].username == im.contact) {
+        if (clients[i].phone == im.contact) {
           socketid = clients[i].id;
         }
       }
@@ -641,7 +641,7 @@ function onConnect(socketio, socket) {
           for (var i in clients) {
             for (var j in gotContactList) {
               if (gotContactList[j].contactid != null) {
-                if (clients[i].username == gotContactList[j].contactid.username) {
+                if (clients[i].phone == gotContactList[j].contactid.phone) {
                   socketid = clients[i].id;
                   socketio.to(socketid).emit('statusUpdate', room.user);
                 }
@@ -674,19 +674,19 @@ function onConnect(socketio, socket) {
 
     //log('Room ' + room.room + ' has ' + numClients + ' client(s)');
     //log('Request to create or join room ' + room.room + ' from '+ room.username);
-    logger.serverLog('info', 'Request to create or join room ' + room.room + ' from ' + room.username);
+    logger.serverLog('info', 'Request to create or join room ' + room.room + ' from ' + room.phone);
 
     var clientsIDs = new Array(numClients);
 
     for (var i in clients) {
-      clientsIDs[i] = clients[i].username;
+      clientsIDs[i] = clients[i].phone;
     }
 
     console.log('people in room: ', clientsIDs);
 
     if (numClients === 0) {
       socket.join(room.room);
-      socket.username = room.username;
+      socket.phone = room.phone;
 
       console.log('room created');
       logger.serverLog('info', 'Room created  ')
@@ -694,7 +694,7 @@ function onConnect(socketio, socket) {
       socket.emit('created', room);
     } else if (numClients < 5) { //(numClients === 2 || numClients === 1 || numClients === 3 || numClients === 4) {
       socket.join(room.room);
-      socket.username = room.username;
+      socket.phone = room.phone;
 
       room.otherClients = clientsIDs;
       socket.emit('joined', room);
@@ -702,7 +702,7 @@ function onConnect(socketio, socket) {
       console.log('room joined');
       logger.serverLog('info', 'Room joined  ')
 
-      clientsIDs.push(room.username);
+      clientsIDs.push(room.phone);
 
       room.otherClients = clientsIDs;
       socketio.in(room.room).emit('join', room);
@@ -723,11 +723,11 @@ function onConnect(socketio, socket) {
 
       if (numClients === 0) {
         socket.join(room.room);
-        socket.username = room.username;
+        socket.phone = room.phone;
         socket.emit('created', room);
       } else if (numClients < 2) {
         socket.join(room.room);
-        socket.username = room.username;
+        socket.phone = room.phone;
         socket.emit('joined', room);
 
         socket.broadcast.to(room.room).emit('join', room);
