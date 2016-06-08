@@ -11,9 +11,9 @@ exports.index = function(req, res) {
 	User.findById(req.user._id, function (err, gotUser) {
 			if (err) return console.log('Error 1'+ err);
 
-			if(req.body.user1 == gotUser.username){
+			if(req.body.user1 == gotUser.phone){
 
-				  userchat.find({owneruser : gotUser.username, $or: [ { to : req.body.user1, from : req.body.user2 },
+				  userchat.find({owneruser : gotUser.phone, $or: [ { to : req.body.user1, from : req.body.user2 },
 																	  { to : req.body.user2, from : req.body.user1 } ]},
 																		function(err1, gotMessages){
 																			if(err1) return console.log(err1);
@@ -34,9 +34,9 @@ exports.removechathistory = function(req, res) {
 
 		console.log("removing chat history");
 
-		User.findOne({username : req.body.username}, function (err, gotUserSaved) {
-			userchat.remove({owneruser : gotUser.username, $or: [ { to : gotUserSaved.username, from : gotUser.username },
-										{ to : gotUser.username, from : gotUserSaved.username } ]},
+		User.findOne({username : req.body.phone}, function (err, gotUserSaved) {
+			userchat.remove({owneruser : gotUser.phone, $or: [ { to : gotUserSaved.phone, from : gotUser.phone },
+										{ to : gotUser.phone, from : gotUserSaved.phone } ]},
 										function(err1){
 											if(err1) return console.log(err1);
 
