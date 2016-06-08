@@ -349,9 +349,9 @@ exports.searchAccountByPhone = function(req, res, next){
     logger.serverLog('info', "Sending response to client : "+ JSON.stringify({available : available, notAvailable : notAvailable}));
     logger.serverLog('info', 'checking which of contacts are on cloudkibo but not friends');
     User.findById(req.user._id, function (err, gotUser) {
-      logger.log('info', 'This is user information '+ JSON.stringify(gotUser));
+      logger.serverLog('info', 'This is user information '+ JSON.stringify(gotUser));
       contactslist.find({userid : gotUser._id}, function(err5, gotContacts){
-        logger.log('info', 'These are the contacts '+ JSON.stringify(gotContacts))
+        logger.serverLog('info', 'These are the contacts '+ JSON.stringify(gotContacts))
         availableUserList.forEach(function(availablePerson) {
             logger.serverLog('info', 'This contact is going to be checked in contact list for android client: '+ JSON.stringify(availablePerson));
             var foundInContacts = false;
