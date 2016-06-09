@@ -34,7 +34,7 @@ exports.alluserchat = function(req, res) {
 
 			if(req.body.user1 == gotUser.phone){
 
-				  userchat.find({owneruser : gotUser.phone ]},
+				  userchat.find({owneruser : gotUser.phone},
 																		function(err1, gotMessages){
 																			if(err1) return console.log(err1);
 
