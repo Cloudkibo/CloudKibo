@@ -526,6 +526,8 @@ function onConnect(socketio, socket) {
 
   socket.on('im', function(im) {
 
+    logger.serverLog('info', 'chat message -> ' + JSON.stringify(im));
+
     try {
 
       var clients = findClientsSocket(im.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
@@ -686,7 +688,7 @@ function onConnect(socketio, socket) {
 
     if (numClients === 0) {
       socket.join(room.room);
-      socket.phone = room.phone;
+      socket.username = room.phone;
 
       console.log('room created');
       logger.serverLog('info', 'Room created  ')
@@ -694,7 +696,7 @@ function onConnect(socketio, socket) {
       socket.emit('created', room);
     } else if (numClients < 5) { //(numClients === 2 || numClients === 1 || numClients === 3 || numClients === 4) {
       socket.join(room.room);
-      socket.phone = room.phone;
+      socket.username = room.username;
 
       room.otherClients = clientsIDs;
       socket.emit('joined', room);
@@ -702,7 +704,7 @@ function onConnect(socketio, socket) {
       console.log('room joined');
       logger.serverLog('info', 'Room joined  ')
 
-      clientsIDs.push(room.phone);
+      clientsIDs.push(room.username);
 
       room.otherClients = clientsIDs;
       socketio.in(room.room).emit('join', room);
@@ -723,11 +725,11 @@ function onConnect(socketio, socket) {
 
       if (numClients === 0) {
         socket.join(room.room);
-        socket.phone = room.phone;
+        socket.username = room.username;
         socket.emit('created', room);
       } else if (numClients < 2) {
         socket.join(room.room);
-        socket.phone = room.phone;
+        socket.username = room.username;
         socket.emit('joined', room);
 
         socket.broadcast.to(room.room).emit('join', room);
