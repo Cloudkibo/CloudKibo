@@ -829,7 +829,7 @@ module.exports = function(socketio) {
   // }));
 
   socketio.on('connection', function(socket) {
-    console.log("socket id connected :" + socket.id);
+    logger.serverLog('info', 'Client connected :' + socket.id);
     socket.address = socket.handshake.address !== null ?
       socket.handshake.address.address + ':' + socket.handshake.address.port :
       process.env.DOMAIN;
@@ -840,7 +840,7 @@ module.exports = function(socketio) {
     socket.on('disconnect', function() {
       onDisconnect(socketio, socket);
       conferenceDisconnect(socketio, socket);
-      logger.serverLog('info', 'Client disconnected');
+      logger.serverLog('info', 'Client disconnected :'+ socket.id);
       //console.info('[%s] DISCONNECTED', socket.address);
     });
 
