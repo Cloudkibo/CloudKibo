@@ -840,6 +840,7 @@ module.exports = function(socketio) {
     socket.on('disconnect', function() {
       onDisconnect(socketio, socket);
       conferenceDisconnect(socketio, socket);
+      logger.serverLog('info', 'Client disconnected');
       //console.info('[%s] DISCONNECTED', socket.address);
     });
 
