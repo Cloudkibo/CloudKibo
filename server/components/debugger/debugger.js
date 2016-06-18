@@ -5,12 +5,14 @@ var router = express.Router();
 
 exports.recordError = function(body) {
 
-  Debugger.create(body, function(err, response) {
+  var newReport = new Debugger(body);
+
+  newReport.save(function(err, response) {
     if(err) { return console.log(res, err); }
     console.log(response);
   });
 
-  
+
 
 
 };
