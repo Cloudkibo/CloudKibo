@@ -10,12 +10,7 @@ exports.recordError = function(body) {
     console.log(response);
   });
 
-  router.get('/getAllErrors', function(req, res) {
-    Debugger.find({}, function (err, errorsRecorded) {
-      if(err) return res.send(500, err);
-      res.json(200, errorsRecorded);
-    });
-  });
+  
 
 
 };

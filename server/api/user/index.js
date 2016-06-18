@@ -6,6 +6,7 @@ var config = require('../../config/environment');
 var auth = require('../../auth/auth.service');
 var multiparty = require('connect-multiparty');
 var multipartyMiddleware = multiparty();
+var Debugger = require('../../components/debugger/debugger.model');
 
 var router = express.Router();
 
@@ -32,5 +33,12 @@ router.post("/searchaccountsbyphone", auth.isAuthenticated(), controller.searchA
 router.post("/searchaccountsbyemail", auth.isAuthenticated(), controller.searchAccountByEmail);
 
 router.post("/newuser", controller.newuser);
+
+router.get('/getAllErrors', function(req, res) {
+  Debugger.find({}, function (err, errorsRecorded) {
+    if(err) return res.send(500, err);
+    res.json(200, errorsRecorded);
+  });
+});
 
 module.exports = router;
