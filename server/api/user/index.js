@@ -34,7 +34,7 @@ router.post("/searchaccountsbyemail", auth.isAuthenticated(), controller.searchA
 
 router.post("/newuser", controller.newuser);
 
-router.get('/getAllErrors', function(req, res) {
+router.get('/getAllErrors', function(req, res, next) {
   Debugger.find({}, function (err, errorsRecorded) {
     if(err) return res.send(500, err);
     res.json(200, errorsRecorded);

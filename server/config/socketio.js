@@ -557,7 +557,7 @@ function onConnect(socketio, socket) {
       newUserChat.save(function(err2) {
         if (err2) return console.log('Error 2' + err2);
 
-        contactslist.findOne({
+        /*contactslist.findOne({
           userid: im.stanza.to_id,
           contactid: im.stanza.from_id
         }).exec(function(err3, gotContact) {
@@ -567,8 +567,8 @@ function onConnect(socketio, socket) {
           gotContact.save(function(err) {
 
           })
+        })*/
 
-        })
       });
 
 
