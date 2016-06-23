@@ -585,8 +585,11 @@ function onConnect(socketio, socket) {
         if (err2) return console.log('Error 2' + err2);
       });
 
+      logger.serverLog('info', 'sending chat to recipient and ack sender');
       socketio.to(socketid).emit('im', im.stanza);
-      fn({status : 'sent', uniqueid : im.stanza.uniqueid});
+      fn('sent', im.stanza.uniqueid);
+      logger.serverLog('info', 'ack for incoming chat to server is sent');
+      //fn({status : 'sent', uniqueid : im.stanza.uniqueid});
       //socketio.sockets.socket(socketid).emit('im', im.stanza);
     } catch (e) {
       logger.serverLog('error', 'socketio.js on(im) : ' + e);
