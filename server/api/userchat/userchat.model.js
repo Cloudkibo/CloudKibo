@@ -9,7 +9,9 @@ var userchat = new Schema({
       fromFullName : String,
       msg : String,
       date : {type: Date, default: Date.now },
-      owneruser : String
+      owneruser : String,
+      uniqueid : String,
+      status : String
 });
 
 

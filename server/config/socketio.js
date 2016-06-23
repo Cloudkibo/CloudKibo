@@ -81,9 +81,6 @@ function onDisconnect(socketio, socket) {
 // When the user connects.. perform this
 function onConnect(socketio, socket) {
 
-  //console.log(socket);
-  logger.serverLog('debug', 'socketio.js connected:');
-
   // convenience function to log server messages on the client
   function log() {
     var array = [">>> Message from server: "];
@@ -524,7 +521,7 @@ function onConnect(socketio, socket) {
 
   });
 
-  socket.on('im', function(im) {
+  socket.on('im', function(im, fn) {
 
     logger.serverLog('info', 'chat message -> ' + JSON.stringify(im));
 
@@ -551,7 +548,9 @@ function onConnect(socketio, socket) {
         from: im.stanza.from,
         fromFullName: im.stanza.fromFullName,
         msg: im.stanza.msg,
-        owneruser: im.stanza.to
+        owneruser: im.stanza.to,
+        status: 'sent',
+        uniqueid : im.stanza.uniqueid
       });
 
       newUserChat.save(function(err2) {
@@ -577,18 +576,51 @@ function onConnect(socketio, socket) {
         from: im.stanza.from,
         fromFullName: im.stanza.fromFullName,
         msg: im.stanza.msg,
-        owneruser: im.stanza.from
+        owneruser: im.stanza.from,
+        status: 'sent',
+        uniqueid : im.stanza.uniqueid
       });
 
       newUserChat.save(function(err2) {
         if (err2) return console.log('Error 2' + err2);
       });
 
+      logger.serverLog('info', 'sending chat to recipient and ack sender');
       socketio.to(socketid).emit('im', im.stanza);
+      fn('sent', im.stanza.uniqueid);
+      logger.serverLog('info', 'ack for incoming chat to server is sent');
+      //fn({status : 'sent', uniqueid : im.stanza.uniqueid});
       //socketio.sockets.socket(socketid).emit('im', im.stanza);
     } catch (e) {
       logger.serverLog('error', 'socketio.js on(im) : ' + e);
     }
+
+  });
+
+  socket.on('messageStatusUpdate', function(data, fn){
+
+    userchat.find(
+      {uniqueid : data.uniqueid},
+      {status : data.status}, // should have value one of 'delivered', 'seen'
+      {multi : true},
+      function (err, num){
+        if(num === 2) return serverLog('debug', 'SYNC Error on messageStatusUpdate.');
+
+        var clients = findClientsSocket(im.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+
+        var socketid = '';
+
+        for (var i in clients) {
+          if (clients[i].phone == data.sender) {
+            socketid = clients[i].id;
+          }
+        }
+
+        socketio.to(socketid).emit('messageStatusUpdate', {status : data.status, uniqueid : data.uniqueid});
+        fn({status : 'statusUpdated', uniqueid : data.uniqueid});
+
+      }
+    );
 
   });
 
