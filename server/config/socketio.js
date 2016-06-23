@@ -587,9 +587,10 @@ function onConnect(socketio, socket) {
 
       logger.serverLog('info', 'sending chat to recipient and ack sender');
       socketio.to(socketid).emit('im', im.stanza);
-      fn('sent', im.stanza.uniqueid);
+      //fn('sent', im.stanza.uniqueid);
+      fn({status : 'sent', uniqueid : im.stanza.uniqueid});
       logger.serverLog('info', 'ack for incoming chat to server is sent');
-      //fn({status : 'sent', uniqueid : im.stanza.uniqueid});
+
       //socketio.sockets.socket(socketid).emit('im', im.stanza);
     } catch (e) {
       logger.serverLog('error', 'socketio.js on(im) : ' + e);
