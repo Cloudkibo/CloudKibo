@@ -29,15 +29,10 @@ exports.index = function(req, res) {
 };
 
 exports.alluserchat = function(req, res) {
-	logger.serverLog('info', 'this is the logged in user in all chat '+ JSON.stringify(req.user));
 	User.findById(req.user._id, function (err, gotUser) {
 			if (err) return console.log('Error 1'+ err);
 
-			logger.serverLog('info', 'this is gotUser from database in all chat '+ JSON.stringify(gotUser));
-
 			if(req.body.user1 == gotUser.phone){
-
-				logger.serverLog('info', 'phone numbers of both are matched');
 
 				  userchat.find({owneruser : gotUser.phone},
 																		function(err1, gotMessages){

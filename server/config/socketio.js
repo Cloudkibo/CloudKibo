@@ -109,6 +109,8 @@ function onConnect(socketio, socket) {
       }
     }
 
+    logger.serverLog('info', 'sending socket.io "message" to other client');
+
     if (socketid == '') {
       //socket.emit('disconnected', message.mycaller);
     } else {
@@ -135,6 +137,8 @@ function onConnect(socketio, socket) {
         socketid = clients[i].id;
       }
     }
+
+    logger.serverLog('info', 'sending socket.io group call "message" to other client');
 
     if (socketid == '') {
       //socket.emit('disconnected', message.mycaller);
@@ -616,6 +620,8 @@ function onConnect(socketio, socket) {
             socketid = clients[i].id;
           }
         }
+
+        logger.serverLog('info', 'server received message status update from mobile ');
 
         socketio.to(socketid).emit('messageStatusUpdate', {status : data.status, uniqueid : data.uniqueid});
         fn({status : 'statusUpdated', uniqueid : data.uniqueid});
