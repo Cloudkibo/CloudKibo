@@ -612,7 +612,7 @@ function onConnect(socketio, socket) {
       {status : data.status}, // should have value one of 'delivered', 'seen'
       {multi : true},
       function (err, num){
-        if(num !== 2) return logger.serverLog('info', 'SYNC Error on messageStatusUpdate.');
+        logger.serverLog('info', 'Rows updated here '+ num);
 
         var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
