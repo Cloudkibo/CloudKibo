@@ -606,12 +606,13 @@ function onConnect(socketio, socket) {
 
     logger.serverLog('info', 'server received message status update from mobile '+ JSON.stringify(data));
 
+    var userchat = require('./../api/userchat/userchat.model.js');
     userchat.find(
       {uniqueid : data.uniqueid},
       {status : data.status}, // should have value one of 'delivered', 'seen'
       {multi : true},
       function (err, num){
-        if(num === 2) return serverLog('info', 'SYNC Error on messageStatusUpdate.');
+        if(num === 2) return logger.serverLog('info', 'SYNC Error on messageStatusUpdate.');
 
         var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
