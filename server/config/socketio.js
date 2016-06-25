@@ -611,7 +611,7 @@ function onConnect(socketio, socket) {
       function (err, num){
         if(num === 2) return serverLog('debug', 'SYNC Error on messageStatusUpdate.');
 
-        var clients = findClientsSocket(im.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+        var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
         var socketid = '';
 
