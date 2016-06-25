@@ -607,7 +607,7 @@ function onConnect(socketio, socket) {
     logger.serverLog('info', 'server received message status update from mobile '+ JSON.stringify(data));
 
     var userchat = require('./../api/userchat/userchat.model.js');
-    userchat.find(
+    userchat.update(
       {uniqueid : data.uniqueid},
       {status : data.status}, // should have value one of 'delivered', 'seen'
       {multi : true},
