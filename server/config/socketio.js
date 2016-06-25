@@ -604,12 +604,14 @@ function onConnect(socketio, socket) {
 
   socket.on('messageStatusUpdate', function(data, fn){
 
+    logger.serverLog('info', 'server received message status update from mobile '+ JSON.stringify(data));
+
     userchat.find(
       {uniqueid : data.uniqueid},
       {status : data.status}, // should have value one of 'delivered', 'seen'
       {multi : true},
       function (err, num){
-        if(num === 2) return serverLog('debug', 'SYNC Error on messageStatusUpdate.');
+        if(num === 2) return serverLog('info', 'SYNC Error on messageStatusUpdate.');
 
         var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
@@ -621,7 +623,7 @@ function onConnect(socketio, socket) {
           }
         }
 
-        logger.serverLog('info', 'server received message status update from mobile ');
+        logger.serverLog('info', 'server sending message status update from mobile to other mobile now');
 
         socketio.to(socketid).emit('messageStatusUpdate', {status : data.status, uniqueid : data.uniqueid});
         fn({status : 'statusUpdated', uniqueid : data.uniqueid});
