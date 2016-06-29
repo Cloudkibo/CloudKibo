@@ -12,6 +12,12 @@ var router = express.Router();
 
 router.get('/', auth.hasRole('admin'), controller.index); // www.cloudkibo.com/api/users/ (GET)
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
+router.get('/getAllErrors', function(req, res, next) {
+  Debugger.find({}, function (err, errorsRecorded) {
+    if(err) return res.send(500, err);
+    res.json(200, errorsRecorded);
+  });
+});
 router.get('/me', auth.isAuthenticated(), controller.me); // www.cloudkibo.com/api/users/me
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.get('/:id', auth.isAuthenticated(), controller.show);
@@ -33,12 +39,5 @@ router.post("/searchaccountsbyphone", auth.isAuthenticated(), controller.searchA
 router.post("/searchaccountsbyemail", auth.isAuthenticated(), controller.searchAccountByEmail);
 
 router.post("/newuser", controller.newuser);
-
-router.get('/getAllErrors', function(req, res, next) {
-  Debugger.find({}, function (err, errorsRecorded) {
-    if(err) return res.send(500, err);
-    res.json(200, errorsRecorded);
-  });
-});
 
 module.exports = router;

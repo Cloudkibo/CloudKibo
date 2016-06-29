@@ -353,7 +353,6 @@ exports.searchAccountByPhone = function(req, res, next){
       contactslist.find({userid : gotUser._id}).populate('contactid').exec(function(err5, gotContacts){
         logger.serverLog('info', 'These are the contacts '+ JSON.stringify(gotContacts))
         availableUserList.forEach(function(availablePerson) {
-            logger.serverLog('info', 'This contact is going to be checked in contact list for android client: '+ JSON.stringify(availablePerson));
             var foundInContacts = false;
             for(var i in gotContacts){
               if(availablePerson.phone === gotContacts[i].contactid.phone){
@@ -419,7 +418,6 @@ exports.searchAccountByEmail = function(req, res, next){
     User.findById(req.user._id, function (err, gotUser) {
       contactslist.find({userid : gotUser._id}, function(err5, gotContacts){
         availableUserList.forEach(function(availablePerson) {
-            logger.serverLog('info', 'This is going to be checked in contact list for android client: '+ JSON.stringify(availablePerson));
             var foundInContacts = false;
             for(var i in gotContacts){
               if(availablePerson.email === gotContacts[i].email){
