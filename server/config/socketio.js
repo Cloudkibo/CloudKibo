@@ -99,7 +99,7 @@ function onConnect(socketio, socket) {
       if (e) logger.serverLog('warn', 'socketio.js on(message) : ' + e);
     }
 
-    var clients = findClientsSocket(message.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+    var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
     var socketid = '';
 
@@ -128,7 +128,7 @@ function onConnect(socketio, socket) {
       if (e) logger.serverLog('warn', 'socketio.js on(message) : ' + e);
     }
 
-    var clients = findClientsSocket(message.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+    var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
     var socketid = '';
 
@@ -177,7 +177,7 @@ function onConnect(socketio, socket) {
       if (e) logger.serverLog('warn', 'socketio.js on(messagefordatachannel) : ' + e);
     }
 
-    var clients = findClientsSocket(message.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+    var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
     var socketid = '';
 
@@ -268,7 +268,7 @@ function onConnect(socketio, socket) {
     //console.log(room.user.username +' has joined the room.')
     var myOnlineContacts = [];
 
-    var clients = findClientsSocket(room.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+    var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
     var socketid = '';
 
@@ -310,7 +310,7 @@ function onConnect(socketio, socket) {
   socket.on('whozonline', function(room) {
     var myOnlineContacts = [];
 
-    var clients = findClientsSocket(room.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+    var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
     var socketid = '';
 
@@ -352,7 +352,7 @@ function onConnect(socketio, socket) {
 
       var socketidSender = socket.id;
 
-      var clients = findClientsSocket(message.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
       var socketid = '';
 
@@ -386,7 +386,7 @@ function onConnect(socketio, socket) {
 
       var socketidSender = socket.id;
 
-      var clients = findClientsSocket(message.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
       var socketid = '';
 
@@ -418,7 +418,7 @@ function onConnect(socketio, socket) {
   socket.on('noiambusy', function(message) {
 
     try {
-      var clients = findClientsSocket(message.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
       var socketid = '';
 
@@ -446,7 +446,7 @@ function onConnect(socketio, socket) {
   socket.on('noiambusyforgroupcall', function(message) {
 
     try {
-      var clients = findClientsSocket(message.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
       var socketid = '';
 
@@ -474,7 +474,7 @@ function onConnect(socketio, socket) {
   socket.on('yesiamfreeforcall', function(message) {
 
     try {
-      var clients = findClientsSocket(message.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
       var socketid = '';
 
@@ -501,7 +501,7 @@ function onConnect(socketio, socket) {
   socket.on('yesiamfreeforgroupcall', function(message) {
 
     try {
-      var clients = findClientsSocket(message.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
       var socketid = '';
 
@@ -531,7 +531,7 @@ function onConnect(socketio, socket) {
 
     try {
 
-      var clients = findClientsSocket(im.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
       var socketid = '';
 
@@ -639,7 +639,7 @@ function onConnect(socketio, socket) {
 
       logger.serverLog('info', 'freind request sent using socket: ' + JSON.stringify(im));
 
-      var clients = findClientsSocket(im.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
       var socketid = '';
 
@@ -670,7 +670,7 @@ function onConnect(socketio, socket) {
   socket.on('status', function(room) {
     try {
 
-      var clients = findClientsSocket(room.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+      var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
 
       var socketid = '';
 
