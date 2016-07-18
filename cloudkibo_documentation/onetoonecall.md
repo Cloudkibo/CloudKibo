@@ -14,10 +14,10 @@ Caller should wait for 15 seconds, if there is no ack message from server, then 
 
 Server, after sending ack message to sender, would check the presence of the callee on socket.io room. If callee is not online, the server would send the message 'message' to caller with following variables:
 
-- msg
-- - calleephone
-- - callerphone
-- - status : 'calleeoffline'
+- calleephone
+- callerphone
+- status : 'calleeoffline'
+- type : 'call'
 
 If callee is online, server would send the message 'areyoufreeforcall' message to callee with following variables.
 
