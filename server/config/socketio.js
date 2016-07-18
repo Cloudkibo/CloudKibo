@@ -148,23 +148,6 @@ function onConnect(socketio, socket) {
     }
   });
 
-  socket.on('messageformeeting', function(message) {
-    console.log('Got message:', message.msg);
-
-    //socket.broadcast.emit('message', message);
-
-    try {
-      message.msg.from = socket.id;
-    } catch (e) {
-      if (e) logger.serverLog('warn', 'socketio.js on(messageformeeting) : ' + e);
-    }
-
-    //io2.sockets.in(message.room).emit('message', message.msg);
-    socket.broadcast.to(message.room).emit('message', message.msg);
-    //console.log('Got message:', message.msg);
-    //console.log(io2.sockets.manager.rooms)
-
-  });
 
   socket.on('messagefordatachannel', function(message) {
     //console.log('Got message:', message);
@@ -204,53 +187,6 @@ function onConnect(socketio, socket) {
 
     socketio.to(socketid).emit('messagefordatachannel', msgToSend);
     //socketio.sockets.socket(socketid).emit('messagefordatachannel', msgToSend);
-
-  });
-
-  socket.on('create or join', function(room) {
-
-    var clients = findClientsSocket(room.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
-
-    var numClients = clients.length;
-
-    var socketid = '';
-
-    var canJoin = true;
-
-    for (var i in clients) {
-      if (clients[i].phone == room.phone) {
-        socketid = clients[i].id;
-        canJoin = false;
-        logger.serverLog('info', 'socketio.js on(create or join) Joining twice');
-      }
-    }
-
-    if (numClients === 0) {
-      socket.join(room.room);
-      socket.phone = room.phone;
-      logger.serverLog('info', 'socketio.js on(create or join) : ' + room.phone + ' created the room.');
-      //console.log(room.username +' joined the room.')
-      socket.emit('created', room);
-    } else if (numClients === 1) {
-      if (canJoin) {
-        socketio.in(room.room).emit('join', room);
-        socket.join(room.room);
-        socket.phone = room.phone;
-        socket.emit('joined', room);
-        logger.serverLog('info', 'socketio.js on(create or join) : ' + room.phone + ' joined the room.');
-      } else {
-        //socket.join(room.room);
-        //socket.emit('created', room);
-        socket.emit('joining twice', room);
-      }
-    } else { // max two clients
-      socket.emit('full', room.room);
-    }
-
-    socket.emit('emit(): client ' + socket.id + ' joined room ' + room.room);
-    //socket.broadcast.emit('broadcast(): client ' + socket.id + ' joined room ' + room.room);
-
-    //console.log(socketio.sockets.manager.rooms)
 
   });
 
@@ -345,10 +281,10 @@ function onConnect(socketio, socket) {
     })
   });
 
-  socket.on('callthisperson', function(message) {
+  socket.on('callthisperson', function(message, fn) {
     try {
 
-      console.log(message);
+      fn({status : 'ok', calleephone : message.calleephone});
 
       var socketidSender = socket.id;
 
@@ -357,16 +293,17 @@ function onConnect(socketio, socket) {
       var socketid = '';
 
       for (var i in clients) {
-        if (clients[i].phone == message.callee) {
+        if (clients[i].phone == message.calleephone) {
           socketid = clients[i].id;
         }
       }
 
       if (socketid == '') {
-        socket.emit('calleeisoffline', message.callee);
+        socket.emit('message', {calleephone : message.calleephone, callerphone : message.callerphone, status : "calleeoffline", type : "call" );
       } else {
         socketio.to(socketid).emit('areyoufreeforcall', {
-          caller: message.caller,
+          callerphone : message.callerphone,
+          calleephone : message.calleephone,
           sendersocket: socketidSender
         });
         logger.serverLog('info', 'socketio.js on(callthisperson) : see if callee is free to call');
@@ -415,34 +352,6 @@ function onConnect(socketio, socket) {
 
   });
 
-  socket.on('noiambusy', function(message) {
-
-    try {
-      var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
-
-      var socketid = '';
-
-      for (var i in clients) {
-        if (clients[i].phone == message.mycaller) {
-          socketid = clients[i].id;
-        }
-      }
-
-      if (socketid == '') {
-        //socket.emit('calleeisoffline', message.callee);
-        logger.serverLog('info', 'socketio.js on(noiambusy) : callee is offline');
-      } else {
-        socketio.to(socketid).emit('calleeisbusy', {
-          callee: message.me
-        });
-        //socketio.sockets.socket(socketid).emit('calleeisbusy', {callee : message.me});
-      }
-    } catch (e) {
-      logger.serverLog('error', 'socketio.js on(noiambusy) : ' + e);
-    }
-
-  });
-
   socket.on('noiambusyforgroupcall', function(message) {
 
     try {
@@ -467,33 +376,6 @@ function onConnect(socketio, socket) {
       }
     } catch (e) {
       logger.serverLog('error', 'socketio.js on(noiambusyforgroupcall) : ' + e);
-    }
-
-  });
-
-  socket.on('yesiamfreeforcall', function(message) {
-
-    try {
-      var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
-
-      var socketid = '';
-
-      for (var i in clients) {
-        if (clients[i].phone == message.mycaller) {
-          socketid = clients[i].id;
-        }
-      }
-
-      if (socketid == '') {
-        socket.emit('disconnected', message.mycaller);
-      } else {
-        socketio.to(socketid).emit('othersideringing', {
-          callee: message.me
-        });
-        //socketio.sockets.socket(socketid).emit('othersideringing', {callee : message.me});
-      }
-    } catch (e) {
-      logger.serverLog('error', 'socketio.js on(yesiamfreeforcall) : ' + e);
     }
 
   });
@@ -705,89 +587,6 @@ function onConnect(socketio, socket) {
 
   });
 
-  /* TODO Remove this code, this is deprecated now */
-  socket.on('create or join meeting', function(room) {
-
-    //console.log(room);
-
-    var clients = findClientsSocket(room.room); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
-
-    //console.log(clients);
-
-    var numClients = clients.length;
-
-    //log('Room ' + room.room + ' has ' + numClients + ' client(s)');
-    //log('Request to create or join room ' + room.room + ' from '+ room.username);
-    logger.serverLog('info', 'Request to create or join room ' + room.room + ' from ' + room.phone);
-
-    var clientsIDs = new Array(numClients);
-
-    for (var i in clients) {
-      clientsIDs[i] = clients[i].phone;
-    }
-
-    console.log('people in room: ', clientsIDs);
-
-    if (numClients === 0) {
-      socket.join(room.room);
-      socket.username = room.phone;
-
-      console.log('room created');
-      logger.serverLog('info', 'Room created  ')
-
-      socket.emit('created', room);
-    } else if (numClients < 5) { //(numClients === 2 || numClients === 1 || numClients === 3 || numClients === 4) {
-      socket.join(room.room);
-      socket.username = room.username;
-
-      room.otherClients = clientsIDs;
-      socket.emit('joined', room);
-
-      console.log('room joined');
-      logger.serverLog('info', 'Room joined  ')
-
-      clientsIDs.push(room.username);
-
-      room.otherClients = clientsIDs;
-      socketio.in(room.room).emit('join', room);
-
-    } else { // max five clients
-      socket.emit('full', room.room);
-      logger.serverLog('info', 'Room is full  ')
-    }
-
-    //console.log(socketio.sockets.manager.rooms)
-
-  });
-
-  socket.on('create or join livehelp', function(room) {
-    try {
-      var clients = findClientsSocket(room.room);
-      var numClients = clients.length;
-
-      if (numClients === 0) {
-        socket.join(room.room);
-        socket.username = room.username;
-        socket.emit('created', room);
-      } else if (numClients < 2) {
-        socket.join(room.room);
-        socket.username = room.username;
-        socket.emit('joined', room);
-
-        socket.broadcast.to(room.room).emit('join', room);
-
-      } else { // max three clients
-        socket.emit('full', room.room);
-      }
-
-      //console.log(socketio.sockets.manager.rooms);
-      //console.log(room)
-    } catch (e) {
-      logger.serverLog('error', 'socketio.js on(create or join livehelp) : ' + e);
-    }
-
-  });
-
   socket.on('logClient', function(data) {
     logger.serverLog("info", "Client side log: " + data);
   });
@@ -880,7 +679,7 @@ module.exports = function(socketio) {
 
     // Call onDisconnect.
     socket.on('disconnect', function() {
-      onDisconnect(socketio, socket);
+      //onDisconnect(socketio, socket);
       conferenceDisconnect(socketio, socket);
       logger.serverLog('info', 'Client disconnected :'+ socket.id);
       //console.info('[%s] DISCONNECTED', socket.address);
