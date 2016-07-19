@@ -23,7 +23,7 @@ function onDisconnect(socketio, socket) {
   }, function(err, gotuser) {
     if (err) logger.serverLog('error', 'socketio.js onDisconnect : ' + err);
 
-    logger.serverLog('info', 'socketio.js on : Data of user going offline : '+ JSON.stringify(gotuser));
+    //logger.serverLog('info', 'socketio.js on : Data of user going offline : '+ JSON.stringify(gotuser));
 
     if (gotuser != null) {
 
@@ -40,7 +40,7 @@ function onDisconnect(socketio, socket) {
               if (gotContactList[j].contactid != null) {
                 if (clients[i].phone == gotContactList[j].contactid.phone) {
                   socketid = clients[i].id;
-                  logger.serverLog('info', 'socketio.js on : Informing '+ clients[i].phone +' of user going offline : '+ socket.phone);
+                  //logger.serverLog('info', 'socketio.js on : Informing '+ clients[i].phone +' of user going offline : '+ socket.phone);
                   socketio.to(socketid).emit('offline', gotuser);
                 }
               }
