@@ -299,7 +299,7 @@ function onConnect(socketio, socket) {
       }
 
       if (socketid == '') {
-        socket.emit('message', {calleephone : message.calleephone, callerphone : message.callerphone, status : "calleeoffline", type : "call" );
+        socket.emit('message', {calleephone : message.calleephone, callerphone : message.callerphone, status : "calleeoffline", type : "call"} );
       } else {
         socketio.to(socketid).emit('areyoufreeforcall', {
           callerphone : message.callerphone,
