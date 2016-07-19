@@ -679,7 +679,7 @@ module.exports = function(socketio) {
 
     // Call onDisconnect.
     socket.on('disconnect', function() {
-      //onDisconnect(socketio, socket);
+      onDisconnect(socketio, socket);
       conferenceDisconnect(socketio, socket);
       logger.serverLog('info', 'Client disconnected :'+ socket.id);
       //console.info('[%s] DISCONNECTED', socket.address);
