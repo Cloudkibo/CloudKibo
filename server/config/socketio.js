@@ -196,9 +196,7 @@ function onConnect(socketio, socket) {
 
     socket.phone = room.user.phone;
 
-    console.log(room)
-
-    logger.serverLog('info', 'Data Sent to global chat room handler: ' + room);
+    logger.serverLog('info', 'Data Sent to global chat room handler: ' + JSON.stringify(room));
 
     logger.serverLog('info', 'you are trying to join global chat room now.');
     //console.log(room.user.username +' has joined the room.')
@@ -679,7 +677,7 @@ module.exports = function(socketio) {
 
     // Call onDisconnect.
     socket.on('disconnect', function() {
-      //onDisconnect(socketio, socket);
+      onDisconnect(socketio, socket);
       conferenceDisconnect(socketio, socket);
       logger.serverLog('info', 'Client disconnected :'+ socket.id);
       //console.info('[%s] DISCONNECTED', socket.address);
