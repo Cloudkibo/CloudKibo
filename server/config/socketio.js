@@ -33,8 +33,6 @@ function onDisconnect(socketio, socket) {
         userid: gotuser._id
       }).populate('contactid').exec(function(err3, gotContactList) {
 
-        logger.serverLog('info', 'socketio.js on : Online contacts of user going offline : '+ JSON.stringify(gotContactList));
-
         if (gotContactList != null) {
 
           for (var i in clients) {
@@ -42,6 +40,7 @@ function onDisconnect(socketio, socket) {
               if (gotContactList[j].contactid != null) {
                 if (clients[i].phone == gotContactList[j].contactid.phone) {
                   socketid = clients[i].id;
+                  logger.serverLog('info', 'socketio.js on : Informing '+ clients[i].phone +' of user going offline : '+ socket.phone);
                   socketio.to(socketid).emit('offline', gotuser);
                 }
               }
