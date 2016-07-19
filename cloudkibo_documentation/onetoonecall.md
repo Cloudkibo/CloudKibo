@@ -33,6 +33,8 @@ If callee is busy in other call, then the callee device should send the followin
 - - status : 'calleeisbusy'
 - - type : 'call'
 
+In above json, server would only send 'msg' object to other client.
+
 If callee is available for call, then the callee device should send the message 'message' to server with following variables:
 
 - to
