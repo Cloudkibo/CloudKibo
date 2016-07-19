@@ -16,10 +16,14 @@ function onDisconnect(socketio, socket) {
   var socketid = '';
   var user = require('./../api/user/user.model.js');
 
+  logger.serverLog('info', 'socketio.js on : ' + socket.phone + ' has disconnected.');
+
   user.findOne({
     phone: socket.phone
   }, function(err, gotuser) {
     if (err) logger.serverLog('error', 'socketio.js onDisconnect : ' + err);
+
+    logger.serverLog('info', 'socketio.js on : Data of user going offline : '+ JSON.stringify(gotuser));
 
     if (gotuser != null) {
 
@@ -28,7 +32,9 @@ function onDisconnect(socketio, socket) {
       contactslist.find({
         userid: gotuser._id
       }).populate('contactid').exec(function(err3, gotContactList) {
-        console.log(gotContactList);
+
+        logger.serverLog('info', 'socketio.js on : Online contacts of user going offline : '+ JSON.stringify(gotContactList));
+
         if (gotContactList != null) {
 
           for (var i in clients) {
