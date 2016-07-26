@@ -79,6 +79,7 @@ module.exports = function(app) {
   app.use('/api/configurations', require('./api/configuration'));
   app.use('/api/groupcall', require('./api/groupcall'));
   app.use('/api/companyaccounts', require('./api/companyaccount'));
+  app.use('/api/filetransfers', require('./api/filetransfers'));
 
   app.use('/auth', require('./auth'));
 
@@ -130,11 +131,11 @@ module.exports = function(app) {
   app.route('/survey/*')
     .get(viewroutes.surveyRoute);
   app.route('/otherBrowser')
-    .get(viewroutes.otherBrowserRoute);  
+    .get(viewroutes.otherBrowserRoute);
   app.route('/webmeeting/*')
     .get(viewroutes.webmeetingRoute);
- 
- 
+
+
   app.route('/livehelp/*')
 	.get(viewroutes.liveHelpRoute);
 
