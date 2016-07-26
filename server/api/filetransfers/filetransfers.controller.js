@@ -7,7 +7,7 @@ var logger = require('../../components/logger/logger');
 
 
 exports.upload = function(req, res) {
-	logger.serverLog('info', 'filetransfers.controller : upload file route called');
+	logger.serverLog('info', 'filetransfers.controller : upload file route called. file is: '+ JSON.stringify(req.files));
 
 	var today = new Date();
 	var uid = crypto.randomBytes(5).toString('hex');
@@ -32,12 +32,76 @@ exports.upload = function(req, res) {
 				});
 				return 0;
 			 }
+
+			 var fileData = new filetransfer({
+				 to : req.body.to,
+	       from : req.body.from,
+	       uniqueid: req.body.uniqueid,
+	       file_name : req.body.filename,
+	       file_size : req.body.filesize,
+	       path : serverPath,
+	       file_type : req.body.filetype
+			 })
+
+			 fileData.save(function(err){
+				 if(err) return res.send({error: 'Database Error'});
+
+				 res.send(status:'success');
+
+			 });
+
 		 }
 
 	);
 
 
-	console.log("saved image")
+
+};
+
+exports.download = function(req, res, next) {
+
+	filetransfers.findOne({uniqueid : req.body.uniqueid}, function(err, data){
+		if(err) return res.send({status : 'database error'});
+
+		res.sendfile(data.path, {root: './userpictures'});
+
+	});
+
+};
+
+exports.confirmdownload = function(req, res, next) {
+
+	filetransfers.findOne({uniqueid : req.body.uniqueid}, function(err, data){
+		if(err) return res.send({status : 'database error'});
+
+		var dir = './userpictures';
+		dir += data.path;
+
+		require('fs').unlink(dir, function (err) {
+				if (err) {
+					return logger.serverLog('error', 'user.controller (delete file image) : '+ err);
+					//throw err;
+				}
+
+				filetransfers.remove({uniqueid : req.body.uniqueid}, function(err){
+					if(err) return res.send({status : 'database error'});
+
+					res.send({status : 'success'});
+
+				})
+			})
 
 
+
+	});
+
+};
+
+exports.pendingfile = function(req, res, next){
+	filetransfers.findOne({to : req.body.phone}, function(err, data){
+		if(err) return res.send({status : 'database error'});
+
+		res.send({filepending : data});
+
+	})
 };
