@@ -11,7 +11,9 @@ var userchat = new Schema({
       date : {type: Date, default: Date.now },
       owneruser : String,
       uniqueid : String,
-      status : String
+      status : String,
+      type : String, // values : 'chat' or 'file'
+      file_type : String
 });
 
 
