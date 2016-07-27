@@ -46,7 +46,7 @@ exports.upload = function(req, res) {
 			 fileData.save(function(err){
 				 if(err) return res.send({error: 'Database Error'});
 
-				 res.send(status:'success');
+				 res.send({status:'success'});
 
 			 });
 
