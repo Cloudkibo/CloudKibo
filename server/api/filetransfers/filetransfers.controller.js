@@ -4,7 +4,7 @@ var filetransfers = require('./filetransfers.model');
 var User = require('../user/user.model');
 var config = require('../../config/environment');
 var logger = require('../../components/logger/logger');
-
+var crypto = require('crypto');
 
 exports.upload = function(req, res) {
 	logger.serverLog('info', 'filetransfers.controller : upload file route called. file is: '+ JSON.stringify(req.files));
