@@ -33,7 +33,7 @@ exports.upload = function(req, res) {
 				return 0;
 			 }
 
-			 var fileData = new filetransfer({
+			 var fileData = new filetransfers({
 				 to : req.body.to,
 	       from : req.body.from,
 	       uniqueid: req.body.uniqueid,
