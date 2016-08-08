@@ -32,7 +32,7 @@ exports.upload = function(req, res) {
 				});
 				return 0;
 			 }
-
+      console.log(req.body);
 			 var fileData = new filetransfers({
 				 to : req.body.to,
 	       from : req.body.from,
@@ -70,7 +70,7 @@ exports.download = function(req, res, next) {
 };
 
 exports.confirmdownload = function(req, res, next) {
-
+  console.log(req.body.uniqueid);
 	filetransfers.findOne({uniqueid : req.body.uniqueid}, function(err, data){
 		if(err) return res.send({status : 'database error'});
 
