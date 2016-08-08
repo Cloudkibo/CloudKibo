@@ -59,7 +59,8 @@ exports.upload = function(req, res) {
 };
 
 exports.download = function(req, res, next) {
-
+console.log('this is id when downloading file');
+console.log(req.body.uniqueid);
 	filetransfers.findOne({uniqueid : req.body.uniqueid}, function(err, data){
 		if(err) return res.send({status : 'database error'});
 
@@ -70,6 +71,7 @@ exports.download = function(req, res, next) {
 };
 
 exports.confirmdownload = function(req, res, next) {
+  console.log('this is id sent when confirming download');
   console.log(req.body.uniqueid);
 	filetransfers.findOne({uniqueid : req.body.uniqueid}, function(err, data){
 		if(err) return res.send({status : 'database error'});
@@ -98,6 +100,7 @@ exports.confirmdownload = function(req, res, next) {
 };
 
 exports.pendingfile = function(req, res, next){
+  console.log(req.body.uniqueid);
 	filetransfers.findOne({to : req.body.phone}, function(err, data){
 		if(err) return res.send({status : 'database error'});
 
