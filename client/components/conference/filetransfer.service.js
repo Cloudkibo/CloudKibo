@@ -10,7 +10,7 @@
  * details from application.
  */
 angular.module('cloudKiboApp')
-  .factory('FileHangout', function FileHangout($rootScope, Room, FileUtility, $log,$timeout) {
+  .factory('FileHangout', function FileHangout($rootScope, Room, FileUtility, $log, $timeout, logger, $routeParams) {
     var isChrome = !!navigator.webkitGetUserMedia;
     var fs_container = document.getElementById('filelist_container');
     window.URL = window.URL || window.webkitURL;
@@ -366,6 +366,12 @@ angular.module('cloudKiboApp')
       if (filesysteminuse) {
         //console.log('Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.')
         FileUtility.bootAlert("Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.");
+        logger.recordError({
+          type : 'conference_file',
+          description : 'Only 1 file can be downloaded or stored in browser memory at a time',
+          username : 'test',
+          room_name : $routeParams.mname
+        });
         return;
       }
       /* ask for requester id */

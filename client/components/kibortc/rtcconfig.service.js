@@ -158,7 +158,7 @@ angular.module('kiboRtc.services')
   })
 
 
-  .factory('FileUtility', function FileUtility($rootScope, $log) {
+  .factory('FileUtility', function FileUtility($rootScope, $log, logger, $routeParams) {
 
     return {
 
@@ -232,6 +232,12 @@ angular.module('kiboRtc.services')
 
         console.error('Error: ' + msg);
         $log.error('Error: ' + msg);
+        logger.recordError({
+          type : 'conference_file',
+          description : msg,
+          username : 'test',
+          room_name : $routeParams.mname
+        });
       },
 
       /**
