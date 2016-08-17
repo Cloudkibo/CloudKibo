@@ -48,6 +48,44 @@ angular.module('cloudKiboApp')
       draw();
     }
 
+    function getConnectionDetails(peerConnection){
+
+      var connectionDetails = {};   // the final result object.
+
+      if(window.chrome){  // checking if chrome
+    		log('in chrome');
+        var reqFields = [   'googLocalAddress',
+                            'googLocalCandidateType',
+                            'googRemoteAddress',
+                            'googRemoteCandidateType'
+                        ];
+        return new Promise(function(resolve, reject){
+          peerConnection.getStats(function(stats){
+          log(JSON.stringify(stats))
+            var filtered = stats.result().filter(function(e){return e.id.indexOf('Conn-audio')==0 && e.stat('googActiveConnection')=='true'})[0];
+            if(!filtered) return reject('Something is wrong...');
+            reqFields.forEach(function(e){connectionDetails[e.replace('goog', '')] = filtered.stat(e)});
+            resolve(connectionDetails);
+          });
+        });
+
+      }else{  // assuming it is firefox
+      log('in firefox')
+        return peerConnection.getStats(null).then(function(stats){
+            var selectedCandidatePair = stats[Object.keys(stats).filter(function(key){return stats[key].selected})[0]]
+              , localICE = stats[selectedCandidatePair.localCandidateId]
+              , remoteICE = stats[selectedCandidatePair.remoteCandidateId];
+            connectionDetails.LocalAddress = [localICE.ipAddress, localICE.portNumber].join(':');
+            connectionDetails.RemoteAddress = [remoteICE.ipAddress, remoteICE.portNumber].join(':');
+            connectionDetails.LocalCandidateType = localICE.candidateType;
+            connectionDetails.RemoteCandidateType = remoteICE.candidateType;
+            return connectionDetails;
+        });
+
+      }
+    }
+
+
     function getPeerConnection(id) {
       if (peerConnections[id]) {
         return peerConnections[id];
@@ -91,6 +129,12 @@ angular.module('cloudKiboApp')
         };
       };
       logger.log(''+ username +' has created peer connection for  '+ userNames[id]);
+      logger.recordError({
+        type : 'conference_proxy',
+        description : JSON.stringify(getConnectionDetails(pc)),
+        username : username,
+        room_name : $routeParams.mname
+      });
       return pc;
     }
 
