@@ -129,12 +129,12 @@ angular.module('cloudKiboApp')
         };
       };
       logger.log(''+ username +' has created peer connection for  '+ userNames[id]);
-      logger.recordError({
+      /*logger.recordError({
         type : 'conference_proxy',
         description : JSON.stringify(getConnectionDetails(pc)),
         username : username,
         room_name : $routeParams.mname
-      });
+      });*/
       return pc;
     }
 
