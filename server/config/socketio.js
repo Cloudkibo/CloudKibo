@@ -16,14 +16,14 @@ function sendPushNotification(tagname, payload){
     if(!error){
       logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
     } else {
-      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(payload));
+      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
     }
   });
   notificationHubService.apns.send(tagname, payload, function(error){
     if(!error){
       logger.serverLog('info', 'Azure push notification sent to iOS using GCM Module, client number : '+ tagname);
     } else {
-      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(payload));
+      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
     }
   });
 }
