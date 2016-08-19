@@ -4,9 +4,25 @@
 
 'use strict';
 
+var azure = require('azure');
+var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=fs2RqnCIAJ+W5gc/iC82h5A0a+UuMHKNdQruSRxo/Hk=');
 var config = require('./environment');
 var logger = require('../components/logger/logger');
 var debuggers = require('../components/debugger/debugger');
+
+
+function sendPushNotification(tagname, payload){
+  notificationHubService.gcm.send(tagname, payload, function(error){
+    if(!error){
+      logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
+    }
+  });
+  notificationHubService.apns.send(tagname, payload, function(error){
+    if(!error){
+      logger.serverLog('info', 'Azure push notification sent to iOS using GCM Module, client number : '+ tagname);
+    }
+  });
+}
 
 
 // When the user disconnects.. perform this
@@ -198,6 +214,14 @@ function onConnect(socketio, socket) {
   socket.on('join global chatroom', function(room) {
 
     socket.join(room.room);
+
+    var payload = {
+      data: {
+        msg: 'Hello '+ room.user.phone +'! You joined the room.'
+      }
+    };
+
+    sendPushNotification(room.user.phone, payload);
 
     socket.phone = room.user.phone;
 
@@ -471,7 +495,7 @@ function onConnect(socketio, socket) {
         status: 'sent',
         uniqueid : im.stanza.uniqueid,
         type : im.stanza.type,
-        file_type : im.stanza.file_type
+        file_type : im.stanza.file_type // 'image', 'document', 'audio', 'video'
       });
 
       newUserChat.save(function(err2) {
@@ -480,6 +504,17 @@ function onConnect(socketio, socket) {
 
       logger.serverLog('info', 'sending chat to recipient and ack sender');
       socketio.to(socketid).emit('im', im.stanza);
+
+      if(socketid === '') {
+        var payload = {
+          type : im.stanza.type,
+          senderId : im.stanza.from,
+          uniqueId : im.stanza.uniqueid
+        };
+
+        sendPushNotification(im.stanza.to, payload);
+      }
+
       //fn('sent', im.stanza.uniqueid);
       fn({status : 'sent', uniqueid : im.stanza.uniqueid});
       logger.serverLog('info', 'ack for incoming chat to server is sent');
@@ -504,7 +539,7 @@ function onConnect(socketio, socket) {
       }
     }
 
-    socketio.to(socketid).emit('filedownloaded', {receiver : data.receveroffile, uniqueid : data.uniqueid});
+    socketio.to(socketid).emit('filedownloaded', {receiver : data.receiveroffile, uniqueid : data.uniqueid});
 
   })
 
