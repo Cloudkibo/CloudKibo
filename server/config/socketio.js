@@ -439,7 +439,9 @@ function onConnect(socketio, socket) {
         msg: im.stanza.msg,
         owneruser: im.stanza.to,
         status: 'sent',
-        uniqueid : im.stanza.uniqueid
+        uniqueid : im.stanza.uniqueid,
+        type : im.stanza.type,
+        file_type : im.stanza.file_type
       });
 
       newUserChat.save(function(err2) {
@@ -467,7 +469,9 @@ function onConnect(socketio, socket) {
         msg: im.stanza.msg,
         owneruser: im.stanza.from,
         status: 'sent',
-        uniqueid : im.stanza.uniqueid
+        uniqueid : im.stanza.uniqueid,
+        type : im.stanza.type,
+        file_type : im.stanza.file_type
       });
 
       newUserChat.save(function(err2) {
@@ -486,6 +490,23 @@ function onConnect(socketio, socket) {
     }
 
   });
+
+  socket.on('filedownloaded', function(data){
+    logger.serverLog('info', 'server received file downloaded message from mobile '+ JSON.stringify(data));
+
+    var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
+
+    var socketid = '';
+
+    for (var i in clients) {
+      if (clients[i].phone == data.senderoffile) {
+        socketid = clients[i].id;
+      }
+    }
+
+    socketio.to(socketid).emit('filedownloaded', {receiver : data.receveroffile, uniqueid : data.uniqueid});
+
+  })
 
   socket.on('messageStatusUpdate', function(data, fn){
 
