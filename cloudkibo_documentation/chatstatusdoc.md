@@ -12,6 +12,9 @@ The chat message stanza which is sent to server from device should contain the f
 - fromFullName
 - msg
 - uniqueid
+- status
+- type
+- file_type
 
 For each chat message, socket server listens for 'im' and replies with callback function (ack). This callback function has following structure:
 
