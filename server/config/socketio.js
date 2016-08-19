@@ -12,8 +12,8 @@ var debuggers = require('../components/debugger/debugger');
 
 
 function sendPushNotification(tagname, payload){
+  tagname = tagname.substring(1);
   notificationHubService.gcm.send(tagname, payload, function(error){
-    tagname = tagname.substring(1);
     if(!error){
       logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
     } else {
