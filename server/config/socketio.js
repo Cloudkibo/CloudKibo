@@ -224,7 +224,7 @@ function onConnect(socketio, socket) {
       data: {
         msg: 'Hello '+ room.user.phone +'! You joined the room.'
       },
-      content-available : 1
+      'content-available' : 1
     };
 
     sendPushNotification(room.user.phone, payload);
@@ -515,7 +515,7 @@ function onConnect(socketio, socket) {
         type : im.stanza.type,
         senderId : im.stanza.from,
         uniqueId : im.stanza.uniqueid,
-        content-available : 1
+        'content-available' : 1
       };
 
       sendPushNotification(im.stanza.to, payload);
