@@ -510,15 +510,13 @@ function onConnect(socketio, socket) {
       logger.serverLog('info', 'sending chat to recipient and ack sender');
       socketio.to(socketid).emit('im', im.stanza);
 
-      if(socketid === '') {
-        var payload = {
-          type : im.stanza.type,
-          senderId : im.stanza.from,
-          uniqueId : im.stanza.uniqueid
-        };
+      var payload = {
+        type : im.stanza.type,
+        senderId : im.stanza.from,
+        uniqueId : im.stanza.uniqueid
+      };
 
-        sendPushNotification(im.stanza.to, payload);
-      }
+      sendPushNotification(im.stanza.to, payload);
 
       //fn('sent', im.stanza.uniqueid);
       fn({status : 'sent', uniqueid : im.stanza.uniqueid});
