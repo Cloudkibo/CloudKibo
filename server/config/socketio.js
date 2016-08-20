@@ -13,14 +13,18 @@ var debuggers = require('../components/debugger/debugger');
 
 function sendPushNotification(tagname, payload){
   tagname = tagname.substring(1);
-  notificationHubService.gcm.send(tagname, payload, function(error){
+  var message = {
+    alert : 'test ios alert',
+    payload : payload
+  };
+  notificationHubService.gcm.send(tagname, message, function(error){
     if(!error){
       logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
     } else {
       logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
     }
   });
-  notificationHubService.apns.send(tagname, payload, function(error){
+  notificationHubService.apns.send(tagname, message, function(error){
     if(!error){
       logger.serverLog('info', 'Azure push notification sent to iOS using GCM Module, client number : '+ tagname);
     } else {
@@ -223,8 +227,7 @@ function onConnect(socketio, socket) {
     var payload = {
       data: {
         msg: 'Hello '+ room.user.phone +'! You joined the room.'
-      },
-      'content-available' : 1
+      }
     };
 
     sendPushNotification(room.user.phone, payload);
@@ -514,8 +517,7 @@ function onConnect(socketio, socket) {
       var payload = {
         type : im.stanza.type,
         senderId : im.stanza.from,
-        uniqueId : im.stanza.uniqueid,
-        'content-available' : 1
+        uniqueId : im.stanza.uniqueid
       };
 
       sendPushNotification(im.stanza.to, payload);
