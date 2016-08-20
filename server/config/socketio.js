@@ -223,7 +223,8 @@ function onConnect(socketio, socket) {
     var payload = {
       data: {
         msg: 'Hello '+ room.user.phone +'! You joined the room.'
-      }
+      },
+      content-available : 1
     };
 
     sendPushNotification(room.user.phone, payload);
@@ -513,7 +514,8 @@ function onConnect(socketio, socket) {
       var payload = {
         type : im.stanza.type,
         senderId : im.stanza.from,
-        uniqueId : im.stanza.uniqueid
+        uniqueId : im.stanza.uniqueid,
+        content-available : 1
       };
 
       sendPushNotification(im.stanza.to, payload);
