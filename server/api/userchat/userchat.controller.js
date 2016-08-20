@@ -48,6 +48,23 @@ exports.alluserchat = function(req, res) {
 	  })
 };
 
+exports.getsinglechat = function(req, res) {
+	User.findById(req.user._id, function (err, gotUser) {
+			if (err) return console.log('Error 1'+ err);
+
+			userchat.find({uniqueid : req.body.uniqueid},
+																function(err1, gotMessages){
+																	if(err1) return console.log(err1);
+
+																	logger.serverLog('info', 'userchat.controller : Unique Chat data sent to client');
+
+																	res.send({status : 'success', msg : gotMessages});
+
+																})
+
+	  })
+};
+
 exports.removechathistory = function(req, res) {
 	 User.findById(req.user._id, function (err, gotUser) {
 		if (err) return console.log('Error 1'+ err);
