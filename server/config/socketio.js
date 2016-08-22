@@ -9,6 +9,7 @@ var notificationHubService = azure.createNotificationHubService('Cloudkibo','End
 var config = require('./environment');
 var logger = require('../components/logger/logger');
 var debuggers = require('../components/debugger/debugger');
+var user = require('../api/user/user.model');
 
 
 function sendPushNotification(tagname, payload){
@@ -16,7 +17,7 @@ function sendPushNotification(tagname, payload){
   var message = {
     alert : payload.msg,
     sound : 'UILocalNotificationDefaultSoundName',
-    badge : 0,
+    badge : payload.badge,
     payload : payload
   };
   notificationHubService.gcm.send(tagname, message, function(error){
@@ -226,13 +227,19 @@ function onConnect(socketio, socket) {
 
     socket.join(room.room);
 
-    var payload = {
-      data: {
-        msg: 'Hello '+ room.user.phone +'! You joined the room.'
-      }
-    };
+    user.findOne({phone : room.user.phone}, function(err, dataUser){
+      var payload = {
+        data: {
+          msg: 'Hello '+ room.user.phone +'! You joined the room.'
+        },
+        badge: 0
+      };
+      sendPushNotification(room.user.phone, payload);
+      dataUser.iOS_badge = 0;
+      dataUser.save(function(err){
 
-    sendPushNotification(room.user.phone, payload);
+      });
+    });
 
     socket.phone = room.user.phone;
 
@@ -516,14 +523,24 @@ function onConnect(socketio, socket) {
       logger.serverLog('info', 'sending chat to recipient and ack sender');
       socketio.to(socketid).emit('im', im.stanza);
 
-      var payload = {
-        type : im.stanza.type,
-        senderId : im.stanza.from,
-        msg : im.stanza.msg,
-        uniqueId : im.stanza.uniqueid
-      };
+      if(socketid === '') {
+        user.findOne({phone : im.stanza.to}, function(err, dataUser){
+          var payload = {
+            type : im.stanza.type,
+            senderId : im.stanza.from,
+            msg : im.stanza.msg,
+            uniqueId : im.stanza.uniqueid,
+            badge : dataUser.iOS_badge + 1
+          };
 
-      sendPushNotification(im.stanza.to, payload);
+          sendPushNotification(im.stanza.to, payload);
+
+          dataUser.iOS_badge = dataUser.iOS_badge + 1;
+          dataUser.save(function(err){
+
+          });
+        });
+      }
 
       //fn('sent', im.stanza.uniqueid);
       fn({status : 'sent', uniqueid : im.stanza.uniqueid});

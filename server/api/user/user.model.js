@@ -28,6 +28,8 @@ var UserSchema = new Schema({
   google_photo: String,
   windows_photo: String,
 
+  iOS_badge: Number,
+
   isOwner : String,
   picture: String,
   accountVerified : {type: String, default: 'Yes' },
