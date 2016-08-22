@@ -3,7 +3,7 @@
 
 
 angular.module('cloudKiboApp')
-  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, logger, sdpConstraints) {
+  .factory('Room', function ($rootScope, $q, socket, $timeout, pc_config, pc_constraints2, audio_threshold, $log, logger, sdpConstraints, $routeParams) {
 
     var  peerConnections = {}, userNames = {},
       dataChannels = {}, currentId, roomId,fileReceivers =[],
@@ -53,7 +53,7 @@ angular.module('cloudKiboApp')
       var connectionDetails = {};   // the final result object.
 
       if(window.chrome){  // checking if chrome
-    		log('in chrome');
+    		console.log('in chrome');
         var reqFields = [   'googLocalAddress',
                             'googLocalCandidateType',
                             'googRemoteAddress',
@@ -61,24 +61,38 @@ angular.module('cloudKiboApp')
                         ];
         return new Promise(function(resolve, reject){
           peerConnection.getStats(function(stats){
-          log(JSON.stringify(stats))
+          console.log(JSON.stringify(stats))
             var filtered = stats.result().filter(function(e){return e.id.indexOf('Conn-audio')==0 && e.stat('googActiveConnection')=='true'})[0];
             if(!filtered) return reject('Something is wrong...');
             reqFields.forEach(function(e){connectionDetails[e.replace('goog', '')] = filtered.stat(e)});
+            console.log(connectionDetails)
+            logger.recordError({
+              type : 'conference_proxy',
+              description : JSON.stringify(connectionDetails),
+              username : username,
+              room_name : $routeParams.mname
+            });
             resolve(connectionDetails);
           });
         });
 
       }else{  // assuming it is firefox
-      log('in firefox')
+      console.log('in firefox')
         return peerConnection.getStats(null).then(function(stats){
-            var selectedCandidatePair = stats[Object.keys(stats).filter(function(key){return stats[key].selected})[0]]
-              , localICE = stats[selectedCandidatePair.localCandidateId]
+            var selectedCandidatePair = stats[Object.keys(stats).filter(function(key){return stats[key].selected})[0]];
+            var localICE = stats[selectedCandidatePair.localCandidateId]
               , remoteICE = stats[selectedCandidatePair.remoteCandidateId];
             connectionDetails.LocalAddress = [localICE.ipAddress, localICE.portNumber].join(':');
             connectionDetails.RemoteAddress = [remoteICE.ipAddress, remoteICE.portNumber].join(':');
             connectionDetails.LocalCandidateType = localICE.candidateType;
             connectionDetails.RemoteCandidateType = remoteICE.candidateType;
+            console.log(connectionDetails);
+            logger.recordError({
+              type : 'conference_proxy',
+              description : JSON.stringify(connectionDetails),
+              username : username,
+              room_name : $routeParams.mname
+            });
             return connectionDetails;
         });
 
@@ -129,12 +143,6 @@ angular.module('cloudKiboApp')
         };
       };
       logger.log(''+ username +' has created peer connection for  '+ userNames[id]);
-      /*logger.recordError({
-        type : 'conference_proxy',
-        description : JSON.stringify(getConnectionDetails(pc)),
-        username : username,
-        room_name : $routeParams.mname
-      });*/
       return pc;
     }
 
@@ -278,6 +286,8 @@ angular.module('cloudKiboApp')
           if (data.ice) {
             logger.log(''+ username +' adding ice candidate for sent by  '+ userNames[data.by]);
             pc.addIceCandidate(new RTCIceCandidate(data.ice));
+          } else {
+            getConnectionDetails(pc);
           }
           break;
       }
