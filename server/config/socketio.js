@@ -14,7 +14,9 @@ var debuggers = require('../components/debugger/debugger');
 function sendPushNotification(tagname, payload){
   tagname = tagname.substring(1);
   var message = {
-    alert : 'test ios alert',
+    alert : payload.msg,
+    sound : 'UILocalNotificationDefaultSoundName',
+    badge : 0,
     payload : payload
   };
   notificationHubService.gcm.send(tagname, message, function(error){
@@ -517,6 +519,7 @@ function onConnect(socketio, socket) {
       var payload = {
         type : im.stanza.type,
         senderId : im.stanza.from,
+        msg : im.stanza.msg,
         uniqueId : im.stanza.uniqueid
       };
 
