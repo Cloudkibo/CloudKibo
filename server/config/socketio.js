@@ -14,20 +14,26 @@ var user = require('../api/user/user.model');
 
 function sendPushNotification(tagname, payload){
   tagname = tagname.substring(1);
-  var message = {
+  var iOSMessage = {
     alert : payload.msg,
     sound : 'UILocalNotificationDefaultSoundName',
     badge : payload.badge,
     payload : payload
   };
-  notificationHubService.gcm.send(tagname, message, function(error){
+  var androidMessage = {
+    to : tagname,
+    data : {
+      message : payload
+    }
+  }
+  notificationHubService.gcm.send(tagname, androidMessage, function(error){
     if(!error){
       logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
     } else {
       logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
     }
   });
-  notificationHubService.apns.send(tagname, message, function(error){
+  notificationHubService.apns.send(tagname, iOSMessage, function(error){
     if(!error){
       logger.serverLog('info', 'Azure push notification sent to iOS using GCM Module, client number : '+ tagname);
     } else {
@@ -528,7 +534,7 @@ function onConnect(socketio, socket) {
           var payload = {
             type : im.stanza.type,
             senderId : im.stanza.from,
-            msg : im.stanza.msg,
+            msg : im.stanza.msg.substring(0, 8),
             uniqueId : im.stanza.uniqueid,
             badge : dataUser.iOS_badge + 1
           };
