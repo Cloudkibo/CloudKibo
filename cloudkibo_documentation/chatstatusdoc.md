@@ -38,3 +38,9 @@ The initial sender of the message should always listen for 'messageStatusUpdate'
     {status : '<delivered or seen>', uniqueid : '<unique id of message>'}
 
 The sender mobile should keep track of message status to keep it updated with what is current on server.
+
+**Note**
+
+In order to solve the problem of network going down for small period during chat and then coming back, we have the logic to get broadcast of whenever network is available again. At that time, it ran the retry logic to send the pending chat. Retry logic is the part of current sync document.
+
+We should not run the downward sync until the upward sync is done else it would overwrite the pending chat messages. Also, we have put the interval time of 2 seconds between upward and downward sync so that both don't conflict.
