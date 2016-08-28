@@ -22,6 +22,7 @@ function sendPushNotification(tagname, payload){
   };
   var androidMessage = {
     to : tagname,
+    priority : "high",
     data : {
       message : payload
     }
