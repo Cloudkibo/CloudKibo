@@ -22,7 +22,7 @@ function sendPushNotification(tagname, payload){
   };
   var androidMessage = {
     to : tagname,
-    priority : "high",
+    priority : 'high',
     data : {
       message : payload
     }
@@ -530,7 +530,7 @@ function onConnect(socketio, socket) {
       logger.serverLog('info', 'sending chat to recipient and ack sender');
       socketio.to(socketid).emit('im', im.stanza);
 
-      if(socketid === '') {
+      //if(socketid === '') {
         user.findOne({phone : im.stanza.to}, function(err, dataUser){
           var payload = {
             type : im.stanza.type,
@@ -547,7 +547,7 @@ function onConnect(socketio, socket) {
 
           });
         });
-      }
+      //}
 
       //fn('sent', im.stanza.uniqueid);
       fn({status : 'sent', uniqueid : im.stanza.uniqueid});
