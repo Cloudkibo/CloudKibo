@@ -30,6 +30,7 @@ exports.index = function(req, res) {
 
 exports.alluserchat = function(req, res) {
 	logger.serverLog('info', 'userchat.controller : All Chat data is asked by '+ JSON.stringify(req.user));
+	logger.serverLog('info', 'userchat.controller : All Chat data request body '+ JSON.stringify(req.body));
 	User.findById(req.user._id, function (err, gotUser) {
 			if (err) return console.log('Error 1'+ err);
 
