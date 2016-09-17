@@ -29,8 +29,11 @@ exports.index = function(req, res) {
 };
 
 exports.alluserchat = function(req, res) {
+	logger.serverLog('info', 'userchat.controller : All Chat data is asked by '+ JSON.stringify(req.user));
 	User.findById(req.user._id, function (err, gotUser) {
 			if (err) return console.log('Error 1'+ err);
+
+			logger.serverLog('info', 'userchat.controller : All Chat data asker data is '+ JSON.stringify(gotUser));
 
 			if(req.body.user1 == gotUser.phone){
 
@@ -44,6 +47,9 @@ exports.alluserchat = function(req, res) {
 
 																		})
 
+			} else {
+				logger.serverLog('info', 'userchat.controller : NOT All Chat data sent to client. BECAUSE user was not found');
+				res.send({status : 'success', msg : []});
 			}
 	  })
 };
