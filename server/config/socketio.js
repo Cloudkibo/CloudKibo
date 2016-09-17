@@ -18,6 +18,7 @@ function sendPushNotification(tagname, payload){
     alert : payload.msg,
     sound : 'UILocalNotificationDefaultSoundName',
     badge : payload.badge,
+    'content-available' : 1,
     payload : payload
   };
   var androidMessage = {
