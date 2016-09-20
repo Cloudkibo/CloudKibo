@@ -12,7 +12,7 @@ var debuggers = require('../components/debugger/debugger');
 var user = require('../api/user/user.model');
 
 
-function sendPushNotification(tagname, payload){
+function sendPushNotification(tagname, payload, sendSound){
   tagname = tagname.substring(1);
   var iOSMessage = {
     alert : payload.msg,
@@ -21,6 +21,12 @@ function sendPushNotification(tagname, payload){
     'content-available' : 1,
     payload : payload
   };
+  if(sendSound){
+    iOSMessage = {
+      'content-available' : 1,
+      payload : payload
+    };
+  }
   var androidMessage = {
     to : tagname,
     priority : 'high',
@@ -254,7 +260,7 @@ function onConnect(socketio, socket) {
         },
         badge: 0
       };
-      sendPushNotification(room.user.phone, payload);
+      sendPushNotification(room.user.phone, payload, false);
       dataUser.iOS_badge = 0;
       dataUser.save(function(err){
 
@@ -553,7 +559,7 @@ function onConnect(socketio, socket) {
             badge : dataUser.iOS_badge + 1
           };
 
-          sendPushNotification(im.stanza.to, payload);
+          sendPushNotification(im.stanza.to, payload, true);
 
           dataUser.iOS_badge = dataUser.iOS_badge + 1;
           dataUser.save(function(err){
@@ -620,7 +626,7 @@ function onConnect(socketio, socket) {
           uniqueId : data.uniqueid
         };
 
-        sendPushNotification(data.sender, payload);
+        sendPushNotification(data.sender, payload, false);
 
         socketio.to(socketid).emit('messageStatusUpdate', {status : data.status, uniqueid : data.uniqueid});
         fn({status : 'statusUpdated', uniqueid : data.uniqueid});
