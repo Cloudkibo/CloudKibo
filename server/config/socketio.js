@@ -21,7 +21,7 @@ function sendPushNotification(tagname, payload, sendSound){
     'content-available' : 1,
     payload : payload
   };
-  if(sendSound){
+  if(!sendSound){
     iOSMessage = {
       'content-available' : 1,
       payload : payload
