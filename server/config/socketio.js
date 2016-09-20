@@ -602,6 +602,14 @@ function onConnect(socketio, socket) {
 
         logger.serverLog('info', 'server sending message status update from mobile to other mobile now');
 
+        var payload = {
+          type : 'status',
+          status : data.status,
+          uniqueId : data.uniqueid
+        };
+
+        sendPushNotification(data.sender, payload);
+
         socketio.to(socketid).emit('messageStatusUpdate', {status : data.status, uniqueid : data.uniqueid});
         fn({status : 'statusUpdated', uniqueid : data.uniqueid});
 
