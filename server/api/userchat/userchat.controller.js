@@ -165,3 +165,30 @@ exports.markasread = function(req, res) {
 
 	})
 };
+
+exports.partialchatsync = function(req, res) {
+	logger.serverLog('info', 'userchat.controller : Partial Chat data is asked by '+ JSON.stringify(req.user));
+	logger.serverLog('info', 'userchat.controller : Partial Chat data request body '+ JSON.stringify(req.body));
+	User.findById(req.user._id, function (err, gotUser) {
+			if (err) return console.log('Error 1'+ err);
+
+			logger.serverLog('info', 'userchat.controller : Partial Chat data asker data is '+ JSON.stringify(gotUser));
+
+			if(req.body.user1 == gotUser.phone){
+
+				  userchat.find({owneruser : gotUser.phone, to : gotUser.phone, status : 'sent'},
+																		function(err1, gotMessages){
+																			if(err1) return console.log(err1);
+
+                                      logger.serverLog('info', 'userchat.controller : Partial Chat data sent to client');
+
+																			res.send({status : 'success', msg : gotMessages});
+
+																		})
+
+			} else {
+				logger.serverLog('info', 'userchat.controller : NOT Partial Chat data sent to client. BECAUSE user was not found');
+				res.send({status : 'success', msg : []});
+			}
+	  })
+};

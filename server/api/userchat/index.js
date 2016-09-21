@@ -13,6 +13,7 @@ router.post('/save', auth.isAuthenticated(), controller.save);//www.cloudkibo.co
 router.post('/markasread', auth.isAuthenticated(), controller.markasread);//www.cloudkibo.com/api/userchat/markasread
 router.post('/removechathistory', auth.isAuthenticated(), controller.removechathistory);
 router.post('/getsinglechat', auth.isAuthenticated(), controller.getsinglechat);
+router.post('/partialchatsync', auth.isAuthenticated(), controller.partialchatsync);
 
 
 module.exports = router;
