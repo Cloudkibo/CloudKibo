@@ -823,3 +823,8 @@ exports.changePasswordRoute = function(req, res){
 
 	}
 };
+
+exports.log = function(req, res) {
+  logger.serverLog("info", "Client side log: " + req.body.data);
+  res.json(200, {status : 'success'});
+};
