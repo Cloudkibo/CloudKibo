@@ -124,8 +124,6 @@ exports.save = function(req, res) {
 			  });
       console.log("saved new user chat")
 
-
-
 			  newUserChat = new userchat({
 					to : req.body.to,
 					from : req.body.from,
@@ -137,11 +135,46 @@ exports.save = function(req, res) {
 			  newUserChat.save(function (err2) {
 					if (err2) return console.log('Error 2'+ err2);
 			  });
-
-
-
 		}
 	})
+};
+
+exports.save2 = function(req, res) {
+	var newUserChat = new userchat({
+		to: req.body.stanza.to,
+		from: req.body.stanza.from,
+		fromFullName: req.body.stanza.fromFullName,
+		msg: req.body.stanza.msg,
+		owneruser: req.body.stanza.to,
+		status: 'sent',
+		uniqueid : req.body.stanza.uniqueid,
+		type : req.body.stanza.type,
+		file_type : req.body.stanza.file_type
+	});
+
+	newUserChat.save(function (err2) {
+		if (err2) return console.log('Error 2'+ err2);
+
+	});
+
+	console.log("saved new user chat")
+
+	newUserChat = new userchat({
+		to: req.body.stanza.to,
+		from: req.body.stanza.from,
+		fromFullName: req.body.stanza.fromFullName,
+		msg: req.body.stanza.msg,
+		owneruser: req.body.stanza.from,
+		status: 'sent',
+		uniqueid : req.body.stanza.uniqueid,
+		type : req.body.stanza.type,
+		file_type : req.body.stanza.file_type // 'image', 'document', 'audio', 'video'
+	});
+
+	newUserChat.save(function (err2) {
+		if (err2) return console.log('Error 2'+ err2);
+		res.send({status : 'sent', uniqueid : req.body.stanza.uniqueid});
+	});
 };
 
 
