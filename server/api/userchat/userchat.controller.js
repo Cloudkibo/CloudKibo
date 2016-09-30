@@ -5,6 +5,7 @@ var User = require('../user/user.model');
 var contactslist = require('../contactslist/contactslist.model');
 var config = require('../../config/environment');
 var logger = require('../../components/logger/logger');
+var azure = require('azure');
 
 
 exports.index = function(req, res) {
