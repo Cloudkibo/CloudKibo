@@ -67,6 +67,24 @@ exports.getsinglechat = function(req, res) {
 
 																	res.send({status : 'success', msg : gotMessages});
 
+																	userchat.update(
+																		{uniqueid : gotMessages[0].uniqueid},
+																		{status : 'delivered'}, // should have value one of 'delivered', 'seen'
+																		{multi : true},
+																		function (err, num){
+																			logger.serverLog('info', 'Rows updated here '+ num +' for message status update in mongodb');
+
+																			var payload = {
+																				type : 'status',
+																				status : 'delivered',
+																				uniqueId : gotMessages[0].uniqueid
+																			};
+
+																			sendPushNotification(gotMessages[0].from, payload, false);
+
+																		}
+																	);
+
 																})
 
 	  })
@@ -139,7 +157,77 @@ exports.save = function(req, res) {
 	})
 };
 
+var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
+function sendPushNotification(tagname, payload, sendSound){
+  tagname = tagname.substring(1);
+  var iOSMessage = {
+    alert : payload.msg,
+    sound : 'UILocalNotificationDefaultSoundName',
+    badge : payload.badge,
+    payload : payload
+  };
+  if(!sendSound){
+    iOSMessage = {
+      payload : payload
+    };
+  }
+  var androidMessage = {
+    to : tagname,
+    priority : 'high',
+    data : {
+      message : payload
+    }
+  }
+  notificationHubService.gcm.send(tagname, androidMessage, function(error){
+    if(!error){
+      logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
+    } else {
+      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
+    }
+  });
+  notificationHubService.apns.send(tagname, iOSMessage, function(error){
+    if(!error){
+      logger.serverLog('info', 'Azure push notification sent to iOS using GCM Module, client number : '+ tagname);
+    } else {
+      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
+    }
+  });
+
+  // For iOS Local testing only
+  var notificationHubService2 = azure.createNotificationHubService('CloudKiboIOSPush','Endpoint=sb://cloudkiboiospush.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=0JmBCY+BNqMhuAS1g39wPBZFoZAX7M+wq4z4EWaXgCs=');
+
+  notificationHubService2.apns.send(tagname, iOSMessage, function(error){
+    if(!error){
+      logger.serverLog('info', 'Azure push notification sent to iOS (local testing) using GCM Module, client number : '+ tagname);
+    } else {
+      logger.serverLog('info', 'Azure push notification error (iOS local testing) : '+ JSON.stringify(error));
+    }
+  });
+
+}
+
 exports.save2 = function(req, res) {
+
+	logger.serverLog('info', 'chat message -> ' + JSON.stringify(im));
+
+	User.findOne({phone : req.body.stanza.to}, function(err, dataUser){
+		var payload = {
+			type : req.body.stanza.type,
+			senderId : req.body.stanza.from,
+			msg : req.body.stanza.msg.substring(0, 8),
+			uniqueId : req.body.stanza.uniqueid,
+			badge : dataUser.iOS_badge + 1
+		};
+
+		logger.serverLog('info', 'sending chat using push to recipient');
+		sendPushNotification(req.body.stanza.to, payload, true);
+
+		dataUser.iOS_badge = dataUser.iOS_badge + 1;
+		dataUser.save(function(err){
+
+		});
+	});
+
 	var newUserChat = new userchat({
 		to: req.body.stanza.to,
 		from: req.body.stanza.from,
@@ -173,10 +261,38 @@ exports.save2 = function(req, res) {
 
 	newUserChat.save(function (err2) {
 		if (err2) return console.log('Error 2'+ err2);
+		logger.serverLog('info', 'sending chat message response to sender');
 		res.send({status : 'sent', uniqueid : req.body.stanza.uniqueid});
 	});
 };
 
+exports.updateStatus = function(req, res) {
+
+	logger.serverLog('info', 'server received message status update from mobile '+ JSON.stringify(req.body));
+
+	userchat.update(
+		{uniqueid : req.body.uniqueid},
+		{status : req.body.status}, // should have value one of 'delivered', 'seen'
+		{multi : true},
+		function (err, num){
+			logger.serverLog('info', 'Rows updated here '+ num +' for message status update in mongodb');
+
+			logger.serverLog('info', 'server sending message status update from mobile to other mobile now');
+
+			var payload = {
+				type : 'status',
+				status : req.body.status,
+				uniqueId : req.body.uniqueid
+			};
+
+			sendPushNotification(req.body.sender, payload, false);
+
+			res.send({status : 'statusUpdated', uniqueid : req.body.uniqueid});
+
+		}
+	);
+
+};
 
 exports.markasread = function(req, res) {
 	User.findById(req.user._id, function (err, gotUser) {
