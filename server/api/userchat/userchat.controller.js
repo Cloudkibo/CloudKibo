@@ -209,7 +209,7 @@ function sendPushNotification(tagname, payload, sendSound){
 
 exports.save2 = function(req, res) {
 
-	logger.serverLog('info', 'chat message -> ' + JSON.stringify(im));
+	logger.serverLog('info', 'chat message -> ' + JSON.stringify(req.body));
 
 	User.findOne({phone : req.body.to}, function(err, dataUser){
 		var payload = {
