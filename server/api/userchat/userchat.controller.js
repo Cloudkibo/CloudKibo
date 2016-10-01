@@ -211,17 +211,17 @@ exports.save2 = function(req, res) {
 
 	logger.serverLog('info', 'chat message -> ' + JSON.stringify(im));
 
-	User.findOne({phone : req.body.stanza.to}, function(err, dataUser){
+	User.findOne({phone : req.body.to}, function(err, dataUser){
 		var payload = {
-			type : req.body.stanza.type,
-			senderId : req.body.stanza.from,
-			msg : req.body.stanza.msg.substring(0, 8),
-			uniqueId : req.body.stanza.uniqueid,
+			type : req.body.type,
+			senderId : req.body.from,
+			msg : req.body.msg.substring(0, 8),
+			uniqueId : req.body.uniqueid,
 			badge : dataUser.iOS_badge + 1
 		};
 
 		logger.serverLog('info', 'sending chat using push to recipient');
-		sendPushNotification(req.body.stanza.to, payload, true);
+		sendPushNotification(req.body.to, payload, true);
 
 		dataUser.iOS_badge = dataUser.iOS_badge + 1;
 		dataUser.save(function(err){
@@ -230,15 +230,15 @@ exports.save2 = function(req, res) {
 	});
 
 	var newUserChat = new userchat({
-		to: req.body.stanza.to,
-		from: req.body.stanza.from,
-		fromFullName: req.body.stanza.fromFullName,
-		msg: req.body.stanza.msg,
-		owneruser: req.body.stanza.to,
+		to: req.body.to,
+		from: req.body.from,
+		fromFullName: req.body.fromFullName,
+		msg: req.body.msg,
+		owneruser: req.body.to,
 		status: 'sent',
-		uniqueid : req.body.stanza.uniqueid,
-		type : req.body.stanza.type,
-		file_type : req.body.stanza.file_type
+		uniqueid : req.body.uniqueid,
+		type : req.body.type,
+		file_type : req.body.file_type
 	});
 
 	newUserChat.save(function (err2) {
@@ -249,21 +249,21 @@ exports.save2 = function(req, res) {
 	console.log("saved new user chat")
 
 	newUserChat = new userchat({
-		to: req.body.stanza.to,
-		from: req.body.stanza.from,
-		fromFullName: req.body.stanza.fromFullName,
-		msg: req.body.stanza.msg,
-		owneruser: req.body.stanza.from,
+		to: req.body.to,
+		from: req.body.from,
+		fromFullName: req.body.fromFullName,
+		msg: req.body.msg,
+		owneruser: req.body.from,
 		status: 'sent',
-		uniqueid : req.body.stanza.uniqueid,
-		type : req.body.stanza.type,
-		file_type : req.body.stanza.file_type // 'image', 'document', 'audio', 'video'
+		uniqueid : req.body.uniqueid,
+		type : req.body.type,
+		file_type : req.body.file_type // 'image', 'document', 'audio', 'video'
 	});
 
 	newUserChat.save(function (err2) {
 		if (err2) return console.log('Error 2'+ err2);
 		logger.serverLog('info', 'sending chat message response to sender');
-		res.send({status : 'sent', uniqueid : req.body.stanza.uniqueid});
+		res.send({status : 'sent', uniqueid : req.body.uniqueid});
 	});
 };
 
