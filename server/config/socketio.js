@@ -18,12 +18,10 @@ function sendPushNotification(tagname, payload, sendSound){
     alert : payload.msg,
     sound : 'UILocalNotificationDefaultSoundName',
     badge : payload.badge,
-    'content-available' : 1,
     payload : payload
   };
   if(!sendSound){
     iOSMessage = {
-      'content-available' : 1,
       payload : payload
     };
   }
