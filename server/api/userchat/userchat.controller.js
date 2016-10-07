@@ -209,6 +209,9 @@ function sendPushNotification(tagname, payload, sendSound){
 
 exports.save2 = function(req, res) {
 
+	var dateServerReceived = new Date();
+	var dateServerSent;
+
 	logger.serverLog('info', 'chat message -> ' + JSON.stringify(req.body));
 
 	User.findOne({phone : req.body.to}, function(err, dataUser){
@@ -222,49 +225,59 @@ exports.save2 = function(req, res) {
 
 		logger.serverLog('info', 'sending chat using push to recipient');
 		sendPushNotification(req.body.to, payload, true);
+		dateServerSent = new Date();
+
+		logger.serverLog('info', 'sending chat message response to sender');
+		res.send({status : 'sent', uniqueid : req.body.uniqueid});
 
 		dataUser.iOS_badge = dataUser.iOS_badge + 1;
 		dataUser.save(function(err){
 
 		});
+
+		var newUserChat = new userchat({
+			to: req.body.to,
+			from: req.body.from,
+			date: req.body.date,
+			date_server_received: dateServerReceived,
+			date_server_sent: dateServerSent,
+			fromFullName: req.body.fromFullName,
+			msg: req.body.msg,
+			owneruser: req.body.to,
+			status: 'sent',
+			uniqueid : req.body.uniqueid,
+			type : req.body.type,
+			file_type : req.body.file_type
+		});
+
+		newUserChat.save(function (err2) {
+			if (err2) return console.log('Error 2'+ err2);
+
+		});
+
+		console.log("saved new user chat")
+
+		newUserChat = new userchat({
+			to: req.body.to,
+			from: req.body.from,
+			date: req.body.date,
+			date_server_received: dateServerReceived,
+			date_server_sent: dateServerSent,
+			fromFullName: req.body.fromFullName,
+			msg: req.body.msg,
+			owneruser: req.body.from,
+			status: 'sent',
+			uniqueid : req.body.uniqueid,
+			type : req.body.type,
+			file_type : req.body.file_type // 'image', 'document', 'audio', 'video'
+		});
+
+		newUserChat.save(function (err2, d1) {
+			if (err2) return console.log('Error 2'+ err2);
+			logger.serverLog('info', 'chat saved on mongodb '+ JSON.stringify(d1));
+		});
 	});
 
-	var newUserChat = new userchat({
-		to: req.body.to,
-		from: req.body.from,
-		fromFullName: req.body.fromFullName,
-		msg: req.body.msg,
-		owneruser: req.body.to,
-		status: 'sent',
-		uniqueid : req.body.uniqueid,
-		type : req.body.type,
-		file_type : req.body.file_type
-	});
-
-	newUserChat.save(function (err2) {
-		if (err2) return console.log('Error 2'+ err2);
-
-	});
-
-	console.log("saved new user chat")
-
-	newUserChat = new userchat({
-		to: req.body.to,
-		from: req.body.from,
-		fromFullName: req.body.fromFullName,
-		msg: req.body.msg,
-		owneruser: req.body.from,
-		status: 'sent',
-		uniqueid : req.body.uniqueid,
-		type : req.body.type,
-		file_type : req.body.file_type // 'image', 'document', 'audio', 'video'
-	});
-
-	newUserChat.save(function (err2) {
-		if (err2) return console.log('Error 2'+ err2);
-		logger.serverLog('info', 'sending chat message response to sender');
-		res.send({status : 'sent', uniqueid : req.body.uniqueid});
-	});
 };
 
 exports.updateStatus = function(req, res) {
