@@ -38,7 +38,7 @@ exports.create = function(req, res) {
     }
 
     GroupMessagingUser.create(groupmember1, function(err2, groupmembersaved){
-      if(err2) { console.log('41'); console.log(err); return handleError(res, err); }
+      if(err2) { console.log('41'); console.log(err2); return handleError(res, err2); }
 
       var membersArray = req.body.members;
 
@@ -50,7 +50,7 @@ exports.create = function(req, res) {
           membership_status : 'joined'
         }
         GroupMessagingUser.create(groupmember, function(err3, groupmembersaved1){
-          if(err3) { console.log('53'); console.log(err); return handleError(res, err); }
+          if(err3) { console.log('53'); console.log(err3); return handleError(res, err3); }
           // SEND PUSH NOTIFICATION HERE
           user.findOne({phone : groupmembersaved1.member_phone}, function(err, dataUser){
         		var payload = {
