@@ -20,7 +20,7 @@ exports.create = function(req, res) {
 
   GroupMessagingUsers.findOne({member_phone : req.user.phone, group_unique_id : req.body.group_unique_id}, function(err, gotAdmin){
 
-    GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup)){
+    GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
 
       if(gotAdmin.isAdmin === 'Yes'){
         var membersArray = req.body.members;
