@@ -24,7 +24,7 @@ exports.create = function(req, res) {
 
   var body = {
     group_name : req.body.group_name,
-    unique_id : unique_id
+    unique_id : req.body.unique_id
   };
 
   GroupMessaging.create(body, function(err, groupmessaging) {
