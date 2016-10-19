@@ -35,7 +35,7 @@ exports.create = function(req, res) {
         		var payload = {
         			type : 'group:you_are_added',
         			senderId : req.user.phone,
-        			groupId : groupmembersaved1.group_unique_id,
+        			groupId : req.body.group_unique_id,
               isAdmin: 'No',
               membership_status : 'joined',
               group_name: req.body.group_name,
