@@ -4,6 +4,7 @@ var _ = require('lodash');
 var GroupMessagingUsers = require('./groupmessaginguser.model');
 var user = require('../user/user.model');
 var logger = require('../../components/logger/logger');
+var azure = require('azure');
 
 // Get list of GroupMessagingUserss
 exports.index = function(req, res) {
