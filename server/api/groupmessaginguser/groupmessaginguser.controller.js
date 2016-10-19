@@ -61,7 +61,7 @@ exports.create = function(req, res) {
       } else {
         return res.json('501', {status: 'unauthorized', msg:'You are not admin of this group.'})
       }
-    }
+    })
 
   })
 
