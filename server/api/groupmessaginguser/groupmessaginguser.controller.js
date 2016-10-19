@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var GroupMessagingUsers = require('./groupmessaginguser.model');
+var GroupMessaging = require('../groupmessaging/groupmessaging.model');
 var user = require('../user/user.model');
 var logger = require('../../components/logger/logger');
 var azure = require('azure');
@@ -18,45 +19,50 @@ exports.index = function(req, res) {
 exports.create = function(req, res) {
 
   GroupMessagingUsers.findOne({member_phone : req.user.phone, group_unique_id : req.body.group_unique_id}, function(err, gotAdmin){
-    if(gotAdmin.isAdmin === 'Yes'){
-      var membersArray = req.body.members;
 
-      for (var i in clients) {
-        var groupmember = {
-          group_unique_id: req.body.group_unique_id,
-          member_phone: membersArray[i],
-          isAdmin: 'No',
-          membership_status : 'joined'
-        }
-        GroupMessagingUsers.create(groupmember, function(err3, groupmembersaved1){
-          if(err3) { return handleError(res, err); }
-          // SEND PUSH NOTIFICATION HERE
-          user.findOne({phone : groupmembersaved1.member_phone}, function(err, dataUser){
-        		var payload = {
-        			type : 'group:you_are_added',
-        			senderId : req.user.phone,
-        			groupId : req.body.group_unique_id,
-              isAdmin: 'No',
-              membership_status : 'joined',
-              group_name: req.body.group_name,
-        			badge : dataUser.iOS_badge + 1
-        		};
+    GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup)){
 
-        		logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
-        		sendPushNotification(groupmembersaved1.member_phone, payload, true);
+      if(gotAdmin.isAdmin === 'Yes'){
+        var membersArray = req.body.members;
 
-        		dataUser.iOS_badge = dataUser.iOS_badge + 1;
-        		dataUser.save(function(err){
+        for (var i in clients) {
+          var groupmember = {
+            group_unique_id: gotGroup._id,
+            member_phone: membersArray[i],
+            isAdmin: 'No',
+            membership_status : 'joined'
+          }
+          GroupMessagingUsers.create(groupmember, function(err3, groupmembersaved1){
+            if(err3) { return handleError(res, err); }
+            // SEND PUSH NOTIFICATION HERE
+            user.findOne({phone : groupmembersaved1.member_phone}, function(err, dataUser){
+          		var payload = {
+          			type : 'group:you_are_added',
+          			senderId : req.user.phone,
+          			groupId : req.body.group_unique_id,
+                isAdmin: 'No',
+                membership_status : 'joined',
+                group_name: req.body.group_name,
+          			badge : dataUser.iOS_badge + 1
+          		};
 
-        		});
+          		logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
+          		sendPushNotification(groupmembersaved1.member_phone, payload, true);
+
+          		dataUser.iOS_badge = dataUser.iOS_badge + 1;
+          		dataUser.save(function(err){
+
+          		});
+            })
           })
-        })
-      }
+        }
 
-      return res.json(201, {status: 'success', msg:'New members are added to group.'});
-    } else {
-      return res.json('501', {status: 'unauthorized', msg:'You are not admin of this group.'})
+        return res.json(201, {status: 'success', msg:'New members are added to group.'});
+      } else {
+        return res.json('501', {status: 'unauthorized', msg:'You are not admin of this group.'})
+      }
     }
+
   })
 
   GroupMessagingUsers.create(req.body, function(err, groupmessaginguser) {

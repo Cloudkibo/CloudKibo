@@ -31,7 +31,7 @@ exports.create = function(req, res) {
     if(err) { console.log('31'); console.log(err); return handleError(res, err); }
 
     var groupmember1 = {
-      group_unique_id: req.body.unique_id,
+      group_unique_id: groupmessaging._id,
       member_phone: req.user.phone,
       isAdmin: 'Yes',
       membership_status : 'joined'
@@ -44,7 +44,7 @@ exports.create = function(req, res) {
 
       for (var i in clients) {
         var groupmember = {
-          group_unique_id: req.body.unique_id,
+          group_unique_id: groupmessaging._id,
           member_phone: membersArray[i],
           isAdmin: 'No',
           membership_status : 'joined'
@@ -56,7 +56,7 @@ exports.create = function(req, res) {
         		var payload = {
         			type : 'group:you_are_added',
         			senderId : req.user.phone,
-        			groupId : req.body.unique_id,
+        			groupId : groupmembersaved1.group_unique_id,
               isAdmin: 'No',
               membership_status : 'joined',
               group_name: req.body.group_name,
