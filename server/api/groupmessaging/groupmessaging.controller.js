@@ -42,7 +42,7 @@ exports.create = function(req, res) {
 
       var membersArray = req.body.members;
 
-      for (var i in clients) {
+      for (var i in membersArray) {
         var groupmember = {
           group_unique_id: groupmessaging._id,
           member_phone: membersArray[i],
