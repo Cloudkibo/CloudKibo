@@ -25,7 +25,7 @@ exports.create = function(req, res) {
       if(gotAdmin.isAdmin === 'Yes'){
         var membersArray = req.body.members;
 
-        for (var i in clients) {
+        for (var i in membersArray) {
           var groupmember = {
             group_unique_id: gotGroup._id,
             member_phone: membersArray[i],
