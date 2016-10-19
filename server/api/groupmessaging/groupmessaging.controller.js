@@ -5,6 +5,7 @@ var GroupMessaging = require('./groupmessaging.model');
 var GroupMessagingUser = require('../groupmessaginguser/groupmessaginguser.model');
 var user = require('../user/user.model');
 var logger = require('../../components/logger/logger');
+var azure = require('azure');
 
 // Get list of GroupMessagings
 exports.index = function(req, res) {
