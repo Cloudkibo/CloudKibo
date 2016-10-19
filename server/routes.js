@@ -80,6 +80,8 @@ module.exports = function(app) {
   app.use('/api/groupcall', require('./api/groupcall'));
   app.use('/api/companyaccounts', require('./api/companyaccount'));
   app.use('/api/filetransfers', require('./api/filetransfers'));
+  app.use('/api/groupmessaging', require('./api/groupmessaging'));
+  app.use('/api/groupmessaginguser', require('./api/groupmessaginguser'));
 
   app.use('/auth', require('./auth'));
 

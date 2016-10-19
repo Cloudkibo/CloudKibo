@@ -1,46 +1,45 @@
 'use strict';
 
 var _ = require('lodash');
-var ChannelAssignments = require('./channelassignment.model');
+var GroupChats = require('./groupchat.model');
 var user = require('../user/user.model');
-var configuration = require('../configuration/configuration.model');
 
-// Get list of ChannelAssignmentss
+// Get list of GroupChatss
 exports.index = function(req, res) {
-  ChannelAssignments.find(function (err, channelassignments) {
+  GroupChats.find(function (err, groupchats) {
     if(err) { return handleError(res, err); }
-    return res.json(200, channelassignments);
+    return res.json(200, groupchats);
   });
 };
 
-// Creates a new ChannelAssignments in the DB.
+// Creates a new GroupChats in the DB.
 exports.create = function(req, res) {
-  ChannelAssignments.create(req.body, function(err, channelassignment) {
+  GroupChats.create(req.body, function(err, groupchat) {
     if(err) { return handleError(res, err); }
-    return res.json(201, channelassignment);
+    return res.json(201, groupchat);
   });
 };
 
-// Updates an existing ChannelAssignments in the DB.
+// Updates an existing GroupChats in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
-  ChannelAssignments.findById(req.params.id, function (err, channelassignment) {
+  GroupChats.findById(req.params.id, function (err, groupchat) {
     if (err) { return handleError(res, err); }
-    if(!channelassignment) { return res.send(404); }
-    var updated = _.merge(channelassignment, req.body);
+    if(!groupchat) { return res.send(404); }
+    var updated = _.merge(groupchat, req.body);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      return res.json(200, channelassignment);
+      return res.json(200, groupchat);
     });
   });
 };
 
-// Deletes a ChannelAssignments from the DB.
+// Deletes a GroupChats from the DB.
 exports.destroy = function(req, res) {
-  ChannelAssignments.findById(req.params.id, function (err, channelassignment) {
+  GroupChats.findById(req.params.id, function (err, groupchat) {
     if(err) { return handleError(res, err); }
-    if(!channelassignment) { return res.send(404); }
-    channelassignment.remove(function(err) {
+    if(!groupchat) { return res.send(404); }
+    groupchat.remove(function(err) {
       if(err) { return handleError(res, err); }
       return res.send(204);
     });

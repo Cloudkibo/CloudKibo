@@ -1,7 +1,7 @@
 'use strict';
 
 var express = require('express');
-var controller = require('./channelassignment.controller');
+var controller = require('./groupchat.controller');
 
 var router = express.Router();
 
