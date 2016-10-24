@@ -49,6 +49,7 @@ exports.create = function(req, res) {
           			groupId : req.body.group_unique_id,
                 isAdmin: 'No',
                 membership_status : 'joined',
+                msg : 'Added to group '+ req.body.group_name,
                 group_name: req.body.group_name,
           			badge : dataUser.iOS_badge + 1
           		};
