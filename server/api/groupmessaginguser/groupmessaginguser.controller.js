@@ -15,6 +15,13 @@ exports.index = function(req, res) {
   });
 };
 
+exports.mygroups = function(req, res) {
+  GroupMessagingUsers.find({member_phone : req.user.phone}).populate('group_unique_id').exec(function (err, groupmessagingusers) {
+    if(err) { return handleError(res, err); }
+    return res.json(200, groupmessagingusers);
+  });
+};
+
 // Creates a new GroupMessagingUsers in the DB.
 exports.create = function(req, res) {
 
@@ -64,11 +71,42 @@ exports.create = function(req, res) {
     })
 
   })
+};
 
-  GroupMessagingUsers.create(req.body, function(err, groupmessaginguser) {
+exports.leaveGroup = function(req, res) {
+  GroupMessagingUsers.find({group_unique_id : req.body.group_unique_id}, function(err, gotMembers){
     if(err) { return handleError(res, err); }
-    return res.json(201, groupmessaginguser);
-  });
+    var membersArray = gotMembers;
+    for (var i in membersArray) {
+      if(membersArray[i].member_phone === req.user.phone) continue;
+      user.findOne({phone : membersArray[i].member_phone}, function(err, dataUser){
+        var payload = {
+          type : 'group:member_left_group',
+          senderId : req.user.phone,
+          groupId : req.body.group_unique_id,
+          isAdmin: 'No',
+          membership_status : 'joined',
+          badge : dataUser.iOS_badge + 1
+        };
+
+        logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that someone has left group');
+        sendPushNotification(groupmembersaved1.member_phone, payload, true);
+
+        dataUser.iOS_badge = dataUser.iOS_badge + 1;
+        dataUser.save(function(err){
+
+        });
+      })
+    }
+    GroupMessagingUsers.findOne({group_unique_id : req.body.group_unique_id, member_phone : req.user.phone}, function(err2, gotUser){
+      if(err2) { return handleError(res, err2); }
+      gotUser.membership_status = 'left';
+      gotUser.date_left = Date.now();
+      gotUser.save(function(err){
+        return res.json(200, {status:'success'})
+      })
+    })
+  })
 };
 
 // Updates an existing GroupMessagingUsers in the DB.

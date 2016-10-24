@@ -30,34 +30,36 @@ exports.create = function(req, res) {
     groupmessaginguser.find({group_unique_id : req.body.group_unique_id}, function(err2, usersingroup){
       if(err2) return handleError(res, err);
       for(var i in usersingroup){
-        user.findOne({phone : usersingroup[i].member_phone}, function(err, dataUser){
-          if(req.body.from === usersingroup[i].member_phone) continue;
-          var payload = {
-            type : 'group:chat_received',
-            senderId : req.body.from,
-            groupId : req.body.group_unique_id,
-            msg_type : req.body.type,
-            unique_id : req.body.unique_id,
-            badge : dataUser.iOS_badge + 1
-          };
+        if(usersingroup[i].membership_status === 'joined'){
+          user.findOne({phone : usersingroup[i].member_phone}, function(err, dataUser){
+            if(req.body.from === usersingroup[i].member_phone) continue;
+            var payload = {
+              type : 'group:chat_received',
+              senderId : req.body.from,
+              groupId : req.body.group_unique_id,
+              msg_type : req.body.type,
+              unique_id : req.body.unique_id,
+              badge : dataUser.iOS_badge + 1
+            };
 
-          logger.serverLog('info', 'sending push to group member '+ usersingroup[i].member_phone +' that you are added to group');
-          sendPushNotification(usersingroup[i].member_phone, payload, true);
+            logger.serverLog('info', 'sending push to group member '+ usersingroup[i].member_phone +' that you are added to group');
+            sendPushNotification(usersingroup[i].member_phone, payload, true);
 
-          var chatStatusBody = {
-            msg_unique_id: req.body.group_unique_id,
-            status : 'sent',
-            user_phone : usersingroup[i].member_phone,
-          }
-          groupchatstatus.save(chatStatusBody, function(err, groupChatStatus){
+            var chatStatusBody = {
+              msg_unique_id: req.body.group_unique_id,
+              status : 'sent',
+              user_phone : usersingroup[i].member_phone,
+            }
+            groupchatstatus.save(chatStatusBody, function(err, groupChatStatus){
 
+            })
+
+            dataUser.iOS_badge = dataUser.iOS_badge + 1;
+            dataUser.save(function(err){
+
+            });
           })
-
-          dataUser.iOS_badge = dataUser.iOS_badge + 1;
-          dataUser.save(function(err){
-
-          });
-        })
+        }
       }
     })
     return res.json(201, groupchat);

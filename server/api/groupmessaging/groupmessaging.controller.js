@@ -18,6 +18,8 @@ exports.index = function(req, res) {
 // Creates a new GroupMessaging in the DB.
 exports.create = function(req, res) {
 
+  logger.serverLog('info', 'create group body '+ JSON.stringify(req.body));
+
   var today = new Date();
   var uid = Math.random().toString(36).substring(7);
   var unique_id = 'h' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate() + '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
@@ -49,9 +51,14 @@ exports.create = function(req, res) {
           isAdmin: 'No',
           membership_status : 'joined'
         }
+
+        logger.serverLog('info', 'adding group member '+ membersArray[i] +' to group '+ req.body.group_name);
+
         GroupMessagingUser.create(groupmember, function(err3, groupmembersaved1){
           if(err3) { console.log('53'); console.log(err3); return handleError(res, err3); }
           // SEND PUSH NOTIFICATION HERE
+          logger.serverLog('info', 'added group member '+ membersArray[i] +' to group '+ req.body.group_name);
+          logger.serverLog('info', JSON.stringify(groupmembersaved1));
           user.findOne({phone : groupmembersaved1.member_phone}, function(err, dataUser){
         		var payload = {
         			type : 'group:you_are_added',
