@@ -166,10 +166,12 @@ function sendPushNotification(tagname, payload, sendSound){
     sound : 'UILocalNotificationDefaultSoundName',
     badge : payload.badge,
     payload : payload
+    'content-available' : true
   };
   if(!sendSound){
     iOSMessage = {
       payload : payload
+      'content-available' : true
     };
   }
   var androidMessage = {
