@@ -165,12 +165,12 @@ function sendPushNotification(tagname, payload, sendSound){
     alert : payload.msg,
     sound : 'UILocalNotificationDefaultSoundName',
     badge : payload.badge,
-    payload : payload
+    payload : payload,
     'content-available' : true
   };
   if(!sendSound){
     iOSMessage = {
-      payload : payload
+      payload : payload,
       'content-available' : true
     };
   }
