@@ -22,6 +22,39 @@ exports.mygroups = function(req, res) {
   });
 };
 
+exports.mygroupsmembers = function(req, res) {
+  logger.serverLog('info', 'body for getting my groups members '+ JSON.stringify(req.body));
+  GroupMessagingUsers.find({member_phone : req.user.phone}, function (err, mygroups) {
+    if(err) { return handleError(res, err); }
+    var groupIds = [];
+    for(var i in mygroups){
+      groupIds[i] = mygroups[i].group_unique_id;
+    }
+    logger.serverLog('info', 'these are my groups '+ groupIds);
+    GroupMessagingUsers.find({group_unique_id : { $in : groupIds }}, function(err, groupmessagingusers){
+      if(err) { return handleError(res, err); }
+      logger.serverLog('info', 'these are my groups members'+ JSON.stringify(req.body));
+      return res.json(200, groupmessagingusers);
+    })
+  });
+};
+
+exports.updateRole = function(req, res) {
+  logger.serverLog('info', 'body for updating group member role '+ JSON.stringify(req.body));
+  GroupMessagingUsers.findOne({member_phone : req.user.phone, group_unique_id : req.body.group_unique_id}, function (err, gotUser) {
+    if(err) { return handleError(res, err); }
+    if(gotUser.isAdmin === 'No') { return res.json(401, {error: 'Only admin can change the role of other group member.'})}
+    GroupMessagingUsers.update(
+      {member_phone: req.body.member_phone, group_unique_id: req.body.group_unique_id},
+      {isAdmin : 'Yes'}, // should have value one of 'delivered', 'seen'
+      {multi : false},
+      function (err, num){
+
+      }
+    );
+  });
+};
+
 // Creates a new GroupMessagingUsers in the DB.
 exports.create = function(req, res) {
 
@@ -33,34 +66,35 @@ exports.create = function(req, res) {
         var membersArray = req.body.members;
 
         for (var i in membersArray) {
-          var groupmember = {
-            group_unique_id: gotGroup._id,
-            member_phone: membersArray[i],
-            isAdmin: 'No',
-            membership_status : 'joined'
-          }
-          GroupMessagingUsers.create(groupmember, function(err3, groupmembersaved1){
-            if(err3) { return handleError(res, err); }
-            // SEND PUSH NOTIFICATION HERE
-            user.findOne({phone : groupmembersaved1.member_phone}, function(err, dataUser){
-          		var payload = {
-          			type : 'group:you_are_added',
-          			senderId : req.user.phone,
-          			groupId : req.body.group_unique_id,
+          user.findOne({phone : membersArray[i]}, function(err, dataUser){
+            var groupmember = {
+              group_unique_id: gotGroup._id,
+              member_phone: membersArray[i],
+              display_name: dataUser.display_name,
+              isAdmin: 'No',
+              membership_status : 'joined'
+            }
+            GroupMessagingUsers.create(groupmember, function(err3, groupmembersaved1){
+              if(err3) { return handleError(res, err); }
+              // SEND PUSH NOTIFICATION HERE
+              var payload = {
+                type : 'group:you_are_added',
+                senderId : req.user.phone,
+                groupId : req.body.group_unique_id,
                 isAdmin: 'No',
                 membership_status : 'joined',
                 msg : req.user.display_name + ' added you to the group "'+ req.body.group_name +'"',
                 group_name: req.body.group_name,
-          			badge : dataUser.iOS_badge + 1
-          		};
+                badge : dataUser.iOS_badge + 1
+              };
 
-          		logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
-          		sendPushNotification(groupmembersaved1.member_phone, payload, true);
+              logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
+              sendPushNotification(groupmembersaved1.member_phone, payload, true);
 
-          		dataUser.iOS_badge = dataUser.iOS_badge + 1;
-          		dataUser.save(function(err){
+              dataUser.iOS_badge = dataUser.iOS_badge + 1;
+              dataUser.save(function(err){
 
-          		});
+              });
             })
           })
         }

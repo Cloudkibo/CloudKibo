@@ -5,6 +5,7 @@ var GroupChats = require('./groupchat.model');
 var user = require('../user/user.model');
 var groupchatstatus = require('../groupchatstatus/groupchatstatus.model');
 var groupmessaginguser = require('../groupmessaginguser/groupmessaginguser.model');
+var groupmessaging = require('../groupmessaging/groupmessaging.model');
 var logger = require('../../components/logger/logger');
 var azure = require('azure');
 
@@ -33,48 +34,59 @@ exports.fetchSingleChat = function(req, res){
 
 // Creates a new GroupChats in the DB.
 exports.create = function(req, res) {
-  logger.serverLog('info', 'create group chat body '+ JSON.stringify(req.body));
-  GroupChats.create(req.body, function(err, groupchat) {
+  groupmessaging.findOne({unique_id : req.body.group_unique_id}, function(err, groupFound){
     if(err) { return handleError(res, err); }
-    groupmessaginguser.find({group_unique_id : req.body.group_unique_id}, function(err2, usersingroup){
-      if(err2) return handleError(res, err);
-      for(var i in usersingroup){
-        if(usersingroup[i].membership_status === 'joined'){
-          user.findOne({phone : usersingroup[i].member_phone}, function(err, dataUser){
-            logger.serverLog('info', 'member in group which will get chat '+ JSON.stringify(dataUser));
-            if(req.body.from === usersingroup[i].member_phone) continue;
-            var payload = {
-              type : 'group:chat_received',
-              senderId : req.body.from,
-              groupId : req.body.group_unique_id,
-              msg_type : req.body.type,
-              unique_id : req.body.unique_id,
-              badge : dataUser.iOS_badge + 1
-            };
+    var body = {
+      group_unique_id: groupFound._id,
+      from: req.body.from,
+      type: req.body.type,
+      msg : req.body.msg,
+      from_fullname : req.body.from_fullname,
+      unique_id : req.body.unique_id,
+    }
+    GroupChats.create(body, function(err, groupchat) {
+      if(err) { return handleError(res, err); }
+      groupmessaginguser.find({group_unique_id : body.group_unique_id}, function(err2, usersingroup){
+        if(err2) return handleError(res, err);
+        for(var i in usersingroup){
+          if(usersingroup[i].membership_status === 'joined'){
+            user.findOne({phone : usersingroup[i].member_phone}, function(err, dataUser){
+              logger.serverLog('info', 'member in group which will get chat '+ JSON.stringify(dataUser));
+              if(req.body.from === usersingroup[i].member_phone) continue;
+              var payload = {
+                type : 'group:chat_received',
+                senderId : req.body.from,
+                groupId : req.body.group_unique_id,
+                msg_type : req.body.type,
+                unique_id : req.body.unique_id,
+                badge : dataUser.iOS_badge + 1
+              };
 
-            logger.serverLog('info', 'sending push to group member '+ usersingroup[i].member_phone +' that you are added to group');
-            sendPushNotification(usersingroup[i].member_phone, payload, true);
+              logger.serverLog('info', 'sending push to group member '+ usersingroup[i].member_phone +' that you are added to group');
+              sendPushNotification(usersingroup[i].member_phone, payload, true);
 
-            var chatStatusBody = {
-              chat_unique_id: req.body.unique_id,
-              msg_unique_id : groupchat._id,
-              status : 'sent',
-              user_phone : usersingroup[i].member_phone,
-            }
-            groupchatstatus.save(chatStatusBody, function(err, groupChatStatus){
+              var chatStatusBody = {
+                chat_unique_id: req.body.unique_id,
+                msg_unique_id : groupchat._id,
+                status : 'sent',
+                user_phone : usersingroup[i].member_phone,
+              }
+              groupchatstatus.save(chatStatusBody, function(err, groupChatStatus){
 
+              })
+
+              dataUser.iOS_badge = dataUser.iOS_badge + 1;
+              dataUser.save(function(err){
+
+              });
             })
-
-            dataUser.iOS_badge = dataUser.iOS_badge + 1;
-            dataUser.save(function(err){
-
-            });
-          })
+          }
         }
-      }
-    })
-    return res.json(201, groupchat);
-  });
+      })
+      return res.json(201, groupchat);
+    });
+  })
+  logger.serverLog('info', 'create group chat body '+ JSON.stringify(req.body));
 };
 
 // Updates an existing GroupChats in the DB.

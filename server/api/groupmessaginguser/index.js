@@ -7,7 +7,9 @@ var auth = require('../../auth/auth.service');
 var router = express.Router();
 
 router.get('/', auth.isAuthenticated(), controller.index);
-router.get('/mygroups', auth.isAuthenticated(), controller.mygroups);
+router.get('/mygroups', auth.isAuthenticated(), controller.mygroupsmembers);
+router.get('/mygroupsmembers', auth.isAuthenticated(), controller.mygroups);
+router.post('/updateRole', auth.isAuthenticated(), controller.updateRole);
 router.post('/', auth.isAuthenticated(), controller.create);
 router.post('/leaveGroup', auth.isAuthenticated(), controller.leaveGroup);
 router.put('/:id', auth.isAuthenticated(), controller.update);

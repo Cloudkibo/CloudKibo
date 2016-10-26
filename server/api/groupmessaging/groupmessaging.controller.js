@@ -42,6 +42,7 @@ exports.create = function(req, res) {
     var groupmember1 = {
       group_unique_id: groupmessaging._id,
       member_phone: req.user.phone,
+      display_name: req.user.display_name,
       isAdmin: 'Yes',
       membership_status : 'joined'
     }
@@ -52,39 +53,41 @@ exports.create = function(req, res) {
       var membersArray = req.body.members;
 
       for (var i in membersArray) {
-        var groupmember = {
-          group_unique_id: groupmessaging._id,
-          member_phone: membersArray[i],
-          isAdmin: 'No',
-          membership_status : 'joined'
-        }
+        user.findOne({phone : membersArray[i]}, function(err, dataUser){
+          var groupmember = {
+            group_unique_id: groupmessaging._id,
+            member_phone: membersArray[i],
+            display_name: dataUser.display_name,
+            isAdmin: 'No',
+            membership_status : 'joined'
+          }
 
-        logger.serverLog('info', 'adding group member '+ membersArray[i] +' to group '+ req.body.group_name);
+          logger.serverLog('info', 'adding group member '+ membersArray[i] +' to group '+ req.body.group_name);
 
-        GroupMessagingUser.create(groupmember, function(err3, groupmembersaved1){
-          if(err3) { console.log('53'); console.log(err3); return handleError(res, err3); }
-          // SEND PUSH NOTIFICATION HERE
-          logger.serverLog('info', 'added group member '+ membersArray[i] +' to group '+ req.body.group_name);
-          logger.serverLog('info', JSON.stringify(groupmembersaved1));
-          user.findOne({phone : groupmembersaved1.member_phone}, function(err, dataUser){
-        		var payload = {
-        			type : 'group:you_are_added',
-        			senderId : req.user.phone,
-        			groupId : groupmembersaved1.group_unique_id,
+          GroupMessagingUser.create(groupmember, function(err3, groupmembersaved1){
+            if(err3) { console.log('53'); console.log(err3); return handleError(res, err3); }
+            // SEND PUSH NOTIFICATION HERE
+            logger.serverLog('info', 'added group member '+ membersArray[i] +' to group '+ req.body.group_name);
+            logger.serverLog('info', JSON.stringify(groupmembersaved1));
+            var payload = {
+              type : 'group:you_are_added',
+              senderId : req.user.phone,
+              groupId : groupmessaging._id,
               isAdmin: 'No',
               membership_status : 'joined',
               group_name: req.body.group_name,
               msg : req.user.display_name + ' added you to the group "'+ req.body.group_name +'"',
-        			badge : dataUser.iOS_badge + 1
-        		};
+              badge : dataUser.iOS_badge + 1
+            };
 
-        		logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
-        		sendPushNotification(groupmembersaved1.member_phone, payload, true);
+            logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
+            sendPushNotification(groupmembersaved1.member_phone, payload, true);
 
-        		dataUser.iOS_badge = dataUser.iOS_badge + 1;
-        		dataUser.save(function(err){
+            dataUser.iOS_badge = dataUser.iOS_badge + 1;
+            dataUser.save(function(err){
 
-        		});
+            });
+
           })
         })
       }

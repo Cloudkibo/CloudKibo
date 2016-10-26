@@ -6,6 +6,7 @@ var mongoose = require('mongoose'),
 var GroupMessagingUser = new Schema({
   group_unique_id: {type: Schema.ObjectId, ref: 'groupmessagings'},
   member_phone: String,
+  display_name: String,
   isAdmin: String,
   membership_status : String,
   date_join : {type: Date, default: Date.now },

@@ -20,6 +20,18 @@ exports.index = function(req, res) {
   });
 };
 
+exports.updateStatus = function (req, res){
+  GroupChatStatus.update(
+    {chat_unique_id : req.body.chat_unique_id, user_phone : req.user.phone},
+    {status : req.body.status}, // should have value one of 'delivered', 'seen'
+    {multi : false},
+    function (err, num){
+      if(err) { return handleError(res, err); }
+      return res.json(200, {status : 'success'});
+    }
+  );
+}
+
 exports.checkStatus = function (req, res){
   GroupChatStatus.find({chat_unique_id: { $in: req.body.unique_ids }}, function (err, groupchatstatus) {
     if(err) { return handleError(res, err); }
