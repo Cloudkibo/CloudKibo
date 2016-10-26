@@ -34,8 +34,7 @@ exports.updateStatus = function (req, res){
           status : req.body.status,
   				uniqueId : req.body.chat_unique_id
         };
-
-        logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
+        
         sendPushNotification(gotChat.from, payload, false);
 
       })
