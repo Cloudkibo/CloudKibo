@@ -6,11 +6,26 @@ var user = require('../user/user.model');
 
 // Get list of GroupChatStatuss
 exports.index = function(req, res) {
-  GroupChatStatus.find(function (err, groupchatstatus) {
+  GroupChatStatus.find({status:'sent', user_phone: req.user.phone}).populate('msg_unique_id').exec(function (err, groupchatstatus) {
     if(err) { return handleError(res, err); }
+    GroupChatStatus.update(
+      {status:'sent', user_phone: req.user.phone},
+      {status : 'delivered'}, // should have value one of 'delivered', 'seen'
+      {multi : true},
+      function (err, num){
+
+      }
+    );
     return res.json(200, groupchatstatus);
   });
 };
+
+exports.checkStatus = function (req, res){
+  GroupChatStatus.find({chat_unique_id: { $in: req.body.unique_ids }}, function (err, groupchatstatus) {
+    if(err) { return handleError(res, err); }
+    return res.json(200, groupchatstatus);
+  });
+}
 
 // Creates a new GroupChatStatus in the DB.
 exports.create = function(req, res) {

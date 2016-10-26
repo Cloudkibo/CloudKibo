@@ -15,6 +15,13 @@ exports.index = function(req, res) {
   });
 };
 
+exports.specificGroup = function(req, res) {
+  GroupMessaging.find({unique_id : req.body.unique_id}, function (err, groupmessaging) {
+    if(err) { return handleError(res, err); }
+    return res.json(200, groupmessaging);
+  });
+};
+
 // Creates a new GroupMessaging in the DB.
 exports.create = function(req, res) {
 

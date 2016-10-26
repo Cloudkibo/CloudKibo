@@ -5,6 +5,7 @@ var mongoose = require('mongoose'),
 
 var GroupChatStatus = new Schema({
   msg_unique_id: {type: Schema.ObjectId, ref: 'groupchats'},
+  chat_unique_id : String,
   status : String,
   user_phone : String,
   read_date : {type: Date, default: Date.now },

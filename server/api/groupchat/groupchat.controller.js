@@ -19,6 +19,14 @@ exports.index = function(req, res) {
 exports.fetchSingleChat = function(req, res){
   GroupChats.findOne({unique_id : req.body.unique_id}, function (err, groupchat) {
     if(err) { return handleError(res, err); }
+    groupchatstatus.findOne({chat_unique_id : req.body.unique_id, user_phone : req.user.phone}, function(err, status){
+      if(err) { return handleError(res, err); }
+      status.status = 'delivered';
+      status.delivered_date = Date.now();
+      status.save(function(err){
+        
+      })
+    })
     return res.json(200, groupchat);
   });
 };
@@ -46,7 +54,8 @@ exports.create = function(req, res) {
             sendPushNotification(usersingroup[i].member_phone, payload, true);
 
             var chatStatusBody = {
-              msg_unique_id: req.body.group_unique_id,
+              chat_unique_id: req.body.unique_id,
+              msg_unique_id : groupchat._id,
               status : 'sent',
               user_phone : usersingroup[i].member_phone,
             }
