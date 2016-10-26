@@ -46,7 +46,7 @@ exports.updateRole = function(req, res) {
     if(gotUser.isAdmin === 'No') { return res.json(401, {error: 'Only admin can change the role of other group member.'})}
     GroupMessagingUsers.update(
       {member_phone: req.body.member_phone, group_unique_id: req.body.group_unique_id},
-      {isAdmin : 'Yes'}, // should have value one of 'delivered', 'seen'
+      {isAdmin : req.body.makeAdmin}, // should have value one of 'Yes', 'No'
       {multi : false},
       function (err, num){
 

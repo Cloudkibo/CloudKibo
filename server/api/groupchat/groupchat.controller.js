@@ -125,6 +125,7 @@ function sendPushNotification(tagname, payload, sendSound){
   tagname = tagname.substring(1);
   var iOSMessage = {
     alert : payload.msg,
+    content-available:true,
     sound : 'UILocalNotificationDefaultSoundName',
     badge : payload.badge,
     payload : payload
