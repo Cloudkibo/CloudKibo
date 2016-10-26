@@ -82,6 +82,8 @@ module.exports = function(app) {
   app.use('/api/filetransfers', require('./api/filetransfers'));
   app.use('/api/groupmessaging', require('./api/groupmessaging'));
   app.use('/api/groupmessaginguser', require('./api/groupmessaginguser'));
+  app.use('/api/groupchat', require('./api/groupchat'));
+  app.use('/api/groupchatstatus', require('./api/groupchatstatus'));
 
   app.use('/auth', require('./auth'));
 
