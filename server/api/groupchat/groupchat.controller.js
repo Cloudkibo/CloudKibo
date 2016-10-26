@@ -71,7 +71,7 @@ exports.create = function(req, res) {
                 status : 'sent',
                 user_phone : usersingroup[i].member_phone,
               }
-              groupchatstatus.save(chatStatusBody, function(err, groupChatStatus){
+              groupchatstatus.create(chatStatusBody, function(err, groupChatStatus){
 
               })
 
