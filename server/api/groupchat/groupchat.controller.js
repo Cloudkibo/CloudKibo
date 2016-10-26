@@ -59,6 +59,7 @@ exports.create = function(req, res) {
                 groupId : req.body.group_unique_id,
                 msg_type : req.body.type,
                 unique_id : req.body.unique_id,
+                msg : req.body.from_fullname,
                 badge : dataUser.iOS_badge + 1
               };
 
