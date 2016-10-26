@@ -24,7 +24,7 @@ exports.fetchSingleChat = function(req, res){
       status.status = 'delivered';
       status.delivered_date = Date.now();
       status.save(function(err){
-        
+
       })
     })
     return res.json(200, groupchat);
@@ -33,6 +33,7 @@ exports.fetchSingleChat = function(req, res){
 
 // Creates a new GroupChats in the DB.
 exports.create = function(req, res) {
+  logger.serverLog('info', 'create group chat body '+ JSON.stringify(req.body));
   GroupChats.create(req.body, function(err, groupchat) {
     if(err) { return handleError(res, err); }
     groupmessaginguser.find({group_unique_id : req.body.group_unique_id}, function(err2, usersingroup){
@@ -40,6 +41,7 @@ exports.create = function(req, res) {
       for(var i in usersingroup){
         if(usersingroup[i].membership_status === 'joined'){
           user.findOne({phone : usersingroup[i].member_phone}, function(err, dataUser){
+            logger.serverLog('info', 'member in group which will get chat '+ JSON.stringify(dataUser));
             if(req.body.from === usersingroup[i].member_phone) continue;
             var payload = {
               type : 'group:chat_received',
