@@ -18,7 +18,7 @@ exports.index = function(req, res) {
 };
 
 exports.fetchSingleChat = function(req, res){
-  GroupChats.findOne({unique_id : req.body.unique_id}, function (err, groupchat) {
+  GroupChats.findOne({unique_id : req.body.unique_id}).populate('group_unique_id').(function (err, groupchat) {
     if(err) { return handleError(res, err); }
     groupchatstatus.findOne({chat_unique_id : req.body.unique_id, user_phone : req.user.phone}, function(err, status){
       if(err) { return handleError(res, err); }
