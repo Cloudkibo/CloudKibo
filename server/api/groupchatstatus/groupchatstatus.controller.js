@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var GroupChatStatus = require('./groupchatstatus.model');
+var groupchat = require('../groupchat/groupchat.model');
 var user = require('../user/user.model');
 
 // Get list of GroupChatStatuss
