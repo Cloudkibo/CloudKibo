@@ -49,10 +49,10 @@ exports.create = function(req, res) {
       groupmessaginguser.find({group_unique_id : body.group_unique_id}, function(err2, usersingroup){
         if(err2) return handleError(res, err);
         for(var i in usersingroup){
+          if(req.body.from === usersingroup[i].member_phone) continue;
           if(usersingroup[i].membership_status === 'joined'){
             user.findOne({phone : usersingroup[i].member_phone}, function(err, dataUser){
               logger.serverLog('info', 'member in group which will get chat '+ JSON.stringify(dataUser));
-              if(req.body.from === usersingroup[i].member_phone) continue;
               var payload = {
                 type : 'group:chat_received',
                 senderId : req.body.from,
