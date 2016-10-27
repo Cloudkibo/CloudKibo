@@ -95,7 +95,7 @@ exports.create = function(req, res) {
                 var payload = {
                   type : 'group:you_are_added',
                   senderId : req.user.phone,
-                  groupId : gotGroup._id,
+                  groupId : req.body.group_unique_id,
                   isAdmin: 'No',
                   membership_status : 'joined',
                   msg : req.user.display_name + ' added you to the group "'+ req.body.group_name +'"',
@@ -137,7 +137,7 @@ exports.leaveGroup = function(req, res) {
           var payload = {
             type : 'group:member_left_group',
             senderId : req.user.phone,
-            groupId : gotGroup._id,
+            groupId : req.body.group_unique_id,
             isAdmin: 'No',
             membership_status : 'left',
             badge : dataUser.iOS_badge + 1
