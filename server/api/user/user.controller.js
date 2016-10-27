@@ -51,7 +51,10 @@ exports.newuser = function(req, res) {
         if(user){
           logger.serverLog('info', 'this is old user. returning the user data and not creating new one');
           logger.serverLog('info', JSON.stringify(user));
-          return res.json(200, user)
+          user.display_name = req.body.display_name;
+          user.save(function(err, user1){
+            return res.json(200, user1)
+          })
         }
 
         var newUser = new User({
