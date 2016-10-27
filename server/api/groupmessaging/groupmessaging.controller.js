@@ -72,7 +72,7 @@ exports.create = function(req, res) {
             var payload = {
               type : 'group:you_are_added',
               senderId : req.user.phone,
-              groupId : groupmessaging._id,
+              groupId : req.body.unique_id,
               isAdmin: 'No',
               membership_status : 'joined',
               group_name: req.body.group_name,
@@ -95,6 +95,49 @@ exports.create = function(req, res) {
       return res.json(201, groupmessaging);
     })
   });
+};
+
+exports.uploadIcon = function(req, res) {
+	logger.serverLog('info', 'filetransfers.controller : upload file route called. file is: '+ JSON.stringify(req.files));
+
+	var today = new Date();
+	var uid = crypto.randomBytes(5).toString('hex');
+	var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
+	serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
+	serverPath += '.' + req.files.file.type.split('/')[1];
+
+	console.log(__dirname);
+
+	var dir = "./userpictures";
+
+	if(req.files.file.size == 0) return res.send('No file submitted');
+
+	require('fs').rename(
+	 req.files.file.path,
+	 dir + "/" + serverPath,
+		function(error) {
+			 if(error) {
+				 logger.serverLog('error', 'user.controller (update image) : '+ error);
+				res.send({
+					error: 'Server Error: Could not upload the file'
+				});
+				return 0;
+			 }
+      console.log(req.body);
+      GroupMessaging.find({unique_id : req.body.unique_id}, function (err, groupmessaging) {
+        if(err) { return handleError(res, err); }
+        groupmessaging.group_icon = serverPath;
+        groupmessaging.save(function(err){
+          return res.json(200, {status : 'success'});
+        });
+      });
+
+		 }
+
+	);
+
+
+
 };
 
 // Updates an existing GroupMessaging in the DB.

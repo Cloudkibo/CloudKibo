@@ -13,6 +13,7 @@ router.post('/myspecificgroupsmembers', auth.isAuthenticated(), controller.myspe
 router.post('/updateRole', auth.isAuthenticated(), controller.updateRole);
 router.post('/', auth.isAuthenticated(), controller.create);
 router.post('/leaveGroup', auth.isAuthenticated(), controller.leaveGroup);
+router.post('/removeFromGroup', auth.isAuthenticated(), controller.removeFromGroup);
 router.put('/:id', auth.isAuthenticated(), controller.update);
 router.patch('/:id', auth.isAuthenticated(), controller.update);
 router.delete('/:id', auth.isAuthenticated(), controller.destroy);

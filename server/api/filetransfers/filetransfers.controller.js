@@ -63,11 +63,8 @@ console.log('this is id when downloading file');
 console.log(req.body.uniqueid);
 	filetransfers.findOne({uniqueid : req.body.uniqueid}, function(err, data){
 		if(err) return res.send({status : 'database error'});
-
 		res.sendfile(data.path, {root: './userpictures'});
-
 	});
-
 };
 
 exports.confirmdownload = function(req, res, next) {

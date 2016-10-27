@@ -51,107 +51,164 @@ exports.myspecificgroupsmembers = function(req, res) {
 
 exports.updateRole = function(req, res) {
   logger.serverLog('info', 'body for updating group member role '+ JSON.stringify(req.body));
-  GroupMessagingUsers.findOne({member_phone : req.user.phone, group_unique_id : req.body.group_unique_id}, function (err, gotUser) {
-    if(err) { return handleError(res, err); }
-    if(gotUser.isAdmin === 'No') { return res.json(401, {error: 'Only admin can change the role of other group member.'})}
-    GroupMessagingUsers.update(
-      {member_phone: req.body.member_phone, group_unique_id: req.body.group_unique_id},
-      {isAdmin : req.body.makeAdmin}, // should have value one of 'Yes', 'No'
-      {multi : false},
-      function (err, num){
+  GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
+    if(err)  { return handleError(res, err); }
+    GroupMessagingUsers.findOne({member_phone : req.user.phone, group_unique_id : gotGroup._id}, function (err, gotUser) {
+      if(err) { return handleError(res, err); }
+      if(gotUser.isAdmin === 'No') { return res.json(401, {error: 'Only admin can change the role of other group member.'})}
+      GroupMessagingUsers.update(
+        {member_phone: req.body.member_phone, group_unique_id: gotGroup._id},
+        {isAdmin : req.body.makeAdmin}, // should have value one of 'Yes', 'No'
+        {multi : false},
+        function (err, num){
+          res.json(200, {status : 'success'})
+        }
+      );
+    });
+  })
 
-      }
-    );
-  });
 };
 
 // Creates a new GroupMessagingUsers in the DB.
 exports.create = function(req, res) {
 
-  GroupMessagingUsers.findOne({member_phone : req.user.phone, group_unique_id : req.body.group_unique_id}, function(err, gotAdmin){
+  GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
+    if(err)  { return handleError(res, err); }
 
-    GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
+    GroupMessagingUsers.findOne({member_phone : req.user.phone, group_unique_id : gotGroup._id}, function(err, gotAdmin){
 
-      if(gotAdmin.isAdmin === 'Yes'){
-        var membersArray = req.body.members;
+        if(gotAdmin.isAdmin === 'Yes'){
+          var membersArray = req.body.members;
 
-        for (var i in membersArray) {
-          user.findOne({phone : membersArray[i]}, function(err, dataUser){
-            var groupmember = {
-              group_unique_id: gotGroup._id,
-              member_phone: membersArray[i],
-              display_name: dataUser.display_name,
-              isAdmin: 'No',
-              membership_status : 'joined'
-            }
-            GroupMessagingUsers.create(groupmember, function(err3, groupmembersaved1){
-              if(err3) { return handleError(res, err); }
-              // SEND PUSH NOTIFICATION HERE
-              var payload = {
-                type : 'group:you_are_added',
-                senderId : req.user.phone,
-                groupId : req.body.group_unique_id,
+          for (var i in membersArray) {
+            user.findOne({phone : membersArray[i]}, function(err, dataUser){
+              var groupmember = {
+                group_unique_id: gotGroup._id,
+                member_phone: membersArray[i],
+                display_name: dataUser.display_name,
                 isAdmin: 'No',
-                membership_status : 'joined',
-                msg : req.user.display_name + ' added you to the group "'+ req.body.group_name +'"',
-                group_name: req.body.group_name,
-                badge : dataUser.iOS_badge + 1
-              };
+                membership_status : 'joined'
+              }
+              GroupMessagingUsers.create(groupmember, function(err3, groupmembersaved1){
+                if(err3) { return handleError(res, err); }
+                // SEND PUSH NOTIFICATION HERE
+                var payload = {
+                  type : 'group:you_are_added',
+                  senderId : req.user.phone,
+                  groupId : gotGroup._id,
+                  isAdmin: 'No',
+                  membership_status : 'joined',
+                  msg : req.user.display_name + ' added you to the group "'+ req.body.group_name +'"',
+                  group_name: req.body.group_name,
+                  badge : dataUser.iOS_badge + 1
+                };
 
-              logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
-              sendPushNotification(groupmembersaved1.member_phone, payload, true);
+                logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
+                sendPushNotification(groupmembersaved1.member_phone, payload, true);
 
-              dataUser.iOS_badge = dataUser.iOS_badge + 1;
-              dataUser.save(function(err){
+                dataUser.iOS_badge = dataUser.iOS_badge + 1;
+                dataUser.save(function(err){
 
-              });
+                });
+              })
             })
-          })
+          }
+
+          return res.json(201, {status: 'success', msg:'New members are added to group.'});
+        } else {
+          return res.json('501', {status: 'unauthorized', msg:'You are not admin of this group.'})
         }
 
-        return res.json(201, {status: 'success', msg:'New members are added to group.'});
-      } else {
-        return res.json('501', {status: 'unauthorized', msg:'You are not admin of this group.'})
-      }
     })
 
   })
 };
 
 exports.leaveGroup = function(req, res) {
-  GroupMessagingUsers.find({group_unique_id : req.body.group_unique_id}, function(err, gotMembers){
-    if(err) { return handleError(res, err); }
-    var membersArray = gotMembers;
-    for (var i in membersArray) {
-      if(membersArray[i].member_phone === req.user.phone) continue;
-      user.findOne({phone : membersArray[i].member_phone}, function(err, dataUser){
-        var payload = {
-          type : 'group:member_left_group',
-          senderId : req.user.phone,
-          groupId : req.body.group_unique_id,
-          isAdmin: 'No',
-          membership_status : 'joined',
-          badge : dataUser.iOS_badge + 1
-        };
+  GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
+    if(err)  { return handleError(res, err); }
 
-        logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that someone has left group');
-        sendPushNotification(groupmembersaved1.member_phone, payload, true);
+    GroupMessagingUsers.find({group_unique_id : gotGroup._id}, function(err, gotMembers){
+      if(err) { return handleError(res, err); }
+      var membersArray = gotMembers;
+      for (var i in membersArray) {
+        if(membersArray[i].member_phone === req.user.phone) continue;
+        user.findOne({phone : membersArray[i].member_phone}, function(err, dataUser){
+          var payload = {
+            type : 'group:member_left_group',
+            senderId : req.user.phone,
+            groupId : gotGroup._id,
+            isAdmin: 'No',
+            membership_status : 'left',
+            badge : dataUser.iOS_badge + 1
+          };
 
-        dataUser.iOS_badge = dataUser.iOS_badge + 1;
-        dataUser.save(function(err){
+          logger.serverLog('info', 'sending push to group member '+ membersArray[i].member_phone +' that someone has left group');
+          sendPushNotification(membersArray[i].member_phone, payload, true);
 
-        });
-      })
-    }
-    GroupMessagingUsers.findOne({group_unique_id : req.body.group_unique_id, member_phone : req.user.phone}, function(err2, gotUser){
-      if(err2) { return handleError(res, err2); }
-      gotUser.membership_status = 'left';
-      gotUser.date_left = Date.now();
-      gotUser.save(function(err){
-        return res.json(200, {status:'success'})
+          dataUser.iOS_badge = dataUser.iOS_badge + 1;
+          dataUser.save(function(err){
+
+          });
+        })
+      }
+      GroupMessagingUsers.findOne({group_unique_id : gotGroup._id, member_phone : req.user.phone}, function(err2, gotUser){
+        if(err2) { return handleError(res, err2); }
+        gotUser.membership_status = 'left';
+        gotUser.date_left = Date.now();
+        gotUser.save(function(err){
+          return res.json(200, {status:'success'})
+        })
       })
     })
+
   })
+};
+
+exports.removeFromGroup = function(req, res) {
+  GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
+    if(err)  { return handleError(res, err); }
+    GroupMessagingUsers.findOne({phone : req.user.phone, group_unique_id : gotGroup._id}, function(err, adminData){
+      if(adminData.isAdmin === 'Yes'){
+        GroupMessagingUsers.find({group_unique_id : gotGroup._id}, function(err, gotMembers){
+          if(err) { return handleError(res, err); }
+          var membersArray = gotMembers;
+          for (var i in membersArray) {
+            if(membersArray[i].member_phone === req.user.phone) continue;
+            user.findOne({phone : membersArray[i].member_phone}, function(err, dataUser){
+              var payload = {
+                type : 'group:removed_from_group',
+                senderId : req.user.phone,
+                groupId : gotGroup._id,
+                isAdmin: 'No',
+                membership_status : 'left',
+                badge : dataUser.iOS_badge + 1
+              };
+
+              logger.serverLog('info', 'sending push to group member '+ membersArray[i].member_phone +' that someone was removed from group');
+              sendPushNotification(membersArray[i].member_phone, payload, false);
+
+              dataUser.iOS_badge = dataUser.iOS_badge + 1;
+              dataUser.save(function(err){
+
+              });
+            })
+          }
+          GroupMessagingUsers.findOne({group_unique_id : gotGroup._id, member_phone : req.user.phone}, function(err2, gotUser){
+            if(err2) { return handleError(res, err2); }
+            gotUser.membership_status = 'left';
+            gotUser.date_left = Date.now();
+            gotUser.save(function(err){
+              return res.json(200, {status:'success'})
+            })
+          })
+        })
+      } else {
+        return res.json(401, {status:'success'})
+      }
+    })
+  })
+
 };
 
 // Updates an existing GroupMessagingUsers in the DB.
