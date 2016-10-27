@@ -179,7 +179,8 @@ exports.removeFromGroup = function(req, res) {
               var payload = {
                 type : 'group:removed_from_group',
                 senderId : req.user.phone,
-                groupId : gotGroup._id,
+                personRemoved : req.body.phone,
+                groupId : req.body.group_unique_id,
                 isAdmin: 'No',
                 membership_status : 'left',
                 badge : dataUser.iOS_badge + 1
@@ -194,7 +195,7 @@ exports.removeFromGroup = function(req, res) {
               });
             })
           }
-          GroupMessagingUsers.findOne({group_unique_id : gotGroup._id, member_phone : req.user.phone}, function(err2, gotUser){
+          GroupMessagingUsers.findOne({group_unique_id : gotGroup._id, member_phone : req.body.phone}, function(err2, gotUser){
             if(err2) { return handleError(res, err2); }
             gotUser.membership_status = 'left';
             gotUser.date_left = Date.now();
