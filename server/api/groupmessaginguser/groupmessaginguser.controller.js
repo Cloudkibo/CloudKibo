@@ -31,7 +31,7 @@ exports.mygroupsmembers = function(req, res) {
       groupIds[i] = mygroups[i].group_unique_id;
     }
     logger.serverLog('info', 'these are my groups '+ groupIds);
-    GroupMessagingUsers.find({group_unique_id : { $in : groupIds }}, function(err, groupmessagingusers){
+    GroupMessagingUsers.find({group_unique_id : { $in : groupIds }}).populate('group_unique_id').exec(function(err, groupmessagingusers){
       if(err) { return handleError(res, err); }
       logger.serverLog('info', 'these are my groups members'+ JSON.stringify(req.body));
       return res.json(200, groupmessagingusers);
