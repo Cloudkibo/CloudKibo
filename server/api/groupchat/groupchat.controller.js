@@ -68,13 +68,13 @@ exports.create = function(req, res) {
               };
 
               logger.serverLog('info', 'sending push to group member '+ usersingroup[i].member_phone +' that you are added to group');
-              sendPushNotification(usersingroup[i].member_phone, payload, true);
+              sendPushNotification(dataUser.phone, payload, true);
 
               var chatStatusBody = {
                 chat_unique_id: req.body.unique_id,
                 msg_unique_id : groupchat._id,
                 status : 'sent',
-                user_phone : usersingroup[i].member_phone,
+                user_phone : dataUser.phone,
               }
               groupchatstatus.create(chatStatusBody, function(err, groupChatStatus){
 
