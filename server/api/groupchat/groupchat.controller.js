@@ -34,6 +34,7 @@ exports.fetchSingleChat = function(req, res){
 
 // Creates a new GroupChats in the DB.
 exports.create = function(req, res) {
+  logger.serverLog('info', 'group chat body '+ JSON.stringify(req.body));
   groupmessaging.findOne({unique_id : req.body.group_unique_id}, function(err, groupFound){
     if(err) { return handleError(res, err); }
     var body = {
@@ -44,11 +45,14 @@ exports.create = function(req, res) {
       from_fullname : req.body.from_fullname,
       unique_id : req.body.unique_id,
     }
+    logger.serverLog('info', 'group where chat is sent '+ JSON.stringify(groupFound));
     GroupChats.create(body, function(err, groupchat) {
       if(err) { return handleError(res, err); }
       groupmessaginguser.find({group_unique_id : body.group_unique_id}, function(err2, usersingroup){
+        logger.serverLog('info', 'members in group which will get chat '+ JSON.stringify(usersingroup));
         if(err2) return handleError(res, err);
         for(var i in usersingroup){
+          logger.serverLog('info', 'member in group is being checked '+ JSON.stringify(usersingroup[i]));
           if(req.body.from === usersingroup[i].member_phone) continue;
           if(usersingroup[i].membership_status === 'joined'){
             user.findOne({phone : usersingroup[i].member_phone}, function(err, dataUser){

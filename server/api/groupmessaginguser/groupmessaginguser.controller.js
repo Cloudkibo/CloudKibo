@@ -23,7 +23,6 @@ exports.mygroups = function(req, res) {
 };
 
 exports.mygroupsmembers = function(req, res) {
-  logger.serverLog('info', 'body for getting my groups members '+ JSON.stringify(req.body));
   GroupMessagingUsers.find({member_phone : req.user.phone}, function (err, mygroups) {
     if(err) { return handleError(res, err); }
     var groupIds = [];
@@ -33,10 +32,21 @@ exports.mygroupsmembers = function(req, res) {
     logger.serverLog('info', 'these are my groups '+ groupIds);
     GroupMessagingUsers.find({group_unique_id : { $in : groupIds }}).populate('group_unique_id').exec(function(err, groupmessagingusers){
       if(err) { return handleError(res, err); }
-      logger.serverLog('info', 'these are my groups members'+ JSON.stringify(req.body));
+      logger.serverLog('info', 'these are my groups members'+ JSON.stringify(groupmessagingusers));
       return res.json(200, groupmessagingusers);
     })
   });
+};
+
+exports.myspecificgroupsmembers = function(req, res) {
+  GroupMessaging.findOne({unique_id : req.body.unique_id}, function(err, gotGroup){
+    if(err)  { return handleError(res, err); }
+    GroupMessagingUsers.find({group_unique_id : gotGroup._id}).populate('group_unique_id').exec(function(err, groupmessagingusers){
+      if(err) { return handleError(res, err); }
+      logger.serverLog('info', 'these are my specific group members'+ JSON.stringify(groupmessagingusers));
+      return res.json(200, groupmessagingusers);
+    })
+  })
 };
 
 exports.updateRole = function(req, res) {
