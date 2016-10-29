@@ -135,9 +135,13 @@ exports.uploadIcon = function(req, res) {
 		 }
 
 	);
+};
 
-
-
+exports.downloadIcon = function(req, res, next) {
+	GroupMessaging.findOne({unique_id : req.body.unique_id}, function(err, data){
+		if(err) return res.send({status : 'database error'});
+		res.sendfile(data.group_icon, {root: './userpictures'});
+	});
 };
 
 // Updates an existing GroupMessaging in the DB.
