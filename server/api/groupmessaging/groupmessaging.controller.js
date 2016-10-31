@@ -52,22 +52,22 @@ exports.create = function(req, res) {
 
       var membersArray = req.body.members;
 
-      for (var i in membersArray) {
-        user.findOne({phone : membersArray[i]}, function(err, dataUser){
+      membersArray.forEach(function(gotMember){
+        user.findOne({phone : gotMember}, function(err, dataUser){
           var groupmember = {
             group_unique_id: groupmessaging._id,
-            member_phone: membersArray[i],
+            member_phone: gotMember,
             display_name: dataUser.display_name,
             isAdmin: 'No',
             membership_status : 'joined'
           }
 
-          logger.serverLog('info', 'adding group member '+ membersArray[i] +' to group '+ req.body.group_name);
+          logger.serverLog('info', 'adding group member '+ gotMember +' to group '+ req.body.group_name);
 
           GroupMessagingUser.create(groupmember, function(err3, groupmembersaved1){
             if(err3) { console.log('53'); console.log(err3); return handleError(res, err3); }
             // SEND PUSH NOTIFICATION HERE
-            logger.serverLog('info', 'added group member '+ membersArray[i] +' to group '+ req.body.group_name);
+            logger.serverLog('info', 'added group member '+ gotMember +' to group '+ req.body.group_name);
             logger.serverLog('info', JSON.stringify(groupmembersaved1));
             var payload = {
               type : 'group:you_are_added',
@@ -90,7 +90,7 @@ exports.create = function(req, res) {
 
           })
         })
-      }
+      });
 
       return res.json(201, groupmessaging);
     })

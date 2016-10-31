@@ -79,12 +79,11 @@ exports.create = function(req, res) {
 
         if(gotAdmin.isAdmin === 'Yes'){
           var membersArray = req.body.members;
-
-          for (var i in membersArray) {
-            user.findOne({phone : membersArray[i]}, function(err, dataUser){
+          membersArray.forEach(function(gotMember){
+            user.findOne({phone : gotMember}, function(err, dataUser){
               var groupmember = {
                 group_unique_id: gotGroup._id,
-                member_phone: membersArray[i],
+                member_phone: gotMember,
                 display_name: dataUser.display_name,
                 isAdmin: 'No',
                 membership_status : 'joined'
@@ -112,7 +111,7 @@ exports.create = function(req, res) {
                 });
               })
             })
-          }
+          })
 
           return res.json(201, {status: 'success', msg:'New members are added to group.'});
         } else {
@@ -131,27 +130,28 @@ exports.leaveGroup = function(req, res) {
     GroupMessagingUsers.find({group_unique_id : gotGroup._id}, function(err, gotMembers){
       if(err) { return handleError(res, err); }
       var membersArray = gotMembers;
-      for (var i in membersArray) {
-        if(membersArray[i].member_phone === req.user.phone) continue;
-        user.findOne({phone : membersArray[i].member_phone}, function(err, dataUser){
-          var payload = {
-            type : 'group:member_left_group',
-            senderId : req.user.phone,
-            groupId : req.body.group_unique_id,
-            isAdmin: 'No',
-            membership_status : 'left',
-            badge : dataUser.iOS_badge + 1
-          };
+      membersArray.forEach(function(gotMember){
+        if(gotMember.member_phone !== req.user.phone){
+          user.findOne({phone : gotMember.member_phone}, function(err, dataUser){
+            var payload = {
+              type : 'group:member_left_group',
+              senderId : req.user.phone,
+              groupId : req.body.group_unique_id,
+              isAdmin: 'No',
+              membership_status : 'left',
+              badge : dataUser.iOS_badge + 1
+            };
 
-          logger.serverLog('info', 'sending push to group member '+ membersArray[i].member_phone +' that someone has left group');
-          sendPushNotification(membersArray[i].member_phone, payload, true);
+            logger.serverLog('info', 'sending push to group member '+ gotMember.member_phone +' that someone has left group');
+            sendPushNotification(gotMember.member_phone, payload, true);
 
-          dataUser.iOS_badge = dataUser.iOS_badge + 1;
-          dataUser.save(function(err){
+            dataUser.iOS_badge = dataUser.iOS_badge + 1;
+            dataUser.save(function(err){
 
-          });
-        })
-      }
+            });
+          })
+        }
+      })
       GroupMessagingUsers.findOne({group_unique_id : gotGroup._id, member_phone : req.user.phone}, function(err2, gotUser){
         if(err2) { return handleError(res, err2); }
         gotUser.membership_status = 'left';
@@ -173,28 +173,29 @@ exports.removeFromGroup = function(req, res) {
         GroupMessagingUsers.find({group_unique_id : gotGroup._id}, function(err, gotMembers){
           if(err) { return handleError(res, err); }
           var membersArray = gotMembers;
-          for (var i in membersArray) {
-            if(membersArray[i].member_phone === req.user.phone) continue;
-            user.findOne({phone : membersArray[i].member_phone}, function(err, dataUser){
-              var payload = {
-                type : 'group:removed_from_group',
-                senderId : req.user.phone,
-                personRemoved : req.body.phone,
-                groupId : req.body.group_unique_id,
-                isAdmin: 'No',
-                membership_status : 'left',
-                badge : dataUser.iOS_badge + 1
-              };
+          membersArray.forEach(function(gotMember){
+            if(gotMember.member_phone !== req.user.phone){
+              user.findOne({phone : gotMember.member_phone}, function(err, dataUser){
+                var payload = {
+                  type : 'group:removed_from_group',
+                  senderId : req.user.phone,
+                  personRemoved : req.body.phone,
+                  groupId : req.body.group_unique_id,
+                  isAdmin: 'No',
+                  membership_status : 'left',
+                  badge : dataUser.iOS_badge + 1
+                };
 
-              logger.serverLog('info', 'sending push to group member '+ membersArray[i].member_phone +' that someone was removed from group');
-              sendPushNotification(membersArray[i].member_phone, payload, false);
+                logger.serverLog('info', 'sending push to group member '+ gotMember.member_phone +' that someone was removed from group');
+                sendPushNotification(gotMember.member_phone, payload, false);
 
-              dataUser.iOS_badge = dataUser.iOS_badge + 1;
-              dataUser.save(function(err){
+                dataUser.iOS_badge = dataUser.iOS_badge + 1;
+                dataUser.save(function(err){
 
-              });
-            })
-          }
+                });
+              })
+            }
+          })
           GroupMessagingUsers.findOne({group_unique_id : gotGroup._id, member_phone : req.body.phone}, function(err2, gotUser){
             if(err2) { return handleError(res, err2); }
             gotUser.membership_status = 'left';
