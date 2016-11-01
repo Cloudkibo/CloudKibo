@@ -170,7 +170,7 @@ exports.removeFromGroup = function(req, res) {
   GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
     if(err)  { return handleError(res, err); }
     logger.serverLog('info', 'remove member: group found using query '+ JSON.stringify(gotGroup));
-    GroupMessagingUsers.findOne({phone : req.user.phone, group_unique_id : gotGroup._id}, function(err, adminData){
+    GroupMessagingUsers.findOne({member_phone : req.user.phone, group_unique_id : gotGroup._id}, function(err, adminData){
       logger.serverLog('info', 'remove member: admin found using query '+ JSON.stringify(adminData));
       if(adminData.isAdmin === 'Yes'){
         GroupMessagingUsers.find({group_unique_id : gotGroup._id}, function(err, gotMembers){
