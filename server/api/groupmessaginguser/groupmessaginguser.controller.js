@@ -166,9 +166,12 @@ exports.leaveGroup = function(req, res) {
 };
 
 exports.removeFromGroup = function(req, res) {
+  logger.serverLog('info', 'remove member from group body '+ JSON.stringify(req.body));
   GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
     if(err)  { return handleError(res, err); }
+    logger.serverLog('info', 'remove member: group found using query '+ JSON.stringify(gotGroup));
     GroupMessagingUsers.findOne({phone : req.user.phone, group_unique_id : gotGroup._id}, function(err, adminData){
+      logger.serverLog('info', 'remove member: admin found using query '+ JSON.stringify(gotGroup));
       if(adminData.isAdmin === 'Yes'){
         GroupMessagingUsers.find({group_unique_id : gotGroup._id}, function(err, gotMembers){
           if(err) { return handleError(res, err); }
@@ -186,7 +189,7 @@ exports.removeFromGroup = function(req, res) {
                   badge : dataUser.iOS_badge + 1
                 };
 
-                logger.serverLog('info', 'sending push to group member '+ gotMember.member_phone +' that someone was removed from group');
+                logger.serverLog('info', 'remove member: sending push to group member '+ gotMember.member_phone +' that someone was removed from group');
                 sendPushNotification(gotMember.member_phone, payload, false);
 
                 dataUser.iOS_badge = dataUser.iOS_badge + 1;
@@ -201,6 +204,7 @@ exports.removeFromGroup = function(req, res) {
             gotUser.membership_status = 'left';
             gotUser.date_left = Date.now();
             gotUser.save(function(err){
+              logger.serverLog('info', 'remove member: admin found using query '+ JSON.stringify(gotGroup));
               return res.json(200, {status:'success'})
             })
           })
