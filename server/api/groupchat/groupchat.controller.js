@@ -51,11 +51,11 @@ exports.create = function(req, res) {
       groupmessaginguser.find({group_unique_id : body.group_unique_id}, function(err2, usersingroup){
         logger.serverLog('info', 'members in group which will get chat '+ JSON.stringify(usersingroup));
         if(err2) return handleError(res, err);
-        for(var i in usersingroup){
-          logger.serverLog('info', 'member in group is being checked '+ JSON.stringify(usersingroup[i]));
-          if(req.body.from === usersingroup[i].member_phone) continue;
-          if(usersingroup[i].membership_status === 'joined'){
-            user.findOne({phone : usersingroup[i].member_phone}, function(err, dataUser){
+        usersingroup.forEach(function(useringroup){
+          logger.serverLog('info', 'member in group is being checked '+ JSON.stringify(useringroup));
+          if(req.body.from === useringroup.member_phone) continue;
+          if(useringroup.membership_status === 'joined'){
+            user.findOne({phone : useringroup.member_phone}, function(err, dataUser){
               logger.serverLog('info', 'member in group which will get chat '+ JSON.stringify(dataUser));
               var payload = {
                 type : 'group:chat_received',
@@ -67,7 +67,7 @@ exports.create = function(req, res) {
                 badge : dataUser.iOS_badge + 1
               };
 
-              logger.serverLog('info', 'sending push to group member '+ usersingroup[i].member_phone +' that you are added to group');
+              logger.serverLog('info', 'sending push to group member '+ useringroup.member_phone +' that you are added to group');
               sendPushNotification(dataUser.phone, payload, true);
 
               var chatStatusBody = {
@@ -86,7 +86,7 @@ exports.create = function(req, res) {
               });
             })
           }
-        }
+        })
       })
       return res.json(201, groupchat);
     });

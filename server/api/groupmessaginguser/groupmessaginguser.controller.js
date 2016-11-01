@@ -62,6 +62,32 @@ exports.updateRole = function(req, res) {
         {multi : false},
         function (err, num){
           res.json(200, {status : 'success'})
+          GroupMessagingUsers.find({group_unique_id : gotGroup._id, membership_status : 'joined'}, function(err, gotMembers){
+            if(err) { return handleError(res, err); }
+            var membersArray = gotMembers;
+            membersArray.forEach(function(gotMember){
+              if(gotMember.member_phone !== req.user.phone){
+                user.findOne({phone : gotMember.member_phone}, function(err, dataUser){
+                  var payload = {
+                    type : 'group:role_updated',
+                    senderId : req.user.phone,
+                    personUpdated : req.body.member_phone,
+                    groupId : req.body.group_unique_id,
+                    isAdmin: req.body.makeAdmin,
+                    badge : dataUser.iOS_badge + 1
+                  };
+
+                  logger.serverLog('info', 'updated role of member: sending push to group members '+ gotMember.member_phone +' that someones role was updated');
+                  sendPushNotification(gotMember.member_phone, payload, false);
+
+                  dataUser.iOS_badge = dataUser.iOS_badge + 1;
+                  dataUser.save(function(err){
+
+                  });
+                })
+              }
+            })
+          })
         }
       );
     });
@@ -78,6 +104,32 @@ exports.create = function(req, res) {
     GroupMessagingUsers.findOne({member_phone : req.user.phone, group_unique_id : gotGroup._id}, function(err, gotAdmin){
 
         if(gotAdmin.isAdmin === 'Yes'){
+          GroupMessagingUsers.find({group_unique_id : gotGroup._id, membership_status : 'joined'}, function(err, gotMembers){
+            if(err) { return handleError(res, err); }
+            var membersArray = gotMembers;
+            membersArray.forEach(function(gotMember){
+              if(gotMember.member_phone !== req.user.phone){
+                user.findOne({phone : gotMember.member_phone}, function(err, dataUser){
+                  var payload = {
+                    type : 'group:added_to_group',
+                    senderId : req.user.phone,
+                    personsAdded : req.body.members,
+                    groupId : req.body.group_unique_id,
+                    isAdmin: 'Yes',
+                    badge : dataUser.iOS_badge + 1
+                  };
+
+                  logger.serverLog('info', 'added members: sending push to group members '+ gotMember.member_phone +' that someone was added to existing group');
+                  sendPushNotification(gotMember.member_phone, payload, false);
+
+                  dataUser.iOS_badge = dataUser.iOS_badge + 1;
+                  dataUser.save(function(err){
+
+                  });
+                })
+              }
+            })
+          })
           var membersArray = req.body.members;
           membersArray.forEach(function(gotMember){
             user.findOne({phone : gotMember}, function(err, dataUser){
@@ -127,7 +179,7 @@ exports.leaveGroup = function(req, res) {
   GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
     if(err)  { return handleError(res, err); }
 
-    GroupMessagingUsers.find({group_unique_id : gotGroup._id}, function(err, gotMembers){
+    GroupMessagingUsers.find({group_unique_id : gotGroup._id, membership_status : 'joined'}, function(err, gotMembers){
       if(err) { return handleError(res, err); }
       var membersArray = gotMembers;
       membersArray.forEach(function(gotMember){
@@ -173,7 +225,7 @@ exports.removeFromGroup = function(req, res) {
     GroupMessagingUsers.findOne({member_phone : req.user.phone, group_unique_id : gotGroup._id}, function(err, adminData){
       logger.serverLog('info', 'remove member: admin found using query '+ JSON.stringify(adminData));
       if(adminData.isAdmin === 'Yes'){
-        GroupMessagingUsers.find({group_unique_id : gotGroup._id}, function(err, gotMembers){
+        GroupMessagingUsers.find({group_unique_id : gotGroup._id, membership_status : 'joined'}, function(err, gotMembers){
           if(err) { return handleError(res, err); }
           var membersArray = gotMembers;
           membersArray.forEach(function(gotMember){
@@ -252,6 +304,7 @@ function sendPushNotification(tagname, payload, sendSound){
   tagname = tagname.substring(1);
   var iOSMessage = {
     alert : payload.msg,
+    'content-available':true,
     sound : 'UILocalNotificationDefaultSoundName',
     badge : payload.badge,
     payload : payload
