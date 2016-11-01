@@ -74,13 +74,13 @@ exports.updateRole = function(req, res) {
                     personUpdated : req.body.member_phone,
                     groupId : req.body.group_unique_id,
                     isAdmin: req.body.makeAdmin,
-                    badge : dataUser.iOS_badge + 1
+                    badge : dataUser.iOS_badge
                   };
 
                   logger.serverLog('info', 'updated role of member: sending push to group members '+ gotMember.member_phone +' that someones role was updated');
                   sendPushNotification(gotMember.member_phone, payload, false);
 
-                  dataUser.iOS_badge = dataUser.iOS_badge + 1;
+                  dataUser.iOS_badge = dataUser.iOS_badge;
                   dataUser.save(function(err){
 
                   });
@@ -116,13 +116,13 @@ exports.create = function(req, res) {
                     personsAdded : req.body.members,
                     groupId : req.body.group_unique_id,
                     isAdmin: 'Yes',
-                    badge : dataUser.iOS_badge + 1
+                    badge : dataUser.iOS_badge
                   };
 
                   logger.serverLog('info', 'added members: sending push to group members '+ gotMember.member_phone +' that someone was added to existing group');
                   sendPushNotification(gotMember.member_phone, payload, false);
 
-                  dataUser.iOS_badge = dataUser.iOS_badge + 1;
+                  dataUser.iOS_badge = dataUser.iOS_badge;
                   dataUser.save(function(err){
 
                   });
@@ -191,13 +191,13 @@ exports.leaveGroup = function(req, res) {
               groupId : req.body.group_unique_id,
               isAdmin: 'No',
               membership_status : 'left',
-              badge : dataUser.iOS_badge + 1
+              badge : dataUser.iOS_badge
             };
 
             logger.serverLog('info', 'sending push to group member '+ gotMember.member_phone +' that someone has left group');
             sendPushNotification(gotMember.member_phone, payload, true);
 
-            dataUser.iOS_badge = dataUser.iOS_badge + 1;
+            dataUser.iOS_badge = dataUser.iOS_badge;
             dataUser.save(function(err){
 
             });
@@ -238,13 +238,13 @@ exports.removeFromGroup = function(req, res) {
                   groupId : req.body.group_unique_id,
                   isAdmin: 'No',
                   membership_status : 'left',
-                  badge : dataUser.iOS_badge + 1
+                  badge : dataUser.iOS_badge
                 };
 
                 logger.serverLog('info', 'remove member: sending push to group member '+ gotMember.member_phone +' that someone was removed from group');
                 sendPushNotification(gotMember.member_phone, payload, false);
 
-                dataUser.iOS_badge = dataUser.iOS_badge + 1;
+                dataUser.iOS_badge = dataUser.iOS_badge;
                 dataUser.save(function(err){
 
                 });

@@ -53,38 +53,39 @@ exports.create = function(req, res) {
         if(err2) return handleError(res, err);
         usersingroup.forEach(function(useringroup){
           logger.serverLog('info', 'member in group is being checked '+ JSON.stringify(useringroup));
-          if(req.body.from === useringroup.member_phone) continue;
-          if(useringroup.membership_status === 'joined'){
-            user.findOne({phone : useringroup.member_phone}, function(err, dataUser){
-              logger.serverLog('info', 'member in group which will get chat '+ JSON.stringify(dataUser));
-              var payload = {
-                type : 'group:chat_received',
-                senderId : req.body.from,
-                groupId : req.body.group_unique_id,
-                msg_type : req.body.type,
-                unique_id : req.body.unique_id,
-                msg : req.body.msg,
-                badge : dataUser.iOS_badge + 1
-              };
+          if(req.body.from !== useringroup.member_phone){
+            if(useringroup.membership_status === 'joined'){
+              user.findOne({phone : useringroup.member_phone}, function(err, dataUser){
+                logger.serverLog('info', 'member in group which will get chat '+ JSON.stringify(dataUser));
+                var payload = {
+                  type : 'group:chat_received',
+                  senderId : req.body.from,
+                  groupId : req.body.group_unique_id,
+                  msg_type : req.body.type,
+                  unique_id : req.body.unique_id,
+                  msg : req.body.msg,
+                  badge : dataUser.iOS_badge + 1
+                };
 
-              logger.serverLog('info', 'sending push to group member '+ useringroup.member_phone +' that you are added to group');
-              sendPushNotification(dataUser.phone, payload, true);
+                logger.serverLog('info', 'sending push to group member '+ useringroup.member_phone +' that you are added to group');
+                sendPushNotification(dataUser.phone, payload, true);
 
-              var chatStatusBody = {
-                chat_unique_id: req.body.unique_id,
-                msg_unique_id : groupchat._id,
-                status : 'sent',
-                user_phone : dataUser.phone,
-              }
-              groupchatstatus.create(chatStatusBody, function(err, groupChatStatus){
+                var chatStatusBody = {
+                  chat_unique_id: req.body.unique_id,
+                  msg_unique_id : groupchat._id,
+                  status : 'sent',
+                  user_phone : dataUser.phone,
+                }
+                groupchatstatus.create(chatStatusBody, function(err, groupChatStatus){
 
+                })
+
+                dataUser.iOS_badge = dataUser.iOS_badge + 1;
+                dataUser.save(function(err){
+
+                });
               })
-
-              dataUser.iOS_badge = dataUser.iOS_badge + 1;
-              dataUser.save(function(err){
-
-              });
-            })
+            }
           }
         })
       })
