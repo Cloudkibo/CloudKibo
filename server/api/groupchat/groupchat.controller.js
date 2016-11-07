@@ -26,6 +26,14 @@ exports.fetchSingleChat = function(req, res){
       status.delivered_date = Date.now();
       status.save(function(err){
 
+        var payload = {
+          type : 'group:msg_status_changed',
+          status : 'delivered',
+          uniqueId : req.body.unique_id
+        };
+
+        sendPushNotification(groupchat.from, payload, false);
+
       })
     })
     return res.json(200, groupchat);
