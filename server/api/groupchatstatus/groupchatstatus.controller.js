@@ -18,7 +18,15 @@ exports.index = function(req, res) {
 
       }
     );
-    return res.json(200, groupchatstatus);
+    GroupChatStatus.populate(groupchatstatus, {
+      path: 'msg_unique_id.group_unique_id',
+      model: 'groupmessagings'
+    },
+    function(err, groupchatstatusfilled) {
+      if(err) return handleError(res, err);
+      return res.json(200, groupchatstatusfilled); // This object should now be populated accordingly.
+    });
+
   });
 };
 

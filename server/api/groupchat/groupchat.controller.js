@@ -28,6 +28,7 @@ exports.fetchSingleChat = function(req, res){
 
         var payload = {
           type : 'group:msg_status_changed',
+          user_phone : req.user.phone,
           status : 'delivered',
           uniqueId : req.body.unique_id
         };
