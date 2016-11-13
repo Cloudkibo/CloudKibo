@@ -127,7 +127,31 @@ exports.uploadIcon = function(req, res) {
       GroupMessaging.find({unique_id : req.body.unique_id}, function (err, groupmessaging) {
         if(err) { return handleError(res, err); }
         groupmessaging.group_icon = serverPath;
+        logger.serverLog('info', 'file icon uploaded and path calculated is '+ serverPath);
+        logger.serverLog('info', 'file icon uploaded and address given is '+ JSON.stringify(groupmessaging));
         groupmessaging.save(function(err){
+          GroupMessagingUser.find({group_unique_id : req.body.unique_id}, function(err2, usersingroup){
+            logger.serverLog('info', 'members in group which will get icon update '+ JSON.stringify(usersingroup));
+            if(err2) return handleError(res, err);
+            usersingroup.forEach(function(useringroup){
+              logger.serverLog('info', 'member in group is being checked '+ JSON.stringify(useringroup));
+              if(req.body.from !== useringroup.member_phone){
+                if(useringroup.membership_status === 'joined'){
+                  user.findOne({phone : useringroup.member_phone}, function(err, dataUser){
+                    logger.serverLog('info', 'member in group which will get icon update '+ JSON.stringify(dataUser));
+                    var payload = {
+                      type : 'group:icon_update',
+                      groupId : req.body.unique_id,
+                      badge : dataUser.iOS_badge
+                    };
+
+                    logger.serverLog('info', 'sending push to group member '+ useringroup.member_phone +' that group icon is changed');
+                    sendPushNotification(dataUser.phone, payload, true);
+                  })
+                }
+              }
+            })
+          })
           return res.json(200, {status : 'success'});
         });
       });

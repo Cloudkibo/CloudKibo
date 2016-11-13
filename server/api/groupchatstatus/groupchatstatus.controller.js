@@ -41,6 +41,7 @@ exports.updateStatus = function (req, res){
         var payload = {
           type : 'group:msg_status_changed',
           status : req.body.status,
+          user_phone : req.user.phone,
   				uniqueId : req.body.chat_unique_id
         };
 
