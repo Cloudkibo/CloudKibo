@@ -99,7 +99,7 @@ exports.create = function(req, res) {
 };
 
 exports.uploadIcon = function(req, res) {
-	logger.serverLog('info', 'filetransfers.controller : upload file route called. file is: '+ JSON.stringify(req.files));
+	logger.serverLog('info', 'groupmessaging.controller : upload file route called for GROUP ICON file is: '+ JSON.stringify(req.files));
 
 	var today = new Date();
 	var uid = crypto.randomBytes(5).toString('hex');
