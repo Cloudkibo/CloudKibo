@@ -6,6 +6,7 @@ var GroupMessagingUser = require('../groupmessaginguser/groupmessaginguser.model
 var user = require('../user/user.model');
 var logger = require('../../components/logger/logger');
 var azure = require('azure');
+var crypto = require('crypto');
 
 // Get list of GroupMessagings
 exports.index = function(req, res) {
