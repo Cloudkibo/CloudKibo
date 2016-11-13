@@ -142,6 +142,7 @@ exports.uploadIcon = function(req, res) {
                     logger.serverLog('info', 'member in group which will get icon update '+ JSON.stringify(dataUser));
                     var payload = {
                       type : 'group:icon_update',
+                      senderId : req.user.phone,
                       groupId : req.body.unique_id,
                       badge : dataUser.iOS_badge
                     };
