@@ -125,7 +125,7 @@ exports.uploadIcon = function(req, res) {
 				return 0;
 			 }
       console.log(req.body);
-      GroupMessaging.find({unique_id : req.body.unique_id}, function (err, groupmessaging) {
+      GroupMessaging.findOne({unique_id : req.body.unique_id}, function (err, groupmessaging) {
         if(err) { return handleError(res, err); }
         groupmessaging.group_icon = serverPath;
         logger.serverLog('info', 'file icon uploaded and path calculated is '+ serverPath);
