@@ -131,7 +131,7 @@ exports.uploadIcon = function(req, res) {
         logger.serverLog('info', 'file icon uploaded and path calculated is '+ serverPath);
         logger.serverLog('info', 'file icon uploaded and address given is '+ JSON.stringify(groupmessaging));
         groupmessaging.save(function(err){
-          GroupMessagingUser.find({group_unique_id : req.body.unique_id}, function(err2, usersingroup){
+          GroupMessagingUser.find({group_unique_id : groupmessaging._id}, function(err2, usersingroup){
             logger.serverLog('info', 'members in group which will get icon update '+ JSON.stringify(usersingroup));
             if(err2) return handleError(res, err);
             usersingroup.forEach(function(useringroup){
