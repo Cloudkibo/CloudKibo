@@ -45,7 +45,7 @@ var interval = setInterval(function(str1, str2) {
     console.log(resp.body);
   });
 
-}, 1000, "Hello.", "How are you?");
+}, 120000, "Hello.", "How are you?");
 
 /**
  * Normalize a port into a number, string, or false.
