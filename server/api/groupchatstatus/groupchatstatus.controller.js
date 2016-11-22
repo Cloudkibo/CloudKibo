@@ -5,6 +5,7 @@ var GroupChatStatus = require('./groupchatstatus.model');
 var groupchat = require('../groupchat/groupchat.model');
 var user = require('../user/user.model');
 var azure = require('azure');
+var logger = require('../../components/logger/logger');
 
 // Get list of GroupChatStatuss
 exports.index = function(req, res) {
