@@ -98,7 +98,7 @@ exports.confirmdownload = function(req, res, next) {
 
 exports.pendingfile = function(req, res, next){
   console.log(req.body.uniqueid);
-	filetransfers.find({to : req.body.phone}, function(err, data){
+	filetransfers.findOne({uniqueid : req.body.uniqueid}, function(err, data){
 		if(err) return res.send({status : 'database error'});
 
 		res.send({filepending : data});
