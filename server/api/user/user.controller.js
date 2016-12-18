@@ -70,7 +70,7 @@ exports.newuser = function(req, res) {
           logger.serverLog('info', 'created new user and sending data back');
           logger.serverLog('info', JSON.stringify(user));
           res.json(200, user);
-        })
+        });
 
       })
     }

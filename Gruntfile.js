@@ -452,7 +452,7 @@ module.exports = function (grunt) {
       },
       dist: [
         //'jade', // commented by sojharo, 30/3/2015, (reason: not needed)
-        'imagemin'//,   commented by sojharo, 30/3/2015, (reason: not needed)
+        //imagemin'//,   commented by sojharo, 30/3/2015, (reason: not needed)
         //'svgmin'
       ]
     },

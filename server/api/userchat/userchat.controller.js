@@ -308,27 +308,6 @@ exports.updateStatus = function(req, res) {
 
 };
 
-exports.markasread = function(req, res) {
-	User.findById(req.user._id, function (err, gotUser) {
-		if (err) return console.log('Error 1'+ err);
-
-    logger.serverLog('info', "mark chat as read called");
-
-		contactslist.findOne({userid : req.body.user1, contactid : req.body.user2}).exec(function(err3, gotContact){
-
-			gotContact.unreadMessage = false;
-
-      logger.serverLog('info',req.body.user1+ " " +req.body.user2 );
-			gotContact.save(function(err){
-        logger.serverLog('error', err)
-
-			})
-
-		});
-
-	})
-};
-
 exports.partialchatsync = function(req, res) {
 	logger.serverLog('info', 'userchat.controller : Partial Chat data is asked by '+ JSON.stringify(req.user));
 	logger.serverLog('info', 'userchat.controller : Partial Chat data request body '+ JSON.stringify(req.body));

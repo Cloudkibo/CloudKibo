@@ -16,14 +16,14 @@ exports.index = function(req, res) {
 };
 
 exports.mygroups = function(req, res) {
-  GroupMessagingUsers.find({member_phone : req.user.phone}).populate('group_unique_id').exec(function (err, groupmessagingusers) {
+  GroupMessagingUsers.find({member_phone : req.user.phone, membership_status : 'joined'}).populate('group_unique_id').exec(function (err, groupmessagingusers) {
     if(err) { return handleError(res, err); }
     return res.json(200, groupmessagingusers);
   });
 };
 
 exports.mygroupsmembers = function(req, res) {
-  GroupMessagingUsers.find({member_phone : req.user.phone}, function (err, mygroups) {
+  GroupMessagingUsers.find({member_phone : req.user.phone, membership_status : 'joined'}, function (err, mygroups) {
     if(err) { return handleError(res, err); }
     var groupIds = [];
     for(var i in mygroups){
@@ -262,7 +262,7 @@ exports.removeFromGroup = function(req, res) {
           })
         })
       } else {
-        return res.json(401, {status:'success'})
+        return res.json(501, {status:'success'})
       }
     })
   })

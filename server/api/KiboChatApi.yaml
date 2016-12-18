@@ -1,0 +1,1108 @@
+---
+swagger: '2.0'
+
+################################################################################
+#                              API Information                                 #
+################################################################################
+info:
+  version: v1
+  title: KiboChat API
+  description: |
+    Welcome to the KiboChat API documentation! Our API provides flexible tools that can be used in the creation of new, outstanding projects.
+    Please note that this documentation refers to the API 1.0 version. API 2.0 version is currently under construction and will be released soon.
+
+    Build something great!
+
+    ## Basic Usage
+    All KiboChat API requests start with `https://api.cloudkibo.com/api/`
+
+    The next segment of the URI path depends on the type of request. For example:
+
+    `https://api.cloudkibo.com/v1/users/me`
+
+    to get all details of a logged in user.
+
+    ## Authentication
+    Each client application needs to login with facebook and send the facebook token to server with each request.
+
+    ## Error Handling
+    Errors are returned using standard HTTP error code syntax. In general, codes in the 2xx range indicate success, codes in the 4xx range indicate an error (bad or missing parameters, not authenticated etc.), and codes in the 5xx range indicate an error with KiboSupport’s servers. Any additional info is included in the body of the return call, JSON-formatted. In some old API requests, we return JSON body with status key in it.
+
+    ## Cross-Domain
+    All cross-domain API requests made by a web browser are denied for security reasons. It means that browser-based requests are not allowed from 3rd party domains including localhost.
+    All API calls include an API key that could be easily stolen when making a request using a web browser. It means you should use backend languages for API.
+
+    ## Limits (under construction on API side)
+    Be nice. If you're sending too many requests too quickly, we'll send back a
+    `503` error code (server unavailable).
+    You are limited to 5000 requests per hour per `access_token` or `client_id`
+    overall. Practically, this means you should (when possible) authenticate
+    users so that limits are well outside the reach of a given user.
+
+    ## Structure
+
+    ### JSONP (under construction, will be released in next version of API)
+    If you're writing an AJAX application, and you'd like to wrap our response
+    with a callback, all you have to do is specify a callback parameter with
+    any API call:
+    ```
+    https://api.cloudkibo.com/v1/companyprofile?access_token=fb2e77d.47a0479900504cb3ab4a1f626d174d2d&callback=callbackFunction
+    ```
+    Would respond with:
+    ```js
+    callbackFunction({
+        ...
+    });
+    ```
+  termsOfService: http://www.cloudkibo.com/documentation
+
+################################################################################
+#                  Host, Base Path, Schemes and Content Types                  #
+################################################################################
+host: api.cloudkibo.com
+basePath: /v1
+schemes:
+  - https
+produces:
+  - application/json
+consumes:
+  - application/json
+
+################################################################################
+#                                   Tags                                       #
+################################################################################
+#tags:
+#  - name: Users
+#  - name: Relationships
+#    description: |
+#      Relationships are expressed using the following terms:
+#
+#      **outgoing_status**: Your relationship to the user. Can be "follows",
+#        "requested", "none".
+#      **incoming_status**: A user's relationship to you. Can be "followed_by",
+#        "requested_by", "blocked_by_you", "none".
+#  - name: Media
+#    description: |
+#      At this time, uploading via the API is not possible. We made a conscious
+#      choice not to add this for the following reasons:
+#
+#      * Instagram is about your life on the go – we hope to encourage photos
+#        from within the app.
+#      * We want to fight spam & low quality photos. Once we allow uploading
+#        from other sources, it's harder to control what comes into the Instagram
+#        ecosystem. All this being said, we're working on ways to ensure users
+#        have a consistent and high-quality experience on our platform.
+#  - name: Commnts
+#  - name: Likes
+#  - name: Tags
+#  - name: Location
+#  - name: Subscribtions
+
+################################################################################
+#                                  Security                                    #
+################################################################################
+
+################################################################################
+#                                           Paths                              #
+################################################################################
+paths:
+  /userchat/:
+    post:
+      description: Gives all the chat history between two users
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: user1
+          in: formData
+          description: The phone number of first user in chat
+          type: string
+          required: true
+        - name: user2
+          in: formData
+          description: The phone number of second user in chat
+          type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              msg:
+                type: array
+                items:
+                  $ref: '#/definitions/UserChat'
+  /userchat/alluserchat:
+    post:
+      description: Gives all the chat history of a user with all other people
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: user1
+          in: formData
+          description: The phone number of user in chat
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              msg:
+                type: array
+                items:
+                  $ref: '#/definitions/UserChat'
+  /userchat/getsinglechat:
+    post:
+      description: Gives details of a single chat message
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: uniqueid
+          in: formData
+          description: The unique id of a chat message
+          type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              msg:
+                type: array
+                items:
+                  $ref: '#/definitions/UserChat'
+  /userchat/save2:
+    post:
+      description: Saves the chat sent by user and send it to recipient user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: to
+          in: formData
+          description: The phone number of recipient user
+          type: string
+          required: true
+        - name: from
+          in: formData
+          description: The phone number of sender user
+          type: string
+          required: true
+        - name: date
+          in: formData
+          description: The date and time of the chat message
+          type: string
+          required: true
+        - name: fromFullName
+          in: formData
+          description: The full name of the sender
+          type: string
+          required: true
+        - name: msg
+          in: formData
+          description: The body of chat message
+          type: string
+          required: true
+        - name: uniqueid
+          in: formData
+          description: The unique id of the chat message
+          type: string
+          required: true
+        - name: type
+          in: formData
+          description: The type of the chat message i.e. chat or file
+          type: string
+          required: true
+        - name: file_type
+          in: formData
+          description: The type of file attached in chat message
+          type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              uniqueid:
+                type: string
+  /userchat/updateStatus:
+    post:
+      description: updates the delivered or read status of a particular chat message
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: uniqueid
+          in: formData
+          description: The unique id of a chat message
+          type: string
+          required: true
+        - name: status
+          in: formData
+          description: The new status of a chat message
+          type: string
+          required: true
+        - name: sender
+          in: formData
+          description: The sender of the message who should be informed about new status of the chat message
+          type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              uniqueid:
+                type: string
+  /userchat/partialchatsync:
+    post:
+      description: Gives partial chat history of a user with all other people. It won't give the messages which are already on user's device or are sent by user to others.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: user1
+          in: formData
+          description: The phone number of user in chat
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              msg:
+                type: array
+                items:
+                  $ref: '#/definitions/UserChat'
+
+  /users/newuser:
+    post:
+      description: Create new user on server after doing facebook phone number authentication on client application.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: display_name
+          in: formData
+          description: The display name given by user
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+  /users/searchaccountsbyphone:
+    post:
+      description: Get phone numbers from client and returns two arrays of phone numbers, indicating which ones are on KiboChat and which ones are not.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: phonenumbers
+          in: formData
+          description: List of phone numbers
+          required: true
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              available:
+                type: array
+                items:
+                  type: string
+                  description: phone number
+              notAvailable:
+                type: array
+                items:
+                  type: string
+                  description: phone number
+  /users/setstatusmessage:
+    post:
+      description: Set status message for user.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: status
+          in: formData
+          description: New status message
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              msg:
+                type: string
+  /users/log:
+    post:
+      description: Saves client side logs.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: data
+          in: formData
+          description: client side log message
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+
+  /filetransfers/download:
+    post:
+      description: Download the file attached in chat.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: uniqueid
+          in: formData
+          description: unique id of the file
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: file
+  /filetransfers/upload:
+    post:
+      description: Upload the file for chat attachment
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: to
+          in: formData
+          description: phone number of person who receives file
+          required: true
+          type: string
+        - name: from
+          in: formData
+          description: phone number of person who sends file
+          required: true
+          type: string
+        - name: filename
+          in: formData
+          description: name of the file
+          required: true
+          type: string
+        - name: filesize
+          in: formData
+          description: size of the file
+          required: true
+          type: string
+        - name: filetype
+          in: formData
+          description: type of the file
+          required: true
+          type: string
+        - name: uniqueid
+          in: formData
+          description: unique id of the file
+          required: true
+          type: string
+        - name: file
+          in: formData
+          description: file attached
+          required: true
+          type: file
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+  /filetransfers/confirmdownload:
+    post:
+      description: Confirm to the server that file has been downloaded by client
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: uniqueid
+          in: formData
+          description: unique id of the file
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+  /filetransfers/checkpendingfile:
+    post:
+      description: Upload the file for chat attachment
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: uniqueid
+          in: formData
+          description: unique id of the file
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              filepending:
+                $ref: '#/definitions/FileTransfers'
+
+  /groupchat/:
+    post:
+      description: Send the chat message to server
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: group_unique_id
+          in: formData
+          description: unique id of the group in which message is sent
+          required: true
+          type: string
+        - name: from
+          in: formData
+          description: phone number of sender
+          required: true
+          type: string
+        - name: type
+          in: formData
+          description: type of message, possible values "chat" or "file"
+          required: true
+          type: string
+        - name: msg
+          in: formData
+          description: chat message
+          required: true
+          type: string
+        - name: from_fullname
+          in: formData
+          description: full name of person who is sending chat
+          required: true
+          type: string
+        - name: unique_id
+          in: formData
+          description: unique id of the chat message
+          required: true
+          type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            $ref: '#/definitions/GroupChat'
+  /groupchat/fetchSingleChat:
+    post:
+      description: Fetch single chat message of group from server
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: unique_id
+          in: formData
+          description: unique id of the chat message
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/GroupChat'
+
+  /groupchatstatus/:
+    get:
+      description: Sync group chat messages which are not on device
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GroupChatStatus1'
+  /groupchatstatus/checkStatus:
+    post:
+      description: Know Group chat messages status
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: unique_ids
+          in: formData
+          description: unique ids of the chat messages in array
+          required: true
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GroupChatStatus'
+  /groupchatstatus/updateStatus:
+    post:
+      description: Update group message status
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: chat_unique_id
+          in: formData
+          description: unique id of the chat message
+          required: true
+          type: string
+        - name: status
+          in: formData
+          description: new status of chat message
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+
+  /groupmessaginguser/:
+    post:
+      description: Add members to Group
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: formData
+          description: name of the group
+          required: true
+          type: string
+        - name: group_unique_id
+          in: formData
+          description: unique id of the group
+          required: true
+          type: string
+        - name: members
+          in: formData
+          description: phone numbers of new members
+          required: true
+          type: array
+          items:
+            type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              msg:
+                type: string
+        '501':
+          description: Unauthorised
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              msg:
+                type: string
+  /groupmessaginguser/mygroups:
+    get:
+      description: Get information about my groups from Server
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GroupMember1'
+  /groupmessaginguser/leaveGroup:
+    post:
+      description: A member is leaving group
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: group_unique_id
+          in: formData
+          description: unique id of the group
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+  /groupmessaginguser/mygroupsmembers:
+    get:
+      description: Get information about members of my group
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GroupMember1'
+  /groupmessaginguser/myspecificgroupsmembers:
+    post:
+      description: Get information about specific group members
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: unique_id
+          in: formData
+          description: unique id of the group
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GroupMember1'
+  /groupmessaginguser/updateRole:
+    post:
+      description: Update role of group member
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: group_unique_id
+          in: formData
+          description: unique id of the group
+          required: true
+          type: string
+        - name: member_phone
+          in: formData
+          description: phone number of the member whose role is being updated
+          required: true
+          type: string
+        - name: makeAdmin
+          in: formData
+          description: possible values "Yes" or "No"
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+  /groupmessaginguser/removeFromGroup:
+    post:
+      description: A Member is removed from Group
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: group_unique_id
+          in: formData
+          description: unique id of the group
+          required: true
+          type: string
+        - name: phone
+          in: formData
+          description: phone number of the member who is being removed
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+        '501':
+          description: Unauthorised
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+
+  /groupmessaging/:
+    post:
+      description: Create Group
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: formData
+          description: name of the group
+          required: true
+          type: string
+        - name: unique_id
+          in: formData
+          description: unique id of the group
+          required: true
+          type: string
+        - name: members
+          in: formData
+          description: phone numbers of members
+          required: true
+          type: array
+          items:
+            type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            $ref: '#/definitions/Group'
+  /groupmessaging/specificGroup:
+    post:
+      description: Get Single Group Information
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: unique_id
+          in: formData
+          description: unique id of the group
+          required: true
+          type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Group'
+  /groupmessaging/uploadIcon:
+    post:
+      description: Upload group icon
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: unique_id
+          in: formData
+          description: unique id of the group
+          required: true
+          type: string
+        - name: file
+          in: formData
+          description: file attached
+          required: true
+          type: file
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+  /groupmessaging/downloadIcon:
+    post:
+      description: Download the file attached in chat.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: unique_id
+          in: formData
+          description: unique id of the group
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: file
+
+################################################################################
+#                                 Definitions                                  #
+################################################################################
+definitions:
+  UserChat:
+    description: All the user chat messages in one to one chat will be stored here
+    type: object
+    properties:
+      _id:
+        type: string
+      to:
+        type: string
+      from:
+        type: string
+      fromFullName:
+        type: string
+      msg:
+        type: string
+      date:
+        type: string
+      date_server_received:
+        type: string
+      date_server_sent:
+        type: string
+      owneruser:
+        type: string
+        description: In one to one chat, we store two copies of the chat message on server. One for each user.
+      uniqueid:
+        type: string
+        description: Unique id of the chat message
+      status:
+        type: string
+        description: Message status must have value one of these "pending", "sent", "delivered" and "seen"
+      type:
+        type: string
+        description: Type of the chat messages i.e. text message or message with file attachment.
+      file_type:
+        type: string
+  User:
+    description: All the details of user account are stored here
+    type: object
+    properties:
+      country_prefix:
+        type: string
+      date:
+        type: string
+      display_name:
+        type: string
+      id:
+        type: string
+      national_number:
+        type: string
+      phone:
+        type: string
+      status:
+        type: string
+      _id:
+        type: string
+      picture:
+        type: string
+  FileTransfers:
+    description: Details of files which are transferred between users during chat
+    type: object
+    properties:
+      to:
+        type: string
+      from:
+        type: string
+      date:
+        type: string
+      uniqueid:
+        type: string
+      file_name:
+        type: string
+      file_size:
+        type: string
+      path:
+        type: string
+      file_type:
+        type: string
+      _id:
+        type: string
+  GroupChat:
+    description: Details of chat messages sent in group
+    type: object
+    properties:
+      group_unique_id:
+        type: string
+      from:
+        type: string
+      type:
+        type: string
+      msg:
+        type: string
+      from_fullname:
+        type: string
+      unique_id:
+        type: string
+      date:
+        type: string
+  GroupChatStatus:
+    description: Details of chat message status in group. Status can be "pending", "sent", "delivered" or "seen"
+    type: object
+    properties:
+      msg_unique_id:
+        type: string
+      chat_unique_id:
+        type: string
+      status:
+        type: string
+      user_phone:
+        type: string
+      read_date:
+        type: string
+      delivered_date:
+        type: string
+  Group:
+    description: Details of Group
+    type: object
+    properties:
+      group_name:
+        type: string
+      group_icon:
+        type: string
+      unique_id:
+        type: string
+      date_creation:
+        type: string
+  GroupMember:
+    description: Details of group
+    type: object
+    properties:
+      group_unique_id:
+        type: string
+      member_phone:
+        type: string
+      display_name:
+        type: string
+      isAdmin:
+        type: string
+      membership_status:
+        type: string
+      date_join:
+        type: string
+      date_left:
+        type: string
+
+  GroupChat1:
+    description: Details of chat messages sent in group
+    type: object
+    properties:
+      group_unique_id:
+        $ref: '#/definitions/Group'
+      from:
+        type: string
+      type:
+        type: string
+      msg:
+        type: string
+      from_fullname:
+        type: string
+      unique_id:
+        type: string
+      date:
+        type: string
+  GroupChatStatus1:
+    description: Details of chat message status in group. Status can be "pending", "sent", "delivered" or "seen"
+    type: object
+    properties:
+      msg_unique_id:
+        $ref: '#/definitions/GroupChat1'
+      chat_unique_id:
+        type: string
+      status:
+        type: string
+      user_phone:
+        type: string
+      read_date:
+        type: string
+      delivered_date:
+        type: string
+  GroupMember1:
+    description: Details of group
+    type: object
+    properties:
+      group_unique_id:
+        $ref: '#/definitions/Group'
+      member_phone:
+        type: string
+      display_name:
+        type: string
+      isAdmin:
+        type: string
+      membership_status:
+        type: string
+      date_join:
+        type: string
+      date_left:
+        type: string
