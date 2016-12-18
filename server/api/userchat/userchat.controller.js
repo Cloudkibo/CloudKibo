@@ -64,27 +64,31 @@ exports.getsinglechat = function(req, res) {
 																function(err1, gotMessages){
 																	if(err1) return console.log(err1);
 
-																	logger.serverLog('info', 'userchat.controller : Unique Chat data sent to client');
+																	if(gotMessages){
+																		logger.serverLog('info', 'userchat.controller : Unique Chat data sent to client');
 
-																	res.send({status : 'success', msg : gotMessages});
+																		res.send({status : 'success', msg : gotMessages});
 
-																	userchat.update(
-																		{uniqueid : gotMessages[0].uniqueid},
-																		{status : 'delivered'}, // should have value one of 'delivered', 'seen'
-																		{multi : true},
-																		function (err, num){
-																			logger.serverLog('info', 'Rows updated here '+ num +' for message status update in mongodb');
+																		userchat.update(
+																			{uniqueid : gotMessages[0].uniqueid},
+																			{status : 'delivered'}, // should have value one of 'delivered', 'seen'
+																			{multi : true},
+																			function (err, num){
+																				logger.serverLog('info', 'Rows updated here '+ num +' for message status update in mongodb');
 
-																			var payload = {
-																				type : 'status',
-																				status : 'delivered',
-																				uniqueId : gotMessages[0].uniqueid
-																			};
+																				var payload = {
+																					type : 'status',
+																					status : 'delivered',
+																					uniqueId : gotMessages[0].uniqueid
+																				};
 
-																			sendPushNotification(gotMessages[0].from, payload, false);
+																				sendPushNotification(gotMessages[0].from, payload, false);
 
-																		}
-																	);
+																			}
+																		);
+																	} else {
+																		res.send({status : 'error', msg : 'No message with given unique id '+ req.body.uniqueid});
+																	}
 
 																})
 
@@ -165,12 +169,10 @@ function sendPushNotification(tagname, payload, sendSound){
     alert : payload.msg,
     sound : 'UILocalNotificationDefaultSoundName',
     badge : payload.badge,
-    'content-available':true,
     payload : payload
   };
   if(!sendSound){
     iOSMessage = {
-      'content-available':true,
       payload : payload
     };
   }
