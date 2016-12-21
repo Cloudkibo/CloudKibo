@@ -354,7 +354,6 @@ exports.searchAccountByPhone = function(req, res, next){
     User.findById(req.user._id, function (err, gotUser) {
       logger.serverLog('info', 'This is user information '+ JSON.stringify(gotUser));
       contactslist.find({userid : gotUser._id}).populate('contactid').exec(function(err5, gotContacts){
-        logger.serverLog('info', 'These are the contacts '+ JSON.stringify(gotContacts))
         availableUserList.forEach(function(availablePerson) {
             var foundInContacts = false;
             for(var i in gotContacts){
