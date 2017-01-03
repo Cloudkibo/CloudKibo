@@ -15,6 +15,7 @@ router.post('/updateStatus', auth.isAuthenticated(), controller.updateStatus);
 router.post('/removechathistory', auth.isAuthenticated(), controller.removechathistory);
 router.post('/getsinglechat', auth.isAuthenticated(), controller.getsinglechat);
 router.post('/partialchatsync', auth.isAuthenticated(), controller.partialchatsync);
+router.post('/checkStatus', auth.isAuthenticated(), controller.checkStatus);
 
 
 module.exports = router;

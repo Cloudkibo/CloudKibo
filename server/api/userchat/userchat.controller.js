@@ -314,8 +314,14 @@ exports.updateStatus = function(req, res) {
 
 };
 
+exports.checkStatus = function (req, res){
+  userchat.find({uniqueid: { $in: req.body.unique_ids }}, function (err, chatstatus) {
+    if(err) { return handleError(res, err); }
+    return res.json(200, chatstatus);
+  });
+}
+
 exports.partialchatsync = function(req, res) {
-	logger.serverLog('info', 'userchat.controller : Partial Chat data is asked by '+ JSON.stringify(req.user));
 	logger.serverLog('info', 'userchat.controller : Partial Chat data request body '+ JSON.stringify(req.body));
 	User.findById(req.user._id, function (err, gotUser) {
 			if (err) return console.log('Error 1'+ err);
