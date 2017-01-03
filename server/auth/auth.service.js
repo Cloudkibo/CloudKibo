@@ -52,7 +52,6 @@ function isAuthenticated() {
         }
       } else if(req.headers.hasOwnProperty('kibo-token')){
         // https://graph.accountkit.com/v1.0/me/?access_token=<access_token>
-        console.log(req.headers['kibo-token']);
 
         var needle = require('needle');
 
@@ -64,7 +63,6 @@ function isAuthenticated() {
 
         needle.get('https://graph.accountkit.com/v1.0/me/?access_token='+req.headers['kibo-token'], options, function(err, resp) {
           console.log(err);
-          console.log(resp.body);
           User.findOne({phone: resp.body.phone.number}, function(err, user){
             if (!user) return res.send(401);
             req.user = user;
