@@ -317,7 +317,7 @@ exports.updateStatus = function(req, res) {
 exports.checkStatus = function (req, res){
 	logger.serverLog('info', 'userchat.controller: Going to check status of Sent messages and body '+ JSON.stringify(req.body));
   userchat.find({uniqueid: { $in: req.body.unique_ids }}, function (err, chatstatus) {
-		logger.serverLog('info', 'userchat.controller: checking status of Sent messages and response '+ JSON.stringify(req.chatstatus));
+		logger.serverLog('info', 'userchat.controller: checking status of Sent messages and response '+ JSON.stringify(chatstatus));
     if(err) { return handleError(res, err); }
     return res.json(200, chatstatus);
   });
