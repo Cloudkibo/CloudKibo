@@ -17,6 +17,7 @@ var UserSchema = new Schema({
   national_number : String,
   country : String,
   city : String,
+  last_seen  :  { type: Date },
   state : String,
   gender : String,
   role: {

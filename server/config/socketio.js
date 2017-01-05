@@ -260,6 +260,7 @@ function onConnect(socketio, socket) {
       };
       sendPushNotification(room.user.phone, payload, false);
       dataUser.iOS_badge = 0;
+      dataUser.last_seen = Date.now();
       dataUser.save(function(err){
 
       });
