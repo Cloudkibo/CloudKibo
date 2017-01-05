@@ -151,6 +151,18 @@ exports.show = function (req, res, next) {
   });
 };
 
+/**
+ * Get a single user
+ */
+exports.showPhone = function (req, res, next) {
+
+  User.find({phone : req.body.phone}, function (err, user) {
+    if (err) return next(err);
+    if (!user) return res.send(401);
+    res.json(user);
+  });
+};
+
 
 /**
  * Get my info

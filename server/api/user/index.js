@@ -21,6 +21,7 @@ router.get('/getAllErrors', function(req, res, next) {
 router.get('/me', auth.isAuthenticated(), controller.me); // www.cloudkibo.com/api/users/me
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.get('/:id', auth.isAuthenticated(), controller.show);
+router.post('/getUserInfo', auth.isAuthenticated(), controller.showPhone);
 router.post('/', controller.create); // www.cloudkibo.com/api/users/ (POST)
 router.post('/userimage/update', auth.isAuthenticated(), multipartyMiddleware, controller.updateimage);
 router.get('/userimage/:image', controller.userimage); // www.cloudkibo.com/api/users/userimage/:image
