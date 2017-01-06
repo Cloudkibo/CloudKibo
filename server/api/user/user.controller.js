@@ -159,7 +159,8 @@ exports.showPhone = function (req, res, next) {
   User.find({phone : req.body.phone}, function (err, user) {
     if (err) return next(err);
     if (!user) return res.send(401);
-    res.json(user);
+    console.log(user);
+    res.send(user);
   });
 };
 
