@@ -155,11 +155,11 @@ exports.show = function (req, res, next) {
  * Get a single user
  */
 exports.showPhone = function (req, res, next) {
-
-  User.find({phone : req.body.phone}, function (err, user) {
+  logger.serverLog('info', "Last seen person information "+ JSON.stringify(req.body));
+  User.findOne({phone : req.body.phone}, function (err, user) {
     if (err) return next(err);
     if (!user) return res.send(401);
-    console.log(user);
+    logger.serverLog('info', "Response for last seen person information "+ JSON.stringify(user));
     res.send(user);
   });
 };
