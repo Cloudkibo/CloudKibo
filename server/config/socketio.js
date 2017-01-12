@@ -261,8 +261,11 @@ function onConnect(socketio, socket) {
       sendPushNotification(room.user.phone, payload, false);
       dataUser.iOS_badge = 0;
       dataUser.last_seen = Date.now();
-      dataUser.save(function(err){
 
+      logger.serverLog('info', 'join global chat room update last seen: ' + JSON.stringify(dataUser));
+
+      dataUser.save(function(err){
+        if(err) logger.serverLog('info', 'join global chat room update last seen ERROR: ' + JSON.stringify(err));
       });
     });
 
@@ -270,7 +273,6 @@ function onConnect(socketio, socket) {
 
     logger.serverLog('info', 'Data Sent to global chat room handler: ' + JSON.stringify(room));
 
-    logger.serverLog('info', 'you are trying to join global chat room now.');
     //console.log(room.user.username +' has joined the room.')
     var myOnlineContacts = [];
 
