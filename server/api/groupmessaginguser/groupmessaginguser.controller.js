@@ -179,10 +179,12 @@ exports.leaveGroup = function(req, res) {
   logger.serverLog('info', 'Leave Group Called: '+ JSON.stringify(req.body));
   GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
     if(err)  { return handleError(res, err); }
+    console.log(gotGroup);
     logger.serverLog('info', 'Leave Group Called, found the group which is being left: '+ JSON.stringify(gotGroup));
 
     GroupMessagingUsers.find({group_unique_id : gotGroup._id, membership_status : 'joined'}, function(err, gotMembers){
       if(err) { return handleError(res, err); }
+      console.log(gotMembers);
       logger.serverLog('info', 'Leave Group Called, found the members of group which is being left: '+ JSON.stringify(gotMembers.length));
       var membersArray = gotMembers;
       membersArray.forEach(function(gotMember){
