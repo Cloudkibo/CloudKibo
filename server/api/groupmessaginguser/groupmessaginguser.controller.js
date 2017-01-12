@@ -176,14 +176,14 @@ exports.create = function(req, res) {
 };
 
 exports.leaveGroup = function(req, res) {
-  logger.serverLog('info', 'Leave Group Called: ' JSON.stringify(req.body));
+  logger.serverLog('info', 'Leave Group Called: '+ JSON.stringify(req.body));
   GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
     if(err)  { return handleError(res, err); }
-    logger.serverLog('info', 'Leave Group Called, found the group which is being left: ' JSON.stringify(gotGroup));
+    logger.serverLog('info', 'Leave Group Called, found the group which is being left: '+ JSON.stringify(gotGroup));
 
     GroupMessagingUsers.find({group_unique_id : gotGroup._id, membership_status : 'joined'}, function(err, gotMembers){
       if(err) { return handleError(res, err); }
-      logger.serverLog('info', 'Leave Group Called, found the members of group which is being left: ' JSON.stringify(gotMembers.length));
+      logger.serverLog('info', 'Leave Group Called, found the members of group which is being left: '+ JSON.stringify(gotMembers.length));
       var membersArray = gotMembers;
       membersArray.forEach(function(gotMember){
         if(gotMember.member_phone !== req.user.phone){
