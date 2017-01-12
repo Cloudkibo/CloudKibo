@@ -250,23 +250,17 @@ function onConnect(socketio, socket) {
   socket.on('join global chatroom', function(room) {
 
     socket.join(room.room);
+    logger.serverLog('info', 'Going to join global chat room' + JSON.stringify(room));
 
     user.findOne({phone : room.user.phone}, function(err, dataUser){
-      var payload = {
-        data: {
-          msg: 'Hello '+ room.user.phone +'! You joined the room.'
-        },
-        badge: 0
-      };
-      sendPushNotification(room.user.phone, payload, false);
-      dataUser.iOS_badge = 0;
-      dataUser.last_seen = Date.now();
+      if(dataUser) {
+        dataUser.last_seen = Date.now();
+        logger.serverLog('info', 'join global chat room update last seen: ' + JSON.stringify(dataUser));
 
-      logger.serverLog('info', 'join global chat room update last seen: ' + JSON.stringify(dataUser));
-
-      dataUser.save(function(err){
-        if(err) logger.serverLog('info', 'join global chat room update last seen ERROR: ' + JSON.stringify(err));
-      });
+        dataUser.save(function(err){
+          if(err) logger.serverLog('info', 'join global chat room update last seen ERROR: ' + JSON.stringify(err));
+        });
+      }
     });
 
     socket.phone = room.user.phone;
