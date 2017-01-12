@@ -55,22 +55,22 @@ exports.newuser = function(req, res) {
           user.save(function(err, user1){
             return res.json(200, user1)
           })
+        } else {
+          var newUser = new User({
+            id : resp.body.id,
+            display_name : req.body.display_name,
+            phone : resp.body.phone.number,
+            country_prefix : resp.body.phone.country_prefix,
+            national_number : resp.body.phone.national_number
+          });
+
+          newUser.save(function(err, user) {
+            if (err) return validationError(res, err);
+            logger.serverLog('info', 'created new user and sending data back');
+            logger.serverLog('info', JSON.stringify(user));
+            res.json(200, user);
+          });
         }
-
-        var newUser = new User({
-          id : resp.body.id,
-          display_name : req.body.display_name,
-          phone : resp.body.phone.number,
-          country_prefix : resp.body.phone.country_prefix,
-          national_number : resp.body.phone.national_number
-        });
-
-        newUser.save(function(err, user) {
-          if (err) return validationError(res, err);
-          logger.serverLog('info', 'created new user and sending data back');
-          logger.serverLog('info', JSON.stringify(user));
-          res.json(200, user);
-        });
 
       })
     }
