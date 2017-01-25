@@ -143,7 +143,7 @@ exports.create = function(req, res) {
               GroupMessagingUsers.findOne({member_phone : gotMember, group_unique_id : gotGroup._id}, function (err3, gotMemberEntryAlreadyExists) {
                 if(gotMemberEntryAlreadyExists){
                   gotMemberEntryAlreadyExists.membership_status = 'joined';
-                  gotMemberEntryAlreadyExists.save(function() {
+                  gotMemberEntryAlreadyExists.save(function(err) {
                     var payload = {
                       type : 'group:you_are_added',
                       senderId : req.user.phone,
