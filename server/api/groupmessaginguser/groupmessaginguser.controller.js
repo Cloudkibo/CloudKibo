@@ -155,8 +155,8 @@ exports.create = function(req, res) {
                       badge : dataUser.iOS_badge + 1
                     };
 
-                    logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
-                    sendPushNotification(groupmembersaved1.member_phone, payload, true);
+                    logger.serverLog('info', 'sending push to group member '+ gotMemberEntryAlreadyExists.member_phone +' that you are added to group');
+                    sendPushNotification(gotMemberEntryAlreadyExists.member_phone, payload, true);
 
                     dataUser.iOS_badge = dataUser.iOS_badge + 1;
                     dataUser.save(function(err){
