@@ -107,7 +107,7 @@ exports.create = function(req, res) {
           GroupMessagingUsers.find({group_unique_id : gotGroup._id, membership_status : 'joined'}, function(err, gotMembers){
             if(err) { return handleError(res, err); }
             var membersArray = gotMembers;
-            membersArray.forEach(function(gotMember){
+            membersArray.forEach(function (gotMember) {
               if(gotMember.member_phone !== req.user.phone){
                 user.findOne({phone : gotMember.member_phone}, function(err, dataUser){
                   var payload = {
@@ -140,27 +140,53 @@ exports.create = function(req, res) {
                 isAdmin: 'No',
                 membership_status : 'joined'
               }
-              GroupMessagingUsers.create(groupmember, function(err3, groupmembersaved1){
-                if(err3) { return handleError(res, err); }
-                // SEND PUSH NOTIFICATION HERE
-                var payload = {
-                  type : 'group:you_are_added',
-                  senderId : req.user.phone,
-                  groupId : req.body.group_unique_id,
-                  isAdmin: 'No',
-                  membership_status : 'joined',
-                  msg : req.user.display_name + ' added you to the group "'+ req.body.group_name +'"',
-                  group_name: req.body.group_name,
-                  badge : dataUser.iOS_badge + 1
-                };
+              GroupMessagingUsers.findOne({member_phone : gotMember, group_unique_id : gotGroup._id}, function (err3, gotMemberEntryAlreadyExists) {
+                if(gotMemberEntryAlreadyExists){
+                  gotMemberEntryAlreadyExists.membership_status = 'joined';
+                  gotMemberEntryAlreadyExists.save(function() {
+                    var payload = {
+                      type : 'group:you_are_added',
+                      senderId : req.user.phone,
+                      groupId : req.body.group_unique_id,
+                      isAdmin: 'No',
+                      membership_status : 'joined',
+                      msg : req.user.display_name + ' added you to the group "'+ req.body.group_name +'"',
+                      group_name: req.body.group_name,
+                      badge : dataUser.iOS_badge + 1
+                    };
 
-                logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
-                sendPushNotification(groupmembersaved1.member_phone, payload, true);
+                    logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
+                    sendPushNotification(groupmembersaved1.member_phone, payload, true);
 
-                dataUser.iOS_badge = dataUser.iOS_badge + 1;
-                dataUser.save(function(err){
+                    dataUser.iOS_badge = dataUser.iOS_badge + 1;
+                    dataUser.save(function(err){
 
-                });
+                    });
+                  });
+                } else {
+                  GroupMessagingUsers.create(groupmember, function(err3, groupmembersaved1){
+                    if(err3) { return handleError(res, err); }
+                    // SEND PUSH NOTIFICATION HERE
+                    var payload = {
+                      type : 'group:you_are_added',
+                      senderId : req.user.phone,
+                      groupId : req.body.group_unique_id,
+                      isAdmin: 'No',
+                      membership_status : 'joined',
+                      msg : req.user.display_name + ' added you to the group "'+ req.body.group_name +'"',
+                      group_name: req.body.group_name,
+                      badge : dataUser.iOS_badge + 1
+                    };
+
+                    logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
+                    sendPushNotification(groupmembersaved1.member_phone, payload, true);
+
+                    dataUser.iOS_badge = dataUser.iOS_badge + 1;
+                    dataUser.save(function(err){
+
+                    });
+                  });
+                }
               })
             })
           })

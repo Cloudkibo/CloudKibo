@@ -34,12 +34,12 @@ router.post('/initialtestingdone', auth.isAuthenticated(), controller.initialtes
 router.post('/setstatusmessage', auth.isAuthenticated(), controller.setstatusmessage);
 router.post('/resetpasswordrequest', controller.resetpasswordrequest);
 router.post('/resetusernamerequest', controller.resetusernamerequest);
-router.post("/changepassword", controller.changePasswordRoute);
-router.post("/saveusername", controller.saveUsernameRoute);
-router.post("/searchaccountsbyphone", auth.isAuthenticated(), controller.searchAccountByPhone);
-router.post("/searchaccountsbyemail", auth.isAuthenticated(), controller.searchAccountByEmail);
+router.post('/changepassword', controller.changePasswordRoute);
+router.post('/saveusername', controller.saveUsernameRoute);
+router.post('/searchaccountsbyphone', auth.isAuthenticated(), controller.searchAccountByPhone);
+router.post('/searchaccountsbyemail', auth.isAuthenticated(), controller.searchAccountByEmail);
 
-router.post("/log", controller.log);
+router.post('/log', controller.log);
 
 router.post("/newuser", controller.newuser);
 
