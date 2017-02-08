@@ -37,8 +37,9 @@ exports.updateStatus = function (req, res){
     {status : req.body.status}, // should have value one of 'delivered', 'seen'
     {multi : false},
     function (err, num){
-      if(err) { return handleError(res, err); }
+      if (err) { return handleError(res, err); }
       groupchat.findOne({unique_id : req.body.chat_unique_id}, function(err, gotChat){
+        if (!gotChat) { return res.json(404, { status: 'not found' }); }
         var payload = {
           type : 'group:msg_status_changed',
           status : req.body.status,

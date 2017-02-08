@@ -191,7 +191,7 @@ exports.updateGroupName = function (req, res) {
         usersingroup.forEach(function (useringroup) {
 
           logger.serverLog('info', 'member in group is being checked ' + JSON.stringify(useringroup));
-          
+
           if (req.body.from !== useringroup.member_phone) {
             if(useringroup.membership_status === 'joined'){
               user.findOne({ phone: useringroup.member_phone }, function (err, dataUser) {
