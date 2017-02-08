@@ -131,7 +131,8 @@ exports.uploadIcon = function(req, res) {
         logger.serverLog('info', 'file icon uploaded and path calculated is '+ serverPath);
         logger.serverLog('info', 'file icon uploaded and address given is '+ JSON.stringify(groupmessaging));
         groupmessaging.save(function(err){
-          GroupMessagingUser.find({group_unique_id : groupmessaging._id}, function(err2, usersingroup){
+          GroupMessagingUser.find({ group_unique_id: groupmessaging._id },
+            function (err2, usersingroup) {
             logger.serverLog('info', 'members in group which will get icon update '+ JSON.stringify(usersingroup));
             if(err2) return handleError(res, err);
             usersingroup.forEach(function(useringroup){
@@ -147,35 +148,82 @@ exports.uploadIcon = function(req, res) {
                       badge : dataUser.iOS_badge
                     };
 
-                    logger.serverLog('info', 'sending push to group member '+ useringroup.member_phone +' that group icon is changed');
+                    logger.serverLog('info', 'sending push to group member ' +
+                    useringroup.member_phone + ' that group icon is changed');
+
                     sendPushNotification(dataUser.phone, payload, true);
                   })
                 }
               }
-            })
-          })
-          return res.json(200, {status : 'success'});
+            });
+          });
+          return res.json(200, { status: 'success' });
         });
       });
-
-		 }
-
+    }
 	);
 };
 
-exports.downloadIcon = function(req, res, next) {
-	GroupMessaging.findOne({unique_id : req.body.unique_id}, function(err, data){
-		if(err) return res.send({status : 'database error'});
-		res.sendfile(data.group_icon, {root: './userpictures'});
+exports.downloadIcon = function (req, res, next) {
+	GroupMessaging.findOne({ unique_id: req.body.unique_id }, function (err, data) {
+		if (err) return res.send({ status: 'database error' });
+		res.sendfile(data.group_icon, { root: './userpictures' });
 	});
+};
+
+exports.updateGroupName = function (req, res) {
+  GroupMessaging.findOne({ unique_id: req.body.unique_id }, function (err, groupmessaging) {
+    if (err) { return handleError(res, err); }
+    if (!groupmessaging) { return res.send(404); }
+    groupmessaging.group_name = req.body.group_name;
+    var updated = groupmessaging; //_.merge(groupmessaging, req.body);
+    updated.save(function (err1) {
+      if (err1) { return handleError(res, err1); }
+
+      GroupMessagingUser.find({ group_unique_id: groupmessaging._id },
+        function (err2, usersingroup) {
+
+        logger.serverLog('info', 'members in group which will get group name ' +
+          'update ' + JSON.stringify(usersingroup));
+
+        if (err2) return handleError(res, err);
+
+        usersingroup.forEach(function (useringroup) {
+
+          logger.serverLog('info', 'member in group is being checked ' + JSON.stringify(useringroup));
+          
+          if (req.body.from !== useringroup.member_phone) {
+            if(useringroup.membership_status === 'joined'){
+              user.findOne({ phone: useringroup.member_phone }, function (err, dataUser) {
+                logger.serverLog('info', 'member in group which will get icon update ' + JSON.stringify(dataUser));
+                var payload = {
+                  type : 'group:name_update',
+                  new_name: req.body.group_name,
+                  senderId : req.user.phone,
+                  groupId : req.body.unique_id,
+                  badge : dataUser.iOS_badge
+                };
+
+                logger.serverLog('info', 'sending push to group member ' +
+                useringroup.member_phone + ' that group icon is changed');
+
+                sendPushNotification(dataUser.phone, payload, true);
+              })
+            }
+          }
+        });
+      });
+      return res.json(200, groupmessaging);
+    });
+  });
 };
 
 // Updates an existing GroupMessaging in the DB.
 exports.update = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
+  if (req.body._id) { delete req.body._id; }
   GroupMessaging.findById(req.params.id, function (err, groupmessaging) {
     if (err) { return handleError(res, err); }
-    if(!groupmessaging) { return res.send(404); }
+    if (!groupmessaging) { return res.send(404); }
     var updated = _.merge(groupmessaging, req.body);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }

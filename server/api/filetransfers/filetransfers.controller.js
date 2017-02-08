@@ -54,46 +54,38 @@ exports.upload = function(req, res) {
 
 	);
 
-
-
 };
 
-exports.download = function(req, res, next) {
+exports.download = function (req, res, next) {
 console.log('this is id when downloading file');
 console.log(req.body.uniqueid);
-	filetransfers.findOne({uniqueid : req.body.uniqueid}, function(err, data){
-		if(err) return res.send({status : 'database error'});
-		res.sendfile(data.path, {root: './userpictures'});
+	filetransfers.findOne({ uniqueid: req.body.uniqueid }, function (err, data) {
+		if (err) return res.send({ status: 'database error' });
+		res.sendfile(data.path, { root: './userpictures' });
 	});
 };
 
-exports.confirmdownload = function(req, res, next) {
+exports.confirmdownload = function (req, res, next) {
   console.log('this is id sent when confirming download');
   console.log(req.body.uniqueid);
-	filetransfers.findOne({uniqueid : req.body.uniqueid}, function(err, data){
-		if(err) return res.send({status : 'database error'});
+	filetransfers.findOne({ uniqueid: req.body.uniqueid }, function (err, data) {
+		if (err) return res.send({ status: 'database error' });
 
 		var dir = './userpictures';
 		dir += data.path;
 
-		require('fs').unlink(dir, function (err) {
-				if (err) {
+		require('fs').unlink(dir, function (err1) {
+				if (err1) {
 					return logger.serverLog('error', 'user.controller (delete file image) : '+ err);
 					//throw err;
 				}
 
-				filetransfers.remove({uniqueid : req.body.uniqueid}, function(err){
-					if(err) return res.send({status : 'database error'});
-
-					res.send({status : 'success'});
-
-				})
-			})
-
-
-
+				filetransfers.remove({ uniqueid: req.body.uniqueid }, function (err) {
+					if (err) return res.send({ status: 'database error' });
+					res.send({ status: 'success' });
+				});
+			});
 	});
-
 };
 
 exports.pendingfile = function(req, res, next){
