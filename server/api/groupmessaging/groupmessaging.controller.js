@@ -109,6 +109,7 @@ exports.uploadIcon = function(req, res) {
 
 	console.log(__dirname);
 
+  // todo delete the previously stored icon for a group
 	var dir = "./userpictures";
 
 	if(req.files.file.size == 0) return res.send('No file submitted');
@@ -137,7 +138,7 @@ exports.uploadIcon = function(req, res) {
             if(err2) return handleError(res, err);
             usersingroup.forEach(function(useringroup){
               logger.serverLog('info', 'member in group is being checked '+ JSON.stringify(useringroup));
-              if(req.body.from !== useringroup.member_phone){
+              if(req.user.phone !== useringroup.member_phone){
                 if(useringroup.membership_status === 'joined'){
                   user.findOne({phone : useringroup.member_phone}, function(err, dataUser){
                     logger.serverLog('info', 'member in group which will get icon update '+ JSON.stringify(dataUser));
