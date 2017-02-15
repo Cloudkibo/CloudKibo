@@ -274,9 +274,7 @@ exports.updateimage = function(req, res, next){
 					require('fs').unlink(dir, function (err) {
 						  if (err) {
                 logger.serverLog('error', 'user.controller (update image) : '+ err);
-                //throw err;
               }
-
 
 						  var today = new Date();
 						  var uid = crypto.randomBytes(5).toString('hex');
@@ -320,8 +318,6 @@ exports.updateimage = function(req, res, next){
 					})
 				}
 		  }
-
-
 	})
 };
 

@@ -101,68 +101,140 @@ exports.create = function(req, res) {
 exports.uploadIcon = function(req, res) {
 	logger.serverLog('info', 'groupmessaging.controller : upload file route called for GROUP ICON file is: '+ JSON.stringify(req.files));
 
-	var today = new Date();
-	var uid = crypto.randomBytes(5).toString('hex');
-	var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
-	serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
-	serverPath += '.' + req.files.file.type.split('/')[1];
+  GroupMessaging.findOne({ unique_id: req.body.unique_id}, function (err, groupmessaging) {
+    if (groupmessaging.group_icon === null) {
+      var today = new Date();
+    	var uid = crypto.randomBytes(5).toString('hex');
+    	var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
+    	serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
+    	serverPath += '.' + req.files.file.type.split('/')[1];
 
-	console.log(__dirname);
+    	console.log(__dirname);
 
-  // todo delete the previously stored icon for a group
-	var dir = "./userpictures";
+      // todo delete the previously stored icon for a group
+    	var dir = "./userpictures";
 
-	if(req.files.file.size == 0) return res.send('No file submitted');
+    	if(req.files.file.size == 0) return res.send('No file submitted');
 
-	require('fs').rename(
-	 req.files.file.path,
-	 dir + "/" + serverPath,
-		function(error) {
-			 if(error) {
-				 logger.serverLog('error', 'user.controller (update image) : '+ error);
-				res.send({
-					error: 'Server Error: Could not upload the file'
-				});
-				return 0;
-			 }
-      console.log(req.body);
-      GroupMessaging.findOne({unique_id : req.body.unique_id}, function (err, groupmessaging) {
-        if(err) { return handleError(res, err); }
-        groupmessaging.group_icon = serverPath;
-        logger.serverLog('info', 'file icon uploaded and path calculated is '+ serverPath);
-        logger.serverLog('info', 'file icon uploaded and address given is '+ JSON.stringify(groupmessaging));
-        groupmessaging.save(function(err){
-          GroupMessagingUser.find({ group_unique_id: groupmessaging._id },
-            function (err2, usersingroup) {
-            logger.serverLog('info', 'members in group which will get icon update '+ JSON.stringify(usersingroup));
-            if(err2) return handleError(res, err);
-            usersingroup.forEach(function(useringroup){
-              logger.serverLog('info', 'member in group is being checked '+ JSON.stringify(useringroup));
-              if(req.user.phone !== useringroup.member_phone){
-                if(useringroup.membership_status === 'joined'){
-                  user.findOne({phone : useringroup.member_phone}, function(err, dataUser){
-                    logger.serverLog('info', 'member in group which will get icon update '+ JSON.stringify(dataUser));
-                    var payload = {
-                      type : 'group:icon_update',
-                      senderId : req.user.phone,
-                      groupId : req.body.unique_id,
-                      badge : dataUser.iOS_badge
-                    };
+    	require('fs').rename(
+    	 req.files.file.path,
+    	 dir + "/" + serverPath,
+    		function(error) {
+    			 if(error) {
+    				 logger.serverLog('error', 'user.controller (update icon) : '+ error);
+    				res.send({
+    					error: 'Server Error: Could not upload the file'
+    				});
+    				return 0;
+    			 }
+          console.log(req.body);
+          if(err) { return handleError(res, err); }
+          groupmessaging.group_icon = serverPath;
+          logger.serverLog('info', 'file icon uploaded and path calculated is '+ serverPath);
+          logger.serverLog('info', 'file icon uploaded and address given is '+ JSON.stringify(groupmessaging));
+          groupmessaging.save(function(err){
+            GroupMessagingUser.find({ group_unique_id: groupmessaging._id },
+              function (err2, usersingroup) {
+              logger.serverLog('info', 'members in group which will get icon update '+ JSON.stringify(usersingroup));
+              if(err2) return handleError(res, err);
+              usersingroup.forEach(function(useringroup){
+                logger.serverLog('info', 'member in group is being checked '+ JSON.stringify(useringroup));
+                if(req.user.phone !== useringroup.member_phone){
+                  if(useringroup.membership_status === 'joined'){
+                    user.findOne({phone : useringroup.member_phone}, function(err, dataUser){
+                      logger.serverLog('info', 'member in group which will get icon update '+ JSON.stringify(dataUser));
+                      var payload = {
+                        type : 'group:icon_update',
+                        senderId : req.user.phone,
+                        groupId : req.body.unique_id,
+                        badge : dataUser.iOS_badge
+                      };
 
-                    logger.serverLog('info', 'sending push to group member ' +
-                    useringroup.member_phone + ' that group icon is changed');
+                      logger.serverLog('info', 'sending push to group member ' +
+                      useringroup.member_phone + ' that group icon is changed');
 
-                    sendPushNotification(dataUser.phone, payload, true);
-                  })
+                      sendPushNotification(dataUser.phone, payload, true);
+                    });
+                  }
                 }
-              }
+              });
             });
+            return res.json(200, { status: 'success' });
           });
-          return res.json(200, { status: 'success' });
+        }
+      );
+    } else {
+      var dir = './userpictures';
+      dir += groupmessaging.group_icon;
+
+      if(groupmessaging.group_icon)
+      {
+        require('fs').unlink(dir, function (err) {
+            if (err) {
+              logger.serverLog('error', 'user.controller (update icon) : '+ err);
+            }
+
+            var today = new Date();
+            var uid = crypto.randomBytes(5).toString('hex');
+            var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
+            serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
+            serverPath += '.' + req.files.file.type.split('/')[1];
+
+            var dir = "./userpictures";
+
+            if(req.files.file.size == 0) return res.send('No file submitted');
+
+            require('fs').rename(
+             req.files.file.path,
+             dir + "/" + serverPath,
+              function(error) {
+                 if(error) {
+                   logger.serverLog('error', 'user.controller (update image 2) : '+ error);
+                  res.send({
+                    error: 'Server Error: Could not upload the file'
+                  });
+                  return 0;
+                 }
+                 console.log(req.body);
+                 if(err) { return handleError(res, err); }
+                 groupmessaging.group_icon = serverPath;
+                 logger.serverLog('info', 'file icon uploaded and path calculated is '+ serverPath);
+                 logger.serverLog('info', 'file icon uploaded and address given is '+ JSON.stringify(groupmessaging));
+                 groupmessaging.save(function(err){
+                   GroupMessagingUser.find({ group_unique_id: groupmessaging._id },
+                     function (err2, usersingroup) {
+                     logger.serverLog('info', 'members in group which will get icon update '+ JSON.stringify(usersingroup));
+                     if(err2) return handleError(res, err);
+                     usersingroup.forEach(function(useringroup){
+                       logger.serverLog('info', 'member in group is being checked '+ JSON.stringify(useringroup));
+                       if(req.user.phone !== useringroup.member_phone){
+                         if(useringroup.membership_status === 'joined'){
+                           user.findOne({phone : useringroup.member_phone}, function(err, dataUser){
+                             logger.serverLog('info', 'member in group which will get icon update '+ JSON.stringify(dataUser));
+                             var payload = {
+                               type : 'group:icon_update',
+                               senderId : req.user.phone,
+                               groupId : req.body.unique_id,
+                               badge : dataUser.iOS_badge
+                             };
+
+                             logger.serverLog('info', 'sending push to group member ' +
+                             useringroup.member_phone + ' that group icon is changed');
+
+                             sendPushNotification(dataUser.phone, payload, true);
+                           });
+                         }
+                       }
+                     });
+                   });
+                   return res.json(200, { status: 'success' });
+                 });
+               }
+            );
         });
-      });
+      }
     }
-	);
+  });
 };
 
 exports.downloadIcon = function (req, res, next) {
