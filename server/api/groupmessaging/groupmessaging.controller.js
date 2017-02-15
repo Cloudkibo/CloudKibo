@@ -112,7 +112,7 @@ exports.uploadIcon = function(req, res) {
     	var uid = crypto.randomBytes(5).toString('hex');
     	var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
     	serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
-    	serverPath += '.' + req.files.file.type.split('/')[0];
+    	serverPath += '' + req.files.file.type;
 
     	console.log(__dirname);
 
@@ -182,7 +182,7 @@ exports.uploadIcon = function(req, res) {
           var uid = crypto.randomBytes(5).toString('hex');
           var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
           serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
-          serverPath += '.' + req.files.file.type.split('/')[0];
+          serverPath += '' + req.files.file.type;
 
           var dir = "./userpictures";
 
