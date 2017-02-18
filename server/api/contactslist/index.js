@@ -9,6 +9,9 @@ var router = express.Router();
 
 router.get('/', auth.isAuthenticated(), controller.index);
 router.get('/pendingcontacts', auth.isAuthenticated(), controller.pendingcontacts);//www.cloudkibo.com/api/contactslist/pendingcontacts
+router.get('/blockedby', auth.isAuthenticated(), controller.whoHaveBlockedMe);
+router.post('/blockContact', auth.isAuthenticated(), controller.blockContact);
+router.post('/unblockContact', auth.isAuthenticated(), controller.unblockContact);
 router.post('/addbyusername', auth.isAuthenticated(), controller.addbyusername);
 router.post('/addbyemail', auth.isAuthenticated(), controller.addbyemail);
 router.post('/approvefriendrequest', auth.isAuthenticated(), controller.approvefriendrequest);

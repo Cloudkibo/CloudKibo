@@ -372,5 +372,4 @@ function sendPushNotification(tagname, payload, sendSound){
       logger.serverLog('info', 'Azure push notification error (iOS local testing) : '+ JSON.stringify(error));
     }
   });
-
 }

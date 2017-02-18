@@ -6,9 +6,10 @@ var config = require('../../config/environment');
 var userchat = require('../userchat/userchat.model');
 var configuration = require('../configuration/configuration.model');
 var logger = require('../../components/logger/logger');
+var azure = require('azure');
 
 exports.index = function(req, res) {
-	contactslist.find({userid : req.user._id}).populate('contactid').exec(function(err2, gotContactList){
+	contactslist.find({ userid: req.user._id }).populate('contactid').exec(function (err2, gotContactList) {
 		if (err2) return next(err2);
 		if (!gotContactList) return res.json(401);
     logger.serverLog('info', 'contactslist.controller : Contacts data sent to client');
@@ -17,17 +18,124 @@ exports.index = function(req, res) {
 };
 
 exports.pendingcontacts = function(req, res) {
-	contactslist.find({contactid : req.user._id, detailsshared : 'No'}).populate('userid').exec(function(err2, gotContactList){
+	contactslist.find({ contactid: req.user._id, detailsshared: 'No' }).populate('userid').exec(function(err2, gotContactList){
 		if (err2) return next(err2);
 		if (!gotContactList) return res.json(401);
-    console.log("pending contacts "+ gotContactList);
+    console.log('pending contacts ' + gotContactList);
     logger.serverLog('info', 'contactslist.controller : Pending contacts data sent to client');
     res.json(200, gotContactList);
-
-	})
-
-
+	});
 };
+
+exports.whoHaveBlockedMe = function(req, res) {
+	contactslist.find({ contactid: req.user._id, detailsshared: 'No' }).populate('userid').exec(function(err2, gotContactList){
+		if (err2) return next(err2);
+		if (!gotContactList) return res.json(401);
+    console.log('pending contacts ' + gotContactList);
+    logger.serverLog('info', 'contactslist.controller : Pending contacts data sent to client');
+    res.json(200, gotContactList);
+	});
+};
+
+exports.blockContact = function (req, res) {
+	User.findOne({ phone: req.body.phone }, function (err, contactToBlock) {
+		if (err) return res.json(501, { status: 'Internal Server Error' });
+		if (!contactToBlock) return res.json(401, { status: 'This contact is not registered.' });
+		contactslist.find({ userid: req.user._id, contactid: contactToBlock._id },
+		function (err2, foundContactsRecord) {
+			if (err2) return res.json(501, { status: 'Internal Server Error' });
+			foundContactsRecord.detailsshared = 'No';
+			foundContactsRecord.save(function (err3) {
+				if (err3) return res.json(501, { status: 'Internal Server Error' });
+				user.findOne({ phone: req.body.phone }, function (err, dataUser) {
+					var payload = {
+						type : 'block:blockedyou',
+						senderId : req.user.phone,
+						badge : dataUser.iOS_badge
+					};
+					sendPushNotification(req.body.phone, payload, false);
+				});
+				res.json(200, { status: 'Successfully blocked.' });
+			});
+		});
+	});
+};
+
+exports.unblockContact = function (req, res) {
+	User.findOne({ phone: req.body.phone }, function (err, contactToBlock) {
+		if (err) return res.json(501, { status: 'Internal Server Error' });
+		if (!contactToBlock) return res.json(401, { status: 'This contact is not registered.' });
+		contactslist.find({ userid: req.user._id, contactid: contactToBlock._id },
+		function (err2, foundContactsRecord) {
+			if (err2) return res.json(501, { status: 'Internal Server Error' });
+			foundContactsRecord.detailsshared = 'Yes';
+			foundContactsRecord.save(function (err3) {
+				if (err3) return res.json(501, { status: 'Internal Server Error' });
+				user.findOne({ phone: req.body.phone }, function (err, dataUser) {
+					var payload = {
+						type : 'block:unblockedyou',
+						senderId : req.user.phone,
+						badge : dataUser.iOS_badge
+					};
+					sendPushNotification(req.body.phone, payload, false);
+				});
+				res.json(200, { status: 'Successfully blocked.' });
+			});
+		});
+	});
+};
+
+var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
+function sendPushNotification(tagname, payload, sendSound){
+  tagname = tagname.substring(1);
+  var iOSMessage = {
+    alert : payload.msg,
+    'content-available':true,
+    sound : 'UILocalNotificationDefaultSoundName',
+    badge : payload.badge,
+    payload : payload
+  };
+
+  if (!sendSound) {
+    iOSMessage = {
+      payload: payload
+    };
+  }
+
+  var androidMessage = {
+    to: tagname,
+    priority: 'high',
+    data: {
+      message: payload
+    }
+  }
+
+  notificationHubService.gcm.send(tagname, androidMessage, function (error) {
+    if (!error) {
+      logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
+    } else {
+      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
+    }
+  });
+  notificationHubService.apns.send(tagname, iOSMessage, function (error) {
+    if (!error) {
+      logger.serverLog('info', 'Azure push notification sent to iOS using GCM Module, client number : '+ tagname);
+    } else {
+      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
+    }
+  });
+
+  // For iOS Local testing only
+  var notificationHubService2 = azure.createNotificationHubService('CloudKiboIOSPush','Endpoint=sb://cloudkiboiospush.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=0JmBCY+BNqMhuAS1g39wPBZFoZAX7M+wq4z4EWaXgCs=');
+
+  notificationHubService2.apns.send(tagname, iOSMessage, function(error){
+    if(!error){
+      logger.serverLog('info', 'Azure push notification sent to iOS (local testing) using GCM Module, client number : '+ tagname);
+    } else {
+      logger.serverLog('info', 'Azure push notification error (iOS local testing) : '+ JSON.stringify(error));
+    }
+  });
+}
 
 exports.addbyusername = function(req, res) {
 	User.findById(req.user._id, function (err, gotUser) {
