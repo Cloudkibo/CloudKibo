@@ -224,7 +224,7 @@ exports.save2 = function(req, res) {
 		var payload = {
 			type : req.body.type,
 			senderId : req.body.from,
-			msg : req.body.msg.substring(0, 8),
+			msg : (req.body.type === 'contact') ? 'Shared contact with you' : req.body.msg.substring(0, 8),
 			uniqueId : req.body.uniqueid,
 			badge : dataUser.iOS_badge + 1
 		};
