@@ -18,21 +18,31 @@ exports.index = function(req, res) {
 };
 
 exports.pendingcontacts = function(req, res) {
-	contactslist.find({ contactid: req.user._id, detailsshared: 'No' }).populate('userid').exec(function(err2, gotContactList){
+	contactslist.find({ conatcid: req.user._id, detailsshared: 'No' }).populate('userid').exec(function(err2, gotContactList){
 		if (err2) return next(err2);
 		if (!gotContactList) return res.json(401);
     console.log('pending contacts ' + gotContactList);
-    logger.serverLog('info', 'contactslist.controller : Pending contacts data sent to client');
+    logger.serverLog('info', 'contactslist.controller : pending contacts data sent to client');
     res.json(200, gotContactList);
 	});
 };
 
-exports.whoHaveBlockedMe = function(req, res) {
+exports.whoHaveBlockedMe = function (req, res) {
 	contactslist.find({ contactid: req.user._id, detailsshared: 'No' }).populate('userid').exec(function(err2, gotContactList){
 		if (err2) return next(err2);
 		if (!gotContactList) return res.json(401);
     console.log('pending contacts ' + gotContactList);
-    logger.serverLog('info', 'contactslist.controller : Pending contacts data sent to client');
+    logger.serverLog('info', 'contactslist.controller : who have blocked me, data sent to client');
+    res.json(200, gotContactList);
+	});
+};
+
+exports.blockedbyme = function (req, res) {
+	contactslist.find({ userid: req.user._id, detailsshared: 'No' }).populate('contactid').exec(function(err2, gotContactList){
+		if (err2) return next(err2);
+		if (!gotContactList) return res.json(401);
+    console.log('pending contacts ' + gotContactList);
+    logger.serverLog('info', 'contactslist.controller : contacts i blocked, data sent to client');
     res.json(200, gotContactList);
 	});
 };
