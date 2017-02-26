@@ -28,7 +28,7 @@ exports.pendingcontacts = function(req, res) {
 };
 
 exports.whoHaveBlockedMe = function (req, res) {
-	contactslist.find({ contactid: req.user._id, detailsshared: 'No' }).populate('userid').exec(function(err2, gotContactList){
+	contactslist.find({ contactid: req.user._id, detailsshared: 'No' }).populate('contactid').exec(function(err2, gotContactList){
 		if (err2) return next(err2);
 		if (!gotContactList) return res.json(401);
     console.log('pending contacts ' + gotContactList);
