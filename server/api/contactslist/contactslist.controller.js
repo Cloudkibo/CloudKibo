@@ -58,7 +58,7 @@ exports.blockContact = function (req, res) {
       function (err3, num) {
 				if (num>0) {
 					if (err3) return res.json(501, { status: 'Internal Server Error' });
-					user.findOne({ phone: req.body.phone }, function (err, dataUser) {
+					User.findOne({ phone: req.body.phone }, function (err, dataUser) {
 						var payload = {
 							type : 'block:blockedyou',
 							senderId : req.user.phone,
@@ -84,7 +84,7 @@ exports.unblockContact = function (req, res) {
       function (err3, num) {
 				if (num>0) {
 					if (err3) return res.json(501, { status: 'Internal Server Error' });
-					user.findOne({ phone: req.body.phone }, function (err, dataUser) {
+					User.findOne({ phone: req.body.phone }, function (err, dataUser) {
 						var payload = {
 							type : 'block:unblockedyou',
 							senderId : req.user.phone,
