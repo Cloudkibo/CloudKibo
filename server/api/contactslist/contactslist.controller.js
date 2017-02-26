@@ -51,23 +51,25 @@ exports.blockContact = function (req, res) {
 	User.findOne({ phone: req.body.phone }, function (err, contactToBlock) {
 		if (err) return res.json(501, { status: 'Internal Server Error' });
 		if (!contactToBlock) return res.json(401, { status: 'This contact is not registered.' });
-		contactslist.find({ userid: req.user._id, contactid: contactToBlock._id },
-		function (err2, foundContactsRecord) {
-			if (err2) return res.json(501, { status: 'Internal Server Error' });
-			foundContactsRecord.detailsshared = 'No';
-			foundContactsRecord.save(function (err3) {
-				if (err3) return res.json(501, { status: 'Internal Server Error' });
-				user.findOne({ phone: req.body.phone }, function (err, dataUser) {
-					var payload = {
-						type : 'block:blockedyou',
-						senderId : req.user.phone,
-						badge : dataUser.iOS_badge
-					};
-					sendPushNotification(req.body.phone, payload, false);
-				});
-				res.json(200, { status: 'Successfully blocked.' });
-			});
-		});
+		contactslist.update(
+      { userid: req.user._id, contactid: contactToBlock._id },
+      { detailsshared: 'No' }, // should have value one of 'delivered', 'seen'
+      { multi: true },
+      function (err3, num) {
+				if (num>0) {
+					if (err3) return res.json(501, { status: 'Internal Server Error' });
+					user.findOne({ phone: req.body.phone }, function (err, dataUser) {
+						var payload = {
+							type : 'block:blockedyou',
+							senderId : req.user.phone,
+							badge : dataUser.iOS_badge
+						};
+						sendPushNotification(req.body.phone, payload, false);
+					});
+					res.json(200, { status: 'Successfully blocked.' });
+				}
+      }
+    );
 	});
 };
 
@@ -75,23 +77,25 @@ exports.unblockContact = function (req, res) {
 	User.findOne({ phone: req.body.phone }, function (err, contactToBlock) {
 		if (err) return res.json(501, { status: 'Internal Server Error' });
 		if (!contactToBlock) return res.json(401, { status: 'This contact is not registered.' });
-		contactslist.find({ userid: req.user._id, contactid: contactToBlock._id },
-		function (err2, foundContactsRecord) {
-			if (err2) return res.json(501, { status: 'Internal Server Error' });
-			foundContactsRecord.detailsshared = 'Yes';
-			foundContactsRecord.save(function (err3) {
-				if (err3) return res.json(501, { status: 'Internal Server Error' });
-				user.findOne({ phone: req.body.phone }, function (err, dataUser) {
-					var payload = {
-						type : 'block:unblockedyou',
-						senderId : req.user.phone,
-						badge : dataUser.iOS_badge
-					};
-					sendPushNotification(req.body.phone, payload, false);
-				});
-				res.json(200, { status: 'Successfully blocked.' });
-			});
-		});
+		contactslist.update(
+      { userid: req.user._id, contactid: contactToBlock._id },
+      { detailsshared: 'Yes' }, // should have value one of 'delivered', 'seen'
+      { multi: true },
+      function (err3, num) {
+				if (num>0) {
+					if (err3) return res.json(501, { status: 'Internal Server Error' });
+					user.findOne({ phone: req.body.phone }, function (err, dataUser) {
+						var payload = {
+							type : 'block:unblockedyou',
+							senderId : req.user.phone,
+							badge : dataUser.iOS_badge
+						};
+						sendPushNotification(req.body.phone, payload, false);
+					});
+					res.json(200, { status: 'Successfully blocked.' });
+				}
+      }
+    );
 	});
 };
 
