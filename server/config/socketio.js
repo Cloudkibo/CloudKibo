@@ -3,14 +3,13 @@
  */
 
 'use strict';
-
 var azure = require('azure');
-var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
 var config = require('./environment');
 var logger = require('../components/logger/logger');
 var debuggers = require('../components/debugger/debugger');
 var user = require('../api/user/user.model');
 
+var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
 
 function sendPushNotification(tagname, payload, sendSound){
   tagname = tagname.substring(1);
@@ -63,7 +62,6 @@ function sendPushNotification(tagname, payload, sendSound){
 
 // When the user disconnects.. perform this
 function onDisconnect(socketio, socket) {
-
   var clients = findClientsSocket('globalchatroom'); //socketio.nsps['/'].adapter.rooms[room.room];//var clients = socketio.sockets.clients(room.room);
   var socketid = '';
   var user = require('./../api/user/user.model.js');
@@ -72,7 +70,7 @@ function onDisconnect(socketio, socket) {
 
   user.findOne({
     phone: socket.phone
-  }, function(err, gotuser) {
+  }, function (err, gotuser) {
     if (err) logger.serverLog('error', 'socketio.js onDisconnect : ' + err);
 
     //logger.serverLog('info', 'socketio.js on : Data of user going offline : '+ JSON.stringify(gotuser));
@@ -86,7 +84,6 @@ function onDisconnect(socketio, socket) {
       }).populate('contactid').exec(function(err3, gotContactList) {
 
         if (gotContactList != null) {
-
           for (var i in clients) {
             for (var j in gotContactList) {
               if (gotContactList[j].contactid != null) {
@@ -98,15 +95,10 @@ function onDisconnect(socketio, socket) {
               }
             }
           }
-
         }
-
       })
-
     }
-
   });
-
 
   function findClientsSocket(roomId, namespace) {
     var res = [],
@@ -760,7 +752,75 @@ function onConnect(socketio, socket) {
   //require('../api/thing/thing.socket').register(socket);
 }
 
+function onConnectPlatforms(socketio, socket) {
 
+  var platform_room = 'platform_room';
+
+  socket.on('join_platform_room', function(room) {
+
+    socket.join(platform_room);
+    logger.serverLog('info', 'Going to join platform room ' + JSON.stringify(room));
+
+    var id = parseInt(Math.random().toString(8).substring(2,7));
+    socket.phone = room.phone;
+    socket.connection_id = id;
+    socket.connection_string = room.phone +'-'+ id;
+
+    logger.serverLog('info', 'Data used in joining platform_room ' +
+      socket.connection_string + ' '+ socket.connection_id);
+
+    socket.emit('joined_platform_room', id);
+
+  });
+
+  socket.on('platform_room_message', function (im, fn) {
+    logger.serverLog('info', 'platform data sharing message -> ' + JSON.stringify(im));
+
+    try {
+      var clients = findClientsSocket(platform_room);
+      //socketio.nsps['/'].adapter.rooms[room.room];
+      //var clients = socketio.sockets.clients(room.room);
+
+      var socketid = '';
+
+      for (var i in clients) {
+        if (clients[i].phone == im.phone && clients[i].connection_id == im.to_connection_id) {
+          socketid = clients[i].id;
+        }
+      }
+
+      socketio.to(socketid).emit('platform_room_message', im);
+
+      //fn('sent', im.stanza.uniqueid);
+      fn({ status: 'sent' });
+
+      //socketio.sockets.socket(socketid).emit('im', im.stanza);
+    } catch (e) {
+      logger.serverLog('error', 'socketio.js on(platform_room_message) : ' + e);
+    }
+  });
+
+  function findClientsSocket(roomId, namespace) {
+    var res = [],
+      ns = socketio.of(namespace || "/"); // the default namespace is "/"
+
+    if (ns) {
+      for (var id in ns.connected) {
+        if (roomId) {
+          var index = ns.connected[id].rooms.indexOf(roomId);
+          if (index !== -1) {
+            res.push(ns.connected[id]);
+          }
+        } else {
+          res.push(ns.connected[id]);
+        }
+      }
+    }
+
+    return res;
+  }
+  
+}
 
 var rooms = {};
 var userIds = {};
@@ -802,6 +862,7 @@ module.exports = function(socketio) {
 
     // Call onConnect.
     onConnect(socketio, socket);
+    onConnectPlatforms(socketio, socket);
     //console.info('[%s] CONNECTED', socket.address);
 
     /**
@@ -899,9 +960,6 @@ module.exports = function(socketio) {
         console.log('Peer connected to room : ' + data.room + 'with #' + id);
 
       }
-
-
-
     });
 
 
@@ -947,9 +1005,6 @@ module.exports = function(socketio) {
         console.log('Peer connected to room : ' + data.room + 'with #' + id);
 
       }
-
-
-
     });
 
     socket.on('knock.request', function(data) {
@@ -1238,30 +1293,6 @@ module.exports = function(socketio) {
 };
 
 function sendToCloudKibo(myJSONObject) {
-  /*var request = require('request');
-  console.log(myJSONObject)
-
-  var fs = require('fs');
-  var path = require('path');
-
-  var options = {
-    url: "https://api.kibosupport.com/api/userchats/",
-    method: "POST",
-    json: true,   // <--Very important!!!
-    body: myJSONObject,
-    ca: fs.readFileSync(path.resolve(__dirname, '../security/gd_bundle-g2-g1.crt')),
-    key: fs.readFileSync(path.resolve(__dirname, '../security/server.key')),
-    cert: fs.readFileSync(path.resolve(__dirname, '../security/d499736eb44cc97a.crt'))
-  };
-
-  console.log(fs.readFileSync(path.resolve(__dirname, '../security/d499736eb44cc97a.crt')));
-
-  request(options,
-    function (error, response, body){
-    console.log(error)
-    console.log(response);
-    console.log(body);
-  });*/
 
   var needle = require('needle');
 
