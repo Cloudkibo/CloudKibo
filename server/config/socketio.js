@@ -773,7 +773,10 @@ function onConnectPlatforms(socketio, socket) {
 
   });
 
-  socket.on('platform_room_message', function (im, fn) {
+  socket.on('platform_room_message', function (im) {
+    console.log('PLATFORM_ROOM_MESSAGE');
+    console.log(im)
+    logger.serverLog('info', im);
     logger.serverLog('info', 'platform data sharing message -> ' + JSON.stringify(im));
 
     try {
@@ -784,15 +787,13 @@ function onConnectPlatforms(socketio, socket) {
       var socketid = '';
 
       for (var i in clients) {
-        if (clients[i].phone == im.phone && clients[i].connection_id == im.to_connection_id) {
+        if (clients[i].phone == im.phone &&
+          clients[i].connection_id == im.to_connection_id) {
           socketid = clients[i].id;
         }
       }
 
       socketio.to(socketid).emit('platform_room_message', im);
-
-      //fn('sent', im.stanza.uniqueid);
-      fn({ status: 'sent' });
 
       //socketio.sockets.socket(socketid).emit('im', im.stanza);
     } catch (e) {
@@ -819,7 +820,7 @@ function onConnectPlatforms(socketio, socket) {
 
     return res;
   }
-  
+
 }
 
 var rooms = {};
