@@ -550,7 +550,7 @@ exports.upwardSync = function (req, res) {
   }
 };
 
-exports.upwardSync = function (req, res) {
+exports.downwardSync = function (req, res) {
 
 };
 
