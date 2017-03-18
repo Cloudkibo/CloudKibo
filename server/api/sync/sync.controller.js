@@ -549,6 +549,11 @@ exports.upwardSync = function (req, res) {
     handleError(res, err);
   }
 };
+
+exports.upwardSync = function (req, res) {
+
+};
+
 var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
 function sendPushNotification(tagname, payload, sendSound){
   tagname = tagname.substring(1);
