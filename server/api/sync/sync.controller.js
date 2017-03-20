@@ -563,6 +563,7 @@ exports.downwardSync = function (req, res) {
 var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
 function sendPushNotification(tagname, payload, sendSound){
   logger.serverLog('info', 'upward SYNC going to send push : '+ JSON.stringify(payload));
+  console.log('upward Sync going to SEND PUSH '+ JSON.stringify(payload))
   tagname = tagname.substring(1);
   var iOSMessage = {
     alert : payload.msg,
