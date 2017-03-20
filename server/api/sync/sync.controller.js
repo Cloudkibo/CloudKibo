@@ -28,6 +28,10 @@ var azure = require('azure');
 
 // Creates a new groupcall in the DB.
 exports.upwardSync = function (req, res) {
+
+  logger.serverLog('info', 'upward SYNC payload : ' JSON.stringify(req.body));
+  logger.serverLog('info', 'upward SYNC payload req.user : ' JSON.stringify(req.user));
+
   try {
     var unsentMessages = req.body.unsentMessages;
     var unsentGroupMessages = req.body.unsentGroupMessages;
@@ -42,6 +46,8 @@ exports.upwardSync = function (req, res) {
     res.send({ status : 'success', msg : 'Received sync data. You would get push notifications for updates on your data' });
 
     unsentMessages.forEach(function(messageBody){
+
+      logger.serverLog('info', 'upward SYNC payload unsentMessage : ' JSON.stringify(messageBody));
 
       var dateServerReceived = new Date();
     	var dateServerSent;
