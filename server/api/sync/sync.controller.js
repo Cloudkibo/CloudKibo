@@ -242,7 +242,7 @@ exports.upwardSync = function (req, res) {
           var syncPayload = {
             type : 'syncUpward',
             sub_type: 'unsentChatMessageStatus',
-            payload : {status : 'statusUpdated', uniqueid : messageBody.uniqueid}
+            payload : {status : messageBody.status, uniqueid : messageBody.uniqueid}
             };
           sendPushNotification(req.user.phone, syncPayload, false);
 
