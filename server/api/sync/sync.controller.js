@@ -589,14 +589,14 @@ function sendPushNotification(tagname, payload, sendSound){
     if(!error){
       logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
     } else {
-      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
+      //logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
     }
   });
   notificationHubService.apns.send(tagname, iOSMessage, function(error){
     if(!error){
       logger.serverLog('info', 'Azure push notification sent to iOS using GCM Module, client number : '+ tagname);
     } else {
-      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
+      //logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
     }
   });
 
@@ -607,7 +607,7 @@ function sendPushNotification(tagname, payload, sendSound){
     if(!error){
       logger.serverLog('info', 'Azure push notification sent to iOS (local testing) using GCM Module, client number : '+ tagname);
     } else {
-      logger.serverLog('info', 'Azure push notification error (iOS local testing) : '+ JSON.stringify(error));
+      //logger.serverLog('info', 'Azure push notification error (iOS local testing) : '+ JSON.stringify(error));
     }
   });
 
