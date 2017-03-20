@@ -258,7 +258,14 @@ exports.upwardSync = function (req, res) {
         function (err, num){
           if (err) { return handleError(res, err); }
           groupchat.findOne({unique_id : messageBody.chat_unique_id}, function(err, gotChat){
-            if (!gotChat) { return res.json(404, { status: 'not found' }); }
+            if (!gotChat) {
+              var syncPayload = {
+                type : 'syncUpward',
+                sub_type: 'unsentGroupChatMessageStatus',
+                payload : { status: 'not found' }
+              };
+              sendPushNotification(req.user.phone, syncPayload, false);
+             }
             var payload = {
               type : 'group:msg_status_changed',
               status : messageBody.status,
@@ -272,7 +279,7 @@ exports.upwardSync = function (req, res) {
           var syncPayload = {
             type : 'syncUpward',
             sub_type: 'unsentGroupChatMessageStatus',
-            payload : {status : 'statusUpdated', uniqueid : messageBody.chat_unique_id}
+            payload : {status : messageBody.status, uniqueid : messageBody.chat_unique_id}
             };
           sendPushNotification(req.user.phone, syncPayload, false);
         }
