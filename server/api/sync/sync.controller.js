@@ -212,9 +212,9 @@ exports.upwardSync = function (req, res) {
           })
 
           var syncPayload = {
-            type : 'syncUpward',
+            type: 'syncUpward',
             sub_type: 'unsentGroupMessages',
-            payload : groupchat
+            payload: { unique_id: groupchat.unique_id }
             };
           sendPushNotification(req.user.phone, syncPayload, false);
         });
