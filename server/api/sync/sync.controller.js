@@ -259,12 +259,7 @@ exports.upwardSync = function (req, res) {
           if (err) { return handleError(res, err); }
           groupchat.findOne({unique_id : messageBody.chat_unique_id}, function(err, gotChat){
             if (!gotChat) {
-              var syncPayload = {
-                type : 'syncUpward',
-                sub_type: 'unsentGroupChatMessageStatus',
-                payload : { status: 'not found' }
-              };
-              sendPushNotification(req.user.phone, syncPayload, false);
+              
             } else {
               var payload = {
                 type : 'group:msg_status_changed',
