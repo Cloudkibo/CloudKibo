@@ -565,6 +565,114 @@ exports.upwardSync = function (req, res) {
 
 exports.downwardSync = function (req, res) {
 
+  var response = {};
+
+  userchat.find({owneruser : req.user.phone, to : req.user.phone, status : 'sent'},
+    function(err1, gotMessages){
+      if(err1) return console.log(err1);
+
+      gotMessages.forEach(function(gotMessage){
+        userchat.update(
+          {uniqueid : gotMessage.uniqueid},
+          {status : 'delivered'}, // should have value one of 'delivered', 'seen'
+          {multi : true},
+          function (err, num){
+            logger.serverLog('info', 'Rows updated here '+ num +' for message status update PARTIAL SYNC in mongodb');
+
+            var payload = {
+              type : 'status',
+              status : 'delivered',
+              uniqueId : gotMessage.uniqueid
+            };
+
+            sendPushNotification(gotMessage.from, payload, false);
+
+          }
+        );
+      })
+
+      logger.serverLog('info', 'userchat.controller : Partial Chat data sent to client');
+
+      //res.send({status : 'success', msg : gotMessages});
+      response.partialChat = {status : 'success', msg : gotMessages};
+
+      contactslist.find({ userid: req.user._id })
+      .populate('contactid').exec(function (err2, gotContactList) {
+    		if (err2) return next(err2);
+    		if (!gotContactList) return res.json(401);
+        logger.serverLog('info', 'contactslist.controller : Contacts data sent to client');
+    		//res.json(200, gotContactList);
+        response.contactsUpdate = gotContactList;
+
+        contactslist.find({ contactid: req.user._id, detailsshared: 'No' })
+        .populate('contactid').exec(function(err2, gotContactList2){
+      		if (err2) return next(err2);
+      		if (!gotContactList) return res.json(401);
+          console.log('pending contacts ' + gotContactList);
+          logger.serverLog('info', 'contactslist.controller : who have blocked me, data sent to client');
+          //res.json(200, gotContactList);
+          response.contactsWhoBlockedYou = gotContactList2;
+
+          contactslist.find({ userid: req.user._id, detailsshared: 'No' })
+          .populate('contactid').exec(function(err2, gotContactList3){
+        		if (err2) return next(err2);
+        		if (!gotContactList) return res.json(401);
+            console.log('pending contacts ' + gotContactList);
+            logger.serverLog('info', 'contactslist.controller : contacts i blocked, data sent to client');
+            //res.json(200, gotContactList3);
+            response.contactsBlockedByMe = gotContactList3;
+
+            GroupMessagingUsers.find({member_phone : req.user.phone, membership_status : 'joined'})
+            .populate('group_unique_id').exec(function (err, mygroups) {
+              if(err) { return handleError(res, err); }
+              //return res.json(200, groupmessagingusers);
+              response.myGroups = mygroups;
+
+              var groupIds = [];
+              for(var i in mygroups){
+                groupIds[i] = mygroups[i].group_unique_id;
+              }
+              //logger.serverLog('info', 'these are my groups '+ groupIds);
+              GroupMessagingUsers.find({group_unique_id : { $in : groupIds }})
+              .populate('group_unique_id').exec(function (err, myGroupsMembers) {
+                if(err) { return handleError(res, err); }
+                //logger.serverLog('info', 'these are my groups members'+ JSON.stringify(groupmessagingusers));
+                //return res.json(200, groupmessagingusers);
+                response.myGroupsMembers = myGroupsMembers;
+
+                GroupChatStatus.find({status:'sent', user_phone: req.user.phone})
+                .populate('msg_unique_id').exec(function (err, groupchatstatus) {
+                  if(err) { return handleError(res, err); }
+                  GroupChatStatus.update(
+                    {status:'sent', user_phone: req.user.phone},
+                    {status : 'delivered'}, // should have value one of 'delivered', 'seen'
+                    {multi : true},
+                    function (err, num){
+
+                    }
+                  );
+                  GroupChatStatus.populate(groupchatstatus, {
+                    path: 'msg_unique_id.group_unique_id',
+                    model: 'groupmessagings'
+                  },
+                  function(err, groupchatstatusfilled) {
+                    if(err) return handleError(res, err);
+                    response.partialGroupChat = groupchatstatusfilled;
+                    return res.json(200, response); // This object should now be populated accordingly.
+                  });
+
+                });
+              })
+
+            });
+
+        	});
+
+      	});
+
+    	});
+
+    });
 };
 
 var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');

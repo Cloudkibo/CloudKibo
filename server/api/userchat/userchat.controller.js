@@ -348,34 +348,34 @@ exports.partialchatsync = function(req, res) {
 			if(req.body.user1 == gotUser.phone){
 
 				  userchat.find({owneruser : gotUser.phone, to : gotUser.phone, status : 'sent'},
-																		function(err1, gotMessages){
-																			if(err1) return console.log(err1);
+						function(err1, gotMessages){
+							if(err1) return console.log(err1);
 
-																			gotMessages.forEach(function(gotMessage){
-																				userchat.update(
-																					{uniqueid : gotMessage.uniqueid},
-																					{status : 'delivered'}, // should have value one of 'delivered', 'seen'
-																					{multi : true},
-																					function (err, num){
-																						logger.serverLog('info', 'Rows updated here '+ num +' for message status update PARTIAL SYNC in mongodb');
+							gotMessages.forEach(function(gotMessage){
+								userchat.update(
+									{uniqueid : gotMessage.uniqueid},
+									{status : 'delivered'}, // should have value one of 'delivered', 'seen'
+									{multi : true},
+									function (err, num){
+										logger.serverLog('info', 'Rows updated here '+ num +' for message status update PARTIAL SYNC in mongodb');
 
-																						var payload = {
-																							type : 'status',
-																							status : 'delivered',
-																							uniqueId : gotMessage.uniqueid
-																						};
+										var payload = {
+											type : 'status',
+											status : 'delivered',
+											uniqueId : gotMessage.uniqueid
+										};
 
-																						sendPushNotification(gotMessage.from, payload, false);
+										sendPushNotification(gotMessage.from, payload, false);
 
-																					}
-																				);
-																			})
+									}
+								);
+							})
 
-                                      logger.serverLog('info', 'userchat.controller : Partial Chat data sent to client');
+              logger.serverLog('info', 'userchat.controller : Partial Chat data sent to client');
 
-																			res.send({status : 'success', msg : gotMessages});
+							res.send({status : 'success', msg : gotMessages});
 
-																		})
+						})
 
 			} else {
 				logger.serverLog('info', 'userchat.controller : NOT Partial Chat data sent to client. BECAUSE user was not found');
