@@ -259,7 +259,7 @@ exports.upwardSync = function (req, res) {
           if (err) { return handleError(res, err); }
           groupchat.findOne({unique_id : messageBody.chat_unique_id}, function(err, gotChat){
             if (!gotChat) {
-              
+
             } else {
               var payload = {
                 type : 'group:msg_status_changed',
@@ -532,7 +532,7 @@ exports.upwardSync = function (req, res) {
       });
     });
 
-    userchat.find({uniqueid: { $in: statusOfSentMessages }}, function (err, chatstatus) {
+    userchat.find({uniqueid: { $in: statusOfSentMessages.unique_ids }}, function (err, chatstatus) {
   		logger.serverLog('info', 'userchat.controller: checking status of Sent messages and response '+ JSON.stringify(chatstatus));
       if(err) { return handleError(res, err); }
       var syncPayload = {
@@ -543,7 +543,7 @@ exports.upwardSync = function (req, res) {
       sendPushNotification(req.user.phone, syncPayload, false);
     });
 
-    GroupChatStatus.find({chat_unique_id: { $in: statusOfSentGroupMessages }}, function (err, groupchatstatus) {
+    GroupChatStatus.find({chat_unique_id: { $in: statusOfSentGroupMessages.unique_ids }}, function (err, groupchatstatus) {
       if(err) { return handleError(res, err); }
       var syncPayload = {
         type : 'syncUpward',
