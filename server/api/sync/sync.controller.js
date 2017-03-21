@@ -135,7 +135,7 @@ exports.upwardSync = function (req, res) {
                 var syncPayload = {
                   type : 'syncUpward',
                   sub_type: 'unsentMessages',
-                  payload : {status : 'blocked', uniqueid : messageBody.uniqueid}
+                  payload : {status : 'sent', uniqueid : messageBody.uniqueid}
                   };
                 sendPushNotification(req.user.phone, syncPayload, false);
     					}
@@ -145,7 +145,7 @@ exports.upwardSync = function (req, res) {
             var syncPayload = {
               type : 'syncUpward',
               sub_type: 'unsentMessages',
-              payload : {status : 'blocked', uniqueid : messageBody.uniqueid}
+              payload : {status : 'sent', uniqueid : messageBody.uniqueid}
               };
             sendPushNotification(req.user.phone, syncPayload, false);
     			}
@@ -265,15 +265,15 @@ exports.upwardSync = function (req, res) {
                 payload : { status: 'not found' }
               };
               sendPushNotification(req.user.phone, syncPayload, false);
-             }
-            var payload = {
-              type : 'group:msg_status_changed',
-              status : messageBody.status,
-              user_phone : messageBody.phone,
-      				uniqueId : messageBody.chat_unique_id
-            };
-
-            sendPushNotification(gotChat.from, payload, false);
+            } else {
+              var payload = {
+                type : 'group:msg_status_changed',
+                status : messageBody.status,
+                user_phone : messageBody.phone,
+        				uniqueId : messageBody.chat_unique_id
+              };
+              sendPushNotification(gotChat.from, payload, false);
+            }
 
           });
           var syncPayload = {
@@ -599,7 +599,7 @@ exports.downwardSync = function (req, res) {
       contactslist.find({ userid: req.user._id })
       .populate('contactid').exec(function (err2, gotContactList) {
     		if (err2) return next(err2);
-    		if (!gotContactList) return res.json(401);
+    		//if (!gotContactList) return res.json(401);
         logger.serverLog('info', 'contactslist.controller : Contacts data sent to client');
     		//res.json(200, gotContactList);
         response.contactsUpdate = gotContactList;
@@ -607,7 +607,7 @@ exports.downwardSync = function (req, res) {
         contactslist.find({ contactid: req.user._id, detailsshared: 'No' })
         .populate('contactid').exec(function(err2, gotContactList2){
       		if (err2) return next(err2);
-      		if (!gotContactList) return res.json(401);
+      		//if (!gotContactList) return res.json(401);
           console.log('pending contacts ' + gotContactList);
           logger.serverLog('info', 'contactslist.controller : who have blocked me, data sent to client');
           //res.json(200, gotContactList);
@@ -616,7 +616,7 @@ exports.downwardSync = function (req, res) {
           contactslist.find({ userid: req.user._id, detailsshared: 'No' })
           .populate('contactid').exec(function(err2, gotContactList3){
         		if (err2) return next(err2);
-        		if (!gotContactList) return res.json(401);
+        		//if (!gotContactList) return res.json(401);
             console.log('pending contacts ' + gotContactList);
             logger.serverLog('info', 'contactslist.controller : contacts i blocked, data sent to client');
             //res.json(200, gotContactList3);

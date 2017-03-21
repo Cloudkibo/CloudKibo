@@ -289,11 +289,11 @@ exports.save2 = function(req, res) {
 							logger.serverLog('info', 'chat saved on mongodb '+ JSON.stringify(d1));
 						});
 					} else {
-						res.send({status : 'blocked', uniqueid : req.body.uniqueid});
+						res.send({status : 'sent', uniqueid : req.body.uniqueid});
 					}
 				});
 			} else {
-				res.send({status : 'blocked', uniqueid : req.body.uniqueid});
+				res.send({status : 'sent', uniqueid : req.body.uniqueid});
 			}
 
 		});
