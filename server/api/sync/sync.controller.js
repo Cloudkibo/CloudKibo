@@ -67,11 +67,12 @@ exports.upwardSync = function (req, res) {
     							badge : dataUser.iOS_badge + 1
     						};
 
+                logger.serverLog('info', 'upward SYNC sending chat using push to recipient : '+ JSON.stringify(payload));
     						logger.serverLog('info', 'sending chat using push to recipient');
     						sendPushNotification(messageBody.to, payload, true);
     						dateServerSent = new Date();
 
-    						logger.serverLog('info', 'sending chat message response to sender');
+
     						//res.send({status : 'sent', uniqueid : req.body.uniqueid});
 
                 var syncPayload = {
@@ -128,7 +129,7 @@ exports.upwardSync = function (req, res) {
 
     						newUserChat.save(function (err2, d1) {
     							if (err2) return console.log('Error 2'+ err2);
-    							logger.serverLog('info', 'chat saved on mongodb '+ JSON.stringify(d1));
+
     						});
     					} else {
     						//res.send({status : 'blocked', uniqueid : req.body.uniqueid});
