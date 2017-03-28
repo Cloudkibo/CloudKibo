@@ -1,6 +1,6 @@
 'use strict';
 
-var filetransfers = require('./filetransfers.model');
+var filetransfers = require('./filetransfersgroup.model');
 var User = require('../user/user.model');
 var config = require('../../config/environment');
 var logger = require('../../components/logger/logger');
@@ -34,8 +34,9 @@ exports.upload = function(req, res) {
 			 }
       console.log(req.body);
 			 var fileData = new filetransfers({
-				 to : req.body.to,
+				 group_unique_id : req.body.group_unique_id,
 	       from : req.body.from,
+				 total_members: req.body.total_members,
 	       uniqueid: req.body.uniqueid,
 	       file_name : req.body.filename,
 	       file_size : req.body.filesize,
@@ -71,20 +72,26 @@ exports.confirmdownload = function (req, res, next) {
 	filetransfers.findOne({ uniqueid: req.body.uniqueid }, function (err, data) {
 		if (err) return res.send({ status: 'database error' });
 
-		var dir = './userpictures';
-		dir += data.path;
+		data.members_downloaded = data.members_downloaded + 1;
 
-		require('fs').unlink(dir, function (err1) {
-				if (err1) {
-					return logger.serverLog('error', 'filetransfers.controller (delete file image) : '+ err1);
-					//throw err;
-				}
+		if(data.members_downloaded === data.total_members) {
+			var dir = './userpictures';
+			dir += data.path;
 
-				filetransfers.remove({ uniqueid: req.body.uniqueid }, function (err) {
-					if (err) return res.send({ status: 'database error' });
-					res.send({ status: 'success' });
+			require('fs').unlink(dir, function (err1) {
+					if (err1) {
+						return logger.serverLog('error', 'filetransfersgroup.controller (delete file) : '+ err1);
+						//throw err;
+					}
+
+					filetransfers.remove({ uniqueid: req.body.uniqueid }, function (err) {
+						if (err) return res.send({ status: 'database error' });
+						res.send({ status: 'success' });
+					});
 				});
-			});
+		} else {
+			res.send({ status: 'success' });
+		}
 	});
 };
 
