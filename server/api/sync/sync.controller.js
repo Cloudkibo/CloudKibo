@@ -43,7 +43,19 @@ exports.upwardSync = function (req, res) {
     var statusOfSentMessages = req.body.statusOfSentMessages;
     var statusOfSentGroupMessages = req.body.statusOfSentGroupMessages;
 
-    res.send({ status : 'success', msg : 'Received sync data. You would get push notifications for updates on your data' });
+    var response = {
+      unsentMessages: [],
+      unsentGroupMessages: [],
+      unsentChatMessageStatus: [],
+      unsentGroupChatMessageStatus: [],
+      unsentGroups: [],
+      unsentAddedGroupMembers: [],
+      unsentRemovedGroupMembers: [],
+      statusOfSentMessages: [],
+      statusOfSentGroupMessages: []
+    };
+
+    //res.send({ status : 'success', msg : 'Received sync data. You would get push notifications for updates on your data' });
 
     unsentMessages.forEach(function(messageBody){
 
@@ -81,8 +93,9 @@ exports.upwardSync = function (req, res) {
                     status : 'sent',
                     uniqueid : messageBody.uniqueid
                   }
-                  };
-                sendPushNotification(req.user.phone, syncPayload, false);
+                };
+                //sendPushNotification(req.user.phone, syncPayload, false);
+                response.unsentMessages.push({status : 'sent', uniqueid : req.body.uniqueid});
 
     						dataUser.iOS_badge = dataUser.iOS_badge + 1;
     						dataUser.save(function(err){
@@ -216,7 +229,8 @@ exports.upwardSync = function (req, res) {
             sub_type: 'unsentGroupMessages',
             payload: { unique_id: groupchat.unique_id }
             };
-          sendPushNotification(req.user.phone, syncPayload, false);
+          //sendPushNotification(req.user.phone, syncPayload, false);
+          response.unsentGroupMessages.push({ unique_id: groupchat.unique_id });
         });
       })
     });
@@ -244,7 +258,9 @@ exports.upwardSync = function (req, res) {
             sub_type: 'unsentChatMessageStatus',
             payload : {status : messageBody.status, uniqueid : messageBody.uniqueid}
             };
-          sendPushNotification(req.user.phone, syncPayload, false);
+          //sendPushNotification(req.user.phone, syncPayload, false);
+          response.unsentChatMessageStatus.push({status : messageBody.status,
+            uniqueid : messageBody.uniqueid});
 
     		}
     	);
@@ -276,7 +292,9 @@ exports.upwardSync = function (req, res) {
             sub_type: 'unsentGroupChatMessageStatus',
             payload : {status : messageBody.status, uniqueid : messageBody.chat_unique_id}
             };
-          sendPushNotification(req.user.phone, syncPayload, false);
+          //sendPushNotification(req.user.phone, syncPayload, false);
+          response.unsentGroupChatMessageStatus.push({status: messageBody.status,
+            uniqueid : messageBody.chat_unique_id});
         }
       );
     });
@@ -354,7 +372,8 @@ exports.upwardSync = function (req, res) {
             sub_type: 'unsentGroups',
             payload : groupmessaging
             };
-          sendPushNotification(req.user.phone, syncPayload, false);
+          //sendPushNotification(req.user.phone, syncPayload, false);
+          response.unsentGroups.push(groupmessaging);
         })
       });
     });
@@ -459,14 +478,18 @@ exports.upwardSync = function (req, res) {
                 sub_type: 'unsentAddedGroupMembers',
                 payload : {status: 'success', msg:'New members are added to group.'}
                 };
-              sendPushNotification(req.user.phone, syncPayload, false);
+              //sendPushNotification(req.user.phone, syncPayload, false);
+              response.unsentAddedGroupMembers.push({status: 'success',
+              msg: 'New members are added to group.'});
             } else {
               var syncPayload = {
                 type : 'syncUpward',
                 sub_type: 'unsentAddedGroupMembers',
                 payload : {status: 'unauthorized', msg:'You are not admin of this group.'}
                 };
-              sendPushNotification(req.user.phone, syncPayload, false);
+              //sendPushNotification(req.user.phone, syncPayload, false);
+              response.unsentAddedGroupMembers.push({status: 'success',
+              msg: 'You are not admin of this group.'});
             }
         })
       });
@@ -526,7 +549,8 @@ exports.upwardSync = function (req, res) {
               sub_type: 'unsentRemovedGroupMembers',
               payload : {status:'success'}
               };
-            sendPushNotification(req.user.phone, syncPayload, false);
+            //sendPushNotification(req.user.phone, syncPayload, false);
+            response.unsentRemovedGroupMembers.push({status:'success'});
           }
         })
       });
@@ -535,12 +559,13 @@ exports.upwardSync = function (req, res) {
     userchat.find({uniqueid: { $in: statusOfSentMessages.unique_ids }}, function (err, chatstatus) {
   		logger.serverLog('info', 'userchat.controller: checking status of Sent messages and response '+ JSON.stringify(chatstatus));
       if(err) { return handleError(res, err); }
-      var syncPayload = {
+      /*var syncPayload = {
         type : 'syncUpward',
         sub_type: 'statusOfSentMessages',
         payload : { status: chatstatus.status, uniqueid: chatstatus.uniqueid }
-        };
-      sendPushNotification(req.user.phone, syncPayload, false);
+      };*/
+      //sendPushNotification(req.user.phone, syncPayload, false);
+      response.statusOfSentMessages = chatstatus;
     });
 
     GroupChatStatus.find({chat_unique_id: { $in: statusOfSentGroupMessages.unique_ids }}, function (err, groupchatstatus) {
@@ -550,8 +575,29 @@ exports.upwardSync = function (req, res) {
         sub_type: 'statusOfSentGroupMessages',
         payload : groupchatstatus
         };
-      sendPushNotification(req.user.phone, syncPayload, false);
+      //sendPushNotification(req.user.phone, syncPayload, false);
+      response.statusOfSentGroupMessages = groupchatstatus;
     });
+
+    while (true) {
+      if (
+        unsentMessages.length == response.unsentMessages.length &&
+        unsentGroupMessages.length == response.unsentGroupMessages.length &&
+        unsentChatMessageStatus.length == response.unsentChatMessageStatus.length &&
+        unsentGroupChatMessageStatus.length == response.unsentGroupChatMessageStatus.length &&
+        unsentGroups.length == response.unsentGroups.length &&
+        unsentAddedGroupMembers.length == response.unsentAddedGroupMembers.length &&
+        unsentRemovedGroupMembers.length == response.unsentRemovedGroupMembers.length &&
+        statusOfSentMessages.length == response.statusOfSentMessages.length &&
+        statusOfSentGroupMessages.length == response.statusOfSentGroupMessages.length
+      ) {
+        console.log('Upward Sync done');
+        res.send(response);
+        console.log(response)
+        break;
+      }
+      console.log('Upward Sync in progress');
+    }
 
   } catch (err) {
     handleError(res, err);
