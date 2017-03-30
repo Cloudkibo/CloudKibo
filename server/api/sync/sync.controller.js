@@ -29,8 +29,8 @@ var azure = require('azure');
 // Creates a new groupcall in the DB.
 exports.upwardSync = function (req, res) {
 
-  logger.serverLog('info', 'upward SYNC payload : '+ JSON.stringify(req.body));
-  logger.serverLog('info', 'upward SYNC payload req.user : '+ JSON.stringify(req.user));
+  logger.serverLog('info', 'upward SYNC request payload : ');
+  logger.serverLog('info', req.body);
 
   try {
     var unsentMessages = req.body.unsentMessages;
@@ -57,8 +57,6 @@ exports.upwardSync = function (req, res) {
 
     unsentMessages.forEach(function(messageBody){
 
-      logger.serverLog('info', 'upward SYNC payload unsentMessage : '+ JSON.stringify(messageBody));
-
       var dateServerReceived = new Date();
     	var dateServerSent;
 
@@ -77,22 +75,12 @@ exports.upwardSync = function (req, res) {
     							badge : dataUser.iOS_badge + 1
     						};
 
-                logger.serverLog('info', 'upward SYNC sending chat using push to recipient : '+ JSON.stringify(payload));
     						sendPushNotification(messageBody.to, payload, true);
     						dateServerSent = new Date();
 
 
     						//res.send({status : 'sent', uniqueid : req.body.uniqueid});
 
-                var syncPayload = {
-                  type : 'syncUpward',
-                  sub_type: 'unsentMessages',
-                  payload : {
-                    status : 'sent',
-                    uniqueid : messageBody.uniqueid
-                  }
-                };
-                //sendPushNotification(req.user.phone, syncPayload, false);
                 response.unsentMessages.push({status : 'sent', uniqueid : req.body.uniqueid});
 
     						dataUser.iOS_badge = dataUser.iOS_badge + 1;
@@ -120,8 +108,6 @@ exports.upwardSync = function (req, res) {
 
     						});
 
-    						console.log("saved new user chat")
-
     						newUserChat = new userchat({
     							to: messageBody.to,
     							from: messageBody.from,
@@ -143,22 +129,12 @@ exports.upwardSync = function (req, res) {
     						});
     					} else {
     						//res.send({status : 'blocked', uniqueid : req.body.uniqueid});
-                var syncPayload = {
-                  type : 'syncUpward',
-                  sub_type: 'unsentMessages',
-                  payload : {status : 'sent', uniqueid : messageBody.uniqueid}
-                  };
-                sendPushNotification(req.user.phone, syncPayload, false);
+                response.unsentMessages.push({status : 'sent', uniqueid : req.body.uniqueid});
     					}
     				});
     			} else {
     				//res.send({status : 'blocked', uniqueid : req.body.uniqueid});
-            var syncPayload = {
-              type : 'syncUpward',
-              sub_type: 'unsentMessages',
-              payload : {status : 'sent', uniqueid : messageBody.uniqueid}
-              };
-            sendPushNotification(req.user.phone, syncPayload, false);
+            response.unsentMessages.push({status : 'sent', uniqueid : req.body.uniqueid});
     			}
 
     		});
@@ -166,7 +142,6 @@ exports.upwardSync = function (req, res) {
     });
 
     unsentGroupMessages.forEach(function(messageBody){
-      logger.serverLog('info', 'sync group chat body '+ JSON.stringify(messageBody));
       groupmessaging.findOne({unique_id : messageBody.group_unique_id}, function(err, groupFound){
         if(err) { return handleError(res, err); }
         var body = {
@@ -177,18 +152,14 @@ exports.upwardSync = function (req, res) {
           from_fullname : messageBody.from_fullname,
           unique_id : messageBody.unique_id,
         }
-        logger.serverLog('info', 'group where chat is sent '+ JSON.stringify(groupFound));
         GroupChats.create(body, function(err, groupchat) {
           if(err) { return handleError(res, err); }
           groupmessaginguser.find({group_unique_id : body.group_unique_id}, function(err2, usersingroup){
-            logger.serverLog('info', 'members in group which will get chat '+ JSON.stringify(usersingroup));
             if(err2) return handleError(res, err);
             usersingroup.forEach(function(useringroup){
-              logger.serverLog('info', 'member in group is being checked '+ JSON.stringify(useringroup));
               if(messageBody.from !== useringroup.member_phone){
                 if(useringroup.membership_status === 'joined'){
                   user.findOne({phone : useringroup.member_phone}, function(err, dataUser){
-                    logger.serverLog('info', 'member in group which will get chat '+ JSON.stringify(dataUser));
                     var payload = {
                       type : 'group:chat_received',
                       senderId : messageBody.from,
@@ -198,8 +169,6 @@ exports.upwardSync = function (req, res) {
                       msg : messageBody.msg,
                       badge : dataUser.iOS_badge + 1
                     };
-
-                    logger.serverLog('info', 'sending push to group member '+ useringroup.member_phone +' that you are added to group');
                     sendPushNotification(dataUser.phone, payload, true);
 
                     var chatStatusBody = {
@@ -222,12 +191,6 @@ exports.upwardSync = function (req, res) {
             })
           })
 
-          var syncPayload = {
-            type: 'syncUpward',
-            sub_type: 'unsentGroupMessages',
-            payload: { unique_id: groupchat.unique_id }
-            };
-          //sendPushNotification(req.user.phone, syncPayload, false);
           response.unsentGroupMessages.push({ unique_id: groupchat.unique_id });
         });
       })
@@ -239,10 +202,6 @@ exports.upwardSync = function (req, res) {
     		{status : messageBody.status}, // should have value one of 'delivered', 'seen'
     		{multi : true},
     		function (err, num){
-    			logger.serverLog('info', 'Rows updated here '+ num +' for message status update in mongodb');
-
-    			logger.serverLog('info', 'server sending message status update from mobile to other mobile now');
-
     			var payload = {
     				type : 'status',
     				status : messageBody.status,
@@ -251,12 +210,6 @@ exports.upwardSync = function (req, res) {
 
     			sendPushNotification(messageBody.sender, payload, false);
 
-          var syncPayload = {
-            type : 'syncUpward',
-            sub_type: 'unsentChatMessageStatus',
-            payload : {status : messageBody.status, uniqueid : messageBody.uniqueid}
-            };
-          //sendPushNotification(req.user.phone, syncPayload, false);
           response.unsentChatMessageStatus.push({status : messageBody.status,
             uniqueid : messageBody.uniqueid});
 
@@ -285,12 +238,7 @@ exports.upwardSync = function (req, res) {
             }
 
           });
-          var syncPayload = {
-            type : 'syncUpward',
-            sub_type: 'unsentGroupChatMessageStatus',
-            payload : {status : messageBody.status, uniqueid : messageBody.chat_unique_id}
-            };
-          //sendPushNotification(req.user.phone, syncPayload, false);
+
           response.unsentGroupChatMessageStatus.push({status: messageBody.status,
             uniqueid : messageBody.chat_unique_id});
         }
@@ -298,8 +246,6 @@ exports.upwardSync = function (req, res) {
     });
 
     unsentGroups.forEach(function(messageBody){
-      logger.serverLog('info', 'create group body '+ JSON.stringify(messageBody));
-
       var today = new Date();
       var uid = Math.random().toString(36).substring(7);
       var unique_id = 'h' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate() + '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
@@ -335,13 +281,10 @@ exports.upwardSync = function (req, res) {
                 membership_status : 'joined'
               }
 
-              logger.serverLog('info', 'adding group member '+ gotMember +' to group '+ messageBody.group_name);
-
               GroupMessagingUser.create(groupmember, function(err3, groupmembersaved1){
                 if(err3) { console.log('53'); console.log(err3); return handleError(res, err3); }
                 // SEND PUSH NOTIFICATION HERE
-                logger.serverLog('info', 'added group member '+ gotMember +' to group '+ messageBody.group_name);
-                logger.serverLog('info', JSON.stringify(groupmembersaved1));
+
                 var payload = {
                   type : 'group:you_are_added',
                   senderId : req.user.phone,
@@ -353,7 +296,6 @@ exports.upwardSync = function (req, res) {
                   badge : dataUser.iOS_badge + 1
                 };
 
-                logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
                 sendPushNotification(groupmembersaved1.member_phone, payload, true);
 
                 dataUser.iOS_badge = dataUser.iOS_badge + 1;
@@ -365,12 +307,6 @@ exports.upwardSync = function (req, res) {
             })
           });
 
-          var syncPayload = {
-            type : 'syncUpward',
-            sub_type: 'unsentGroups',
-            payload : groupmessaging
-            };
-          //sendPushNotification(req.user.phone, syncPayload, false);
           response.unsentGroups.push(groupmessaging);
         })
       });
@@ -399,7 +335,6 @@ exports.upwardSync = function (req, res) {
                         badge : dataUser.iOS_badge
                       };
 
-                      logger.serverLog('info', 'added members: sending push to group members '+ gotMember.member_phone +' that someone was added to existing group');
                       sendPushNotification(gotMember.member_phone, payload, false);
 
                       dataUser.iOS_badge = dataUser.iOS_badge;
@@ -435,7 +370,6 @@ exports.upwardSync = function (req, res) {
                           badge : dataUser.iOS_badge + 1
                         };
 
-                        logger.serverLog('info', 'sending push to group member '+ gotMemberEntryAlreadyExists.member_phone +' that you are added to group');
                         sendPushNotification(gotMemberEntryAlreadyExists.member_phone, payload, true);
 
                         dataUser.iOS_badge = dataUser.iOS_badge + 1;
@@ -458,7 +392,6 @@ exports.upwardSync = function (req, res) {
                           badge : dataUser.iOS_badge + 1
                         };
 
-                        logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
                         sendPushNotification(groupmembersaved1.member_phone, payload, true);
 
                         dataUser.iOS_badge = dataUser.iOS_badge + 1;
@@ -471,21 +404,9 @@ exports.upwardSync = function (req, res) {
                 })
               })
 
-              var syncPayload = {
-                type : 'syncUpward',
-                sub_type: 'unsentAddedGroupMembers',
-                payload : {status: 'success', msg:'New members are added to group.'}
-                };
-              //sendPushNotification(req.user.phone, syncPayload, false);
               response.unsentAddedGroupMembers.push({status: 'success',
               msg: 'New members are added to group.'});
             } else {
-              var syncPayload = {
-                type : 'syncUpward',
-                sub_type: 'unsentAddedGroupMembers',
-                payload : {status: 'unauthorized', msg:'You are not admin of this group.'}
-                };
-              //sendPushNotification(req.user.phone, syncPayload, false);
               response.unsentAddedGroupMembers.push({status: 'success',
               msg: 'You are not admin of this group.'});
             }
@@ -496,9 +417,7 @@ exports.upwardSync = function (req, res) {
     unsentRemovedGroupMembers.forEach(function(messageBody){
       GroupMessaging.findOne({unique_id : messageBody.group_unique_id}, function(err, gotGroup){
         if(err)  { return handleError(res, err); }
-        logger.serverLog('info', 'remove member: group found using query '+ JSON.stringify(gotGroup));
         GroupMessagingUsers.findOne({member_phone : req.user.phone, group_unique_id : gotGroup._id}, function(err, adminData){
-          logger.serverLog('info', 'remove member: admin found using query '+ JSON.stringify(adminData));
           if(adminData.isAdmin === 'Yes'){
             GroupMessagingUsers.find({group_unique_id : gotGroup._id, membership_status : 'joined'}, function(err, gotMembers){
               if(err) { return handleError(res, err); }
@@ -516,7 +435,6 @@ exports.upwardSync = function (req, res) {
                       badge : dataUser.iOS_badge
                     };
 
-                    logger.serverLog('info', 'remove member: sending push to group member '+ gotMember.member_phone +' that someone was removed from group');
                     sendPushNotification(gotMember.member_phone, payload, false);
 
                     dataUser.iOS_badge = dataUser.iOS_badge;
@@ -531,23 +449,11 @@ exports.upwardSync = function (req, res) {
                 gotUser.membership_status = 'left';
                 gotUser.date_left = Date.now();
                 gotUser.save(function(err){
-                  logger.serverLog('info', 'remove member: admin found using query '+ JSON.stringify(gotGroup));
-                  var syncPayload = {
-                    type : 'syncUpward',
-                    sub_type: 'unsentRemovedGroupMembers',
-                    payload : {status:'success'}
-                    };
-                  sendPushNotification(req.user.phone, syncPayload, false);
+                  response.unsentRemovedGroupMembers.push({status:'success'});
                 })
               })
             })
           } else {
-            var syncPayload = {
-              type : 'syncUpward',
-              sub_type: 'unsentRemovedGroupMembers',
-              payload : {status:'success'}
-              };
-            //sendPushNotification(req.user.phone, syncPayload, false);
             response.unsentRemovedGroupMembers.push({status:'success'});
           }
         })
@@ -555,7 +461,6 @@ exports.upwardSync = function (req, res) {
     });
 
     userchat.find({uniqueid: { $in: statusOfSentMessages.unique_ids }}, function (err, chatstatus) {
-  		logger.serverLog('info', 'SYNC.controller: checking status of Sent messages and response '+ JSON.stringify(chatstatus));
       if(err) { return handleError(res, err); }
       /*var syncPayload = {
         type : 'syncUpward',
@@ -582,7 +487,9 @@ exports.upwardSync = function (req, res) {
       console.log(req.body)
       console.log('Upward Sync in done');
       console.log(response);
-        res.send(response);
+      logger.serverLog('info', 'upward SYNC response payload : ');
+      logger.serverLog('info', response);
+      res.send(response);
     }, 3000)
 
     /*while (true) {
