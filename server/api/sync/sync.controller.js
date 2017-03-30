@@ -577,7 +577,15 @@ exports.upwardSync = function (req, res) {
       response.statusOfSentGroupMessages = groupchatstatus;
     });
 
-    while (true) {
+    console.log('going to set timer in upward sync')
+    setTimeout(function () {
+      console.log(req.body)
+      console.log('Upward Sync in done');
+      console.log(response);
+        res.send(response);
+    }, 3000)
+
+    /*while (true) {
       if (
         unsentMessages.length == response.unsentMessages.length &&
         unsentGroupMessages.length == response.unsentGroupMessages.length &&
@@ -597,7 +605,7 @@ exports.upwardSync = function (req, res) {
       console.log(req.body)
       console.log('Upward Sync in progress');
       console.log(response);
-    }
+    }*/
 
   } catch (err) {
     handleError(res, err);
