@@ -50,9 +50,7 @@ exports.upwardSync = function (req, res) {
       unsentGroupChatMessageStatus: [],
       unsentGroups: [],
       unsentAddedGroupMembers: [],
-      unsentRemovedGroupMembers: [],
-      statusOfSentMessages: [],
-      statusOfSentGroupMessages: []
+      unsentRemovedGroupMembers: []
     };
 
     //res.send({ status : 'success', msg : 'Received sync data. You would get push notifications for updates on your data' });
@@ -557,7 +555,7 @@ exports.upwardSync = function (req, res) {
     });
 
     userchat.find({uniqueid: { $in: statusOfSentMessages.unique_ids }}, function (err, chatstatus) {
-  		logger.serverLog('info', 'userchat.controller: checking status of Sent messages and response '+ JSON.stringify(chatstatus));
+  		logger.serverLog('info', 'SYNC.controller: checking status of Sent messages and response '+ JSON.stringify(chatstatus));
       if(err) { return handleError(res, err); }
       /*var syncPayload = {
         type : 'syncUpward',
@@ -588,8 +586,8 @@ exports.upwardSync = function (req, res) {
         unsentGroups.length == response.unsentGroups.length &&
         unsentAddedGroupMembers.length == response.unsentAddedGroupMembers.length &&
         unsentRemovedGroupMembers.length == response.unsentRemovedGroupMembers.length &&
-        statusOfSentMessages.length == response.statusOfSentMessages.length &&
-        statusOfSentGroupMessages.length == response.statusOfSentGroupMessages.length
+        response.statusOfSentMessages &&
+        response.statusOfSentGroupMessages
       ) {
         console.log('Upward Sync done');
         res.send(response);
