@@ -597,6 +597,7 @@ exports.upwardSync = function (req, res) {
         break;
       }
       console.log('Upward Sync in progress');
+      console.log(response);
     }
 
   } catch (err) {
