@@ -40,8 +40,6 @@ exports.upwardSync = function (req, res) {
     var unsentGroups = req.body.unsentGroups;
     var unsentAddedGroupMembers = req.body.unsentAddedGroupMembers;
     var unsentRemovedGroupMembers = req.body.unsentRemovedGroupMembers;
-    var statusOfSentMessages = req.body.statusOfSentMessages;
-    var statusOfSentGroupMessages = req.body.statusOfSentGroupMessages;
 
     var response = {
       unsentMessages: [],
@@ -53,7 +51,7 @@ exports.upwardSync = function (req, res) {
       unsentRemovedGroupMembers: []
     };
 
-    //res.send({ status : 'success', msg : 'Received sync data. You would get push notifications for updates on your data' });
+    res.send({ status: 'success', msg: 'Received sync data' });
 
     unsentMessages.forEach(function(messageBody){
 
@@ -460,59 +458,16 @@ exports.upwardSync = function (req, res) {
       });
     });
 
-    userchat.find({uniqueid: { $in: statusOfSentMessages.unique_ids }}, function (err, chatstatus) {
-      if(err) { return handleError(res, err); }
-      /*var syncPayload = {
-        type : 'syncUpward',
-        sub_type: 'statusOfSentMessages',
-        payload : { status: chatstatus.status, uniqueid: chatstatus.uniqueid }
-      };*/
-      //sendPushNotification(req.user.phone, syncPayload, false);
-      response.statusOfSentMessages = chatstatus;
-    });
+    // console.log('going to set timer in upward sync')
+    // setTimeout(function () {
+    //   console.log(req.body)
+    //   console.log('Upward Sync in done');
+    //   console.log(response);
+    //   logger.serverLog('info', 'upward SYNC response payload : ');
+    //   logger.serverLog('info', response);
+    //   res.send(response);
+    // }, 3000)
 
-    GroupChatStatus.find({chat_unique_id: { $in: statusOfSentGroupMessages.unique_ids }}, function (err, groupchatstatus) {
-      if(err) { return handleError(res, err); }
-      var syncPayload = {
-        type : 'syncUpward',
-        sub_type: 'statusOfSentGroupMessages',
-        payload : groupchatstatus
-        };
-      //sendPushNotification(req.user.phone, syncPayload, false);
-      response.statusOfSentGroupMessages = groupchatstatus;
-    });
-
-    console.log('going to set timer in upward sync')
-    setTimeout(function () {
-      console.log(req.body)
-      console.log('Upward Sync in done');
-      console.log(response);
-      logger.serverLog('info', 'upward SYNC response payload : ');
-      logger.serverLog('info', response);
-      res.send(response);
-    }, 3000)
-
-    /*while (true) {
-      if (
-        unsentMessages.length == response.unsentMessages.length &&
-        unsentGroupMessages.length == response.unsentGroupMessages.length &&
-        unsentChatMessageStatus.length == response.unsentChatMessageStatus.length &&
-        unsentGroupChatMessageStatus.length == response.unsentGroupChatMessageStatus.length &&
-        unsentGroups.length == response.unsentGroups.length &&
-        unsentAddedGroupMembers.length == response.unsentAddedGroupMembers.length &&
-        unsentRemovedGroupMembers.length == response.unsentRemovedGroupMembers.length &&
-        response.statusOfSentMessages &&
-        response.statusOfSentGroupMessages
-      ) {
-        console.log('Upward Sync done');
-        res.send(response);
-        console.log(response)
-        break;
-      }
-      console.log(req.body)
-      console.log('Upward Sync in progress');
-      console.log(response);
-    }*/
 
   } catch (err) {
     handleError(res, err);
@@ -521,10 +476,13 @@ exports.upwardSync = function (req, res) {
 
 exports.downwardSync = function (req, res) {
 
+  var statusOfSentMessages = req.body.statusOfSentMessages;
+  var statusOfSentGroupMessages = req.body.statusOfSentGroupMessages;
+
   var response = {};
 
-  userchat.find({owneruser : req.user.phone, to : req.user.phone, status : 'sent'},
-    function(err1, gotMessages){
+  userchat.find({ owneruser: req.user.phone, to: req.user.phone, status: 'sent' },
+    function (err1, gotMessages) {
       if(err1) return console.log(err1);
 
       gotMessages.forEach(function(gotMessage){
@@ -614,7 +572,21 @@ exports.downwardSync = function (req, res) {
                   function(err, groupchatstatusfilled) {
                     if(err) return handleError(res, err);
                     response.partialGroupChat = groupchatstatusfilled;
-                    return res.json(200, response); // This object should now be populated accordingly.
+
+                    userchat.find({uniqueid: { $in: statusOfSentMessages.unique_ids }}, function (err, chatstatus) {
+                      if(err) { return handleError(res, err); }
+
+                      response.statusOfSentMessages = chatstatus;
+
+                      GroupChatStatus.find({chat_unique_id: { $in: statusOfSentGroupMessages.unique_ids }}, function (err, groupchatstatus) {
+                        if(err) { return handleError(res, err); }
+                        response.statusOfSentGroupMessages = groupchatstatus;
+
+                        return res.json(200, response);
+                      });
+
+                    });
+
                   });
 
                 });

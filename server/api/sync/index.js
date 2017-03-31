@@ -6,7 +6,7 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
-router.get('/downwardSync', auth.isAuthenticated(), controller.downwardSync);
+router.post('/downwardSync', auth.isAuthenticated(), controller.downwardSync);
 router.post('/upwardSync', auth.isAuthenticated(), controller.upwardSync);
 
 
