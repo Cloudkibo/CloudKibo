@@ -54,144 +54,35 @@ exports.upwardSync = function (req, res) {
     res.send({ status: 'success', msg: 'Received sync data' });
 
     unsentMessages.forEach(function(messageBody){
-
-      var dateServerReceived = new Date();
-    	var dateServerSent;
-
-      User.findOne({ phone : messageBody.to }, function (err, dataUser){
-
-    		contactslist.findOne({ userid: req.user._id, contactid:  dataUser._id }, function (err3, contactInfo) {
-
-    			if (contactInfo.detailsshared === 'Yes') {
-    				contactslist.findOne({ contactid: req.user._id, userid:  dataUser._id }, function (err3, contactInfo2) {
-    					if (contactInfo2.detailsshared === 'Yes') {
-    						var payload = {
-    							type : messageBody.type,
-    							senderId : messageBody.from,
-    							msg : (messageBody.type === 'contact') ? 'Shared contact with you' : messageBody.msg.substring(0, 40),
-    							uniqueId : messageBody.uniqueid,
-    							badge : dataUser.iOS_badge + 1
-    						};
-
-    						sendPushNotification(messageBody.to, payload, true);
-    						dateServerSent = new Date();
-
-
-    						//res.send({status : 'sent', uniqueid : req.body.uniqueid});
-
-                response.unsentMessages.push({status : 'sent', uniqueid : req.body.uniqueid});
-
-    						dataUser.iOS_badge = dataUser.iOS_badge + 1;
-    						dataUser.save(function(err){
-
-    						});
-
-    						var newUserChat = new userchat({
-    							to: messageBody.to,
-    							from: messageBody.from,
-    							date: messageBody.date,
-    							date_server_received: dateServerReceived,
-    							date_server_sent: dateServerSent,
-    							fromFullName: messageBody.fromFullName,
-    							msg: messageBody.msg,
-    							owneruser: messageBody.to,
-    							status: 'sent',
-    							uniqueid : messageBody.uniqueid,
-    							type : messageBody.type,
-    							file_type : messageBody.file_type
-    						});
-
-    						newUserChat.save(function (err2) {
-    							if (err2) return console.log('Error 2'+ err2);
-
-    						});
-
-    						newUserChat = new userchat({
-    							to: messageBody.to,
-    							from: messageBody.from,
-    							date: messageBody.date,
-    							date_server_received: dateServerReceived,
-    							date_server_sent: dateServerSent,
-    							fromFullName: messageBody.fromFullName,
-    							msg: messageBody.msg,
-    							owneruser: messageBody.from,
-    							status: 'sent',
-    							uniqueid : messageBody.uniqueid,
-    							type : messageBody.type,
-    							file_type : messageBody.file_type // 'image', 'document', 'audio', 'video'
-    						});
-
-    						newUserChat.save(function (err2, d1) {
-    							if (err2) return console.log('Error 2'+ err2);
-
-    						});
-    					} else {
-    						//res.send({status : 'blocked', uniqueid : req.body.uniqueid});
-                response.unsentMessages.push({status : 'sent', uniqueid : req.body.uniqueid});
-    					}
-    				});
+      if(messageBody.type === 'contact'){
+    		var tokenized = messageBody.msg.split(":");
+    		User.findOne({phone: tokenized[1]}, function(err, user){
+    			if(user){
+    				messageBody.msg = messageBody.msg + ':true';
     			} else {
-    				//res.send({status : 'blocked', uniqueid : req.body.uniqueid});
-            response.unsentMessages.push({status : 'sent', uniqueid : req.body.uniqueid});
+    				messageBody.msg = messageBody.msg + ':false';
     			}
-
+    			sendMessage(messageBody);
     		});
-    	});
+    	} else {
+    		sendMessage(messageBody);
+    	}
     });
 
     unsentGroupMessages.forEach(function(messageBody){
-      groupmessaging.findOne({unique_id : messageBody.group_unique_id}, function(err, groupFound){
-        if(err) { return handleError(res, err); }
-        var body = {
-          group_unique_id: groupFound._id,
-          from: messageBody.from,
-          type: messageBody.type,
-          msg : messageBody.msg,
-          from_fullname : messageBody.from_fullname,
-          unique_id : messageBody.unique_id,
-        }
-        GroupChats.create(body, function(err, groupchat) {
-          if(err) { return handleError(res, err); }
-          groupmessaginguser.find({group_unique_id : body.group_unique_id}, function(err2, usersingroup){
-            if(err2) return handleError(res, err);
-            usersingroup.forEach(function(useringroup){
-              if(messageBody.from !== useringroup.member_phone){
-                if(useringroup.membership_status === 'joined'){
-                  user.findOne({phone : useringroup.member_phone}, function(err, dataUser){
-                    var payload = {
-                      type : 'group:chat_received',
-                      senderId : messageBody.from,
-                      groupId : messageBody.group_unique_id,
-                      msg_type : messageBody.type,
-                      unique_id : messageBody.unique_id,
-                      msg : messageBody.msg,
-                      badge : dataUser.iOS_badge + 1
-                    };
-                    sendPushNotification(dataUser.phone, payload, true);
-
-                    var chatStatusBody = {
-                      chat_unique_id: messageBody.unique_id,
-                      msg_unique_id : groupchat._id,
-                      status : 'sent',
-                      user_phone : dataUser.phone,
-                    }
-                    groupchatstatus.create(chatStatusBody, function(err, groupChatStatus){
-
-                    })
-
-                    dataUser.iOS_badge = dataUser.iOS_badge + 1;
-                    dataUser.save(function(err){
-
-                    });
-                  })
-                }
-              }
-            })
-          })
-
-          response.unsentGroupMessages.push({ unique_id: groupchat.unique_id });
-        });
-      })
+      if(messageBody.type === 'contact'){
+    		var tokenized = messageBody.msg.split(":");
+    		User.findOne({phone: tokenized[1]}, function(err, user){
+    			if(user){
+    				messageBody.msg = messageBody.msg + ':true';
+    			} else {
+    				messageBody.msg = messageBody.msg + ':false';
+    			}
+    			sendGroupMessage(messageBody);
+    		});
+    	} else {
+    		sendGroupMessage(messageBody);
+    	}
     });
 
     unsentChatMessageStatus.forEach(function(messageBody){
@@ -602,6 +493,146 @@ exports.downwardSync = function (req, res) {
 
     });
 };
+
+function sendMessage(messageBody) {
+  var dateServerReceived = new Date();
+  var dateServerSent;
+
+  User.findOne({ phone : messageBody.to }, function (err, dataUser){
+
+    contactslist.findOne({ userid: req.user._id, contactid:  dataUser._id }, function (err3, contactInfo) {
+
+      if (contactInfo.detailsshared === 'Yes') {
+        contactslist.findOne({ contactid: req.user._id, userid:  dataUser._id }, function (err3, contactInfo2) {
+          if (contactInfo2.detailsshared === 'Yes') {
+            var payload = {
+              type : messageBody.type,
+              senderId : messageBody.from,
+              msg : (messageBody.type === 'contact') ? 'Shared contact with you' : messageBody.msg.substring(0, 40),
+              uniqueId : messageBody.uniqueid,
+              badge : dataUser.iOS_badge + 1
+            };
+
+            sendPushNotification(messageBody.to, payload, true);
+            dateServerSent = new Date();
+
+
+            //res.send({status : 'sent', uniqueid : req.body.uniqueid});
+
+            //response.unsentMessages.push({status : 'sent', uniqueid : req.body.uniqueid});
+
+            dataUser.iOS_badge = dataUser.iOS_badge + 1;
+            dataUser.save(function(err){
+
+            });
+
+            var newUserChat = new userchat({
+              to: messageBody.to,
+              from: messageBody.from,
+              date: messageBody.date,
+              date_server_received: dateServerReceived,
+              date_server_sent: dateServerSent,
+              fromFullName: messageBody.fromFullName,
+              msg: messageBody.msg,
+              owneruser: messageBody.to,
+              status: 'sent',
+              uniqueid : messageBody.uniqueid,
+              type : messageBody.type,
+              file_type : messageBody.file_type
+            });
+
+            newUserChat.save(function (err2) {
+              if (err2) return console.log('Error 2'+ err2);
+
+            });
+
+            newUserChat = new userchat({
+              to: messageBody.to,
+              from: messageBody.from,
+              date: messageBody.date,
+              date_server_received: dateServerReceived,
+              date_server_sent: dateServerSent,
+              fromFullName: messageBody.fromFullName,
+              msg: messageBody.msg,
+              owneruser: messageBody.from,
+              status: 'sent',
+              uniqueid : messageBody.uniqueid,
+              type : messageBody.type,
+              file_type : messageBody.file_type // 'image', 'document', 'audio', 'video'
+            });
+
+            newUserChat.save(function (err2, d1) {
+              if (err2) return console.log('Error 2'+ err2);
+
+            });
+          } else {
+            //res.send({status : 'blocked', uniqueid : req.body.uniqueid});
+            //response.unsentMessages.push({status : 'sent', uniqueid : req.body.uniqueid});
+          }
+        });
+      } else {
+        //res.send({status : 'blocked', uniqueid : req.body.uniqueid});
+        //response.unsentMessages.push({status : 'sent', uniqueid : req.body.uniqueid});
+      }
+
+    });
+  });
+}
+
+function sendGroupMessage(messageBody) {
+  groupmessaging.findOne({unique_id : messageBody.group_unique_id}, function(err, groupFound){
+    if(err) { return handleError(res, err); }
+    var body = {
+      group_unique_id: groupFound._id,
+      from: messageBody.from,
+      type: messageBody.type,
+      msg : messageBody.msg,
+      from_fullname : messageBody.from_fullname,
+      unique_id : messageBody.unique_id,
+    }
+    GroupChats.create(body, function(err, groupchat) {
+      if(err) { return handleError(res, err); }
+      groupmessaginguser.find({group_unique_id : body.group_unique_id}, function(err2, usersingroup){
+        if(err2) return handleError(res, err);
+        usersingroup.forEach(function(useringroup){
+          if(messageBody.from !== useringroup.member_phone){
+            if(useringroup.membership_status === 'joined'){
+              user.findOne({phone : useringroup.member_phone}, function(err, dataUser){
+                var payload = {
+                  type : 'group:chat_received',
+                  senderId : messageBody.from,
+                  groupId : messageBody.group_unique_id,
+                  msg_type : messageBody.type,
+                  unique_id : messageBody.unique_id,
+                  msg : messageBody.msg,
+                  badge : dataUser.iOS_badge + 1
+                };
+                sendPushNotification(dataUser.phone, payload, true);
+
+                var chatStatusBody = {
+                  chat_unique_id: messageBody.unique_id,
+                  msg_unique_id : groupchat._id,
+                  status : 'sent',
+                  user_phone : dataUser.phone,
+                }
+                groupchatstatus.create(chatStatusBody, function(err, groupChatStatus){
+
+                })
+
+                dataUser.iOS_badge = dataUser.iOS_badge + 1;
+                dataUser.save(function(err){
+
+                });
+              })
+            }
+          }
+        })
+      })
+
+      //response.unsentGroupMessages.push({ unique_id: groupchat.unique_id });
+    });
+  })
+}
 
 var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
 function sendPushNotification(tagname, payload, sendSound){

@@ -43,6 +43,22 @@ exports.fetchSingleChat = function(req, res){
 
 // Creates a new GroupChats in the DB.
 exports.create = function(req, res) {
+  if(req.body.type === 'contact'){
+		var tokenized = req.body.msg.split(":");
+		User.findOne({phone: tokenized[1]}, function(err, user){
+			if(user){
+				req.body.msg = req.body.msg + ':true';
+			} else {
+				req.body.msg = req.body.msg + ':false';
+			}
+			sendMessage(req, res);
+		});
+	} else {
+		sendMessage(req, res);
+	}
+};
+
+function sendMessage(req, res) {
   logger.serverLog('info', 'group chat body '+ JSON.stringify(req.body));
   groupmessaging.findOne({unique_id : req.body.group_unique_id}, function(err, groupFound){
     if(err) { return handleError(res, err); }
@@ -102,7 +118,7 @@ exports.create = function(req, res) {
     });
   })
   logger.serverLog('info', 'create group chat body '+ JSON.stringify(req.body));
-};
+}
 
 // Updates an existing GroupChats in the DB.
 exports.update = function(req, res) {
