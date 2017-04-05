@@ -231,7 +231,7 @@ exports.save2 = function(req, res) {
 
 };
 
-function sendMessage(req. res) {
+function sendMessage(req, res) {
 	var dateServerReceived = new Date();
 	var dateServerSent;
 
