@@ -215,6 +215,23 @@ function sendPushNotification(tagname, payload, sendSound){
 
 exports.save2 = function(req, res) {
 
+	if(req.body.type === 'contact'){
+		var tokenized = req.body.msg.split(":");
+		User.findOne({phone: tokenized[1]}, function(err, user){
+			if(user){
+				req.body.msg = req.body.msg + ':true';
+			} else {
+				req.body.msg = req.body.msg + ':false';
+			}
+			sendMessage(req, res);
+		});
+	} else {
+		sendMessage(req, res);
+	}
+
+};
+
+function sendMessage(req. res) {
 	var dateServerReceived = new Date();
 	var dateServerSent;
 
@@ -300,8 +317,7 @@ exports.save2 = function(req, res) {
 
 
 	});
-
-};
+}
 
 exports.updateStatus = function(req, res) {
 

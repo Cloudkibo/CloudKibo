@@ -71,7 +71,12 @@ exports.newuser = function(req, res) {
             logger.serverLog('info', 'created new user and sending data back');
             logger.serverLog('info', JSON.stringify(user));
 
-            sendPushNotification('new_user', user, false);
+            var user_notif = {
+              type : 'new_user',
+              user : user
+            };
+
+            sendPushNotification('new_user', user_notif, false);
             //contactslist.find()
             res.json(200, user);
           });
