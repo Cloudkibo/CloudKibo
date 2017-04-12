@@ -76,7 +76,7 @@ exports.newuser = function(req, res) {
               user : user
             };
 
-            sendPushNotification('new_user', user_notif, false);
+            sendPushNotification('1new_user', user_notif, false);
             //contactslist.find()
             res.json(200, user);
           });
@@ -874,14 +874,14 @@ function sendPushNotification(tagname, payload, sendSound){
   }
   notificationHubService.gcm.send(tagname, androidMessage, function(error){
     if(!error){
-      //logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
+      logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
     } else {
       logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
     }
   });
   notificationHubService.apns.send(tagname, iOSMessage, function(error){
     if(!error){
-      //logger.serverLog('info', 'Azure push notification sent to iOS using GCM Module, client number : '+ tagname);
+      logger.serverLog('info', 'Azure push notification sent to iOS using GCM Module, client number : '+ tagname);
     } else {
       //logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
     }
@@ -892,7 +892,7 @@ function sendPushNotification(tagname, payload, sendSound){
 
   notificationHubService2.apns.send(tagname, iOSMessage, function(error){
     if(!error){
-      //logger.serverLog('info', 'Azure push notification sent to iOS (local testing) using GCM Module, client number : '+ tagname);
+      logger.serverLog('info', 'Azure push notification sent to iOS (local testing) using GCM Module, client number : '+ tagname);
     } else {
       logger.serverLog('info', 'Azure push notification error (iOS local testing) : '+ JSON.stringify(error));
     }
