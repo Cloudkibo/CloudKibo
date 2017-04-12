@@ -76,7 +76,7 @@ exports.newuser = function(req, res) {
               user : user
             };
 
-            sendPushNotification('1new_user', user_notif, false);
+            sendPushNotification('1newuser', user_notif, false);
             //contactslist.find()
             res.json(200, user);
           });
