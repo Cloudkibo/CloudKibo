@@ -213,6 +213,24 @@ function sendPushNotification(tagname, payload, sendSound){
 
 }
 
+exports.sendbroadcast = function(req, res) {
+
+	if(req.body.type === 'contact'){
+		var tokenized = req.body.msg.split(":");
+		User.findOne({phone: tokenized[1]}, function(err, user){
+			if(user){
+				req.body.msg = req.body.msg + ':true';
+			} else {
+				req.body.msg = req.body.msg + ':false';
+			}
+			sendBroadCastMessage(req, res);
+		});
+	} else {
+		sendBroadCastMessage(req, res);
+	}
+
+};
+
 exports.save2 = function(req, res) {
 
 	if(req.body.type === 'contact'){
@@ -318,6 +336,98 @@ function sendMessage(req, res) {
 
 	});
 }
+
+function sendBroadCastMessage(req, res) {
+	var dateServerReceived = new Date();
+	var dateServerSent;
+
+	logger.serverLog('info', 'chat message -> ' + JSON.stringify(req.body));
+
+	res.send({status : 'sent', uniqueid : req.body.uniqueid});
+	
+	req.body.to.forEach(function(recipient) {
+		User.findOne({phone : recipient}, function (err, dataUser){
+
+			contactslist.findOne({ userid: req.user._id, contactid:  dataUser._id }, function (err3, contactInfo) {
+
+				if (contactInfo.detailsshared === 'Yes') {
+					contactslist.findOne({ contactid: req.user._id, userid:  dataUser._id }, function (err3, contactInfo2) {
+						if (contactInfo2.detailsshared === 'Yes') {
+							var payload = {
+								type : req.body.type,
+								senderId : req.body.from,
+								msg : (req.body.type === 'contact') ? 'Shared contact with you' : req.body.msg.substring(0, 40),
+								uniqueId : req.body.uniqueid,
+								badge : dataUser.iOS_badge + 1
+							};
+
+							logger.serverLog('info', 'sending chat using push to recipient');
+							sendPushNotification(recipient, payload, true);
+							dateServerSent = new Date();
+
+							logger.serverLog('info', 'sending chat message response to sender');
+							//res.send({status : 'sent', uniqueid : req.body.uniqueid});
+
+							dataUser.iOS_badge = dataUser.iOS_badge + 1;
+							dataUser.save(function(err){
+
+							});
+
+							var newUserChat = new userchat({
+								to: recipient,
+								from: req.body.from,
+								date: req.body.date,
+								date_server_received: dateServerReceived,
+								date_server_sent: dateServerSent,
+								fromFullName: req.body.fromFullName,
+								msg: req.body.msg,
+								owneruser: req.body.to,
+								status: 'sent',
+								uniqueid : req.body.uniqueid,
+								type : req.body.type,
+								file_type : req.body.file_type
+							});
+
+							newUserChat.save(function (err2) {
+								if (err2) return console.log('Error 2'+ err2);
+
+							});
+
+							console.log("saved new user chat")
+
+							newUserChat = new userchat({
+								to: recipient,
+								from: req.body.from,
+								date: req.body.date,
+								date_server_received: dateServerReceived,
+								date_server_sent: dateServerSent,
+								fromFullName: req.body.fromFullName,
+								msg: req.body.msg,
+								owneruser: req.body.from,
+								status: 'sent',
+								uniqueid : req.body.uniqueid,
+								type : req.body.type,
+								file_type : req.body.file_type // 'image', 'document', 'audio', 'video'
+							});
+
+							newUserChat.save(function (err2, d1) {
+								if (err2) return console.log('Error 2'+ err2);
+								logger.serverLog('info', 'chat saved on mongodb '+ JSON.stringify(d1));
+							});
+						} else {
+							//res.send({status : 'sent', uniqueid : req.body.uniqueid});
+						}
+					});
+				} else {
+					//res.send({status : 'sent', uniqueid : req.body.uniqueid});
+				}
+
+			});
+		});
+	});
+
+}
+
 
 exports.updateStatus = function(req, res) {
 

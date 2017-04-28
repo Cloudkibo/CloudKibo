@@ -11,7 +11,7 @@ var user = require('../api/user/user.model');
 
 var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
 
-function sendPushNotification(tagname, payload, sendSound){
+function sendPushNotification(tagname, payload, sendSound, isItCall){
   tagname = tagname.substring(1);
   var iOSMessage = {
     alert : payload.msg,
@@ -22,6 +22,15 @@ function sendPushNotification(tagname, payload, sendSound){
   if(!sendSound){
     iOSMessage = {
       payload : payload
+    };
+  }
+  if(isItCall){
+    iOSMessage = {
+      alert : payload.msg,
+      sound : 'UILocalNotificationDefaultSoundName',
+      badge : payload.badge,
+      payload : payload,
+      category : 'areyoufreeforcall'
     };
   }
   var androidMessage = {

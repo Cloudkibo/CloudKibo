@@ -389,23 +389,23 @@ exports.searchAccountByPhone = function(req, res, next){
 
               contact.save(function(err2){
 
-                contactslist.findOne({userid : availablePerson._id, contactid : gotUser._id}, function(err6, gotOtherPerson){
-
-                  if(gotOtherPerson){
-                    gotOtherPerson.detailsshared = 'Yes';
-                    gotOtherPerson.save(function(err){});
-                  } else {
-                    var contact2 = new contactslist({
-                      userid : availablePerson._id,
-                      contactid : gotUser._id,
-                      detailsshared : 'Yes'
-                    });
-
-                    contact2.save(function(err2){
-                    })
-                  }
-
-                })
+                // contactslist.findOne({userid : availablePerson._id, contactid : gotUser._id}, function(err6, gotOtherPerson){
+                //
+                //   if(gotOtherPerson){
+                //     gotOtherPerson.detailsshared = 'Yes';
+                //     gotOtherPerson.save(function(err){});
+                //   } else {
+                //     var contact2 = new contactslist({
+                //       userid : availablePerson._id,
+                //       contactid : gotUser._id,
+                //       detailsshared : 'Yes'
+                //     });
+                //
+                //     contact2.save(function(err2){
+                //     })
+                //   }
+                //
+                // })
 
               })
             }

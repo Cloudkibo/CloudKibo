@@ -34,7 +34,6 @@ exports.upload = function(req, res) {
 			 }
       console.log(req.body);
 			 var fileData = new filetransfers({
-				 group_unique_id : req.body.group_unique_id,
 	       from : req.body.from,
 				 total_members: req.body.total_members - 1,
 	       uniqueid: req.body.uniqueid,
