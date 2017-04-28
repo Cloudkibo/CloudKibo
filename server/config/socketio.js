@@ -373,6 +373,13 @@ function onConnect(socketio, socket) {
           calleephone : message.calleephone,
           sendersocket: socketidSender
         });
+
+        sendPushNotification(calleephone, {
+          callerphone : message.callerphone,
+          calleephone : message.calleephone,
+          sendersocket: socketidSender
+        }, false, true);
+
         logger.serverLog('info', 'socketio.js on(callthisperson) : see if callee is free to call');
 
       }
@@ -555,7 +562,7 @@ function onConnect(socketio, socket) {
             badge : dataUser.iOS_badge + 1
           };
 
-          sendPushNotification(im.stanza.to, payload, true);
+          sendPushNotification(im.stanza.to, payload, true, false);
 
           dataUser.iOS_badge = dataUser.iOS_badge + 1;
           dataUser.save(function(err){
@@ -622,7 +629,7 @@ function onConnect(socketio, socket) {
           uniqueId : data.uniqueid
         };
 
-        sendPushNotification(data.sender, payload, false);
+        sendPushNotification(data.sender, payload, false, false);
 
         socketio.to(socketid).emit('messageStatusUpdate', {status : data.status, uniqueid : data.uniqueid});
         fn({status : 'statusUpdated', uniqueid : data.uniqueid});
