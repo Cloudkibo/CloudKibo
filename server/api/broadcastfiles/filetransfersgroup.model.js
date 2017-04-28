@@ -17,4 +17,4 @@ var file = new Schema({
 });
 
 
-module.exports = mongoose.model('filetransfergroup', file);
+module.exports = mongoose.model('filetransferbroadcast', file);
