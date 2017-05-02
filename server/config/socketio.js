@@ -792,7 +792,6 @@ function onConnectPlatforms(socketio, socket) {
   socket.on('platform_room_message', function (im) {
     console.log('PLATFORM_ROOM_MESSAGE');
     console.log(im)
-    logger.serverLog('info', im);
     logger.serverLog('info', 'platform data sharing message -> ' + JSON.stringify(im));
 
     try {
