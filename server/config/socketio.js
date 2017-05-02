@@ -806,8 +806,13 @@ function onConnectPlatforms(socketio, socket) {
         if (clients[i].phone == im.phone &&
           clients[i].connection_id == im.to_connection_id) {
           socketid = clients[i].id;
+          logger.serverLog('info', 'platform_room_message found recipient: ' +
+            clients[i].connection_id);
         }
       }
+
+      logger.serverLog('info', 'platform_room_message being sent to: ' +
+        socketid);
 
       socketio.to(socketid).emit('platform_room_message', im);
 
