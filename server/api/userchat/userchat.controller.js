@@ -60,7 +60,7 @@ exports.getsinglechat = function(req, res) {
 	User.findById(req.user._id, function (err, gotUser) {
 			if (err) return console.log('Error 1'+ err);
 
-			userchat.find({uniqueid : req.body.uniqueid, to: req.body.to},
+			userchat.find({uniqueid : req.body.uniqueid, to: req.user.phone},
 																function(err1, gotMessages){
 																	if(err1) return console.log(err1);
 
