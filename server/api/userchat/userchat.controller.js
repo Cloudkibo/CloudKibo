@@ -60,7 +60,7 @@ exports.getsinglechat = function(req, res) {
 	User.findById(req.user._id, function (err, gotUser) {
 			if (err) return console.log('Error 1'+ err);
 
-			userchat.find({uniqueid : req.body.uniqueid},
+			userchat.find({uniqueid : req.body.uniqueid, to: req.body.to},
 																function(err1, gotMessages){
 																	if(err1) return console.log(err1);
 
@@ -343,8 +343,8 @@ function sendBroadCastMessage(req, res) {
 
 	logger.serverLog('info', 'chat message -> ' + JSON.stringify(req.body));
 
-	res.send({status : 'sent', uniqueid : req.body.uniqueid});
-	
+	res.send({ status: 'sent', uniqueid: req.body.uniqueid });
+
 	req.body.to.forEach(function(recipient) {
 		User.findOne({phone : recipient}, function (err, dataUser){
 
