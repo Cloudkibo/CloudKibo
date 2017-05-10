@@ -770,7 +770,7 @@ function onConnect(socketio, socket) {
 
 var apn = require('apn');
 
-let provider = new apn.Provider({
+var provider = new apn.Provider({
   token: {
     key: "server/config/cert.pem",
     keyId: "88 27 17 09 A9 B6 18 60 8B EC EB BA F6 47 59 C5 52 54 A3 B7",
