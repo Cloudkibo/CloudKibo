@@ -2,4 +2,4 @@
 #CloudKibo Server Restart Script
 #Author : Sojharo
 forever stop server/app.js
-forever start server/app.js
+NODE_ENV=production forever start server/app.js
