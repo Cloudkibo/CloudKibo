@@ -185,7 +185,7 @@ function sendPushNotification(tagname, payload, sendSound){
       message : payload
     }
   }
-	console.log('iOS push payload sent from server: ', JSON.stringify(iOSMessage));
+	logger.serverLog('info', 'iOS push payload sent from server: ', JSON.stringify(iOSMessage));
   notificationHubService.gcm.send(tagname, androidMessage, function(error){
     if(!error){
       logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
