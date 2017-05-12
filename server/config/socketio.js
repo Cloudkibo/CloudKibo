@@ -769,7 +769,47 @@ function onConnect(socketio, socket) {
 }
 
 var apnagent = require('apnagent');
+var app;
+app.configure('production', function () {
+  var agent = new apnagent.Agent();
 
+  // configure agent
+  agent
+    .set('cert file', "server/config/cert.pem")
+    .set('key file', "server/config/key.pem");
+
+  // mount to app
+  app
+    .set('apn', agent)
+    .set('apn-env', 'live-production');
+});
+
+/**
+ * Set our environment independant configuration
+ * and event listeners.
+ */
+
+app.configure(function () {
+  var agent = app.get('apn')
+    , env = app.get('apn-env');
+
+  // common settings
+  agent
+    .set('expires', '1d')
+    .set('reconnect delay', '1s')
+    .set('cache ttl', '30m');
+
+  // see error mitigation section
+  agent.on('message:error', function (err, msg) {
+    // ...
+  });
+
+  // connect needed to start message processing
+  agent.connect(function (err) {
+    if (err) throw err;
+    console.log('[%s] apn agent running', env);
+  });
+});
 // var apn = require('apn');
 //
 // var provider = new apn.Provider({
@@ -800,6 +840,19 @@ function onConnectPlatforms(socketio, socket) {
   //   console.log('result of voip push');
   //   console.log(result)
   // });
+
+  var agent = app.get('apn')
+    , alert = 'wake up Mr. iOS'
+    , token = "e61cc0fb10f943d8632815a3029344a0ba70f81e86edb86a32eb8d6b55decd10";
+
+  agent.createMessage()
+    .device(token)
+    .alert(alert)
+    .send(function (err) {
+      // handle apnagent custom errors
+      console.log('sending voip push');
+      console.log(err)
+    });
 
   socket.on('join_platform_room', function(room) {
 
@@ -877,7 +930,8 @@ var rooms = {};
 var userIds = {};
 var roomlockStatus = {};
 var socketlist = [];
-module.exports = function(socketio) {
+module.exports = function(socketio, appGot) {
+  app = appGot;
 
 
   // socket.io (v1.x.x) is powered by debug.

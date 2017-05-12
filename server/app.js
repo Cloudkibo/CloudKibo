@@ -61,7 +61,7 @@ var socketio = require('socket.io')(httpsServer, {
 var socketio = require('socket.io').listen(httpsServer);
 
 
-require('./config/socketio')(socketio);
+require('./config/socketio')(socketio, app);
 require('./config/express')(app);
 require('./routes')(app);
 
