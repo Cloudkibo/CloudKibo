@@ -770,46 +770,7 @@ function onConnect(socketio, socket) {
 
 var apnagent = require('apnagent');
 var app;
-app.configure('production', function () {
-  var agent = new apnagent.Agent();
 
-  // configure agent
-  agent
-    .set('cert file', "server/config/cert.pem")
-    .set('key file', "server/config/key.pem");
-
-  // mount to app
-  app
-    .set('apn', agent)
-    .set('apn-env', 'live-production');
-});
-
-/**
- * Set our environment independant configuration
- * and event listeners.
- */
-
-app.configure(function () {
-  var agent = app.get('apn')
-    , env = app.get('apn-env');
-
-  // common settings
-  agent
-    .set('expires', '1d')
-    .set('reconnect delay', '1s')
-    .set('cache ttl', '30m');
-
-  // see error mitigation section
-  agent.on('message:error', function (err, msg) {
-    // ...
-  });
-
-  // connect needed to start message processing
-  agent.connect(function (err) {
-    if (err) throw err;
-    console.log('[%s] apn agent running', env);
-  });
-});
 // var apn = require('apn');
 //
 // var provider = new apn.Provider({
@@ -932,6 +893,46 @@ var roomlockStatus = {};
 var socketlist = [];
 module.exports = function(socketio, appGot) {
   app = appGot;
+  app.configure('production', function () {
+    var agent = new apnagent.Agent();
+
+    // configure agent
+    agent
+      .set('cert file', "server/config/cert.pem")
+      .set('key file', "server/config/key.pem");
+
+    // mount to app
+    app
+      .set('apn', agent)
+      .set('apn-env', 'live-production');
+  });
+
+  /**
+   * Set our environment independant configuration
+   * and event listeners.
+   */
+
+  app.configure(function () {
+    var agent = app.get('apn')
+      , env = app.get('apn-env');
+
+    // common settings
+    agent
+      .set('expires', '1d')
+      .set('reconnect delay', '1s')
+      .set('cache ttl', '30m');
+
+    // see error mitigation section
+    agent.on('message:error', function (err, msg) {
+      // ...
+    });
+
+    // connect needed to start message processing
+    agent.connect(function (err) {
+      if (err) throw err;
+      console.log('[%s] apn agent running', env);
+    });
+  });
 
 
   // socket.io (v1.x.x) is powered by debug.
