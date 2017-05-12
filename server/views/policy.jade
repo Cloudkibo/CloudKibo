@@ -1,0 +1,119 @@
+extends header
+
+block append head
+  //script(src='/javascripts/cloudKiboApp.js')
+
+block bodycontent
+ div(class='main')
+   .container
+     div(class='row margin-bottom-40')
+       div(class='sidebar col-md-2')
+         ul(class='list-group margin-bottom-25 sidebar-menu')
+           li(class='list-group-item clearfix')
+             a(href='#login')
+               i(class='fa fa-angle-right')
+               | Login
+           li(class='list-group-item clearfix')
+             a(href='#register')
+               i(class='fa fa-angle-right')
+               | Register
+           li(class='list-group-item clearfix')
+             a(href='#forgotpassword')
+               i(class='fa fa-angle-right')
+               | Forgot Password
+           li(class='list-group-item clearfix')
+             a(href='#forgotusername')
+               i(class='fa fa-angle-right')
+               | Forgot Username
+
+       div(class='contet col-md-9 col-sm-9')
+         h1 Privacy Policy
+         .content-form-page
+             .row
+               div(class='col-md-7 col-sm-7')
+                 p.
+                    Respect for your privacy is coded into our DNA. Since we started WhatsApp, we’ve aspired to build our Services with a set of strong privacy principles in mind.
+                 p.
+                    WhatsApp provides messaging, Internet calling, and other services to users around the world. Our Privacy Policy helps explain our information (including message) practices. For example, we talk about what information we collect and how this affects you. We also explain the steps we take to protect your privacy – like building WhatsApp so delivered messages aren’t stored and giving you control over who you communicate with on our Services.
+                 p.
+                    When we say “WhatsApp,” “our,” “we,” or “us,” we’re talking about WhatsApp Inc. This Privacy Policy (“Privacy Policy”) applies to all of our apps, services, features, software, and website (together, “Services”) unless specified otherwise.
+                 p.
+                    Please also read WhatsApp’s Terms of Service (“Terms”), which describes the terms under which you use our Services.
+                 h2 Information We Collect
+                 p.
+                   WhatsApp receives or collects information when we operate and provide our Services, including when you install, access, or use our Services.
+                 h4 Information You Provide
+                 ul
+                   li
+                    b Your Account Information.
+                    | You provide your mobile phone number to create a WhatsApp account. You provide us the phone numbers in your mobile address book on a regular basis, including those of both the users of our Services and your other contacts. You confirm you are authorized to provide us such numbers. You may also add other information to your account, such as a profile name, profile picture, and status message.
+                   li
+                    b Your Messages.
+                    | We do not retain your messages in the ordinary course of providing our Services to you. Once your messages (including your chats, photos, videos, voice messages, files, and share location information) are delivered, they are deleted from our servers. Your messages are stored on your own device. If a message cannot be delivered immediately (for example, if you are offline), we may keep it on our servers for up to 30 days as we try to deliver it. If a message is still undelivered after 30 days, we delete it. To improve performance and deliver media messages more efficiently, such as when many people are sharing a popular photo or video, we may retain that content on our servers for a longer period of time. We also offer end-to-end encryption for our Services, which is on by default, when you and the people with whom you message use a version of our app released after April 2, 2016. End-to-end encryption means that your messages are encrypted to protect against us and third parties from reading them.
+                   li
+                    b Your Connections.
+                    | To help you organize how you communicate with others, we may create a favorites list of your contacts for you, and you can create, join, or get added to groups and broadcast lists, and such groups and lists get associated with your account information.
+                   li
+                    b Customer Support.
+                    | You may provide us with information related to your use of our Services, including copies of your messages, and how to contact you so we can provide you customer support. For example, you may send us an email with information relating to our app performance or other issues
+                 h4 Automatically Collected Information
+                 ul
+                  li
+                       b Usage and Log Information.
+                       | We collect service-related, diagnostic, and performance information. This includes information about your activity (such as how you use our Services, how you interact with others using our Services, and the like), log files, and diagnostic, crash, website, and performance logs and reports.
+                  li
+                       b Transactional Information.
+                       | If you pay for our Services, we may receive information and confirmations, such as payment receipts, including from app stores or other third parties processing your payment.
+                  li
+                       b Device and Connection Information.
+                       | We collect device-specific information when you install, access, or use our Services. This includes information such as hardware model, operating system information, browser information, IP address, mobile network information including phone number, and device identifiers. We collect device location information if you use our location features, such as when you choose to share your location with your contacts, view locations nearby or those others have shared with you, and the like, and for diagnostics and troubleshooting purposes such as if you are having trouble with our app’s location features.
+                  li
+                       b Status Information.
+                       | We collect information about your online and status message changes on our Services, such as whether you are online (your “online status”), when you last used our Services (your “last seen status”), and when you last updated your status message.
+
+ .footer
+    .container
+      .row
+        div(class='col-md-6 col-sm-6 padding-top-10')
+          | CloudKibo &copy; (Beta Version) All Rights Reserved
+        div(class='col-md-6 col-sm-6')
+          ul(class='social-footer list-unstyled list-inline pull-right')
+                li
+                  a(href='#')
+                    i(class='fa fa-facebook')
+                li
+                  a(href='#')
+                    i(class='fa fa-google-plus')
+                li
+                  a(href='#')
+                    i(class='fa fa-linkedin')
+                li
+                  a(href='#')
+                    i(class='fa fa-twitter')
+                li
+                  a(href='#')
+                    i(class='fa fa-youtube')
+
+ script(src='/global/plugins/jquery-1.11.0.min.js')
+ script(src='/global/plugins/jquery-migrate-1.2.1.min.js')
+ script(src='/global/plugins/bootstrap/js/bootstrap.min.js')
+ script(src='/frontend/layout/scripts/back-to-top.js')
+
+ script(src='/global/plugins/fancybox/source/jquery.fancybox.pack.js')
+ script(src='/global/plugins/carousel-owl-carousel/owl-carousel/owl.carousel.min.js')
+
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js')
+ script(src='/global/plugins/slider-revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js')
+ script(src='/frontend/pages/scripts/revo-slider-init.js')
+
+ script(src='/frontend/layout/scripts/layout.js')
+
+ script(type='text/javascript').
+        jQuery(document).ready(function() {
+            Layout.init();
+            Layout.initOWL();
+            RevosliderInit.initRevoSlider();
+            Layout.initTwitter();
+            //Layout.initFixHeaderWithPreHeader(); /* Switch On Header Fixing (only if you have pre-header) */
+            //Layout.initNavScrolling();
+        });

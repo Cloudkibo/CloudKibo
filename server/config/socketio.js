@@ -768,6 +768,8 @@ function onConnect(socketio, socket) {
   //require('../api/thing/thing.socket').register(socket);
 }
 
+var apnagent = require('apnagent');
+
 // var apn = require('apn');
 //
 // var provider = new apn.Provider({

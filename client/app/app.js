@@ -42,6 +42,10 @@ angular.module('cloudKiboApp', [
       templateUrl: function(params){ console.log(params); return '/livehelp/'+ params.mname +'?role='+ params.role},
       controller: 'LiveHelpController'
     })
+    .when('/policy', {
+          templateUrl: '/policy/',
+          controller: 'OtherBrowserController'
+    })
 
     .otherwise({
       redirectTo: '/login'
@@ -213,6 +217,3 @@ angular.module('cloudKiboApp', [
     });
   };
 });
-
-
-

@@ -149,6 +149,9 @@ module.exports = function(app) {
   app.route('/loginview')
 	.get(viewroutes.loginViewRoute);
 
+  app.route('/policy')
+	.get(viewroutes.policyViewRoute);
+
   app.route('/superuser')
       .get(auth.hasRole('admin'), viewroutes.superUserViewRoute);
 
