@@ -62,10 +62,10 @@ exports.upwardSync = function (req, res) {
     			} else {
     				messageBody.msg = messageBody.msg + ':false';
     			}
-    			sendMessage(messageBody);
+    			sendMessage(req, messageBody);
     		});
     	} else {
-    		sendMessage(messageBody);
+    		sendMessage(req, messageBody);
     	}
     });
 
@@ -494,7 +494,7 @@ exports.downwardSync = function (req, res) {
     });
 };
 
-function sendMessage(messageBody) {
+function sendMessage(req, messageBody) {
   var dateServerReceived = new Date();
   var dateServerSent;
 
