@@ -14,6 +14,7 @@ var file = new Schema({
       file_name: String,
       file_size: Number,
       path: String,
+      label: String,
       file_type: String
 });
 

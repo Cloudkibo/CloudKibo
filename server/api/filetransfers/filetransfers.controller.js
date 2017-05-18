@@ -40,6 +40,7 @@ exports.upload = function(req, res) {
 	       file_name : req.body.filename,
 	       file_size : req.body.filesize,
 	       path : serverPath,
+				 label : (req.body.label) ? req.body.label : '',
 	       file_type : req.body.filetype
 			 })
 
