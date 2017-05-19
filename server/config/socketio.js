@@ -768,36 +768,37 @@ function onConnect(socketio, socket) {
   //require('../api/thing/thing.socket').register(socket);
 }
 
-// var apn = require('apn');
-//
-// var provider = new apn.Provider({
-//   token: {
-//     key: "server/config/cert.pem",
-//     keyId: "88 27 17 09 A9 B6 18 60 8B EC EB BA F6 47 59 C5 52 54 A3 B7",
-//     teamId: "LRN8T5S99N"
-//   },
-//   production: true
-// });
-//
-// var deviceToken = "e61cc0fb10f943d8632815a3029344a0ba70f81e86edb86a32eb8d6b55decd10";
-//
-// var note = new apn.Notification();
-//
-// note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
-// note.badge = 3;
-// note.sound = "ping.aiff";
-// note.alert = "\uD83D\uDCE7 \u2709 You have a new message";
-// note.payload = {'messageFrom': 'John Appleseed'};
-// note.topic = "<your-app-bundle-id>";
+var apn = require('apn');
+
+var provider = new apn.Provider({
+  token: {
+    key: "server/config/key.pem",
+    keyId: "88 27 17 09 A9 B6 18 60 8B EC EB BA F6 47 59 C5 52 54 A3 B7",
+    teamId: "LRN8T5S99N"
+  },
+  cert: "server/config/cert.pem",
+  production: true
+});
+
+var deviceToken = "e61cc0fb10f943d8632815a3029344a0ba70f81e86edb86a32eb8d6b55decd10";
+
+var note = new apn.Notification();
+
+note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+note.badge = 3;
+note.sound = "ping.aiff";
+note.alert = "You have a new message";
+note.payload = { 'messageFrom': 'John Appleseed'};
+note.topic = "<your-app-bundle-id>";
 
 function onConnectPlatforms(socketio, socket) {
   var platform_room = 'platform_room';
 
-  // apnProvider.send(note, deviceToken).then(function(result) {
-  //   // see documentation for an explanation of result
-  //   console.log('result of voip push');
-  //   console.log(result)
-  // });
+  apnProvider.send(note, deviceToken).then(function(result) {
+    // see documentation for an explanation of result
+    console.log('result of voip push');
+    console.log(result)
+  });
 
   socket.on('join_platform_room', function(room) {
 
