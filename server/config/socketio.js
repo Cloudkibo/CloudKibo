@@ -789,7 +789,7 @@ note.badge = 3;
 note.sound = "ping.aiff";
 note.alert = "You have a new message";
 note.payload = { 'messageFrom': 'John Appleseed'};
-note.topic = "<your-app-bundle-id>";
+note.topic = "com.cloudkibo";
 
 function onConnectPlatforms(socketio, socket) {
   var platform_room = 'platform_room';
