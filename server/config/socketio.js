@@ -802,7 +802,13 @@ function onConnectPlatforms(socketio, socket) {
 
   socket.on('join_platform_room', function(room) {
 
-    sendPushNotification(room.phone, room, true, false);
+    var payload = {
+      type : 'test local',
+      msg : room,
+      badge : 2
+    };
+
+    sendPushNotification(room.phone, payload, true, false);
 
     socket.join(platform_room);
     logger.serverLog('info', 'Going to join platform room ' + JSON.stringify(room));
