@@ -11,6 +11,8 @@ router.get('/mygroups', auth.isAuthenticated(), controller.mygroups);
 router.get('/mygroupsmembers', auth.isAuthenticated(), controller.mygroupsmembers);
 router.post('/myspecificgroupsmembers', auth.isAuthenticated(), controller.myspecificgroupsmembers);
 router.post('/updateRole', auth.isAuthenticated(), controller.updateRole);
+router.post('/mute', auth.isAuthenticated(), controller.mute);
+router.post('/unmute', auth.isAuthenticated(), controller.unmute);
 router.post('/', auth.isAuthenticated(), controller.create);
 router.post('/leaveGroup', auth.isAuthenticated(), controller.leaveGroup);
 router.post('/removeFromGroup', auth.isAuthenticated(), controller.removeFromGroup);

@@ -95,6 +95,36 @@ exports.updateRole = function(req, res) {
 
 };
 
+exports.unmute = function(req, res) {
+  logger.serverLog('info', 'body for unmute '+ JSON.stringify(req.body));
+  GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
+    if(err)  { return handleError(res, err); }
+    GroupMessagingUsers.update(
+      {member_phone: req.user.phone, group_unique_id: gotGroup._id},
+      {is_mute : 'no'}, // should have value one of 'Yes', 'No'
+      {multi : false},
+      function (err, num){
+        res.json(200, {status : 'success'});
+      }
+    );
+  })
+};
+
+exports.mute = function(req, res) {
+  logger.serverLog('info', 'body for mute '+ JSON.stringify(req.body));
+  GroupMessaging.findOne({unique_id : req.body.group_unique_id}, function(err, gotGroup){
+    if(err)  { return handleError(res, err); }
+    GroupMessagingUsers.update(
+      {member_phone: req.user.phone, group_unique_id: gotGroup._id},
+      {is_mute : 'yes', start_mute_time: req.body.start_time, end_mute_time: req.body.end_time}, // should have value one of 'Yes', 'No'
+      {multi : false},
+      function (err, num){
+        res.json(200, {status : 'success'});
+      }
+    );
+  })
+};
+
 // Creates a new GroupMessagingUsers in the DB.
 exports.create = function(req, res) {
 

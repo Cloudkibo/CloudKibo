@@ -60,7 +60,8 @@ exports.create = function(req, res) {
 
 function sendMessage(req, res) {
   logger.serverLog('info', 'group chat body '+ JSON.stringify(req.body));
-  groupmessaging.findOne({unique_id : req.body.group_unique_id}, function(err, groupFound){
+  groupmessaging.findOne({unique_id : req.body.group_unique_id },
+    function (err, groupFound) {
     if(err) { return handleError(res, err); }
     var body = {
       group_unique_id: groupFound._id,
@@ -92,8 +93,17 @@ function sendMessage(req, res) {
                   badge : dataUser.iOS_badge + 1
                 };
 
-                logger.serverLog('info', 'sending push to group member '+ useringroup.member_phone +' that you are added to group');
-                sendPushNotification(dataUser.phone, payload, true);
+                logger.serverLog('info', 'sending push to group member ' +
+                useringroup.member_phone + ' that you are added to group');
+                if(useringroup.is_mute){
+                  if(useringroup.is_mute === 'yes' && (Date.now() <= useringroup.end_mute_time)) {
+                    sendPushNotification(dataUser.phone, payload, false);
+                  } else {
+                    sendPushNotification(dataUser.phone, payload, true);
+                  }
+                } else {
+                  sendPushNotification(dataUser.phone, payload, true);
+                }
 
                 var chatStatusBody = {
                   chat_unique_id: req.body.unique_id,
