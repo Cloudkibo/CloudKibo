@@ -112,6 +112,7 @@ function sendPushNotification(tagname, payload, sendSound){
   };
   if(!sendSound){
     iOSMessage = {
+      'content-available':true,
       payload : payload
     };
   }
