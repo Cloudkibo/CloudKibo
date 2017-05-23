@@ -87,6 +87,8 @@ module.exports = function(app) {
   app.use('/api/groupchat', require('./api/groupchat'));
   app.use('/api/groupchatstatus', require('./api/groupchatstatus'));
   app.use('/api/sync', require('./api/sync'));
+  app.use('/api/daystatus', require('./api/daystatus'));
+  app.use('/api/daystatusupdate', require('./api/daystatusupdate'));
 
   app.use('/auth', require('./auth'));
 
