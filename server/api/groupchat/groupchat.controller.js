@@ -98,8 +98,8 @@ function sendMessage(req, res) {
                 JSON.stringify(useringroup));
                 if(useringroup.is_mute){
                   console.log(useringroup);
-                  console.log(Date.now());
-                  if(useringroup.is_mute === 'yes' && (Date.now() <= useringroup.end_mute_time)) {
+                  console.log(Date.now() * 0.001);
+                  if(useringroup.is_mute === 'yes' && ((Date.now() * 0.001) <= useringroup.end_mute_time)) {
                     sendPushNotification(dataUser.phone, payload, false);
                   } else {
                     sendPushNotification(dataUser.phone, payload, true);
