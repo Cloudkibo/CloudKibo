@@ -93,14 +93,11 @@ function sendMessage(req, res) {
                   badge : dataUser.iOS_badge + 1
                 };
 
-                logger.serverLog('info', 'sending push to group member ' +
-                useringroup.member_phone + ' that you are added to group: ' +
-                JSON.stringify(useringroup));
                 if(useringroup.is_mute){
                   console.log(useringroup);
                   console.log(Date.now() * 0.001);
                   if(useringroup.is_mute === 'yes' && ((Date.now() * 0.001) <= useringroup.end_mute_time)) {
-                    sendPushNotification(dataUser.phone, payload, false);
+                    sendPushNotification(dataUser.phone, payload, true);
                   } else {
                     sendPushNotification(dataUser.phone, payload, true);
                   }
