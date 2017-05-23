@@ -97,7 +97,7 @@ function sendMessage(req, res) {
                   console.log(useringroup);
                   console.log(Date.now() * 0.001);
                   if(useringroup.is_mute === 'yes' && ((Date.now() * 0.001) <= useringroup.end_mute_time)) {
-                    sendPushNotification(dataUser.phone, payload, true);
+                    sendPushNotification(dataUser.phone, payload, false);
                   } else {
                     sendPushNotification(dataUser.phone, payload, true);
                   }
