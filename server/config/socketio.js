@@ -794,27 +794,27 @@ function onConnect(socketio, socket) {
 function onConnectPlatforms(socketio, socket) {
   var platform_room = 'platform_room';
 
-  var myJSONObject = {
-  	deviceToken: '621fa6d331cda4076318851e1e40411d97f543c97a97bfd470631d957afb17e2',
-  	badge: 3,
-  	sound: true,
-  	alert: 'This is good by sojharo',
-  	payload: {
-  		msg: 'Hi'
-  	}
-  }
-  var needle = require('needle');
-
-  var options = {
-    headers: {
-      'X-Custom-Header': 'CloudKibo Web Application'
-    }
-  }
-
-  needle.post('http://192.241.242.5:3000/sendVoipNotification', myJSONObject, options, function(err, resp) {
-    console.log(err);
-    console.log(resp);
-  });
+  // var myJSONObject = {
+  // 	deviceToken: '621fa6d331cda4076318851e1e40411d97f543c97a97bfd470631d957afb17e2',
+  // 	badge: 3,
+  // 	sound: true,
+  // 	alert: 'This is good by sojharo',
+  // 	payload: {
+  // 		msg: 'Hi'
+  // 	}
+  // }
+  // var needle = require('needle');
+  //
+  // var options = {
+  //   headers: {
+  //     'X-Custom-Header': 'CloudKibo Web Application'
+  //   }
+  // }
+  //
+  // needle.post('http://192.241.242.5:3000/sendVoipNotification', myJSONObject, options, function(err, resp) {
+  //   console.log(err);
+  //   console.log(resp);
+  // });
 
   // apnProvider.send(note, deviceToken).then(function(result) {
   //   // see documentation for an explanation of result
