@@ -12,4 +12,4 @@ var file = new Schema({
 });
 
 
-module.exports = mongoose.model('daystatus', file);
+module.exports = mongoose.model('daystatusupdate', file);
