@@ -1,7 +1,6 @@
 'use strict';
 
 var apn = require('apn');
-var compose = require('composable-middleware');
 
 var provider = new apn.Provider({
   key: "key.pem",

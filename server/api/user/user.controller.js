@@ -329,29 +329,6 @@ exports.updateimage = function(req, res, next){
 	})
 };
 
-/**
- * Search by username
- */
-exports.searchbyusername = function(req, res, next){
-	console.log('user name is :' + req.body.searchusername);
-	User.findOne({username : req.body.searchusername}, function (err, gotUser) {
-		res.json(gotUser);
-	})
-
-};
-
-
-
-/**
- * Search by email
- */
-exports.searchbyemail = function(req, res, next){
-	User.findOne({email : req.body.searchemail}, function (err, gotUser) {
-		res.json(gotUser);
-	})
-};
-
-
 exports.searchAccountByPhone = function(req, res, next){
   logger.serverLog('info', "Phone numbers sent to server: "+JSON.stringify(req.body));
   User.find({phone : { $in : req.body.phonenumbers}}, function (err, gotUsers) {
@@ -370,14 +347,9 @@ exports.searchAccountByPhone = function(req, res, next){
     logger.serverLog('info', 'checking which of contacts are on cloudkibo but not friends');
     User.findById(req.user._id, function (err, gotUser) {
       logger.serverLog('info', 'This is user information '+ JSON.stringify(gotUser));
-      contactslist.find({userid : gotUser._id}).populate('contactid').exec(function(err5, gotContacts){
+      contactslist.remove({userid : gotUser._id}, function(err43) {
         availableUserList.forEach(function(availablePerson) {
             var foundInContacts = false;
-            for(var i in gotContacts){
-              if(availablePerson.phone === gotContacts[i].contactid.phone){
-                foundInContacts = true;
-              }
-            }
             if(availablePerson.phone === gotUser.phone)
               foundInContacts = true;
             if(!foundInContacts){
@@ -410,7 +382,7 @@ exports.searchAccountByPhone = function(req, res, next){
               })
             }
         });
-      })
+      });
     });
 
     res.json({available : available, notAvailable : notAvailable});

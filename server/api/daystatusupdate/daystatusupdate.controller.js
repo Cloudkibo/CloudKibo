@@ -1,6 +1,6 @@
 'use strict';
 
-var filetransfers = require('./daystatus.model');
+var filetransfers = require('./daystatusupdate.model');
 var User = require('../user/user.model');
 var config = require('../../config/environment');
 var logger = require('../../components/logger/logger');

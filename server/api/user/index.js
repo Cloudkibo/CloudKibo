@@ -26,8 +26,6 @@ router.post('/', controller.create); // www.cloudkibo.com/api/users/ (POST)
 router.post('/userimage/update', auth.isAuthenticated(), multipartyMiddleware, controller.updateimage);
 router.get('/userimage/:image', controller.userimage); // www.cloudkibo.com/api/users/userimage/:image
 router.put('/update', auth.isAuthenticated(), controller.update);
-router.post('/searchbyusername', auth.isAuthenticated(), controller.searchbyusername);
-router.post('/searchbyemail', auth.isAuthenticated(), controller.searchbyemail);
 router.post('/invitebyemail', auth.isAuthenticated(), controller.invitebyemail);
 router.post('/invitebymultipleemail', auth.isAuthenticated(), controller.inviteMultipleByEmail);
 router.post('/initialtestingdone', auth.isAuthenticated(), controller.initialtesting);
