@@ -13,7 +13,7 @@ app.use('/sendVoipNotification', function(req, res, next){
   console.log(ip);
   console.log('This is middleware');
   console.log(req.body)
-  if(ip === '162.243.215.177')
+  if(ip === '::ffff:162.243.215.177')
     next();
   else
     res.sendStatus(403);
