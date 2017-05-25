@@ -6,6 +6,7 @@ var User = require('../user/user.model');
 var config = require('../../config/environment');
 var logger = require('../../components/logger/logger');
 var crypto = require('crypto');
+var azure = require('azure');
 
 exports.create = function(req, res) {
 	logger.serverLog('info', 'daystatusupdate.controller: seen update route: '
