@@ -23,8 +23,6 @@ var logger = require('./components/logger/logger');
 
 logger.serverLog('info', '===============SERVER STARTED===============');
 
-
-
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
 

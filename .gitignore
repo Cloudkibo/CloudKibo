@@ -9,6 +9,7 @@ log
 client/bower_components
 dist
 userpictures
+status
 /server/config/local.env.js
 
 ### Node ###

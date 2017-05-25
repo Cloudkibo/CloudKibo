@@ -10,10 +10,6 @@ var multipartyMiddleware = multiparty();
 
 var router = express.Router();
 
-// router.post('/download', auth.isAuthenticated(), controller.download);
-// router.post('/upload', auth.isAuthenticated(), multipartyMiddleware, controller.upload);
-// router.post('/confirmdownload', auth.isAuthenticated(), controller.confirmdownload);
-// router.post('/checkpendingfile', auth.isAuthenticated(), controller.pendingfile);
-
+router.post('/create', auth.isAuthenticated(), controller.create);
 
 module.exports = router;

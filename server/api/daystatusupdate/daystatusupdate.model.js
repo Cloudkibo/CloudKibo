@@ -6,8 +6,8 @@ var Schema = mongoose.Schema;
 
 var file = new Schema({
       uniqueid: String,
-      status: String,
       time: { type: Date, default: Date.now },
+      uploadedBy: String,
       contact: String
 });
 

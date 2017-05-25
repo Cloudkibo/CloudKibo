@@ -1,78 +1,84 @@
 'use strict';
 
-var filetransfers = require('./daystatus.model');
+var daystatus = require('./daystatus.model');
 var User = require('../user/user.model');
+var Contactslist = require('../contactslist/contactslist.model');
 var config = require('../../config/environment');
 var logger = require('../../components/logger/logger');
 var crypto = require('crypto');
+var azure = require('azure');
 
-exports.upload = function(req, res) {
-	logger.serverLog('info', 'filetransfers.controller : upload file route called. file is: '+ JSON.stringify(req.files));
+exports.create = function(req, res) {
 
 	var today = new Date();
 	var uid = crypto.randomBytes(5).toString('hex');
-	var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate();
+	var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + ''
+	+ (today.getMonth() + 1) + '' + today.getDate();
 	serverPath += '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
 	serverPath += '.' + req.files.file.type.split('/')[1];
 
-	console.log(__dirname);
+	logger.serverLog('info', 'daystatus.controller : create day status route ' +
+	' called. file is: ' + JSON.stringify(req.files));
 
-	var dir = "./userpictures";
+	var dir = "./status";
 
-	if(req.files.file.size == 0) return res.send('No file submitted');
+	if(req.files.file.size === 0) return res.send('No file submitted');
 
 	require('fs').rename(
-	 req.files.file.path,
-	 dir + "/" + serverPath,
-		function(error) {
-			 if(error) {
-				 logger.serverLog('error', 'user.controller (update image) : '+ error);
-				res.send({
-					error: 'Server Error: Could not upload the file'
-				});
+		req.files.file.path,
+		dir + '/' + serverPath,
+		function (error) {
+			if (error) {
+				logger.serverLog('error', 'daystatus.controller (update status) : '+ error);
+				res.send({ error: 'Server Error: Could not upload the file' });
 				return 0;
-			 }
-      console.log(req.body);
-			 var fileData = new filetransfers({
-				 to : req.body.to,
-	       from : req.body.from,
-	       uniqueid: req.body.uniqueid,
-	       file_name : req.body.filename,
-	       file_size : req.body.filesize,
-	       path : serverPath,
-				 label : (req.body.label) ? req.body.label : '',
-	       file_type : req.body.filetype
-			 })
-
-			 fileData.save(function(err){
-				 if(err) return res.send({error: 'Database Error'});
-
-				 res.send({status:'success'});
-
-			 });
-
-		 }
-
+			}
+			var fileData = new daystatus({
+				date: req.body.date,
+				uniqueid: req.body.uniqueid,
+				file_name: req.body.file_name,
+				file_size: req.body.file_size,
+				path: serverPath,
+				label: req.body.label,
+				file_type: req.body.file_type,
+				uploadedBy: req.user.phone
+			});
+			fileData.save(function (err) {
+				if (err) return res.send({ error: 'Database Error' });
+				Contactslist.find({ userid: req.user._id }, function (err23, myContacts) {
+					if (err23) {
+						res.send({ error: 'Server Error: Could not upload the file' });
+						return 0;
+					}
+					myContacts.forEach(function (myContact) {
+						Contactslist.findOne({ userid: myContact.contactid,
+							contactid: req.user._id }).populate('userid').exec(function (err24, amIContact) {
+								if (err24) {
+									res.send({ error: 'Server Error: Could not upload the file' });
+									return 0;
+								}
+								if (amIContact) {
+									var payload = {
+										type: 'status:new_status_added',
+										senderId: req.user.phone,
+										uniqueid: req.body.uniqueid
+									};
+									sendPushNotification(amIContact.userid.phone, payload, false);
+								}
+							});
+					})
+				});
+				res.send({ status: 'success' });
+			});
+		}
 	);
-
 };
 
-exports.download = function (req, res, next) {
-console.log('this is id when downloading file');
-console.log(req.body.uniqueid);
-	filetransfers.findOne({ uniqueid: req.body.uniqueid }, function (err, data) {
-		if (err) return res.send({ status: 'database error' });
-		res.sendfile(data.path, { root: './userpictures' });
-	});
-};
-
-exports.confirmdownload = function (req, res, next) {
-  console.log('this is id sent when confirming download');
-  console.log(req.body.uniqueid);
-	filetransfers.findOne({ uniqueid: req.body.uniqueid }, function (err, data) {
+exports.delete = function (req, res, next) {
+	daystatus.findOne({ uniqueid: req.body.uniqueid }, function (err, data) {
 		if (err) return res.send({ status: 'database error' });
 
-		var dir = './userpictures';
+		var dir = './status';
 		dir += data.path;
 
 		require('fs').unlink(dir, function (err1) {
@@ -81,20 +87,99 @@ exports.confirmdownload = function (req, res, next) {
 					//throw err;
 				}
 
-				filetransfers.remove({ uniqueid: req.body.uniqueid }, function (err) {
+				daystatus.remove({ uniqueid: req.body.uniqueid }, function (err) {
 					if (err) return res.send({ status: 'database error' });
+					Contactslist.find({ userid: req.user._id }, function (err23, myContacts) {
+						if (err23) {
+							res.send({ error: 'Server Error: Could not upload the file' });
+							return 0;
+						}
+						myContacts.forEach(function (myContact) {
+							Contactslist.findOne({ userid: myContact.contactid,
+								contactid: req.user._id }).populate('userid').exec(function (err24, amIContact) {
+									if (err24) {
+										res.send({ error: 'Server Error: Could not upload the file' });
+										return 0;
+									}
+									if (amIContact) {
+										var payload = {
+											type: 'status:new_status_deleted',
+											senderId: req.user.phone,
+											uniqueid: req.body.uniqueid
+										};
+										sendPushNotification(amIContact.userid.phone, payload, false);
+									}
+								});
+						})
+					});
 					res.send({ status: 'success' });
 				});
 			});
 	});
 };
 
-exports.pendingfile = function (req, res, next) {
-  console.log(req.body.uniqueid);
-	filetransfers.findOne({uniqueid : req.body.uniqueid}, function(err, data){
-		if(err) return res.send({status : 'database error'});
-
-		res.send({filepending : data});
-
-	})
+exports.getInfo = function (req, res, next) {
+	daystatus.findOne({ uniqueid: req.body.uniqueid }, function (err, status) {
+		if (err) return res.send({ status: 'database error' });
+		res.send({ status: 'sucess', data: status });
+	});
 };
+
+exports.getMedia = function (req, res, next) {
+	daystatus.findOne({ uniqueid: req.body.uniqueid }, function (err, data) {
+		if (err) return res.send({ status: 'database error' });
+		res.sendfile(data.path, { root: './status' });
+	});
+};
+
+
+var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
+function sendPushNotification(tagname, payload, sendSound){
+  tagname = tagname.substring(1);
+  var iOSMessage = {
+    alert : payload.msg,
+    'content-available':true,
+    sound : 'UILocalNotificationDefaultSoundName',
+    badge : payload.badge,
+    payload : payload
+  };
+  if(!sendSound){
+    iOSMessage = {
+      'content-available':true,
+      payload : payload
+    };
+  }
+  var androidMessage = {
+    to : tagname,
+    priority : 'high',
+    data : {
+      message : payload
+    }
+  }
+  notificationHubService.gcm.send(tagname, androidMessage, function(error){
+    if(!error){
+      logger.serverLog('info', 'In DAY STATUS Azure push notification sent to Android using GCM Module, client number : '+ tagname);
+    } else {
+      logger.serverLog('info', 'In DAY STATUS AzureAzure push notification error : '+ JSON.stringify(error));
+    }
+  });
+  notificationHubService.apns.send(tagname, iOSMessage, function(error){
+    if(!error){
+      logger.serverLog('info', 'In DAY STATUS AzureAzure push notification sent to iOS using GCM Module, client number : '+ tagname);
+    } else {
+      logger.serverLog('info', 'In DAY STATUS AzureAzure push notification error : '+ JSON.stringify(error));
+    }
+  });
+
+  // For iOS Local testing only
+  var notificationHubService2 = azure.createNotificationHubService('CloudKiboIOSPush','Endpoint=sb://cloudkiboiospush.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=0JmBCY+BNqMhuAS1g39wPBZFoZAX7M+wq4z4EWaXgCs=');
+
+  notificationHubService2.apns.send(tagname, iOSMessage, function(error){
+    if (!error) {
+			logger.serverLog('info', 'In DAY STATUS AzureAzure push notification sent to iOS (local testing) using GCM Module, client number : '+ tagname);
+    } else {
+      logger.serverLog('info', 'In DAY STATUS AzureAzure push notification error (iOS local testing) : '+ JSON.stringify(error));
+    }
+  });
+
+}
