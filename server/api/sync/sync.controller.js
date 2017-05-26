@@ -23,6 +23,9 @@ var GroupMessagingUser = require('../groupmessaginguser/groupmessaginguser.model
 
 var GroupMessagingUsers = require('../groupmessaginguser/groupmessaginguser.model');
 
+var daystatus = require('../daystatus/daystatus.model');
+var daystatusupdate = require('../daystatus/daystatusupdate.model');
+
 var azure = require('azure');
 
 
@@ -473,7 +476,23 @@ exports.downwardSync = function (req, res) {
                         if(err) { return handleError(res, err); }
                         response.statusOfSentGroupMessages = groupchatstatus;
 
-                        return res.json(200, response);
+                        var contacts = [];
+                        for(var l in gotContactList){
+                          contacts[l] = gotContactList[l].contactid.phone;
+                        }
+
+                        daystatus.find({ uploadedBy: { $in: contacts } },
+                          function (err23, daystatuses) {
+                            if (err23) { return handleError(res, err23); }
+
+                            response.daystatuses = daystatuses;
+
+                            daystatusupdate.find({ uploadedBy: req.user.phone },
+                               function (err24, daystatusupdates) {
+                                 if (err24) { return handleError(res, err24); }
+                                 return res.json(200, response);
+                               });
+                          });
                       });
 
                     });
