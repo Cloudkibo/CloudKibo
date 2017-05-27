@@ -3,10 +3,12 @@
 var daystatus = require('./daystatus.model');
 var User = require('../user/user.model');
 var Contactslist = require('../contactslist/contactslist.model');
+var daystatusupdate = require('../daystatusupdate/daystatusupdate.model');
 var config = require('../../config/environment');
 var logger = require('../../components/logger/logger');
 var crypto = require('crypto');
 var azure = require('azure');
+var schedule = require('node-schedule');
 
 exports.create = function(req, res) {
 
@@ -69,6 +71,16 @@ exports.create = function(req, res) {
 					})
 				});
 				res.send({ status: 'success' });
+
+				var someDate = new Date();
+				var newDate = new Date(someDate.setHours(someDate.getHours()+24));
+				var j = schedule.scheduleJob(newDate, function(y) {
+					daystatus.remove({ uniqueid: y }, function (err) {
+						daystatusupdate.remove({ uniqueid: y }, function (err) {
+
+						});
+					});
+				}.bind(null, req.body.uniqueid));
 			});
 		}
 	);
