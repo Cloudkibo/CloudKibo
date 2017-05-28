@@ -13,6 +13,8 @@ router.get('/blockedby', auth.isAuthenticated(), controller.whoHaveBlockedMe);
 router.get('/blockedbyme', auth.isAuthenticated(), controller.blockedbyme);
 router.post('/blockContact', auth.isAuthenticated(), controller.blockContact);
 router.post('/unblockContact', auth.isAuthenticated(), controller.unblockContact);
+router.post('/muteContact', auth.isAuthenticated(), controller.muteContact);
+router.post('/unmuteContact', auth.isAuthenticated(), controller.unmuteContact);
 router.post('/addbyusername', auth.isAuthenticated(), controller.addbyusername);
 router.post('/addbyemail', auth.isAuthenticated(), controller.addbyemail);
 router.post('/approvefriendrequest', auth.isAuthenticated(), controller.approvefriendrequest);

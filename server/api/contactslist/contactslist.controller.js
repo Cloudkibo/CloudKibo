@@ -99,6 +99,46 @@ exports.unblockContact = function (req, res) {
 	});
 };
 
+exports.muteContact = function (req, res) {
+	User.findOne({ phone: req.body.phone }, function (err, contactToMute) {
+		if (err) return res.json(501, { status: 'Internal Server Error' });
+		if (!contactToMute) return res.json(401, { status: 'This contact is not registered.' });
+		contactslist.update(
+      { userid: req.user._id, contactid: contactToMute._id },
+      { is_mute: 'Yes', start_mute_time: req.body.start_mute_time, end_mute_time: req.body.end_mute_time },
+      { multi: true },
+      function (err3, num) {
+				if (num>0) {
+					if (err3) return res.json(501, { status: 'Internal Server Error' });
+					res.json(200, { status: 'Successfully muted.' });
+				} else {
+          res.json(200, { status: 'Contact not found.' });
+        }
+      }
+    );
+	});
+};
+
+exports.unmuteContact = function (req, res) {
+	User.findOne({ phone: req.body.phone }, function (err, contactToBlock) {
+		if (err) return res.json(501, { status: 'Internal Server Error' });
+		if (!contactToBlock) return res.json(401, { status: 'This contact is not registered.' });
+		contactslist.update(
+      { userid: req.user._id, contactid: contactToBlock._id },
+      { is_mute: 'No' },
+      { multi: true },
+      function (err3, num) {
+				if (num>0) {
+					if (err3) return res.json(501, { status: 'Internal Server Error' });
+					res.json(200, { status: 'Successfully blocked.' });
+				} else {
+          res.json(200, { status: 'Contact not found.' });
+        }
+      }
+    );
+	});
+};
+
 var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
 function sendPushNotification(tagname, payload, sendSound){
   tagname = tagname.substring(1);
