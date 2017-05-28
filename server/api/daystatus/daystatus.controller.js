@@ -75,10 +75,26 @@ exports.create = function(req, res) {
 				var someDate = new Date();
 				var newDate = new Date(someDate.setHours(someDate.getHours()+24));
 				var j = schedule.scheduleJob(newDate, function(y) {
-					daystatus.remove({ uniqueid: y }, function (err) {
-						daystatusupdate.remove({ uniqueid: y }, function (err) {
+					daystatus.findOne({ uniqueid: y }, function (err, data) {
+						if (err) return res.send({ status: 'database error' });
+						var dir = './status';
+						dir += data.path;
+						require('fs').unlink(dir, function (err1) {
+								if (err1) {
+									logger.serverLog('error',
+									'filetransfers.controller (delete file image) : '+ err1);
+								}
+								daystatus.remove({ uniqueid: y }, function (err12) {
+									if (err12) logger.serverLog('error',
+									'daystatus.controller (remove scheduled status) : '+ err12);
+									daystatusupdate.remove({ uniqueid: y }, function (err13) {
+										if (err13) logger.serverLog('error',
+										'daystatus.controller (remove scheduled status) : '+ err13);
 
-						});
+									});
+								});
+
+							});
 					});
 				}.bind(null, req.body.uniqueid));
 			});
@@ -101,30 +117,33 @@ exports.delete = function (req, res, next) {
 
 				daystatus.remove({ uniqueid: req.body.uniqueid }, function (err) {
 					if (err) return res.send({ status: 'database error' });
-					Contactslist.find({ userid: req.user._id }, function (err23, myContacts) {
-						if (err23) {
-							res.send({ error: 'Server Error: Could not upload the file' });
-							return 0;
-						}
-						myContacts.forEach(function (myContact) {
-							Contactslist.findOne({ userid: myContact.contactid,
-								contactid: req.user._id }).populate('userid').exec(function (err24, amIContact) {
-									if (err24) {
-										res.send({ error: 'Server Error: Could not upload the file' });
-										return 0;
-									}
-									if (amIContact) {
-										var payload = {
-											type: 'status:new_status_deleted',
-											senderId: req.user.phone,
-											uniqueid: req.body.uniqueid
-										};
-										sendPushNotification(amIContact.userid.phone, payload, false);
-									}
-								});
-						})
+					daystatusupdate.remove({ uniqueid: y }, function (err13) {
+						if (err13) return res.send({ status: 'database error' });
+						Contactslist.find({ userid: req.user._id }, function (err23, myContacts) {
+							if (err23) {
+								res.send({ error: 'Server Error: Could not upload the file' });
+								return 0;
+							}
+							myContacts.forEach(function (myContact) {
+								Contactslist.findOne({ userid: myContact.contactid,
+									contactid: req.user._id }).populate('userid').exec(function (err24, amIContact) {
+										if (err24) {
+											res.send({ error: 'Server Error: Could not upload the file' });
+											return 0;
+										}
+										if (amIContact) {
+											var payload = {
+												type: 'status:new_status_deleted',
+												senderId: req.user.phone,
+												uniqueid: req.body.uniqueid
+											};
+											sendPushNotification(amIContact.userid.phone, payload, false);
+										}
+									});
+							})
+						});
+						res.send({ status: 'success' });
 					});
-					res.send({ status: 'success' });
 				});
 			});
 	});
