@@ -24,7 +24,7 @@ var GroupMessagingUser = require('../groupmessaginguser/groupmessaginguser.model
 var GroupMessagingUsers = require('../groupmessaginguser/groupmessaginguser.model');
 
 var daystatus = require('../daystatus/daystatus.model');
-var daystatusupdate = require('../daystatus/daystatusupdate.model');
+var daystatusupdate = require('../daystatusupdate/daystatusupdate.model');
 
 var azure = require('azure');
 
