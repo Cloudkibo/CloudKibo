@@ -274,7 +274,6 @@ function sendMessage(req, res) {
 
 						logger.serverLog('info', 'sending chat using push to recipient');
 						if(contactInfo2.is_mute){
-							console.log(useringroup);
 							console.log(Date.now() * 0.001);
 							if(contactInfo2.is_mute === 'yes' && ((Date.now() * 0.001) <= contactInfo2.end_mute_time)) {
 								sendPushNotification(req.body.to, payload, false);
