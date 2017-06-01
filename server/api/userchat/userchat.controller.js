@@ -274,10 +274,10 @@ function sendMessage(req, res) {
 
 						logger.serverLog('info', 'sending chat using push to recipient');
 						logger.serverLog('info', 'userchat controller: contactinfo '+ JSON.stringify(contactInfo));
-						logger.serverLog('info', 'userchat controller: contactinfo '+ JSON.stringify(contactInfo2));
-						if(contactInfo2.is_mute){
+						logger.serverLog('info', 'userchat controller: contactinfo2 '+ JSON.stringify(contactInfo2));
+						if(contactInfo.is_mute){
 							console.log(Date.now() * 0.001);
-							if(contactInfo2.is_mute === 'Yes' && ((Date.now() * 0.001) <= contactInfo2.end_mute_time)) {
+							if(contactInfo.is_mute === 'Yes' && ((Date.now() * 0.001) <= contactInfo.end_mute_time)) {
 								sendPushNotification(req.body.to, payload, false);
 							} else {
 								sendPushNotification(req.body.to, payload, true);
