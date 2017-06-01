@@ -109,7 +109,7 @@ exports.muteContact = function (req, res) {
 		JSON.stringify(contactToMute));
 		contactslist.update(
       { userid: req.user._id, contactid: contactToMute._id },
-      { is_mute: 'Yes', start_mute_time: req.body.start_mute_time, end_mute_time: req.body.end_mute_time },
+      { is_mute: 'Yes', start_mute_time: req.body.start_time, end_mute_time: req.body.end_time },
       { multi: true },
       function (err3, num) {
 				logger.serverLog('info', 'contactslist.controller: mute contact result '+

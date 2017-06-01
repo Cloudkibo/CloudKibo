@@ -10,7 +10,7 @@ var contactslist = new Schema({
 			detailsshared: { type: String, default: 'No' },
 			is_mute: { type: String, default: 'no' }, // possible values : yes or no
 			start_mute_time: Number,
-			end_mute_time: Number,
+			end_mute_time: Number
 });
 
 module.exports = mongoose.model('contactslist', contactslist);
