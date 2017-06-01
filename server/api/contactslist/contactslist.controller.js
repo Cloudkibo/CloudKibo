@@ -105,13 +105,17 @@ exports.muteContact = function (req, res) {
 	User.findOne({ phone: req.body.phone }, function (err, contactToMute) {
 		if (err) return res.json(501, { status: 'Internal Server Error' });
 		if (!contactToMute) return res.json(401, { status: 'This contact is not registered.' });
+		logger.serverLog('info', 'contactslist.controller: going to mute this contact '+
+		JSON.stringify(contactToMute));
 		contactslist.update(
       { userid: req.user._id, contactid: contactToMute._id },
       { is_mute: 'Yes', start_mute_time: req.body.start_mute_time, end_mute_time: req.body.end_mute_time },
       { multi: true },
       function (err3, num) {
+				logger.serverLog('info', 'contactslist.controller: mute contact result '+
+				JSON.stringify(err3) +' '+ num);
+				if (err3) return res.json(501, { status: 'Internal Server Error' });
 				if (num>0) {
-					if (err3) return res.json(501, { status: 'Internal Server Error' });
 					res.json(200, { status: 'Successfully muted.' });
 				} else {
           res.json(200, { status: 'Contact not found.' });
