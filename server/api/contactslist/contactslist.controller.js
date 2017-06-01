@@ -101,7 +101,7 @@ exports.unblockContact = function (req, res) {
 
 exports.muteContact = function (req, res) {
 	logger.serverLog('info', 'contactslist.controller: going to mute contact '+
-	JSON.stringify(req.body);
+	JSON.stringify(req.body));
 	User.findOne({ phone: req.body.phone }, function (err, contactToMute) {
 		if (err) return res.json(501, { status: 'Internal Server Error' });
 		if (!contactToMute) return res.json(401, { status: 'This contact is not registered.' });
@@ -123,7 +123,7 @@ exports.muteContact = function (req, res) {
 
 exports.unmuteContact = function (req, res) {
 	logger.serverLog('info', 'contactslist.controller: going to unmute contact '+
-	JSON.stringify(req.body);
+	JSON.stringify(req.body));
 	User.findOne({ phone: req.body.phone }, function (err, contactToBlock) {
 		if (err) return res.json(501, { status: 'Internal Server Error' });
 		if (!contactToBlock) return res.json(401, { status: 'This contact is not registered.' });
