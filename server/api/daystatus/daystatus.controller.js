@@ -35,6 +35,8 @@ exports.create = function(req, res) {
 				res.send({ error: 'Server Error: Could not upload the file' });
 				return 0;
 			}
+			logger.serverLog('info', 'daystatus.controller : create day status route ' +
+			' called. file is uploaded now going to save data');
 			var fileData = new daystatus({
 				date: req.body.date,
 				uniqueid: req.body.uniqueid,
@@ -47,24 +49,36 @@ exports.create = function(req, res) {
 			});
 			fileData.save(function (err) {
 				if (err) return res.send({ error: 'Database Error' });
+				logger.serverLog('info', 'daystatus.controller : create day status route ' +
+				' called. file is uploaded now going to send push notification');
 				Contactslist.find({ userid: req.user._id }, function (err23, myContacts) {
 					if (err23) {
+						logger.serverLog('info', 'daystatus.controller : create day status route ' +
+						' called. error in finding my contacts '+ JSON.stringify(err23));
 						res.send({ error: 'Server Error: Could not upload the file' });
 						return 0;
 					}
+					logger.serverLog('info', 'daystatus.controller : create day status route ' +
+					' called. number of contacts which would get push ' + myContacts.length);
 					myContacts.forEach(function (myContact) {
 						Contactslist.findOne({ userid: myContact.contactid,
-							contactid: req.user._id }).populate('userid').exec(function (err24, amIContact) {
+							contactid: req.user._id, detailsshared : 'Yes' }).populate('userid').exec(function (err24, amIContact) {
 								if (err24) {
-									res.send({ error: 'Server Error: Could not upload the file' });
+									logger.serverLog('info', 'daystatus.controller : create day status route ' +
+									' called. error in checking if I am his contact '+ JSON.stringify(err24));
+									res.send({ error: 'Server Error: Could not send the push' });
 									return 0;
 								}
+								logger.serverLog('info', 'daystatus.controller : create day status route ' +
+								' called. checking if I am his contact '+ JSON.stringify(amIContact));
 								if (amIContact) {
 									var payload = {
 										type: 'status:new_status_added',
 										senderId: req.user.phone,
 										uniqueid: req.body.uniqueid
 									};
+									logger.serverLog('info', 'daystatus.controller : create day status route ' +
+									' called. sending push notification now '+ JSON.stringify(payload));
 									sendPushNotification(amIContact.userid.phone, payload, false);
 								}
 							});

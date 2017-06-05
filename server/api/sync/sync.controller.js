@@ -490,6 +490,7 @@ exports.downwardSync = function (req, res) {
                             daystatusupdate.find({ uploadedBy: req.user.phone },
                                function (err24, daystatusupdates) {
                                  if (err24) { return handleError(res, err24); }
+                                 response.daystatusupdates = daystatusupdates;
                                  return res.json(200, response);
                                });
                           });
