@@ -48,9 +48,13 @@ exports.create = function(req, res) {
 				uploadedBy: req.user.phone
 			});
 			fileData.save(function (err) {
-				if (err) return res.send({ error: 'Database Error' });
+				if (err) {
+					logger.serverLog('info', 'daystatus.controller : create day status route ' +
+					' called. error in saving daystatus info '+ JSON.stringify(err));
+					return res.send({ error: 'Database Error' });
+				}
 				logger.serverLog('info', 'daystatus.controller : create day status route ' +
-				' called. file is uploaded now going to send push notification');
+				' called. daystatus info is saved, now going to send push notification');
 				Contactslist.find({ userid: req.user._id }, function (err23, myContacts) {
 					if (err23) {
 						logger.serverLog('info', 'daystatus.controller : create day status route ' +
