@@ -8,66 +8,7 @@ var config = require('./environment');
 var logger = require('../components/logger/logger');
 var debuggers = require('../components/debugger/debugger');
 var user = require('../api/user/user.model');
-
-var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
-
-function sendPushNotification(tagname, payload, sendSound, isItCall){
-  tagname = tagname.substring(1);
-  var iOSMessage = {
-    alert : payload.msg,
-    sound : 'UILocalNotificationDefaultSoundName',
-    badge : payload.badge,
-    payload : payload
-  };
-  if(!sendSound){
-    iOSMessage = {
-      payload : payload
-    };
-  }
-  if(isItCall){
-    iOSMessage = {
-      alert : payload.msg,
-      sound : 'UILocalNotificationDefaultSoundName',
-      badge : payload.badge,
-      payload : payload,
-      category : 'areyoufreeforcall'
-    };
-  }
-  var androidMessage = {
-    to : tagname,
-    priority : 'high',
-    data : {
-      message : payload
-    }
-  }
-  notificationHubService.gcm.send(tagname, androidMessage, function(error){
-    if(!error){
-      logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
-    } else {
-      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
-    }
-  });
-  notificationHubService.apns.send(tagname, iOSMessage, function(error){
-    if(!error){
-      logger.serverLog('info', 'Azure push notification sent to iOS using GCM Module, client number : '+ tagname);
-    } else {
-      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
-    }
-  });
-
-  // For iOS Local testing only
-  var notificationHubService2 = azure.createNotificationHubService('CloudKiboIOSPush','Endpoint=sb://cloudkiboiospush.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=0JmBCY+BNqMhuAS1g39wPBZFoZAX7M+wq4z4EWaXgCs=');
-
-  notificationHubService2.apns.send(tagname, iOSMessage, function(error){
-    if(!error){
-      logger.serverLog('info', 'Azure push notification sent to iOS (local testing) using GCM Module, client number : '+ tagname);
-    } else {
-      logger.serverLog('info', 'Azure push notification error (iOS local testing) : '+ JSON.stringify(error));
-    }
-  });
-
-}
-
+var sendPushNotification = require('../components/pushnotifications/pushnotification');
 
 // When the user disconnects.. perform this
 function onDisconnect(socketio, socket) {
@@ -768,69 +709,11 @@ function onConnect(socketio, socket) {
   //require('../api/thing/thing.socket').register(socket);
 }
 
-// var apn = require('apn');
-//
-// var provider = new apn.Provider({
-//   token: {
-//     key: "server/config/key.pem",
-//     keyId: "88 27 17 09 A9 B6 18 60 8B EC EB BA F6 47 59 C5 52 54 A3 B7",
-//     teamId: "LRN8T5S99N"
-//   },
-//   cert: "server/config/cert.pem",
-//   production: true
-// });
-//
-// var deviceToken = "e61cc0fb10f943d8632815a3029344a0ba70f81e86edb86a32eb8d6b55decd10";
-//
-// var note = new apn.Notification();
-//
-// note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
-// note.badge = 3;
-// note.sound = "ping.aiff";
-// note.alert = "You have a new message";
-// note.payload = { 'messageFrom': 'John Appleseed'};
-// note.topic = "com.cloudkibo";
 
 function onConnectPlatforms(socketio, socket) {
   var platform_room = 'platform_room';
 
-  // var myJSONObject = {
-  // 	deviceToken: '621fa6d331cda4076318851e1e40411d97f543c97a97bfd470631d957afb17e2',
-  // 	badge: 3,
-  // 	sound: true,
-  // 	alert: 'This is good by sojharo',
-  // 	payload: {
-  // 		msg: 'Hi'
-  // 	}
-  // }
-  // var needle = require('needle');
-  //
-  // var options = {
-  //   headers: {
-  //     'X-Custom-Header': 'CloudKibo Web Application'
-  //   }
-  // }
-  //
-  // needle.post('http://192.241.242.5:3000/sendVoipNotification', myJSONObject, options, function(err, resp) {
-  //   console.log(err);
-  //   console.log(resp);
-  // });
-
-  // apnProvider.send(note, deviceToken).then(function(result) {
-  //   // see documentation for an explanation of result
-  //   console.log('result of voip push');
-  //   console.log(result)
-  // });
-
   socket.on('join_platform_room', function(room) {
-
-    var payload = {
-      type : 'test local',
-      msg : room,
-      badge : 2
-    };
-
-    sendPushNotification(room.phone, payload, true, false);
 
     socket.join(platform_room);
     logger.serverLog('info', 'Going to join platform room ' + JSON.stringify(room));

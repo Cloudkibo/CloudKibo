@@ -12,6 +12,7 @@ var passwordresettoken = require('../tokens/passwordresettoken.model');
 var contactslist = require('../contactslist/contactslist.model');
 var userchat = require('../userchat/userchat.model');
 var configuration = require('../configuration/configuration.model');
+var sendPushNotification = require('../../components/pushnotifications/pushnotification');
 
 var azure = require('azure');
 
@@ -819,55 +820,3 @@ exports.log = function(req, res) {
   logger.serverLog("info", "Client side log: " + req.body.data);
   res.json(200, {status : 'success'});
 };
-
-
-var notificationHubService = azure.createNotificationHubService('Cloudkibo','Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
-function sendPushNotification(tagname, payload, sendSound){
-  tagname = tagname.substring(1);
-  var iOSMessage = {
-    alert : payload.msg,
-    sound : 'UILocalNotificationDefaultSoundName',
-    badge : payload.badge,
-		'content-available':true,
-    payload : payload
-  };
-  if(!sendSound){
-    iOSMessage = {
-			'content-available':true,
-      payload : payload
-    };
-  }
-  var androidMessage = {
-    to : tagname,
-    priority : 'high',
-    data : {
-      message : payload
-    }
-  }
-  notificationHubService.gcm.send(tagname, androidMessage, function(error){
-    if(!error){
-      logger.serverLog('info', 'Azure push notification sent to Android using GCM Module, client number : '+ tagname);
-    } else {
-      logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
-    }
-  });
-  notificationHubService.apns.send(tagname, iOSMessage, function(error){
-    if(!error){
-      logger.serverLog('info', 'Azure push notification sent to iOS using GCM Module, client number : '+ tagname);
-    } else {
-      //logger.serverLog('info', 'Azure push notification error : '+ JSON.stringify(error));
-    }
-  });
-
-  // For iOS Local testing only
-  var notificationHubService2 = azure.createNotificationHubService('CloudKiboIOSPush','Endpoint=sb://cloudkiboiospush.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=0JmBCY+BNqMhuAS1g39wPBZFoZAX7M+wq4z4EWaXgCs=');
-
-  notificationHubService2.apns.send(tagname, iOSMessage, function(error){
-    if(!error){
-      logger.serverLog('info', 'Azure push notification sent to iOS (local testing) using GCM Module, client number : '+ tagname);
-    } else {
-      logger.serverLog('info', 'Azure push notification error (iOS local testing) : '+ JSON.stringify(error));
-    }
-  });
-
-}
