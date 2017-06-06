@@ -125,7 +125,7 @@ exports.upwardSync = function (req, res) {
             if (!gotChat) {
 
             } else {
-              user..findOne({phone: gotChat.from}, function (err34, senderUser) {
+              user.findOne({phone: gotChat.from}, function (err34, senderUser) {
                 var payload = {
                   type: 'group:msg_status_changed',
                   status: messageBody.status,
