@@ -65,7 +65,7 @@ exports.blockContact = function (req, res) {
 							senderId : req.user.phone,
 							badge : dataUser.iOS_badge
 						};
-						sendPushNotification(req.body.phone, payload, false);
+            sendPushNotification(req.body.phone, payload, false, false, dataUser.deviceToken);
 					});
 					res.json(200, { status: 'Successfully blocked.' });
 				}
@@ -91,7 +91,7 @@ exports.unblockContact = function (req, res) {
 							senderId : req.user.phone,
 							badge : dataUser.iOS_badge
 						};
-						sendPushNotification(req.body.phone, payload, false);
+            sendPushNotification(req.body.phone, payload, false, false, dataUser.deviceToken);
 					});
 					res.json(200, { status: 'Successfully blocked.' });
 				}

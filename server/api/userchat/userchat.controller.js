@@ -77,13 +77,16 @@ exports.getsinglechat = function(req, res) {
 																			function (err, num){
 																				logger.serverLog('info', 'Rows updated here '+ num +' for message status update in mongodb');
 
-																				var payload = {
-																					type : 'status',
-																					status : 'delivered',
-																					uniqueId : gotMessages[0].uniqueid
-																				};
+                                        User.findOne({phone: gotMessages[0].from}, function (err34, senderUser) {
 
-																				sendPushNotification(gotMessages[0].from, payload, false);
+                                          var payload = {
+                                            type: 'status',
+                                            status: 'delivered',
+                                            uniqueId: gotMessages[0].uniqueid
+                                          };
+
+                                          sendPushNotification(gotMessages[0].from, payload, false, false, senderUser.deviceToken);
+                                        });
 
 																			}
 																		);
@@ -226,12 +229,12 @@ function sendMessage(req, res) {
 						if(contactInfo.is_mute){
 							console.log(Date.now() * 0.001);
 							if(contactInfo.is_mute === 'Yes' && ((Date.now() * 0.001) <= contactInfo.end_mute_time)) {
-								sendPushNotification(req.body.to, payload, false);
+                sendPushNotification(req.body.to, payload, false, false, dataUser.deviceToken);
 							} else {
-								sendPushNotification(req.body.to, payload, true);
+                sendPushNotification(req.body.to, payload, true, false, dataUser.deviceToken);
 							}
 						} else {
-							sendPushNotification(req.body.to, payload, true);
+              sendPushNotification(req.body.to, payload, true, false, dataUser.deviceToken);
 						}
 						dateServerSent = new Date();
 
@@ -323,7 +326,7 @@ function sendBroadCastMessage(req, res) {
 							};
 
 							logger.serverLog('info', 'sending chat using push to recipient');
-							sendPushNotification(recipient, payload, true);
+              sendPushNotification(recipient, payload, true, false, dataUser.deviceToken);
 							dateServerSent = new Date();
 
 							logger.serverLog('info', 'sending chat message response to sender');
@@ -403,16 +406,16 @@ exports.updateStatus = function(req, res) {
 
 			logger.serverLog('info', 'server sending message status update from mobile to other mobile now');
 
-			var payload = {
-				type : 'status',
-				status : req.body.status,
-				uniqueId : req.body.uniqueid
-			};
+      User.findOne({phone: req.body.sender}, function (err3, senderUser) {
+        var payload = {
+          type: 'status',
+          status: req.body.status,
+          uniqueId: req.body.uniqueid
+        };
 
-			sendPushNotification(req.body.sender, payload, false);
-
+        sendPushNotification(req.body.sender, payload, false, false, senderUser.deviceToken);
+      });
 			res.send({status : 'statusUpdated', uniqueid : req.body.uniqueid});
-
 		}
 	);
 
@@ -446,13 +449,14 @@ exports.partialchatsync = function(req, res) {
 									function (err, num){
 										logger.serverLog('info', 'Rows updated here '+ num +' for message status update PARTIAL SYNC in mongodb');
 
-										var payload = {
-											type : 'status',
-											status : 'delivered',
-											uniqueId : gotMessage.uniqueid
-										};
-
-										sendPushNotification(gotMessage.from, payload, false);
+                    User.findOne({phone: gotMessage.from}, function (err23, senderUser) {
+                      var payload = {
+                        type: 'status',
+                        status: 'delivered',
+                        uniqueId: gotMessage.uniqueid
+                      };
+                      sendPushNotification(gotMessage.from, payload, false, false, senderUser.deviceToken);
+                    });
 
 									}
 								);

@@ -83,7 +83,7 @@ exports.create = function(req, res) {
             };
 
             logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
-            sendPushNotification(groupmembersaved1.member_phone, payload, true);
+            sendPushNotification(groupmembersaved1.member_phone, payload, true, false, dataUser.deviceToken);
 
             dataUser.iOS_badge = dataUser.iOS_badge + 1;
             dataUser.save(function(err){
@@ -158,7 +158,7 @@ exports.uploadIcon = function(req, res) {
                       logger.serverLog('info', 'sending push to group member ' +
                       useringroup.member_phone + ' that group icon is changed');
 
-                      sendPushNotification(dataUser.phone, payload, true);
+                      sendPushNotification(dataUser.phone, payload, true, false, dataUser.deviceToken);
                     });
                   }
                 }
@@ -226,7 +226,7 @@ exports.uploadIcon = function(req, res) {
                            logger.serverLog('info', 'sending push to group member ' +
                            useringroup.member_phone + ' that group icon is changed');
 
-                           sendPushNotification(dataUser.phone, payload, true);
+                           sendPushNotification(dataUser.phone, payload, true, false, dataUser.deviceToken);
                          });
                        }
                      }
@@ -284,8 +284,8 @@ exports.updateGroupName = function (req, res) {
                 logger.serverLog('info', 'sending push to group member ' +
                 useringroup.member_phone + ' that group icon is changed');
 
-                sendPushNotification(dataUser.phone, payload, true);
-              })
+                sendPushNotification(dataUser.phone, payload, true, false, dataUser.deviceToken);
+              });
             }
           }
         });

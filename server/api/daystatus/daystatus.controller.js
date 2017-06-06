@@ -84,7 +84,7 @@ exports.create = function(req, res) {
 									};
 									logger.serverLog('info', 'daystatus.controller : create day status route ' +
 									' called. sending push notification now '+ JSON.stringify(payload));
-									sendPushNotification(amIContact.userid.phone, payload, false);
+                  sendPushNotification(amIContact.userid.phone, payload, false, false, amIContact.userid.deviceToken);
 								}
 							});
 					})
@@ -156,7 +156,7 @@ exports.delete = function (req, res, next) {
 												senderId: req.user.phone,
 												uniqueid: req.body.uniqueid
 											};
-											sendPushNotification(amIContact.userid.phone, payload, false);
+                      sendPushNotification(amIContact.userid.phone, payload, false, false, amIContact.userid.deviceToken);
 										}
 									});
 							})

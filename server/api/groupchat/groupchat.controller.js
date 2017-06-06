@@ -26,18 +26,20 @@ exports.fetchSingleChat = function(req, res){
       status.status = 'delivered';
       status.delivered_date = Date.now();
       status.save(function(err){
-
-        var payload = {
-          type : 'group:msg_status_changed',
-          user_phone : req.user.phone,
-          status : 'delivered',
-          uniqueId : req.body.unique_id
-        };
-
-        sendPushNotification(groupchat.from, payload, false);
-
-      })
-    })
+        if (err) {
+          return handleError(res, err);
+        }
+        user.findOne({phone: groupchat.from}, function (err, senderUser) {
+          var payload = {
+            type: 'group:msg_status_changed',
+            user_phone: req.user.phone,
+            status: 'delivered',
+            uniqueId: req.body.unique_id
+          };
+          sendPushNotification(groupchat.from, payload, false, false, senderUser.deviceToken);
+        });
+      });
+    });
     return res.json(200, groupchat);
   });
 };
@@ -98,12 +100,12 @@ function sendMessage(req, res) {
                   console.log(useringroup);
                   console.log(Date.now() * 0.001);
                   if(useringroup.is_mute === 'yes' && ((Date.now() * 0.001) <= useringroup.end_mute_time)) {
-                    sendPushNotification(dataUser.phone, payload, false);
+                    sendPushNotification(dataUser.phone, payload, false, false, dataUser.deviceToken);
                   } else {
-                    sendPushNotification(dataUser.phone, payload, true);
+                    sendPushNotification(dataUser.phone, payload, true, false, dataUser.deviceToken);
                   }
                 } else {
-                  sendPushNotification(dataUser.phone, payload, true);
+                  sendPushNotification(dataUser.phone, payload, true, false, dataUser.deviceToken);
                 }
 
                 var chatStatusBody = {

@@ -40,17 +40,27 @@ exports.updateStatus = function (req, res){
     function (err, num){
       if (err) { return handleError(res, err); }
       groupchat.findOne({unique_id : req.body.chat_unique_id}, function(err, gotChat){
+        if (err) {
+          return handleError(res, err);
+        }
         if (!gotChat) { return res.json(404, { status: 'not found' }); }
-        var payload = {
-          type : 'group:msg_status_changed',
-          status : req.body.status,
-          user_phone : req.user.phone,
-  				uniqueId : req.body.chat_unique_id
-        };
 
-        sendPushNotification(gotChat.from, payload, false);
+        user.findOne({phone: gotChat.from}, function (err, senderUser) {
+          if (err) {
+            return handleError(res, err);
+          }
 
-      })
+          var payload = {
+            type: 'group:msg_status_changed',
+            status: req.body.status,
+            user_phone: req.user.phone,
+            uniqueId: req.body.chat_unique_id
+          };
+
+          sendPushNotification(gotChat.from, payload, false, false, senderUser.deviceToken);
+        });
+
+      });
       return res.json(200, {status : 'success'});
     }
   );

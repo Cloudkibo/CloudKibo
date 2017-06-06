@@ -79,7 +79,7 @@ exports.updateRole = function(req, res) {
                   };
 
                   logger.serverLog('info', 'updated role of member: sending push to group members '+ gotMember.member_phone +' that someones role was updated');
-                  sendPushNotification(gotMember.member_phone, payload, false);
+                  sendPushNotification(gotMember.member_phone, payload, false, false, dataUser.deviceToken);
 
                   dataUser.iOS_badge = dataUser.iOS_badge;
                   dataUser.save(function(err){
@@ -151,7 +151,7 @@ exports.create = function(req, res) {
                   };
 
                   logger.serverLog('info', 'added members: sending push to group members '+ gotMember.member_phone +' that someone was added to existing group');
-                  sendPushNotification(gotMember.member_phone, payload, false);
+                  sendPushNotification(gotMember.member_phone, payload, false, false, dataUser.deviceToken);
 
                   dataUser.iOS_badge = dataUser.iOS_badge;
                   dataUser.save(function(err){
@@ -187,7 +187,7 @@ exports.create = function(req, res) {
                     };
 
                     logger.serverLog('info', 'sending push to group member '+ gotMemberEntryAlreadyExists.member_phone +' that you are added to group');
-                    sendPushNotification(gotMemberEntryAlreadyExists.member_phone, payload, true);
+                    sendPushNotification(gotMemberEntryAlreadyExists.member_phone, payload, true, false, dataUser.deviceToken);
 
                     dataUser.iOS_badge = dataUser.iOS_badge + 1;
                     dataUser.save(function(err){
@@ -210,7 +210,7 @@ exports.create = function(req, res) {
                     };
 
                     logger.serverLog('info', 'sending push to group member '+ groupmembersaved1.member_phone +' that you are added to group');
-                    sendPushNotification(groupmembersaved1.member_phone, payload, true);
+                    sendPushNotification(groupmembersaved1.member_phone, payload, true, false, dataUser.deviceToken);
 
                     dataUser.iOS_badge = dataUser.iOS_badge + 1;
                     dataUser.save(function(err){
@@ -257,7 +257,7 @@ exports.leaveGroup = function(req, res) {
             };
 
             logger.serverLog('info', 'sending push to group member '+ gotMember.member_phone +' that someone has left group');
-            sendPushNotification(gotMember.member_phone, payload, true);
+            sendPushNotification(gotMember.member_phone, payload, true, false, dataUser.deviceToken);
 
             dataUser.iOS_badge = dataUser.iOS_badge;
             dataUser.save(function(err){
@@ -304,7 +304,7 @@ exports.removeFromGroup = function(req, res) {
                 };
 
                 logger.serverLog('info', 'remove member: sending push to group member '+ gotMember.member_phone +' that someone was removed from group');
-                sendPushNotification(gotMember.member_phone, payload, false);
+                sendPushNotification(gotMember.member_phone, payload, false, false, dataUser.deviceToken);
 
                 dataUser.iOS_badge = dataUser.iOS_badge;
                 dataUser.save(function(err){

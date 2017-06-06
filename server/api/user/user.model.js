@@ -30,6 +30,7 @@ var UserSchema = new Schema({
   windows_photo: String,
 
   iOS_badge: Number,
+  deviceToken: String,
 
   isOwner : String,
   picture: String,

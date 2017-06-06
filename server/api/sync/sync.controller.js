@@ -96,13 +96,16 @@ exports.upwardSync = function (req, res) {
     		{status : messageBody.status}, // should have value one of 'delivered', 'seen'
     		{multi : true},
     		function (err, num){
-    			var payload = {
-    				type : 'status',
-    				status : messageBody.status,
-    				uniqueId : messageBody.uniqueid
-    			};
 
-    			sendPushNotification(messageBody.sender, payload, false);
+          user.findOne({phone: gotMessages[0].from}, function (err34, senderUser) {
+            var payload = {
+              type: 'status',
+              status: messageBody.status,
+              uniqueId: messageBody.uniqueid
+            };
+
+            sendPushNotification(messageBody.sender, payload, false, false, senderUser.deviceToken);
+          });
 
           response.unsentChatMessageStatus.push({status : messageBody.status,
             uniqueid : messageBody.uniqueid});
@@ -122,13 +125,15 @@ exports.upwardSync = function (req, res) {
             if (!gotChat) {
 
             } else {
-              var payload = {
-                type : 'group:msg_status_changed',
-                status : messageBody.status,
-                user_phone : messageBody.phone,
-        				uniqueId : messageBody.chat_unique_id
-              };
-              sendPushNotification(gotChat.from, payload, false);
+              user..findOne({phone: gotChat.from}, function (err34, senderUser) {
+                var payload = {
+                  type: 'group:msg_status_changed',
+                  status: messageBody.status,
+                  user_phone: messageBody.phone,
+                  uniqueId: messageBody.chat_unique_id
+                };
+                sendPushNotification(gotChat.from, payload, false, false, senderUser.deviceToken);
+              });
             }
 
           });
@@ -190,7 +195,7 @@ exports.upwardSync = function (req, res) {
                   badge : dataUser.iOS_badge + 1
                 };
 
-                sendPushNotification(groupmembersaved1.member_phone, payload, true);
+                sendPushNotification(groupmembersaved1.member_phone, payload, true, false, dataUser.deviceToken);
 
                 dataUser.iOS_badge = dataUser.iOS_badge + 1;
                 dataUser.save(function(err){
@@ -229,7 +234,7 @@ exports.upwardSync = function (req, res) {
                         badge : dataUser.iOS_badge
                       };
 
-                      sendPushNotification(gotMember.member_phone, payload, false);
+                      sendPushNotification(gotMember.member_phone, payload, false, false, dataUser.deviceToken);
 
                       dataUser.iOS_badge = dataUser.iOS_badge;
                       dataUser.save(function(err){
@@ -264,7 +269,7 @@ exports.upwardSync = function (req, res) {
                           badge : dataUser.iOS_badge + 1
                         };
 
-                        sendPushNotification(gotMemberEntryAlreadyExists.member_phone, payload, true);
+                        sendPushNotification(gotMemberEntryAlreadyExists.member_phone, payload, true, false, dataUser.deviceToken);
 
                         dataUser.iOS_badge = dataUser.iOS_badge + 1;
                         dataUser.save(function(err){
@@ -286,7 +291,7 @@ exports.upwardSync = function (req, res) {
                           badge : dataUser.iOS_badge + 1
                         };
 
-                        sendPushNotification(groupmembersaved1.member_phone, payload, true);
+                        sendPushNotification(groupmembersaved1.member_phone, payload, true, false, dataUser.deviceToken);
 
                         dataUser.iOS_badge = dataUser.iOS_badge + 1;
                         dataUser.save(function(err){
@@ -329,7 +334,7 @@ exports.upwardSync = function (req, res) {
                       badge : dataUser.iOS_badge
                     };
 
-                    sendPushNotification(gotMember.member_phone, payload, false);
+                    sendPushNotification(gotMember.member_phone, payload, false, false, dataUser.deviceToken);
 
                     dataUser.iOS_badge = dataUser.iOS_badge;
                     dataUser.save(function(err){
@@ -395,7 +400,12 @@ exports.downwardSync = function (req, res) {
               uniqueId : gotMessage.uniqueid
             };
 
-            sendPushNotification(gotMessage.from, payload, false);
+            user.findOne({phone: gotMessages.from}, function (err34, senderUser) {
+              if (err34) {
+                logger.serverLog('info', 'sync controller: error while sending push ' + JSON.stringify(err34));
+              }
+              sendPushNotification(gotMessage.from, payload, false, false, senderUser.deviceToken);
+            });
 
           }
         );
@@ -535,7 +545,7 @@ function sendMessage(req, messageBody) {
               badge : dataUser.iOS_badge + 1
             };
 
-            sendPushNotification(messageBody.to, payload, true);
+            sendPushNotification(messageBody.to, payload, true, false, dataUser.deviceToken);
             dateServerSent = new Date();
 
 
@@ -629,7 +639,7 @@ function sendGroupMessage(messageBody) {
                   msg : messageBody.msg,
                   badge : dataUser.iOS_badge + 1
                 };
-                sendPushNotification(dataUser.phone, payload, true);
+                sendPushNotification(dataUser.phone, payload, true, false, dataUser.deviceToken);
 
                 var chatStatusBody = {
                   chat_unique_id: messageBody.unique_id,
