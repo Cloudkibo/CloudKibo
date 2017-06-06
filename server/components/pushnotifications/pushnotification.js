@@ -98,7 +98,7 @@ function sendVoipPush(devToken, badge, sound, alert, payload) {
       logger.serverLog('info', 'Error in sending VOIP Push: ' + JSON.stringify(err));
       console.log(err);
     } else {
-      logger.serverLog('info', 'Successfully sent VOIP Push: ' + JSON.stringify(resp));
+      logger.serverLog('info', 'Successfully sent VOIP Push');
       console.log(resp);
     }
   });
