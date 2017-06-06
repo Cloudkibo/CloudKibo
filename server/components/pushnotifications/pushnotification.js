@@ -76,7 +76,7 @@ function sendiOSPushNotification(tagname, payload, sendSound, isItCall) {
 
 function sendVoipPush(devToken, badge, sound, alert, payload) {
   var myJSONObject = {
-    deviceToken: devToken || '621fa6d331cda4076318851e1e40411d97f543c97a97bfd470631d957afb17e2',
+    deviceToken: devToken || '',
     badge: badge || 3,
     sound: sound || true,
     alert: alert || 'This is good by sojharo',
