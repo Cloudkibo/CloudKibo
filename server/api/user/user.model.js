@@ -29,7 +29,7 @@ var UserSchema = new Schema({
   google_photo: String,
   windows_photo: String,
 
-  iOS_badge: Number,
+  iOS_badge: {type : Number, default: 0},
   deviceToken: String,
 
   isOwner : String,
