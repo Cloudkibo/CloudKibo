@@ -25,7 +25,7 @@ exports.create = function(req, res) {
     User.findOne({phone: req.body.uploadedBy}, function (err, senderUser) {
       if (err) return res.send({error: 'Database Error'});
       var payload = {
-        type: 'status:new_status_added',
+        type: 'status:your_status_seen',
         senderId: req.user.phone,
         uniqueid: req.body.uniqueid,
         time: req.body.time
