@@ -1307,7 +1307,8 @@ else{
     headers: {
       'X-Custom-Header': 'CloudKibo Web Application',
       'content_type': 'application/json'
-    }
+    },
+    json:true,
   }
 
   needle.post('https://api.kibosupport.com/api/fbmessages/create', myJSONObject, options, function(err, resp) {
