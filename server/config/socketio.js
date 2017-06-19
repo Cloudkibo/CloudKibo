@@ -1046,13 +1046,13 @@ module.exports = function(socketio) {
 
           var userid = data.support_call.request_id.split('$')[0]
           var pageid = data.support_call.request_id.split('$')[1]
-          var messagebody= JSON.stringify({
+          var messagebody= {
                           mid: unique_id,
                           seq: 1,
                           text: data.message,
-                        });
+                        };
 
-          var saveMsg = JSON.stringify({
+          var saveMsg = {
                         senderid: data.support_call.senderid,
                         recipientid: data.support_call.recipientid,
                         companyid: data.support_call.companyid,
@@ -1061,7 +1061,7 @@ module.exports = function(socketio) {
 
                         pageid: pageid,
 
-                      })
+                      }
           sendToCloudKibo(saveMsg,'facebook');
         }
         }
@@ -1305,7 +1305,8 @@ function sendToCloudKibo(myJSONObject,type) {
 else{
    var options = {
     headers: {
-      'X-Custom-Header': 'CloudKibo Web Application'
+      'X-Custom-Header': 'CloudKibo Web Application',
+      'content_type': 'application/json'
     }
   }
 
