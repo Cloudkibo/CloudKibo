@@ -1307,7 +1307,7 @@ else{
     }
   }
 
-  needle.post('https://api.kibosupport.com/api/fbmessages/', myJSONObject, options, function(err, resp) {
+  needle.post('https://api.kibosupport.com/api/fbmessages/create', myJSONObject, options, function(err, resp) {
     console.log(err);
     console.log(resp);
   });
