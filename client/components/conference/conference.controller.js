@@ -51,6 +51,8 @@ angular.module('cloudKiboApp')
       if($scope.supportCall){
         $scope.supportCallData = {};
         $scope.supportCallData.role = $location.search().role;
+        $scope.supportCallData.conf_type = $location.search().conf_type;
+
         if($scope.supportCallData.role==='agent' && $scope.supportCallData.conf_type !='facebook' ){
           $scope.user.username = $location.search().agentname;
           $scope.supportCallData.from = $scope.user.username;
@@ -88,8 +90,7 @@ angular.module('cloudKiboApp')
         $scope.supportCallData.agentemail = $location.search().agentemail;
         $scope.supportCallData.companyid = $location.search().companyid;
         $scope.supportCallData.request_id = $location.search().request_id;
-        $scope.supportCallData.conf_type = $location.search().conf_type;
-
+      
         logger.log('Company id for this support call is '+ $scope.supportCallData.companyid +' and request id is '+ $scope.supportCallData.request_id);
         $scope.connect();
         return ;
