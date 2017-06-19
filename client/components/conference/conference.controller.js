@@ -46,27 +46,50 @@ angular.module('cloudKiboApp')
     };
 
     //check room lock status
-
+//changes required here for facebook task
     $timeout(function(){
       if($scope.supportCall){
         $scope.supportCallData = {};
         $scope.supportCallData.role = $location.search().role;
-        if($scope.supportCallData.role==='agent'){
+        if($scope.supportCallData.role==='agent' && $scope.supportCallData.conf_type !='facebook' ){
           $scope.user.username = $location.search().agentname;
           $scope.supportCallData.from = $scope.user.username;
           $scope.supportCallData.to = $location.search().visitorname;
+          logger.log('This is agent on support call page. Agent\'s name is '+ $scope.user.username +' and visitor\'s name is '+ $scope.supportCallData.to);
+        }
+        else if($scope.supportCallData.role==='visitor' && $scope.supportCallData.conf_type !='facebook' ){
+          $scope.user.username = $location.search().visitorname;
+          $scope.supportCallData.from = $scope.user.username;
+          $scope.supportCallData.to = $location.search().agentname;
+          logger.log('This is visitor on support call page. Visitor\'s name is '+ $scope.user.username +' and agent\'s name is '+ $scope.supportCallData.to);
+        }
+
+
+        else if($scope.supportCallData.role==='agent' &&  $scope.supportCallData.conf_type ==='facebook' ){
+          $scope.user.username = $location.search().agentname;
+          $scope.supportCallData.from = $scope.user.username;
+          $scope.supportCallData.to = $location.search().visitorname;
+          $scope.supportCallData.senderid = $location.search().agentemail;
+          $scope.supportCallData.recipientid = $location.search().visitoremail;
+          
           logger.log('This is agent on support call page. Agent\'s name is '+ $scope.user.username +' and visitor\'s name is '+ $scope.supportCallData.to);
         }
         else{
           $scope.user.username = $location.search().visitorname;
           $scope.supportCallData.from = $scope.user.username;
           $scope.supportCallData.to = $location.search().agentname;
+          $scope.supportCallData.senderid = $location.search().visitoremail;
+          $scope.supportCallData.recipientid = $location.search().agentemail;
+         
           logger.log('This is visitor on support call page. Visitor\'s name is '+ $scope.user.username +' and agent\'s name is '+ $scope.supportCallData.to);
         }
+
         $scope.supportCallData.visitoremail = $location.search().visitoremail;
         $scope.supportCallData.agentemail = $location.search().agentemail;
         $scope.supportCallData.companyid = $location.search().companyid;
         $scope.supportCallData.request_id = $location.search().request_id;
+        $scope.supportCallData.conf_type = $location.search().conf_type;
+
         logger.log('Company id for this support call is '+ $scope.supportCallData.companyid +' and request id is '+ $scope.supportCallData.request_id);
         $scope.connect();
         return ;
