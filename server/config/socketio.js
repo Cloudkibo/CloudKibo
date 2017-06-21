@@ -1266,7 +1266,9 @@ function sendToCloudKibo(myJSONObject) {
   var options = {
     headers: {
       'X-Custom-Header': 'CloudKibo Web Application'
-    }
+    },
+    json:true
+
   }
 
   needle.post('https://api.kibosupport.com/api/userchats/chatfromCloudkibo', myJSONObject, options, function(err, resp) {
