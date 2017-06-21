@@ -50,9 +50,11 @@ angular.module('cloudKiboApp')
     $timeout(function(){
       if($scope.supportCall){
         $scope.supportCallData = {};
+        $scope.supportCallData.allparam = $location.search();
         $scope.supportCallData.role = $location.search().role;
         $scope.supportCallData.conf_type = $location.search().conf_type;
-
+        logger.log('All parameters'+JSON.stringify($scope.supportCallData.allparam));
+        
         if($scope.supportCallData.role==='agent' && $scope.supportCallData.conf_type !='facebook' ){
           $scope.user.username = $location.search().agentname;
           $scope.supportCallData.from = $scope.user.username;

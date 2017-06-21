@@ -1060,6 +1060,7 @@ module.exports = function(socketio) {
                         message: messagebody,
 
                         pageid: pageid,
+                        allparam: data.support_call.allparam,
 
                       }
           sendToCloudKibo(saveMsg,'facebook');
