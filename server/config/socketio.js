@@ -1271,7 +1271,7 @@ function sendToCloudKibo(myJSONObject) {
 
   }
 
-  needle.post('https://api.kibosupport.com/api/userchats/chatfromCloudkibo', myJSONObject, options, function(err, resp) {
+  needle.post('https://kiboengage.kibosupport.com/api/chatfromCloudkibo', myJSONObject, options, function(err, resp) {
     console.log(err);
     console.log(resp);
   });
