@@ -1019,9 +1019,8 @@ module.exports = function(socketio) {
 
       if (data.support_call) {
         if (data.support_call.companyid) {
-          if(data.support_call.conf_type != 'facebook')
-          {
-          var meetingchat = require('./../api/meetingchat/meetingchat.model.js');
+          
+         /* var meetingchat = require('./../api/meetingchat/meetingchat.model.js');
 
           var newUserChat = new meetingchat({
             to: data.support_call.to,
@@ -1030,41 +1029,15 @@ module.exports = function(socketio) {
             agentemail: data.support_call.agentemail,
             msg: data.message,
             request_id: data.support_call.request_id,
-            companyid: data.support_call.companyid
+            companyid: data.support_call.companyid,
+            allparam: data.support_call.allparam
           });
 
           newUserChat.save(function(err2) {
             if (err2) return console.log('Error 2' + err2);
-          });
-          sendToCloudKibo(data.support_call,'userchat');
-        }
+          });*/
+          sendToCloudKibo(data.support_call);
 
-        else{
-           var today = new Date();
-          var uid = Math.random().toString(36).substring(7);
-          var unique_id = 'h' + uid + '' + today.getFullYear() + '' + (today.getMonth()+1) + '' + today.getDate() + '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds();
-
-          var userid = data.support_call.request_id.split('$')[0]
-          var pageid = data.support_call.request_id.split('$')[1]
-          var messagebody= {
-                          mid: unique_id,
-                          seq: 1,
-                          text: data.message,
-                        };
-
-          var saveMsg = {
-                        senderid: data.support_call.senderid,
-                        recipientid: data.support_call.recipientid,
-                        companyid: data.support_call.companyid,
-                        timestamp: Date.now(),
-                        message: messagebody,
-
-                        pageid: pageid,
-                        allparam: data.support_call.allparam,
-
-                      }
-          sendToCloudKibo(saveMsg,'facebook');
-        }
         }
       }
     });
@@ -1286,35 +1259,20 @@ module.exports = function(socketio) {
   });
 };
 
-function sendToCloudKibo(myJSONObject,type) {
+function sendToCloudKibo(myJSONObject) {
 
   var needle = require('needle');
-  if(type == 'userchat')
-  {
+ 
   var options = {
     headers: {
       'X-Custom-Header': 'CloudKibo Web Application'
     }
   }
 
-  needle.post('https://api.kibosupport.com/api/userchats/', myJSONObject, options, function(err, resp) {
+  needle.post('https://api.kibosupport.com/api/userchats/chatfromCloudkibo', myJSONObject, options, function(err, resp) {
     console.log(err);
     console.log(resp);
   });
-}
 
-else{
-   var options = {
-    headers: {
-      'X-Custom-Header': 'CloudKibo Web Application',
-      'content_type': 'application/json'
-    },
-    json:true,
-  }
 
-  needle.post('https://api.kibosupport.com/api/fbmessages/create', myJSONObject, options, function(err, resp) {
-    console.log(err);
-    console.log(resp);
-  });
-}
 }
