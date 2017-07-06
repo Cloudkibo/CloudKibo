@@ -3,7 +3,7 @@
  */
 var needle = require('needle');
 var azure = require('azure');
-var notificationHubService = azure.createNotificationHubService('Cloudkibo', 'Endpoint=sb://cloudkibo.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=arTrXZQGBUeuLYLcwTTzCVqFDN1P3a6VrxA15yvpnqE=');
+var notificationHubService = azure.createNotificationHubService('Cloudkibo', 'Endpoint=sb://kibochathub.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=we1QGyWhgsJLXLT1CrqBgggnsBLS+R/MovR2Av6MmXs=');
 var logger = require('../logger/logger');
 
 
