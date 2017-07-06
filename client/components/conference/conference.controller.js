@@ -46,11 +46,15 @@ angular.module('cloudKiboApp')
     };
 
     //check room lock status
-
+//changes required here for facebook task
     $timeout(function(){
       if($scope.supportCall){
         $scope.supportCallData = {};
+        $scope.supportCallData.allparam = $location.search();
         $scope.supportCallData.role = $location.search().role;
+        $scope.supportCallData.conf_type = $location.search().conf_type;
+        logger.log('All parameters'+JSON.stringify($scope.supportCallData.allparam));
+        
         if($scope.supportCallData.role==='agent'){
           $scope.user.username = $location.search().agentname;
           $scope.supportCallData.from = $scope.user.username;
@@ -63,10 +67,15 @@ angular.module('cloudKiboApp')
           $scope.supportCallData.to = $location.search().agentname;
           logger.log('This is visitor on support call page. Visitor\'s name is '+ $scope.user.username +' and agent\'s name is '+ $scope.supportCallData.to);
         }
+
+
+       
+
         $scope.supportCallData.visitoremail = $location.search().visitoremail;
         $scope.supportCallData.agentemail = $location.search().agentemail;
         $scope.supportCallData.companyid = $location.search().companyid;
         $scope.supportCallData.request_id = $location.search().request_id;
+      
         logger.log('Company id for this support call is '+ $scope.supportCallData.companyid +' and request id is '+ $scope.supportCallData.request_id);
         $scope.connect();
         return ;

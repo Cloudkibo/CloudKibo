@@ -1006,6 +1006,7 @@ module.exports = function(socketio) {
       });
     });
 
+//make changes here
     socket.on('conference.chat', function(data) {
       console.log('conference.chat is called.');
       rooms[currentRoom].forEach(function(s) {
@@ -1018,7 +1019,8 @@ module.exports = function(socketio) {
 
       if (data.support_call) {
         if (data.support_call.companyid) {
-          var meetingchat = require('./../api/meetingchat/meetingchat.model.js');
+          
+         /* var meetingchat = require('./../api/meetingchat/meetingchat.model.js');
 
           var newUserChat = new meetingchat({
             to: data.support_call.to,
@@ -1027,13 +1029,15 @@ module.exports = function(socketio) {
             agentemail: data.support_call.agentemail,
             msg: data.message,
             request_id: data.support_call.request_id,
-            companyid: data.support_call.companyid
+            companyid: data.support_call.companyid,
+            allparam: data.support_call.allparam
           });
 
           newUserChat.save(function(err2) {
             if (err2) return console.log('Error 2' + err2);
-          });
+          });*/
           sendToCloudKibo(data.support_call);
+
         }
       }
     });
@@ -1258,15 +1262,19 @@ module.exports = function(socketio) {
 function sendToCloudKibo(myJSONObject) {
 
   var needle = require('needle');
-
+ 
   var options = {
     headers: {
       'X-Custom-Header': 'CloudKibo Web Application'
-    }
+    },
+    json:true
+
   }
 
-  needle.post('https://api.kibosupport.com/api/userchats/', myJSONObject, options, function(err, resp) {
+  needle.post('https://kiboengage.kibosupport.com/api/chatfromCloudkibo', myJSONObject, options, function(err, resp) {
     console.log(err);
     console.log(resp);
   });
+
+
 }
