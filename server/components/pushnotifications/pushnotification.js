@@ -13,8 +13,9 @@ module.exports = function (tagName, payload, sendSound, isItCall, devToken) {
   logger.serverLog('info', 'Push notification data '+ JSON.stringify(payload));
 
   sendAndroidPushNotification(tagName, payload);
-  sendiOSPushNotification(tagName, payload, sendSound, isItCall);
-  sendVoipPush(devToken, payload.badge, sendSound, payload.msg, payload);
+  //sendiOSPushNotification(tagName, payload, sendSound, isItCall);
+  if(devToken)
+    sendVoipPush(devToken, payload.badge, sendSound, payload.msg, payload);
 };
 
 function sendAndroidPushNotification(tagname, payload) {
