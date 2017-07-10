@@ -3,7 +3,7 @@
  */
 var needle = require('needle');
 var azure = require('azure');
-var notificationHubService = azure.createNotificationHubService('Cloudkibo', 'Endpoint=sb://kibochathub.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=we1QGyWhgsJLXLT1CrqBgggnsBLS+R/MovR2Av6MmXs=');
+var notificationHubService = azure.createNotificationHubService('KiboChatHub', 'Endpoint=sb://kibochathub.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=we1QGyWhgsJLXLT1CrqBgggnsBLS+R/MovR2Av6MmXs=');
 var logger = require('../logger/logger');
 
 
@@ -80,7 +80,7 @@ function sendVoipPush(devToken, badge, sound, alert, payload) {
     deviceToken: devToken || '',
     badge: badge || 3,
     sound: sound || true,
-    alert: alert || 'This is good by sojharo',
+    alert: alert,
     payload: payload || {
       msg: 'Hi'
     }
