@@ -92,8 +92,11 @@ exports.create = function(req, res) {
 				res.send({ status: 'success' });
 
 				var someDate = new Date();
-				var newDate = new Date(someDate.setHours(someDate.getHours()+24));
+				var newDate = new Date(someDate.setMinutes(someDate.getMinutes()+2));//new Date(someDate.setHours(someDate.getHours()+24));
+        logger.serverLog('info', 'status '+ req.body.uniqueid +' created at '+ someDate);
+        logger.serverLog('info', 'status '+ req.body.uniqueid +' will expire at '+ newDate);
 				var j = schedule.scheduleJob(newDate, function(y) {
+          logger.serverLog('info', 'status '+ y +' going to be removed now');
 					daystatus.findOne({ uniqueid: y }, function (err, data) {
 						if (err) return res.send({ status: 'database error' });
 						var dir = './status';

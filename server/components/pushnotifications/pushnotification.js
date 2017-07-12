@@ -63,17 +63,6 @@ function sendiOSPushNotification(tagname, payload, sendSound, isItCall) {
       logger.serverLog('info', 'Azure push notification error : ' + JSON.stringify(error));
     }
   });
-
-  // For iOS Local testing only
-  var notificationHubService2 = azure.createNotificationHubService('CloudKiboIOSPush', 'Endpoint=sb://cloudkiboiospush.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=0JmBCY+BNqMhuAS1g39wPBZFoZAX7M+wq4z4EWaXgCs=');
-
-  notificationHubService2.apns.send(tagname, iOSMessage, function (error) {
-    if (!error) {
-      logger.serverLog('info', 'Azure push notification sent to iOS (local testing) using GCM Module, client number : ' + tagname);
-    } else {
-      logger.serverLog('info', 'Azure push notification error (iOS local testing) : ' + JSON.stringify(error));
-    }
-  });
 }
 
 function sendVoipPush(devToken, badge, sound, alert, payload) {
